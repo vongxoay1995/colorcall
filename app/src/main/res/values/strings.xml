@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Color Call</string>
+    <string name="lovely">Lovely</string>
+    <string name="mytheme">Your theme</string>
+    <string name="nope">Nope</string>
+    <string name="policy">Privacy policy</string>
+    <string name="popular">Popular</string>
+    <string name="questionApply">Apply for all contact</string>
+    <string name="recommend">Recommend for you</string>
+    <string name="search_menu_title">Search</string>
+    <string name="settings">Setting</string>
+    <string name="shareApp">Share app</string>
+    <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="sure">Sure, i want</string>
+    <string name="video_alert">Độ dài tối đa của video là 10s</string>
+    <string name="video_not_found">Video not found</string>
+    <string name="your_video">Open camera or select a new video</string>
+    <string name="addYourVideo">Add your video or image</string>
+    <string name="applyContact">Apply for all contact</string>
+    <string name="checkUpdate">Check for update</string>
+    <string name="colorCall">Color Call</string>
+    <string name="colorEffect">Color effect</string>
+    <string name="contentApply">Call screen of all contacts will \10be applied</string>
+    <string name="define_roundedimageview" />
+    <string name="getVip">Get VIP</string>
+</resources>

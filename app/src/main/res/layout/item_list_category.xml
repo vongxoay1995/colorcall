@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <ImageView
+            android:id="@+id/imgSymbol"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_centerVertical="true"
+            android:paddingTop="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_recommend"
+            tools:ignore="VectorDrawableCompat" />
+
+        <TextView
+            android:id="@+id/txtContenCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/txtSeeAll"
+            android:layout_toEndOf="@+id/imgSymbol"
+            android:text="Recommend for you"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textsizeNomal"
+            app:fontFamily="@font/roboto_medium" />
+
+        <TextView
+            android:id="@+id/txtSeeAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:text="See all"
+            android:textColor="@color/violetMain"
+            android:textSize="@dimen/textsizeNomal"
+            app:fontFamily="@font/robotoitalic" />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvlistDemo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutHeader" />
+</RelativeLayout>

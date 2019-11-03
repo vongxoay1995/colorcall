@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layout_head"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorHeaderMain">
+
+        <ImageView
+            android:id="@+id/btnMenu"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_menu"
+            tools:ignore="VectorDrawableCompat" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/layoutBottom"
+            android:layout_toEndOf="@+id/btnMenu"
+            android:text="@string/colorCall"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize16"
+            app:fontFamily="@font/robotobold" />
+
+        <LinearLayout
+            android:id="@+id/layoutBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_cam"
+                tools:ignore="VectorDrawableCompat" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_gift"
+                tools:ignore="VectorDrawableCompat" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_vip"
+                tools:ignore="VectorDrawableCompat" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/layoutBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_head"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_10sdp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp">
+
+        <ss.com.bannerslider.Slider
+            android:id="@+id/bannerImage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_below="@+id/layout_head"
+            app:slider_animateIndicators="true"
+            app:slider_indicatorSize="10dp"
+            app:slider_interval="3000"
+            app:slider_loopSlides="true"
+            app:slider_selectedSlideIndicator="@drawable/ic_thumb_select"
+            app:slider_unselectedSlideIndicator="@drawable/ic_thumb_unselected" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvCategory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layoutBanner"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingRight="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp" />
+</RelativeLayout>

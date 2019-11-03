@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layout_head"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorHeaderMain">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_12sdp"
+            android:src="@drawable/ic_white_w" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/layoutBottom"
+            android:layout_toEndOf="@+id/btnBack"
+            android:text="@string/settings"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize16"
+            app:fontFamily="@font/robotobold" />
+
+        <LinearLayout
+            android:id="@+id/layoutBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_gift"
+                tools:ignore="VectorDrawableCompat" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_head"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingTop="@dimen/_25sdp"
+            android:paddingRight="@dimen/_10sdp">
+
+            <RelativeLayout
+                android:id="@+id/layoutVip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/btnVip"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_vip"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnVip"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/getVip"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsizeNomal"
+                    app:fontFamily="@font/robotoregular" />
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layoutShareApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnShareApp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_share"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnShareApp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/shareApp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsizeNomal"
+                    app:fontFamily="@font/robotoregular" />
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layoutCheckUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnCheckUpdate"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_updated"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnCheckUpdate"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/checkUpdate"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsizeNomal"
+                    app:fontFamily="@font/robotoregular" />
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layoutPolicy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnPolicy"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_policy"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnPolicy"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/policy"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsizeNomal"
+                    app:fontFamily="@font/robotoregular" />
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
