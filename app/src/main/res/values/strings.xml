@@ -23,4 +23,14 @@
     <string name="contentApply">Call screen of all contacts will \10be applied</string>
     <string name="define_roundedimageview" />
     <string name="getVip">Get VIP</string>
+    <string name="draw_overlay_permision">Open the suspension window</string>
+    <string name="draw_permision_content">Please turn on permit drawing over other apps</string>
+    <string name="ok">OK</string>
+    <string name="turn_on_notifi_access">Please turn on notification access</string>
+    <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
+    <string name="video">Video</string>
+    <string name="images">Images</string>
+    <string name="select_picture">Select new picture</string>
+    <string name="questionDelete">Delete this background?</string>
+    <string name="contentDelete">Are you sure delete background?</string>
 </resources>

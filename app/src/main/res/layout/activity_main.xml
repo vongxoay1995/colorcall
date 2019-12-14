@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorApp">
 
     <RelativeLayout
         android:id="@+id/layout_head"
@@ -39,30 +40,35 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentEnd="true"
             android:orientation="horizontal"
-            android:weightSum="3">
-
+            android:weightSum="3"
+            android:gravity="center">
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/_12sdp"
-                app:srcCompat="@drawable/ic_cam"
-                tools:ignore="VectorDrawableCompat" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/_12sdp"
-                app:srcCompat="@drawable/ic_gift"
-                tools:ignore="VectorDrawableCompat" />
-
-            <ImageView
+                android:id="@+id/btnVips"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="@dimen/_12sdp"
                 app:srcCompat="@drawable/ic_vip"
+                android:visibility="invisible"
+                tools:ignore="VectorDrawableCompat" />
+
+
+            <ImageView
+                android:id="@+id/btnGift"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_ad"
+                tools:ignore="VectorDrawableCompat" />
+
+            <ImageView
+                android:id="@+id/btnCamera"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_cam"
                 tools:ignore="VectorDrawableCompat" />
         </LinearLayout>
     </RelativeLayout>
@@ -75,7 +81,8 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/_10sdp"
         app:cardCornerRadius="8dp"
-        app:cardElevation="8dp">
+        app:cardElevation="8dp"
+        android:visibility="gone">
 
         <ss.com.bannerslider.Slider
             android:id="@+id/bannerImage"
@@ -89,13 +96,21 @@
             app:slider_selectedSlideIndicator="@drawable/ic_thumb_select"
             app:slider_unselectedSlideIndicator="@drawable/ic_thumb_unselected" />
     </androidx.cardview.widget.CardView>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcvCategory"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_below="@+id/layoutBanner"
-        android:paddingLeft="@dimen/_10sdp"
-        android:paddingRight="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp" />
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorApp"
+            android:paddingStart="@dimen/_5sdp"
+            android:paddingEnd="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            />
+    </LinearLayout>
 </RelativeLayout>

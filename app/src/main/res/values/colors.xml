@@ -7,7 +7,11 @@
     <color name="violet">#28019f</color>
     <color name="violetMain">#4917e0</color>
     <color name="white">#ffffff</color>
-    <color name="colorHeaderMain">#007f89</color>
+    <color name="colorHeaderMain">#251c55</color>
     <color name="blackAlpha30">#4d000000</color>
     <color name="gray">#8a000000</color>
+    <color name="colorApp">#0f0f0f</color>
+    <color name="blue">#77cffe</color>
+    <color name="blackAlpha70">#B3000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

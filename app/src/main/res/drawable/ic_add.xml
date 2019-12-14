@@ -14,7 +14,7 @@
         android:strokeAlpha="0.804" />
     <path
         android:fillAlpha="0.804"
-        android:fillColor="#0098a4"
+        android:fillColor="#498ec5"
         android:fillType="evenOdd"
         android:pathData="M21.5,20.5m-17.5,0a17.5,17.5 0,1 1,35 0a17.5,17.5 0,1 1,-35 0"
         android:strokeAlpha="0.804" />

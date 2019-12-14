@@ -6,4 +6,5 @@
     <dimen name="textsize40">40sp</dimen>
     <dimen name="textsize60">60sp</dimen>
     <dimen name="textsizeNomal">14sp</dimen>
+    <dimen name="grid_expected_size">120dp</dimen>
 </resources>

@@ -1,40 +1,46 @@
 package com.htn.colorcall.model;
 
+import java.util.ArrayList;
+
 public class Category {
-    private String assetsDir;
-    private int symbol;
-    private String title;
-
-    public Category() {
+    private int numberCategory;
+    private ArrayList<Background> listFile;
+    private boolean isDefault;
+    public Category(int numberCategory, ArrayList<Background> listFile, boolean isDefault) {
+        this.numberCategory = numberCategory;
+        this.listFile = listFile;
+        this.isDefault = isDefault;
+    }
+    public Category(){}
+    public int getCategoryNum() {
+        return numberCategory;
     }
 
-    public Category(String title2, int symbol2, String assetsDir2) {
-        this.title = title2;
-        this.symbol = symbol2;
-        this.assetsDir = assetsDir2;
+    public void setCategoryNum(int numberCategory) {
+        this.numberCategory = numberCategory;
     }
 
-    public String getTitle() {
-        return this.title;
+    public ArrayList<Background> getListFile() {
+        return listFile;
     }
 
-    public void setTitle(String title2) {
-        this.title = title2;
+    public void setListFile(ArrayList<Background> listFile) {
+        this.listFile = listFile;
     }
 
-    public int getSymbol() {
-        return this.symbol;
+    public boolean isDefault() {
+        return isDefault;
     }
 
-    public void setSymbol(int symbol2) {
-        this.symbol = symbol2;
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 
-    public String getAssetsDir() {
-        return this.assetsDir;
-    }
-
-    public void setAssetsDir(String assetsDir2) {
-        this.assetsDir = assetsDir2;
+    @Override
+    public String toString() {
+        return "Category{" +
+                "numberCategory='" + numberCategory + '\'' +
+                ", listFile=" + listFile +
+                '}'+"\n";
     }
 }

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/colorApp">
 
     <RelativeLayout
         android:id="@+id/layoutHeader"
@@ -31,7 +31,7 @@
             android:layout_toStartOf="@+id/txtSeeAll"
             android:layout_toEndOf="@+id/imgSymbol"
             android:text="Recommend for you"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="@dimen/textsizeNomal"
             app:fontFamily="@font/roboto_medium" />
 
@@ -44,7 +44,7 @@
             android:paddingLeft="@dimen/_10sdp"
             android:paddingRight="@dimen/_10sdp"
             android:text="See all"
-            android:textColor="@color/violetMain"
+            android:textColor="@color/blue"
             android:textSize="@dimen/textsizeNomal"
             app:fontFamily="@font/robotoitalic" />
     </RelativeLayout>

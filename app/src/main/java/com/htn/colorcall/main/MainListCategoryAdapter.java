@@ -1,10 +1,7 @@
 package com.htn.colorcall.main;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Build.VERSION;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +12,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
+import com.google.gson.Gson;
 import com.htn.colorcall.R;
+import com.htn.colorcall.apply.ApplyActivity;
+import com.htn.colorcall.constan.Constant;
+import com.htn.colorcall.model.Background;
 import com.htn.colorcall.model.Category;
-import com.htn.colorcall.model.Thumb;
+import com.htn.colorcall.utils.AppUtils;
 import com.htn.colorcall.utils.CategoryUtils;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.htn.colorcall.constan.Constant.SHOW_IMG_DELETE;
 
 public class MainListCategoryAdapter extends RecyclerView.Adapter<MainListCategoryAdapter.ViewHolder> {
     public ArrayList<Category> arrCategory;
@@ -47,73 +49,67 @@ public class MainListCategoryAdapter extends RecyclerView.Adapter<MainListCatego
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind( this, itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         public void onBind(int i) {
-            Category category =  MainListCategoryAdapter.this.arrCategory.get(i);
-            if (VERSION.SDK_INT >= 21) {
-                this.imgSymbol.setImageResource(category.getSymbol());
-            } else {
-                this.imgSymbol.setImageDrawable(VectorDrawableCompat.create(MainListCategoryAdapter.this.context.getResources(), category.getSymbol(), MainListCategoryAdapter.this.context.getTheme()));
-            }
-            this.txtContenCategory.setText(category.getTitle());
-            listener();
-            loadThumb(i, MainListCategoryAdapter.this.context, category.getAssetsDir());
+            Category category = arrCategory.get(i);
+            CategoryUtils.setInforCategory(context,i,txtContenCategory,imgSymbol);
+            loadBackground(i, category.getListFile());
+            listener(i,category.getListFile());
         }
 
-        private void listener() {
+        private void listener(int pos,ArrayList<Background> list) {
             this.txtSeeAll.setOnClickListener(v -> {
-
+                if (listenerCategory != null) {
+                    listenerCategory.onSeemoreClick(list,pos);
+                }
             });
         }
 
-        @SuppressLint({"StaticFieldLeak"})
-        public void loadThumb(final int position, final Context context, final String keyCategory) {
-            new AsyncTask<Void, Void, ArrayList<Thumb>>() {
-                public ArrayList<Thumb> doInBackground(Void... voids) {
-                    if (position == 2) {
-                        ArrayList<Thumb> thumbs = new ArrayList<>();
-                        thumbs.add(null);
-                        return thumbs;
+        public void loadBackground(final int position, ArrayList<Background> listBg) {
+            if (position == 2) {
+                isYourColor = true;
+            } else {
+                isYourColor = false;
+            }
+            linearLayoutManager = new LinearLayoutManager(MainListCategoryAdapter.this.context, LinearLayoutManager.HORIZONTAL, false);
+            rcvlistDemo.setLayoutManager(this.linearLayoutManager);
+            rcvlistDemo.setItemAnimator(new DefaultItemAnimator());
+            rcvlistDemo.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
+            adapter = new MainListCategoryThumbAdapter(context, listBg, isYourColor);
+            adapter.setListener(new MainListCategoryThumbAdapter.Listener() {
+                @Override
+                public void onAdd() {
+                    if (listenerCategory != null) {
+                        listenerCategory.onAddClicked();
                     }
-                    return CategoryUtils.getListThumb(context, keyCategory);
                 }
 
-                public void onPostExecute(ArrayList<Thumb> thumbs) {
-                    super.onPostExecute(thumbs);
-                    if (position == 2) {
-                        MainListCategoryAdapter.this.isYourColor = true;
-                    } else {
-                        MainListCategoryAdapter.this.isYourColor = false;
-                    }
-                    ViewHolder.this.onThumbLoaded(thumbs, MainListCategoryAdapter.this.isYourColor, position);
+                @Override
+                public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete) {
+                    moveApplyTheme(backgrounds,position,delete);
                 }
-            }.execute(new Void[0]);
-        }
-
-        public void onThumbLoaded(ArrayList<Thumb> thumbs, boolean isYourColor, int position) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(thumbs.size());
-            sb.append("---");
-            sb.append(isYourColor);
-            sb.append("--");
-            sb.append(position);
-            Log.e("A", sb.toString());
-            this.linearLayoutManager = new LinearLayoutManager(MainListCategoryAdapter.this.context, LinearLayoutManager.HORIZONTAL, false);
-            this.rcvlistDemo.setLayoutManager(this.linearLayoutManager);
-            this.rcvlistDemo.setItemAnimator(new DefaultItemAnimator());
-            this.adapter = new MainListCategoryThumbAdapter(MainListCategoryAdapter.this.context, thumbs, isYourColor);
-            this.adapter.setListener(listener);
+            });
             this.rcvlistDemo.setAdapter(this.adapter);
         }
     }
 
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete) {
+        Background background = backgrounds.get(position);
+        Intent intent = new Intent(context, ApplyActivity.class);
+        if (delete) {
+            intent.putExtra(SHOW_IMG_DELETE, true);
+        }
+        Gson gson =  new Gson();
+        intent.putExtra(Constant.BACKGROUND,gson.toJson(background));
+        context.startActivity(intent);
+    }
 
-    public MainListCategoryAdapter(Context context2, ArrayList<Category> arrCategory2, MainListCategoryThumbAdapter.Listener listener2) {
+
+    public MainListCategoryAdapter(Context context2, ArrayList<Category> arrCategory2) {
         this.context = context2;
         this.arrCategory = arrCategory2;
-        this.listener = listener2;
     }
 
     @NonNull
@@ -127,5 +123,17 @@ public class MainListCategoryAdapter extends RecyclerView.Adapter<MainListCatego
 
     public int getItemCount() {
         return this.arrCategory.size();
+    }
+
+    Listener listenerCategory;
+
+    public void setListener(Listener listener) {
+        this.listenerCategory = listener;
+    }
+
+    public interface Listener {
+        void onSeemoreClick(ArrayList<Background> list,int position);
+
+        void onAddClicked();
     }
 }
