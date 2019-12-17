@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -117,7 +118,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     }
 
     private void checkPermission() {
-        Log.e("TAN", "àdaf: ");
         String[] permistion;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             permistion = new String[]{
@@ -133,42 +133,38 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         }
 
         if (!AppUtils.checkPermission(this, permistion)) {
-            ActivityCompat.requestPermissions(this, permistion, Constant.PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, permistion, Constant.PERMISSION_REQUEST_CODE_CALL_PHONE);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!AppUtils.canDrawOverlays(this)) {
                     AppUtils.showDrawOverlayPermissionDialog(this);
                 } else if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
-                }else {
-                    Log.e("TAN", "checkPermission: ok 1");
                 }
-            }else {
-                Log.e("TAN", "checkPermission: ok");
             }
         }
     }
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Constant.PERMISSION_REQUEST_CODE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
-            Log.e("TAN", "checkPermission: ok 3");
+        if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
             if (AppUtils.canDrawOverlays(this)) {
-                if (AppUtils.checkNotificationAccessSettings(this)) {
-                    //
-                } else {
+                if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 }
             } else {
-                checkDrawOverlayApp();
+                AppUtils.checkDrawOverlayApp(this);
             }
-        }else {
-            //String alertPermission = getString(R.string.allow_pemissions);
-            //AppUtils.showDialogAlertPermission(alertPermission);
         }
     }
-    public void checkDrawOverlayApp() {
-        if (Build.VERSION.SDK_INT >= 23 && !AppUtils.canDrawOverlays(this)) {
-            AppUtils.showDrawOverlayPermissionDialog(this);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constant.REQUEST_OVERLAY) {
+            if (AppUtils.canDrawOverlays(this)) {
+                if (!AppUtils.checkNotificationAccessSettings(this)) {
+                    AppUtils.showNotificationAccess(this);
+                }
+            }
         }
     }
 }

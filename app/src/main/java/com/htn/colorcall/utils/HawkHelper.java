@@ -10,6 +10,8 @@ import java.util.List;
 
 public class HawkHelper {
     private static String LOAD_DATA_FIRST_FIRST = "LOAD_DATA_FIRST_FIRST";
+    private static String ENABLE_COLOR = "ENABLE_COLOR";
+
     private static String LIST_CATEGORY = "LIST_CATEGORY";
     public static boolean isLoadDataFirst() {
         return Hawk.get(LOAD_DATA_FIRST_FIRST, false);
@@ -24,5 +26,12 @@ public class HawkHelper {
 
     public static void setListCategory(ArrayList<Category> listCategory) {
         Hawk.put(LIST_CATEGORY, listCategory);
+    }
+    public static boolean isEnableColorCall() {
+        return Hawk.get(ENABLE_COLOR, false);
+    }
+
+    public static void setStateColorCall(boolean value) {
+        Hawk.put(ENABLE_COLOR, value);
     }
 }

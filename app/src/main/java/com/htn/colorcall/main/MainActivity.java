@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initView();
+        checkPermissionAction();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -136,7 +137,32 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         startActivity(new Intent(this, SettingActivity.class));
     }
 
-    public void checkPermissionAccessCamera() {
+    public void checkPermissionAction() {
+        String[] permistion;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            permistion = new String[]{
+                    READ_PHONE_STATE,
+                    CALL_PHONE,
+                    READ_EXTERNAL_STORAGE,
+                    WRITE_EXTERNAL_STORAGE,
+                    CAMERA,
+            };
+        } else {
+            permistion = new String[]{
+                    ANSWER_PHONE_CALLS,
+                    READ_PHONE_STATE,
+                    CALL_PHONE,
+                    READ_EXTERNAL_STORAGE,
+                    WRITE_EXTERNAL_STORAGE,
+                    CAMERA,
+            };
+        }
+        if (!AppUtils.checkPermission(this, permistion)) {
+            ActivityCompat.requestPermissions(this, permistion,
+                    Constant.PERMISSION_REQUEST_CODE);
+        }
+    }
+    public void checkPermissionActionCamera() {
         String[] permistion = {
                 READ_EXTERNAL_STORAGE,
                 WRITE_EXTERNAL_STORAGE,
@@ -144,15 +170,14 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         };
         if (!AppUtils.checkPermission(this, permistion)) {
             ActivityCompat.requestPermissions(this, permistion,
-                    Constant.PERMISSION_REQUEST_CODE);
+                    Constant.PERMISSION_REQUEST_CODE_CAMERA);
         } else {
             openDialogGallery();
         }
     }
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Constant.PERMISSION_REQUEST_CODE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
+        if (requestCode == Constant.PERMISSION_REQUEST_CODE_CAMERA && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
             openDialogGallery();
         }
     }
@@ -173,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
 
     @Override
     public void onAddClicked() {
-        checkPermissionAccessCamera();
+        checkPermissionActionCamera();
     }
 
     @Override
@@ -269,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
             case R.id.btnGift:
                 break;
             case R.id.btnCamera:
-                checkPermissionAccessCamera();
+                checkPermissionActionCamera();
                 break;
         }
     }

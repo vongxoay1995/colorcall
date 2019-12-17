@@ -183,5 +183,12 @@ public class AppUtils {
             }
         });
     }
-
+    public static void checkDrawOverlayApp(Context context) {
+        if (Build.VERSION.SDK_INT >= 23 && !AppUtils.canDrawOverlays(context)) {
+            AppUtils.showDrawOverlayPermissionDialog(context);
+        }
+    }
+    public static boolean checkDrawOverlay(Context context) {
+        return Build.VERSION.SDK_INT < 23 || AppUtils.canDrawOverlays(context);
+    }
 }
