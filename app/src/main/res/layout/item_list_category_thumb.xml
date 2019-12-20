@@ -25,7 +25,6 @@
                 android:layout_height="@dimen/_25sdp"
                 android:scaleType="fitXY"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_video"
                 />
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -38,7 +37,6 @@
                     android:id="@+id/imgDownload"
                     android:layout_width="@dimen/_15sdp"
                     android:layout_height="@dimen/_15sdp"
-                    android:src="@drawable/ic_download"
                     android:layout_centerVertical="true"
                     />
                 <TextView

@@ -1,12 +1,17 @@
 package com.htn.colorcall.apply;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +28,7 @@ import com.htn.colorcall.database.DataManager;
 import com.htn.colorcall.listener.DialogDeleteListener;
 import com.htn.colorcall.model.Background;
 import com.htn.colorcall.utils.AppUtils;
+import com.htn.colorcall.utils.HawkHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +45,12 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     CustomVideoView vdoBackgroundCall;
     @BindView(R.id.imgDelete)
     ImageView imgDelete;
+    @BindView(R.id.layoutApply)
+    RelativeLayout layoutApply;
+    @BindView(R.id.txtApply)
+    TextView txtApply;
     private Background background;
+    private Background backgroundCurrent;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,10 +67,20 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         }
         Gson gson = new Gson();
         background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
+        backgroundCurrent = HawkHelper.getBackgroundSelect();
+        if (backgroundCurrent != null) {
+            if (background.getPathItem().equals(backgroundCurrent.getPathItem())) {
+                layoutApply.setEnabled(false);
+                layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
+                txtApply.setTextColor(Color.BLACK);
+            } else {
+                layoutApply.setEnabled(true);
+                layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_green_radius_60));
+                txtApply.setTextColor(Color.WHITE);
+            }
+        }
         String uriPath = "android.resource://" + getPackageName() + background.getPathItem();
-
-        Log.e("pathApply", background.getPathItem());
-        if (background.getType() == 0) {
+        if (background.getType() == Constant.TYPE_VIDEO) {
             imgBackgroundCall.setVisibility(View.GONE);
             vdoBackgroundCall.setVisibility(View.VISIBLE);
             if (background.getPathItem().contains("storage")) {
@@ -140,10 +161,23 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                     AppUtils.showDrawOverlayPermissionDialog(this);
                 } else if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
+                } else {
+                    applyBgCall();
                 }
+            } else {
+                applyBgCall();
             }
         }
     }
+
+    private void applyBgCall() {
+        HawkHelper.setBackgroundSelect(background);
+        Toast.makeText(this, getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
+        layoutApply.setEnabled(false);
+        layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
+        txtApply.setTextColor(Color.BLACK);
+    }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
@@ -156,6 +190,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             }
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

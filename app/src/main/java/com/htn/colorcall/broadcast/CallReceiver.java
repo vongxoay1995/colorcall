@@ -3,9 +3,11 @@ package com.htn.colorcall.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.htn.colorcall.constan.Constant;
 import com.htn.colorcall.service.CallService;
 import com.htn.colorcall.utils.AppUtils;
 import com.htn.colorcall.utils.HawkHelper;
@@ -87,7 +89,13 @@ public class CallReceiver extends BroadcastReceiver {
 
     private void onIncommingCall(Context context, String number) {
         if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
-         //   CallService.startservice(context, number);
+            Intent intent=new Intent(context,CallService.class);
+            intent.putExtra(Constant.PHONE_NUMBER,number);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
         }
     }
 

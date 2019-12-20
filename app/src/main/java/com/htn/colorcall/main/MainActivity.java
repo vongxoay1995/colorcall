@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,7 +13,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +30,7 @@ import com.google.gson.Gson;
 import com.htn.colorcall.R;
 import com.htn.colorcall.categorydetail.CateGoryDetail;
 import com.htn.colorcall.constan.Constant;
+import com.htn.colorcall.custom.CustomVideoView;
 import com.htn.colorcall.database.DataManager;
 import com.htn.colorcall.listener.DialogGalleryListener;
 import com.htn.colorcall.model.Background;
@@ -53,8 +59,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity implements MainListCategoryAdapter.Listener, DialogGalleryListener {
     private MainListCategoryAdapter adapter;
-    @BindView(R.id.bannerImage)
-    Slider bannerImage;
     private LinearLayoutManager linearLayoutManager;
     @BindView(R.id.rcvCategory)
     RecyclerView rcvCategory;
@@ -64,8 +68,25 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        initView();
         checkPermissionAction();
+
+//        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+//        WindowManager mWindowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
+//        View mView = inflater.inflate(R.layout.layout_call_color, null);
+//        final WindowManager.LayoutParams mLayoutParams = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+//                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+//                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+//                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON ,
+//                PixelFormat.TRANSLUCENT);
+//        mView.setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                        | View.SYSTEM_UI_FLAG_VISIBLE
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//        );
+//        mView.setVisibility(View.VISIBLE);
+//        mWindowManager.addView(mView, mLayoutParams);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -120,17 +141,6 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         this.rcvCategory.setAdapter(adapter);
     }
 
-    private void initView() {
-        this.bannerImage.setAdapter(new MainSliderAdapter());
-        this.bannerImage.setOnSlideClickListener(new OnSlideClickListener() {
-            public void onSlideClick(int position) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(position);
-                sb.append("");
-                Log.e("Pos", sb.toString());
-            }
-        });
-    }
 
     @OnClick({R.id.btnMenu})
     public void onViewClicked() {

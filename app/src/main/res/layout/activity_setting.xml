@@ -18,7 +18,7 @@
             android:layout_height="@dimen/_40sdp"
             android:layout_centerVertical="true"
             android:padding="@dimen/_12sdp"
-            android:src="@drawable/ic_white_w" />
+            app:srcCompat="@drawable/ic_white_w" />
 
         <TextView
             android:layout_width="match_parent"
@@ -198,6 +198,39 @@
                     android:padding="@dimen/_12sdp"
                     app:srcCompat="@drawable/ic_ar_right"
                     tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/layoutStateApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnStateApp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_policy"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnStateApp"
+                    android:layout_toStartOf="@id/swStateApp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:text="@string/useApp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsizeNomal"
+                    app:fontFamily="@font/robotoregular" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swStateApp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content"/>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

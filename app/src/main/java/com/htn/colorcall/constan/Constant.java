@@ -23,4 +23,8 @@ public interface Constant {
     String IS_DELETE_BG = "delete_background" ;
     int PERMISSION_REQUEST_CODE_CAMERA = 99;
     int PERMISSION_REQUEST_CODE_CALL_PHONE = 98;
+    String PHONE_NUMBER = "phone_number";
+    int TYPE_VIDEO = 0;
+    int TYPE_IMAGE = 1;
+    int WINDOW_FLAGS =4719872;
 }

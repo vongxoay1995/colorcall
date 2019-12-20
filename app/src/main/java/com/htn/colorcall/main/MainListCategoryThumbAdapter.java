@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.htn.colorcall.R;
+import com.htn.colorcall.constan.Constant;
 import com.htn.colorcall.model.Background;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class MainListCategoryThumbAdapter extends RecyclerView.Adapter<RecyclerV
 
         public void onBind(int i) {
             Background background =  listBg.get(i);
-            if(background.getType()==0){
+            if(background.getType()== Constant.TYPE_VIDEO){
                 imgVideo.setVisibility(View.VISIBLE);
             }else {
                 imgVideo.setVisibility(View.GONE);

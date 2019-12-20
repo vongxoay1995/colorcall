@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.htn.colorcall.R;
 import com.htn.colorcall.constan.Constant;
+import com.htn.colorcall.utils.HawkHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,11 +44,23 @@ public class SettingActivity extends AppCompatActivity {
     RelativeLayout layoutShareApp;
     @BindView(R.id.layoutVip)
     RelativeLayout layoutVip;
-
+    @BindView(R.id.swStateApp)
+    SwitchCompat swStateApp;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_setting);
         ButterKnife.bind( this);
+        swStateApp.setChecked(HawkHelper.isEnableColorCall());
+        listener();
+    }
+
+    private void listener() {
+     swStateApp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+         @Override
+         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+             HawkHelper.setStateColorCall(isChecked);
+         }
+     });
     }
 
     @OnClick({R.id.btnBack, R.id.layoutShareApp, R.id.layoutPolicy , R.id.layoutCheckUpdate})
