@@ -29,18 +29,27 @@
             android:id="@+id/layoutInfor"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="bottom"
+            android:layout_weight="1.5"
+            android:gravity="center"
             android:orientation="vertical">
-
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="@dimen/_92sdp"
+                android:layout_height="@dimen/_92sdp"
+                android:src="@drawable/ic_avatar"
+                android:layout_gravity="center"
+                app:civ_border_width="@dimen/_1sdp"
+                app:civ_border_color="#ffffff"/>
             <TextView
                 android:id="@+id/txtName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Caller"
+                android:text="@string/caller"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize40"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:textSize="@dimen/textsize30"
                 app:fontFamily="@font/robotobold" />
 
             <TextView
@@ -59,7 +68,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:gravity="bottom"
             android:orientation="vertical">
 
@@ -73,18 +82,20 @@
 
                 <ImageView
                     android:id="@+id/btnReject"
-                    android:layout_width="@dimen/_60sdp"
-                    android:layout_height="@dimen/_60sdp"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
                     android:layout_alignParentStart="true"
                     android:src="@drawable/ic_end_call"
+                    android:padding="@dimen/_20sdp"
                     tools:ignore="VectorDrawableCompat" />
 
                 <ImageView
                     android:id="@+id/btnAccept"
-                    android:layout_width="@dimen/_60sdp"
-                    android:layout_height="@dimen/_60sdp"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/ic_call"
+                    android:padding="@dimen/_20sdp"
                     tools:ignore="VectorDrawableCompat" />
             </RelativeLayout>
         </LinearLayout>

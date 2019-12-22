@@ -37,4 +37,5 @@
     <string name="callerscreen">Caller screen</string>
     <string name="contentSplash">Colorful incoming call display</string>
     <string name="start">Start</string>
+    <string name="caller">Caller</string>
 </resources>

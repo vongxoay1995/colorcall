@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.telecom.TelecomManager;
@@ -21,6 +22,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,7 +57,7 @@ public class CallService extends Service {
     private static final int ID_NOTIFICATION = 1;
     public static String CHANNEL = "Color_Call_channel";
     private static final String CHANNEL_ID = "ColorCall";
-
+    public boolean isDisable;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -109,6 +112,7 @@ public class CallService extends Service {
                                 | View.SYSTEM_UI_FLAG_VISIBLE
                                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 );
+                new Handler().postDelayed(() -> startAnimation(), 400);
                 ((WindowManager) getSystemService(WINDOW_SERVICE)).addView(viewCall, mLayoutParams);
                 handlingCallState();
                 listener();
@@ -119,6 +123,7 @@ public class CallService extends Service {
     }
 
     private void finishService() {
+        viewCall.setVisibility(View.GONE);
         WindowManager mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         if (mWindowManager != null && viewCall.getWindowToken() != null) {
             mWindowManager.removeViewImmediate(viewCall);
@@ -136,18 +141,23 @@ public class CallService extends Service {
                     return;
                 }
                 tm.acceptRingingCall();
+                isDisable = true;
             } else {
-                    Intent intent = new Intent(getApplicationContext(), AcceptCallActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                    getApplicationContext().startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), AcceptCallActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                getApplicationContext().startActivity(intent);
+                isDisable = true;
             }
         });
 
         imgReject.setOnClickListener(v -> {
             try {
                 telephonyService.endCall();
+                Log.e("telephonyService", "endCall: ");
+                isDisable = true;
             } catch (RemoteException e) {
+                finishService();
                 e.printStackTrace();
             }
         });
@@ -166,7 +176,7 @@ public class CallService extends Service {
                 @Override
                 public void onCallStateChanged(int state, String incomingNumber) {
                     super.onCallStateChanged(state, incomingNumber);
-                    Log.e("TAN", "onCallStateChanged: "+state);
+                    Log.e("TAN", "onCallStateChanged: " + state);
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_IDLE) {
                         viewCall.setVisibility(View.GONE);
                     }
@@ -174,6 +184,7 @@ public class CallService extends Service {
             };
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         } catch (Exception e) {
+            finishService();
             e.printStackTrace();
         }
     }
@@ -243,4 +254,8 @@ public class CallService extends Service {
         return notification;
     }
 
+    public void startAnimation() {
+        Animation anim8 = AnimationUtils.loadAnimation(this, R.anim.anm_accept_call);
+        imgAccept.startAnimation(anim8);
+    }
 }
