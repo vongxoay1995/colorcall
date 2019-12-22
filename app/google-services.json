@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "224649703618",
+    "firebase_url": "https://color-call-90320.firebaseio.com",
+    "project_id": "color-call-90320",
+    "storage_bucket": "color-call-90320.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224649703618:android:20632cc46468d77963cb5b",
+        "android_client_info": {
+          "package_name": "com.colorcall.callerscreen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "224649703618-d2voqgucs91rb1m9jh0dpnoqbh6vju4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3c4WkYvOWK5-Hy_E1YsUhFxiNITFl1ME"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "224649703618-d2voqgucs91rb1m9jh0dpnoqbh6vju4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

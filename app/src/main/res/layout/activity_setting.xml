@@ -40,6 +40,7 @@
             android:visibility="gone">
 
             <ImageView
+                android:id="@+id/btnAds"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -209,7 +210,7 @@
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_40sdp"
                     android:padding="@dimen/_12sdp"
-                    app:srcCompat="@drawable/ic_policy"
+                    app:srcCompat="@mipmap/ic_launcher"
                     tools:ignore="VectorDrawableCompat" />
 
                 <TextView
@@ -220,7 +221,7 @@
                     android:layout_toStartOf="@id/swStateApp"
                     android:paddingStart="@dimen/_5sdp"
                     android:paddingRight="@dimen/_10sdp"
-                    android:text="@string/useApp"
+                    android:text="@string/callerscreen"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsizeNomal"
                     app:fontFamily="@font/robotoregular" />

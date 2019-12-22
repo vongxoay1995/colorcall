@@ -27,7 +27,7 @@
                 android:layout_height="@dimen/_25sdp"
                 android:scaleType="fitXY"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_video"
+                app:srcCompat="@drawable/ic_video"
                 />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

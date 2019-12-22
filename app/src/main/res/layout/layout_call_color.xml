@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorHeaderMain"
     >
     <ImageView
         android:id="@+id/img_background_call"
@@ -13,7 +12,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:visibility="gone"/>
-    <com.htn.colorcall.custom.CustomVideoView
+    <com.colorcall.callerscreen.custom.CustomVideoView
         android:id="@+id/vdo_background_call"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

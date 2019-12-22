@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="recommend">
-        <item>thumb/coloreffect/cl_a.webp</item>
+        <item>thumb/lovely/ll_f.webp</item>
         <item>thumb/lovely/ll_e.webp</item>
-        <item>thumb/coloreffect/cl_e.webp</item>
-        <item>thumb/lovely/ll_g.webp</item>
+        <item>thumb/lovely/ll_m.webp</item>
+        <item>thumb/coloreffect/cl_g.webp</item>
     </string-array>
     <string-array name="popular">
-        <item>thumb/coloreffect/cl_b.webp</item>
-        <item>thumb/lovely/ll_a.webp</item>
         <item>thumb/coloreffect/cl_d.webp</item>
-        <item>thumb/lovely/ll_b.webp</item>
+        <item>thumb/coloreffect/cl_a.webp</item>
+        <item>thumb/coloreffect/cl_e.webp</item>
+        <item>thumb/coloreffect/cl_l.webp</item>
     </string-array>
 </resources>

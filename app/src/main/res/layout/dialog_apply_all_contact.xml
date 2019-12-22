@@ -17,7 +17,7 @@ android:layout_height="match_parent">
         android:layout_height="wrap_content"
         android:text="@string/questionApply"
         android:textColor="#de000000"
-        android:textSize="16sp"
+        android:textSize="@dimen/textsize20"
         app:fontFamily="@font/roboto_medium" />
 
     <TextView
@@ -32,7 +32,7 @@ android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/_10sdp">
+        android:paddingTop="@dimen/_20sdp">
 
         <TextView
             android:id="@+id/btnNo"

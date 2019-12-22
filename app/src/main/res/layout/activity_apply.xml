@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:visibility="gone"/>
-    <com.htn.colorcall.custom.CustomVideoView
+    <com.colorcall.callerscreen.custom.CustomVideoView
         android:id="@+id/vdo_background_call"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,6 +48,7 @@
                 android:padding="@dimen/_11sdp"
                 app:srcCompat="@drawable/ic_del" />
             <ImageView
+                android:id="@+id/btnAds"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

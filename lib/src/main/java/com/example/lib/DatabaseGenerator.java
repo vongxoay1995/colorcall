@@ -7,7 +7,7 @@ import org.greenrobot.greendao.generator.Schema;
 public class DatabaseGenerator {
     private static final String PROJECT_DIR = System.getProperty("user.dir");
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1, "com.htn.colorcall.database");
+        Schema schema = new Schema(1, "com.colorcall.callerscreen");
         createTable(schema);
         new DaoGenerator().generateAll(schema, PROJECT_DIR+"/app/src/main/java/");
     }

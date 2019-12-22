@@ -7,4 +7,6 @@
     <dimen name="textsize60">60sp</dimen>
     <dimen name="textsizeNomal">14sp</dimen>
     <dimen name="grid_expected_size">120dp</dimen>
+    <dimen name="textsize30">30sp</dimen>
+    <dimen name="textsize12">12sp</dimen>
 </resources>
