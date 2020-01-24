@@ -76,7 +76,7 @@
                 android:id="@+id/profile_image"
                 android:layout_width="@dimen/_92sdp"
                 android:layout_height="@dimen/_92sdp"
-                android:src="@drawable/ic_avatar"
+                android:src="@drawable/ic_avatar_call"
                 android:layout_gravity="center"
                 app:civ_border_width="@dimen/_1sdp"
                 app:civ_border_color="#ffffff"/>
@@ -119,18 +119,20 @@
 
                 <ImageView
                     android:id="@+id/btnReject"
-                    android:layout_width="@dimen/_60sdp"
-                    android:layout_height="@dimen/_60sdp"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:padding="@dimen/_20sdp"
                     android:layout_alignParentStart="true"
                     app:srcCompat="@drawable/ic_end_call"
                     tools:ignore="VectorDrawableCompat" />
 
                 <ImageView
                     android:id="@+id/btnAccept"
-                    android:layout_width="@dimen/_60sdp"
-                    android:layout_height="@dimen/_60sdp"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
                     android:layout_alignParentEnd="true"
                     app:srcCompat="@drawable/ic_call"
+                    android:padding="@dimen/_20sdp"
                     tools:ignore="VectorDrawableCompat" />
             </RelativeLayout>
 

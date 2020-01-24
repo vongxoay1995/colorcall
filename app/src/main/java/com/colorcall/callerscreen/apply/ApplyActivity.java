@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +51,8 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     RelativeLayout layoutApply;
     @BindView(R.id.txtApply)
     TextView txtApply;
+    @BindView(R.id.btnAccept)
+    ImageView btnAccept;
     private Background background;
     private Background backgroundCurrent;
     private FirebaseAnalystic firebaseAnalystic;
@@ -113,6 +117,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.applyOpen());
         vdoBackgroundCall.start();
+        startAnimation();
         super.onResume();
     }
 
@@ -210,5 +215,9 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 }
             }
         }
+    }
+    public void startAnimation() {
+        Animation anim8 = AnimationUtils.loadAnimation(this, R.anim.anm_accept_call);
+        btnAccept.startAnimation(anim8);
     }
 }

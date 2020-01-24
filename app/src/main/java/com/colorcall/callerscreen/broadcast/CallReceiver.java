@@ -3,7 +3,9 @@ package com.colorcall.callerscreen.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Build;
+import android.provider.CallLog;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -24,6 +26,7 @@ public class CallReceiver extends BroadcastReceiver {
             String state = intent.getExtras().getString("state");
             String number = intent.getExtras().getString("incoming_number");
             Log.e("CallReceiver",  state + "--" + number);
+
             int stateType = 0;
             if (state != null && state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 stateType = TYPE_END_CALL;

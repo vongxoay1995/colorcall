@@ -37,9 +37,9 @@
                 android:id="@+id/profile_image"
                 android:layout_width="@dimen/_92sdp"
                 android:layout_height="@dimen/_92sdp"
-                android:src="@drawable/ic_avatar"
+                android:src="@drawable/ic_avatar_call"
                 android:layout_gravity="center"
-                app:civ_border_width="@dimen/_1sdp"
+                app:civ_border_width="1dp"
                 app:civ_border_color="#ffffff"/>
             <TextView
                 android:id="@+id/txtName"

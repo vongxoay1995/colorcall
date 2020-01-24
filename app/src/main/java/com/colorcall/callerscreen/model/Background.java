@@ -89,4 +89,14 @@ public class Background {
         this.delete = delete;
     }
 
+    @Override
+    public String toString() {
+        return "Background{" +
+                "id=" + id +
+                ", type=" + type +
+                ", pathThumb='" + pathThumb + '\'' +
+                ", pathItem='" + pathItem + '\'' +
+                ", delete=" + delete +
+                '}';
+    }
 }
