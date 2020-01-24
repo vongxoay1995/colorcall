@@ -44,7 +44,7 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import java.lang.reflect.Method;
 
 public class CallService extends Service {
-    private String phoneNumber;
+    private String phoneNumber = "";
     private View viewCall;
     private CustomVideoView vdoBgCall;
     private ImageView imgBgCall, imgAccept, imgReject;
@@ -66,8 +66,13 @@ public class CallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER);
-        showViewCallColor();
+        if(intent!=null&&intent.getExtras()!=null){
+            phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER);
+            if(phoneNumber==null){
+                phoneNumber = "0000-0000-0000";
+            }
+            showViewCallColor();
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -153,12 +158,22 @@ public class CallService extends Service {
 
         imgReject.setOnClickListener(v -> {
             try {
-                telephonyService.endCall();
-                Log.e("telephonyService", "endCall: ");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
+
+                    if (tm != null) {
+                        boolean success = tm.endCall();
+                    }
+                }else {
+                    telephonyService.endCall();
+                }
                 isDisable = true;
             } catch (RemoteException e) {
                 finishService();
                 e.printStackTrace();
+            }
+            catch (Exception e){
+                finishService();
             }
         });
     }
@@ -176,7 +191,6 @@ public class CallService extends Service {
                 @Override
                 public void onCallStateChanged(int state, String incomingNumber) {
                     super.onCallStateChanged(state, incomingNumber);
-                    Log.e("TAN", "onCallStateChanged: " + state);
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_IDLE) {
                         viewCall.setVisibility(View.GONE);
                     }
