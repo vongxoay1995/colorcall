@@ -191,7 +191,6 @@ public class CallService extends Service {
                 @Override
                 public void onCallStateChanged(int state, String incomingNumber) {
                     super.onCallStateChanged(state, incomingNumber);
-                    Log.e("TAN", "onCallStateChanged: " + state);
                     if (state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_IDLE) {
                         viewCall.setVisibility(View.GONE);
                     }
