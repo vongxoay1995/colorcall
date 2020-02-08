@@ -77,9 +77,9 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
     }
-
+    private boolean allowAdsShow;
     private void showAds() {
-        if(mInterstitialAd!=null&&mInterstitialAd.isLoaded()){
+        if(mInterstitialAd!=null&&mInterstitialAd.isLoaded()&&allowAdsShow){
             mInterstitialAd.show();
         }
     }
@@ -88,7 +88,14 @@ public class SplashActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         showAds();
+        allowAdsShow = true;
         firebaseAnalystic.trackEvent(ManagerEvent.splashOpen());
+    }
+
+    @Override
+    protected void onStop() {
+        allowAdsShow = false;
+        super.onStop();
     }
 
     @OnClick(R.id.btnSplash)

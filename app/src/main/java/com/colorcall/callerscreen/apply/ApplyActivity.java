@@ -66,7 +66,8 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     private String ID_ADS = "ca-app-pub-3222539657172474/7680032285";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
-    private boolean allowAdsShow;
+    private boolean allowAdsShow,allowPermission;
+    private boolean isClickedApply;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
@@ -88,12 +89,12 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-               allowAdsShow = true;
+
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                allowAdsShow = false;
+
             }
 
             @Override
@@ -172,6 +173,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         firebaseAnalystic.trackEvent(ManagerEvent.applyOpen());
         vdoBackgroundCall.start();
         startAnimation();
+        allowAdsShow = true;
         showAds();
         super.onResume();
     }
@@ -185,6 +187,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 break;
             case R.id.layoutApply:
                 firebaseAnalystic.trackEvent(ManagerEvent.applyApplyClick());
+                isClickedApply = true;
                 checkPermission();
                 break;
             case R.id.imgDelete:
@@ -231,9 +234,11 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 } else if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 } else {
+                    allowPermission = true;
                     applyBgCall();
                 }
             } else {
+                allowPermission = true;
                 applyBgCall();
             }
         }
@@ -247,24 +252,21 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             @Override
             public void run() {
                 dialog.dismiss();
-                if(!mInterstitialAd.isLoaded()){
-                    allowAdsShow=false;
-                }else {
-                    allowAdsShow = true;
-                }
                 showAds();
                 HawkHelper.setBackgroundSelect(background);
                 Toast.makeText(getBaseContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
                 layoutApply.setEnabled(false);
                 layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
                 txtApply.setTextColor(Color.BLACK);
-                finish();
             }
         },2000);
 
     }
     public void showAds(){
-        if(mInterstitialAd!=null&&mInterstitialAd.isLoaded()&&allowAdsShow){
+        if(isClickedApply
+                && mInterstitialAd!=null
+                &&mInterstitialAd.isLoaded()
+                &&allowAdsShow&&allowPermission){
             mInterstitialAd.show();
         }
     }
@@ -297,4 +299,9 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         btnAccept.startAnimation(anim8);
     }
 
+    @Override
+    protected void onStop() {
+        allowAdsShow = false;
+        super.onStop();
+    }
 }
