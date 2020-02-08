@@ -158,7 +158,7 @@ public class CallService extends Service {
 
         imgReject.setOnClickListener(v -> {
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
 
                     if (tm != null) {

@@ -21,6 +21,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @BindView(R.id.imgBgSplash)
     ImageView imgBgSplash;
+    private String ID_ADS = "ca-app-pub-3222539657172474/3893950076";
     private FirebaseAnalystic firebaseAnalystic ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
