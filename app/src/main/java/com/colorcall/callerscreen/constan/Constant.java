@@ -28,4 +28,5 @@ public interface Constant {
     int CTG_YOURTHEME = 2;
     int CTG_COLOR_EFFECT = 3;
     int CTG_LOVELY = 4;
+    String ID_TEST_BANNER_ADMOD = "ca-app-pub-3940256099942544/6300978111";
 }

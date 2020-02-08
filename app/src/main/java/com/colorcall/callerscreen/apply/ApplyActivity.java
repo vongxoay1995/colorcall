@@ -1,10 +1,13 @@
 package com.colorcall.callerscreen.apply;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -22,6 +25,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.gson.Gson;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
@@ -31,6 +37,8 @@ import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.model.Background;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,13 +63,59 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     ImageView btnAccept;
     private Background background;
     private Background backgroundCurrent;
+    private String ID_ADS = "ca-app-pub-3222539657172474/7680032285";
+    private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
+    private boolean allowAdsShow;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         checkInforTheme();
+        loadAds();
+    }
+
+    private void loadAds() {
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(ID_ADS);
+        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+        String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
+        for (String testDevice : ggTestDevices) {
+            adRequestBuilder.addTestDevice(testDevice);
+        }
+        mInterstitialAd.loadAd(adRequestBuilder.build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+               allowAdsShow = true;
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                allowAdsShow = false;
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+
+            }
+
+            @Override
+            public void onAdClosed() {
+                finish();
+            }
+        });
     }
 
     private void checkInforTheme() {
@@ -118,6 +172,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         firebaseAnalystic.trackEvent(ManagerEvent.applyOpen());
         vdoBackgroundCall.start();
         startAnimation();
+        showAds();
         super.onResume();
     }
 
@@ -185,13 +240,34 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     }
 
     private void applyBgCall() {
-        HawkHelper.setBackgroundSelect(background);
-        Toast.makeText(this, getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
-        layoutApply.setEnabled(false);
-        layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
-        txtApply.setTextColor(Color.BLACK);
-    }
+        ProgressDialog dialog = ProgressDialog.show(this, "",
+                getString(R.string.applying), true);
+        dialog.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+                if(!mInterstitialAd.isLoaded()){
+                    allowAdsShow=false;
+                }else {
+                    allowAdsShow = true;
+                }
+                showAds();
+                HawkHelper.setBackgroundSelect(background);
+                Toast.makeText(getBaseContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
+                layoutApply.setEnabled(false);
+                layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
+                txtApply.setTextColor(Color.BLACK);
+                finish();
+            }
+        },2000);
 
+    }
+    public void showAds(){
+        if(mInterstitialAd!=null&&mInterstitialAd.isLoaded()&&allowAdsShow){
+            mInterstitialAd.show();
+        }
+    }
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
@@ -220,4 +296,5 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         Animation anim8 = AnimationUtils.loadAnimation(this, R.anim.anm_accept_call);
         btnAccept.startAnimation(anim8);
     }
+
 }

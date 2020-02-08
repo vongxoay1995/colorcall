@@ -12,6 +12,9 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.main.MainActivity;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
     @BindView(R.id.imgBgSplash)
     ImageView imgBgSplash;
     private String ID_ADS = "ca-app-pub-3222539657172474/3893950076";
+    private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,25 +34,68 @@ public class SplashActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Glide.with(this).load(R.drawable.ic_bg_splash).into(imgBgSplash);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
-        new Handler().postDelayed(new Runnable() {
+        loadAds();
+    }
+    public void loadAds(){
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(ID_ADS);
+        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+        String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
+        for (String testDevice : ggTestDevices) {
+            adRequestBuilder.addTestDevice(testDevice);
+        }
+        mInterstitialAd.loadAd(adRequestBuilder.build());
+        mInterstitialAd.setAdListener(new AdListener() {
             @Override
-            public void run() {
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+            public void onAdLoaded() {
+                  showAds();
             }
-        },3000);
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                skip();
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+
+            }
+
+            @Override
+            public void onAdClosed() {
+                skip();
+            }
+        });
+    }
+
+    private void showAds() {
+        if(mInterstitialAd!=null&&mInterstitialAd.isLoaded()){
+            mInterstitialAd.show();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        showAds();
         firebaseAnalystic.trackEvent(ManagerEvent.splashOpen());
     }
 
     @OnClick(R.id.btnSplash)
     public void onViewClicked() {
         firebaseAnalystic.trackEvent(ManagerEvent.splashStart());
+    }
+    public void skip(){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();

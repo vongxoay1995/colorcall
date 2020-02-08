@@ -3,8 +3,10 @@ package com.colorcall.callerscreen.setting;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -16,7 +18,14 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.formats.NativeAdOptions;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +56,11 @@ public class SettingActivity extends AppCompatActivity {
     RelativeLayout layoutVip;
     @BindView(R.id.swStateApp)
     SwitchCompat swStateApp;
+    private UnifiedNativeAd nativeAd;
+    private AdLoader adLoader;
     private FirebaseAnalystic firebaseAnalystic;
+    private String ID_ADS_GG = "ca-app-pub-3222539657172474/3702378380";
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_setting);
@@ -55,6 +68,47 @@ public class SettingActivity extends AppCompatActivity {
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         swStateApp.setChecked(HawkHelper.isEnableColorCall());
         listener();
+    }
+   public void loadAds(){
+       adLoader = new AdLoader.Builder(this, ID_ADS_GG)
+               .forUnifiedNativeAd(unifiedNativeAd -> {
+                   if (nativeAd != null) {
+                       nativeAd.destroy();
+                   }
+                   nativeAd = unifiedNativeAd;
+                   FrameLayout frameLayout =
+                           findViewById(R.id.fl_adplaceholder);
+                   UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater()
+                           .inflate(R.layout.ad_unified, null);
+                   AppUtils.populateUnifiedNativeAdView(unifiedNativeAd, adView);
+                   frameLayout.removeAllViews();
+                   frameLayout.addView(adView);
+               })
+               .withAdListener(new AdListener() {
+                   @Override
+                   public void onAdFailedToLoad(int errorCode) {
+                       // Handle the failure by logging, altering the UI, and so on.
+                   }
+               })
+               .withNativeAdOptions(new NativeAdOptions.Builder()
+                       // Methods in the NativeAdOptions.Builder class can be
+                       // used here to specify individual options settings.
+                       .build())
+               .build();
+       AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+       String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
+       for (String testDevice : ggTestDevices) {
+           adRequestBuilder.addTestDevice(testDevice);
+       }
+       adLoader.loadAd(adRequestBuilder.build());
+   }
+
+    @Override
+    protected void onDestroy() {
+        if (nativeAd != null) {
+            nativeAd.destroy();
+        }
+        super.onDestroy();
     }
 
     private void listener() {
@@ -108,6 +162,8 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.settingOpen());
+        loadAds();
         super.onResume();
     }
+
 }

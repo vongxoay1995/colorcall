@@ -7,6 +7,9 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.database.DataManager;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.orhanobut.hawk.Hawk;
 
 import io.fabric.sdk.android.Fabric;
@@ -18,6 +21,7 @@ public class ColorCallApplication extends MultiDexApplication {
         Crashlytics crashlyticsKit = new Crashlytics.Builder()
                 .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build())
                 .build();
+        MobileAds.initialize(this, initializationStatus -> {});
         Hawk.init(this).build();
         DataManager.getInstance().init(this);
         Fabric.with(this, crashlyticsKit);

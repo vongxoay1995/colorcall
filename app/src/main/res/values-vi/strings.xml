@@ -37,4 +37,5 @@
     <string name="callerscreen">Màn hình cuộc gọi</string>
     <string name="contentSplash">Hình nền cuộc gọi đến đầy màu sắc</string>
     <string name="start">Bắt đầu</string>
+    <string name="applying">Đang áp dụng ...</string>
 </resources>

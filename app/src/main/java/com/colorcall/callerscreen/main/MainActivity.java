@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.google.gson.Gson;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.categorydetail.CateGoryDetail;
@@ -56,14 +58,19 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     private LinearLayoutManager linearLayoutManager;
     @BindView(R.id.rcvCategory)
     RecyclerView rcvCategory;
+    @BindView(R.id.layout_ads)
+    RelativeLayout layoutAds;
     private ArrayList<Category> listCategory;
     private FirebaseAnalystic firebaseAnalystic;
+    private BannerAdsUtils bannerAdsUtils;
+    private String ID_ADS_GG = "ca-app-pub-3222539657172474/2580868407";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
         checkPermissionAction();
     }
 
@@ -95,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.mainOpen());
         loadData(Constant.MENU_CATEGORY);
+        loadAds();
         super.onResume();
     }
 
@@ -303,5 +311,9 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
                 firebaseAnalystic.trackEvent(ManagerEvent.mainStarClick());
                 break;
         }
+    }
+    private void loadAds() {
+        bannerAdsUtils.setIdAds(ID_ADS_GG);
+        bannerAdsUtils.showAds();
     }
 }

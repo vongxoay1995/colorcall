@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.colorcall.callerscreen.R;
@@ -52,6 +54,8 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     TextView titleCategory;
     @BindView(R.id.rcvThemes)
     RecyclerView rcvThemes;
+    @BindView(R.id.layout_ads)
+    RelativeLayout layoutAds;
     private int posTitle;
     private String title;
     private CategoryDetailAdapter adapter;
@@ -59,7 +63,8 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     private boolean isYourColor;
     private int positionSelectBg = -1;
     private FirebaseAnalystic firebaseAnalystic;
-
+    private BannerAdsUtils bannerAdsUtils;
+    private String ID_ADS_GG = "ca-app-pub-3222539657172474/1306195629";
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cate_gory_detail);
@@ -73,6 +78,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
         this.list = list;
         setTitlewithPos(posTitle);
         initData();
+        bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
     }
 
     private void initData() {
@@ -84,7 +90,10 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
         adapter.setListener(this);
         rcvThemes.setAdapter(adapter);
     }
-
+    private void loadAds() {
+        bannerAdsUtils.setIdAds(ID_ADS_GG);
+        bannerAdsUtils.showAds();
+    }
     private void setTitlewithPos(int posTitle) {
         switch (posTitle) {
             case 1:
@@ -258,6 +267,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     @Override
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.seeMoreOpen());
+        loadAds();
         super.onResume();
     }
 
