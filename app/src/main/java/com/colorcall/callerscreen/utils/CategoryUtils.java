@@ -18,43 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CategoryUtils {
-//    public static ArrayList<Category> getListCategory(Context context, String... path) {
-//        ArrayList<Category> categories = new ArrayList<>();
-//        ArrayList<String> arrTitleName = new ArrayList<>();
-//        ArrayList<Integer> arrSymbol = new ArrayList<>();
-//        initArrCategory(context, arrTitleName, arrSymbol);
-//        try {
-//            for (String dir : path) {
-//                String[] list = context.getAssets().list(dir);
-//                Log.e("List", list.length+"");
-//                for (int i = 0; i < list.length; i++) {
-//                    Log.e("DS", list[i]+"");
-//                    if (i == 2) {
-//                        categories.add(new Category((String) arrTitleName.get(i), ((Integer) arrSymbol.get(i)).intValue(), ""));
-//                    } else {
-//                        categories.add(new Category((String) arrTitleName.get(i), ((Integer) arrSymbol.get(i)).intValue(), Constant.thumbPath[i]));
-//                    }
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return categories;
-//    }
-
-    public static void initArrCategory(Context context, ArrayList<String> arrTitleName, ArrayList<Integer> arrSymbol) {
-
-        arrTitleName.add(context.getString(R.string.popular));
-        arrTitleName.add(context.getString(R.string.mytheme));
-        arrTitleName.add(context.getString(R.string.colorEffect));
-        arrTitleName.add(context.getString(R.string.lovely));
-        arrSymbol.add(Integer.valueOf(R.drawable.ic_recommend));
-        arrSymbol.add(Integer.valueOf(R.drawable.ic_pop));
-        arrSymbol.add(Integer.valueOf(R.drawable.ic_file));
-        arrSymbol.add(Integer.valueOf(R.drawable.ic_color_effect));
-        arrSymbol.add(Integer.valueOf(R.drawable.ic_lovely));
-    }
-
     public static void setInforCategory(Context context, int num, TextView txtName, ImageView imgSymbol) {
         switch (num) {
             case 0:
@@ -129,7 +92,6 @@ public class CategoryUtils {
                 for (int j = 0; j < listItem.length; j++) {
                     pathThumb = path + "/" + listCategory[i] + "/" + listItem[j];
                     pathFile = prefixVideo + listItem[j].substring(0, listItem[j].length() - 5) ;
-                    Log.e("Paht",pathFile);
                     Background background = new Background(0, pathThumb, pathFile, false);
                     listBackground.add(background);
                 }
@@ -178,7 +140,6 @@ public class CategoryUtils {
         listBackground = new ArrayList<>();
         for (int i = 0; i <listRecommend.size();i++){
             pathThumb = listRecommend.get(i);
-            Log.e("Path that su 2",listRecommend.get(i).substring(listRecommend.get(i).lastIndexOf("/")+1,listRecommend.get(i).length() -5));
             pathFile = prefixVideo + listRecommend.get(i).substring(listRecommend.get(i).lastIndexOf("/")+1,listRecommend.get(i).length() -5) ;
             Background background = new Background(0, pathThumb, pathFile, false);
             listBackground.add(background);

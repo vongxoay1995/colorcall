@@ -39,6 +39,7 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.model.Background;
+import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.lang.reflect.Method;
@@ -104,6 +105,7 @@ public class CallService extends Service {
                 }
                 txtPhoneNumber = viewCall.findViewById(R.id.txtPhone);
                 txtName = viewCall.findViewById(R.id.txtName);
+                txtName.setText(AppUtils.getContactName(getApplicationContext(),String.valueOf(phoneNumber)));
                 txtPhoneNumber.setText(String.valueOf(phoneNumber));
                 imgAccept = viewCall.findViewById(R.id.btnAccept);
                 imgReject = viewCall.findViewById(R.id.btnReject);

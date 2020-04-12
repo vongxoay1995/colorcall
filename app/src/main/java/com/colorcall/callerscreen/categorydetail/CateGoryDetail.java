@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,12 +21,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
-import com.colorcall.callerscreen.utils.BannerAdsUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.apply.ApplyActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.DataManager;
@@ -35,7 +31,10 @@ import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.Background;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.FileUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -56,6 +55,8 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     RecyclerView rcvThemes;
     @BindView(R.id.layout_ads)
     RelativeLayout layoutAds;
+    @BindView(R.id.layout_head)
+    RelativeLayout layoutHead;
     private int posTitle;
     private String title;
     private CategoryDetailAdapter adapter;
@@ -65,10 +66,12 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
     private String ID_ADS_GG = "ca-app-pub-3222539657172474/1306195629";
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cate_gory_detail);
         ButterKnife.bind(this);
+        AppUtils.showFullHeader(this, layoutHead);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         posTitle = getIntent().getIntExtra(Constant.NUMBER_CATEGORY, 0);
         Gson gson = new Gson();
@@ -90,10 +93,12 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
         adapter.setListener(this);
         rcvThemes.setAdapter(adapter);
     }
+
     private void loadAds() {
         bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.showAds();
     }
+
     private void setTitlewithPos(int posTitle) {
         switch (posTitle) {
             case 1:
@@ -163,9 +168,10 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     @Override
     public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete) {
         positionSelectBg = position;
-        trackingCategorySeemore(posTitle,position);
+        trackingCategorySeemore(posTitle, position);
         moveApplyTheme(backgrounds, position, delete);
     }
+
     private void trackingCategorySeemore(int numberCategory, int position) {
         position = position + 1;
         switch (numberCategory) {
@@ -186,6 +192,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
                 break;
         }
     }
+
     private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete) {
         Background background = backgrounds.get(position);
         Intent intent = new Intent(this, ApplyActivity.class);

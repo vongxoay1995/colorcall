@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,13 +22,9 @@ import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.gson.Gson;
-import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.database.DataManager;
@@ -37,8 +32,10 @@ import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.model.Background;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
-
-import java.util.Random;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,17 +58,21 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     TextView txtApply;
     @BindView(R.id.btnAccept)
     ImageView btnAccept;
+    @BindView(R.id.layout_head)
+    RelativeLayout layoutHead;
     private Background background;
     private Background backgroundCurrent;
     private String ID_ADS = "ca-app-pub-3222539657172474/7680032285";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
-    private boolean allowAdsShow,allowPermission;
+    private boolean allowAdsShow, allowPermission;
     private boolean isClickedApply;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
+        AppUtils.showFullHeader(this, layoutHead);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         checkInforTheme();
         loadAds();
@@ -178,7 +179,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         super.onResume();
     }
 
-    @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply,R.id.btnAds})
+    @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
@@ -259,17 +260,19 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
                 txtApply.setTextColor(Color.BLACK);
             }
-        },2000);
+        }, 2000);
 
     }
-    public void showAds(){
-        if(isClickedApply
-                && mInterstitialAd!=null
-                &&mInterstitialAd.isLoaded()
-                &&allowAdsShow&&allowPermission){
+
+    public void showAds() {
+        if (isClickedApply
+                && mInterstitialAd != null
+                && mInterstitialAd.isLoaded()
+                && allowAdsShow && allowPermission) {
             mInterstitialAd.show();
         }
     }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
@@ -294,6 +297,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             }
         }
     }
+
     public void startAnimation() {
         Animation anim8 = AnimationUtils.loadAnimation(this, R.anim.anm_accept_call);
         btnAccept.startAnimation(anim8);

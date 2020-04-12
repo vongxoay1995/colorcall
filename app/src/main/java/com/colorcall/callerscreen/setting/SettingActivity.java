@@ -65,6 +65,7 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView( R.layout.activity_setting);
         ButterKnife.bind( this);
+        AppUtils.showFullHeader(this,layoutHead);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         swStateApp.setChecked(HawkHelper.isEnableColorCall());
         listener();

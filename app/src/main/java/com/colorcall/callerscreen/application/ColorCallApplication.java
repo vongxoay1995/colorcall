@@ -1,15 +1,16 @@
 package com.colorcall.callerscreen.application;
 
+import android.util.Log;
+
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.utils.AppUtils;
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.orhanobut.hawk.Hawk;
 
 import io.fabric.sdk.android.Fabric;

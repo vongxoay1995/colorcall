@@ -49,6 +49,8 @@ import butterknife.OnClick;
 import static android.Manifest.permission.ANSWER_PHONE_CALLS;
 import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_CALL_LOG;
+import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     RecyclerView rcvCategory;
     @BindView(R.id.layout_ads)
     RelativeLayout layoutAds;
+    @BindView(R.id.layout_head)
+    RelativeLayout layout_head;
     private ArrayList<Category> listCategory;
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        AppUtils.showFullHeader(this,layout_head);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
         checkPermissionAction();
@@ -141,8 +146,9 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
                     READ_EXTERNAL_STORAGE,
                     WRITE_EXTERNAL_STORAGE,
                     CAMERA,
+                    READ_CONTACTS
             };
-        } else {
+        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.P){
             permistion = new String[]{
                     ANSWER_PHONE_CALLS,
                     READ_PHONE_STATE,
@@ -150,6 +156,18 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
                     READ_EXTERNAL_STORAGE,
                     WRITE_EXTERNAL_STORAGE,
                     CAMERA,
+                    READ_CONTACTS
+            };
+        }else {
+            permistion = new String[]{
+                    ANSWER_PHONE_CALLS,
+                    READ_PHONE_STATE,
+                    CALL_PHONE,
+                    READ_EXTERNAL_STORAGE,
+                    WRITE_EXTERNAL_STORAGE,
+                    CAMERA,
+                    READ_CALL_LOG,
+                    READ_CONTACTS
             };
         }
         if (!AppUtils.checkPermission(this, permistion)) {
