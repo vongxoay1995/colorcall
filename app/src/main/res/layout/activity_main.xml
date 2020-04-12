@@ -11,7 +11,8 @@
         android:id="@+id/layout_head"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorHeaderMain">
+        android:background="@color/colorHeaderMain"
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/btnMenu"
@@ -40,6 +41,7 @@
             android:layout_height="?attr/actionBarSize"
             android:layout_alignParentEnd="true"
             android:orientation="horizontal"
+            android:layout_centerVertical="true"
             android:weightSum="3"
             android:gravity="center">
             <ImageView

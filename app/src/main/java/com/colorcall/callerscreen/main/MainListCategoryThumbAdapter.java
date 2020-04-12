@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
@@ -73,13 +74,13 @@ public class MainListCategoryThumbAdapter extends RecyclerView.Adapter<RecyclerV
                     Glide.with(context.getApplicationContext())
                             .load(background.getPathThumb())
                             .thumbnail(0.001f)
-                            .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
+                            .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
                             .into(imgThumb);
                 }else {
                     Glide.with(context.getApplicationContext())
                             .load("file:///android_asset/"+background.getPathThumb())
                             .thumbnail(0.001f)
-                            .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
+                            .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
                             .into(imgThumb);
                 }
             }

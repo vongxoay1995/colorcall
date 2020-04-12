@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
@@ -40,8 +41,6 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) layout_item.getLayoutParams();
-//        layoutParams.width = 5*(width/16);
-//        layoutParams.height = 4*layoutParams.width/3;
         layoutParams.width = width/2;
         layoutParams.height = (2*width)/3;
         layout_item.setLayoutParams(layoutParams);
@@ -51,8 +50,6 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) layout_item.getLayoutParams();
-        //layoutParams.width = 5*(width/16);
-      //  layoutParams.height = 4*layoutParams.width/3;
         layoutParams.width = width/2;
         layoutParams.height = (2*width)/3;
         layout_item.setLayoutParams(layoutParams);
@@ -82,13 +79,13 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     Glide.with(context.getApplicationContext())
                             .load(background.getPathThumb())
                             .thumbnail(0.001f)
-                            .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
+                            .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
                             .into(imgThumb);
                 }else {
                     Glide.with(context.getApplicationContext())
                             .load("file:///android_asset/"+background.getPathThumb())
                             .thumbnail(0.001f)
-                            .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
+                            .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
                             .into(imgThumb);
                 }
             }
