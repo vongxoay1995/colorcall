@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,11 +49,14 @@ public class SplashActivity extends AppCompatActivity {
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                  showAds();
+                Log.e("TAN", "onAdLoaded: ");
+
+                showAds();
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
+                Log.e("TAN", "onAdFailedToLoad: "+errorCode);
                 skip();
             }
 
