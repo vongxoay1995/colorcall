@@ -2,9 +2,10 @@ package com.colorcall.callerscreen.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +26,8 @@ public class SplashActivity extends AppCompatActivity {
 
     @BindView(R.id.imgBgSplash)
     ImageView imgBgSplash;
+    @BindView(R.id.progress)
+    ProgressBar progress;
     private String ID_ADS = "ca-app-pub-3222539657172474/3893950076";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic ;
@@ -49,14 +52,13 @@ public class SplashActivity extends AppCompatActivity {
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                Log.e("TAN", "onAdLoaded: ");
-
+                progress.setVisibility(View.GONE);
                 showAds();
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                Log.e("TAN", "onAdFailedToLoad: "+errorCode);
+                progress.setVisibility(View.GONE);
                 skip();
             }
 

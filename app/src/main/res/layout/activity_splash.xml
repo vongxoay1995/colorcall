@@ -49,4 +49,9 @@
         android:visibility="gone"
         android:background="@drawable/bg_white_radius"
         />
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>
