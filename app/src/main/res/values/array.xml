@@ -13,6 +13,8 @@
         <item>thumb/coloreffect/cl_l.webp</item>
     </string-array>
     <string-array name="google_test_device">
+        <item>D3070C73263125A03CC0712A596D3AF0</item>
         <item>F185A671FB0583A7090D9140C0129C1F</item>
+        <item>B3EEABB8EE11C2BE770B684D95219ECB</item>
     </string-array>
 </resources>

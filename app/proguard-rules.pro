@@ -1,9 +1,13 @@
 # Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
+# By default, the flags in this file are appended to flags specified
+# in C:\Users\MinhVu\AppData\Local\Android\sdk1/tools/proguard/proguard-android.txt
+# You can edit the include path and order by changing the proguardFiles
+# directive in build.gradle.
 #
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
+
+# Add any project specific keep options here:
 
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
@@ -12,13 +16,6 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
 -optimizationpasses 5
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
@@ -33,10 +30,10 @@
 
 #-dontwarn com.slidingmenu.*
 
--optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*,!code/allocation/variable,!class/unboxing/enum
 
-#class like a, b, activity...
--repackageclasses
+#class like a, b, c...
+-repackageclasses ''
 -allowaccessmodification
 
 # The support library contains references to newer platform versions.
@@ -68,16 +65,12 @@
 # --------------------------------------------------------------------
 # REMOVE all Log messages except warnings and errors
 # --------------------------------------------------------------------
--assumenosideeffects class android.util.Log {
-    public static *** d(...);
-    public static *** v(...);
-    public static *** i(...);
-    public static *** w(...);
-    public static *** e(...);
-}
-
-
-
+#-assumenosideeffects class android.util.Log {
+#    public static *** d(...);
+#    public static *** v(...);
+#    public static *** i(...);
+#    public static *** w(...);
+#}
 -keepclasseswithmembernames class * {
     native <methods>;
 }
@@ -100,15 +93,71 @@
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
-
-
--keep public class com.google.android.gms.ads.** {
-   public *;
-}
-
--keep public class com.google.ads.** {
-   public *;
-}
-
+-keep class com.colorcall.callerscreen.** { *; }
+-keep class org.sqlite.** { *; }
+-keep class org.sqlite.database.** { *; }
 -keep class com.crashlytics.** { *; }
+### greenDAO 3
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+    public static java.lang.String TABLENAME;
+ }
+ -keep class **$Properties
+
+# If you do not use SQLCipher:
+-dontwarn org.greenrobot.greendao.database.**
+# If you do not use RxJava:
+-dontwarn rx.**
+
+### greenDAO 2
+-keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
+    public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
 -dontwarn com.crashlytics.**
+-keep public class * extends androidx.core.app.ActivityCompat
+-keep class com.google.android.material.** { *; }
+
+-dontwarn com.google.android.material.**
+-dontnote com.google.android.material.**
+
+-dontwarn androidx.**
+-dontwarn rx.**
+-dontwarn javax.**
+-dontwarn org.**
+-dontwarn java.rmi.**
+-dontwarn com.sun.**
+-dontwarn net.sqlcipher.**
+
+-keep class androidx.** { *; }
+-keep class rx.** { *; }
+-keep class javax.** { *; }
+-keep class org.** { *; }
+-keep class java.rmi** { *; }
+-keep class net.sqlcipher.** {
+    *;
+}
+-keep class com.sun.** {
+    *;
+}
+-keep interface androidx.** { *; }
+
+-dontnote androidx.renderscript.**
+-dontwarn androidx.renderscript.**
+-dontwarn androidx.core.app.ActivityCompat
+# support design
+-dontwarn android.support.design.**
+-keep class android.support.design.** { *; }
+-keep interface android.support.design.** { *; }
+-keep public class android.support.design.R$* { *; }
+-keep class com.android.internal.telephony.ITelephony { *; }
+
+
+-keep public class * extends android.support.design.widget.CoordinatorLayout$Behavior {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+-keep public class com.google.android.gms.ads.**{ *;}
+-keepclassmembers class * {
+  @com.google.api.client.util.Key <fields>;
+}
+-keep class com.orhanobut.hawk.** { *; }
+-dontwarn com.google.android.gms.**

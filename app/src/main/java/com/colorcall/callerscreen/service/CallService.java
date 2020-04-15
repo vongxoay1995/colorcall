@@ -87,6 +87,7 @@ public class CallService extends Service {
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
             int LAYOUT_TYPE;
+            String name;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 LAYOUT_TYPE = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
             } else {
@@ -105,7 +106,13 @@ public class CallService extends Service {
                 }
                 txtPhoneNumber = viewCall.findViewById(R.id.txtPhone);
                 txtName = viewCall.findViewById(R.id.txtName);
-                txtName.setText(AppUtils.getContactName(getApplicationContext(),String.valueOf(phoneNumber)));
+                name = AppUtils.getContactName(getApplicationContext(),String.valueOf(phoneNumber));
+                txtName.setText(name);
+                if(name.equals("")){
+                    txtName.setVisibility(View.GONE);
+                }else {
+                    txtName.setVisibility(View.VISIBLE);
+                }
                 txtPhoneNumber.setText(String.valueOf(phoneNumber));
                 imgAccept = viewCall.findViewById(R.id.btnAccept);
                 imgReject = viewCall.findViewById(R.id.btnReject);
@@ -124,6 +131,7 @@ public class CallService extends Service {
                 handlingCallState();
                 listener();
             } catch (Exception e) {
+                Log.e("TAN", "ex: "+e);
                 finishService();
             }
         }

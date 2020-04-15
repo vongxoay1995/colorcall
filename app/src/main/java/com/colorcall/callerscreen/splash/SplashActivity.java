@@ -17,6 +17,8 @@ import com.colorcall.callerscreen.main.MainActivity;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
+import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
     @BindView(R.id.progress)
     ProgressBar progress;
     private String ID_ADS = "ca-app-pub-3222539657172474/3893950076";
-    private InterstitialAd mInterstitialAd;
+    private PublisherInterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +43,9 @@ public class SplashActivity extends AppCompatActivity {
         loadAds();
     }
     public void loadAds(){
-        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd = new PublisherInterstitialAd(this);
         mInterstitialAd.setAdUnitId(ID_ADS);
-        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+        PublisherAdRequest.Builder adRequestBuilder = new PublisherAdRequest.Builder();
         String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
         for (String testDevice : ggTestDevices) {
             adRequestBuilder.addTestDevice(testDevice);
@@ -93,8 +95,8 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        showAds();
         allowAdsShow = true;
+        showAds();
         firebaseAnalystic.trackEvent(ManagerEvent.splashOpen());
     }
 
