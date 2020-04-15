@@ -39,4 +39,5 @@
     <string name="start">Start</string>
     <string name="caller">Caller</string>
     <string name="applying">Applying ...</string>
+    <string name="applied">Applied</string>
 </resources>

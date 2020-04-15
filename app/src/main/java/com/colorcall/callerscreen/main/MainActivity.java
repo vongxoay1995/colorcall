@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         AppUtils.showFullHeader(this,layout_head);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
-        checkPermissionAction();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -135,45 +134,6 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     public void onViewClicked() {
         firebaseAnalystic.trackEvent(ManagerEvent.mainSlideClick());
         startActivity(new Intent(this, SettingActivity.class));
-    }
-
-    public void checkPermissionAction() {
-        String[] permistion;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            permistion = new String[]{
-                    READ_PHONE_STATE,
-                    CALL_PHONE,
-                    READ_EXTERNAL_STORAGE,
-                    WRITE_EXTERNAL_STORAGE,
-                    CAMERA,
-                    READ_CONTACTS
-            };
-        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.P){
-            permistion = new String[]{
-                    ANSWER_PHONE_CALLS,
-                    READ_PHONE_STATE,
-                    CALL_PHONE,
-                    READ_EXTERNAL_STORAGE,
-                    WRITE_EXTERNAL_STORAGE,
-                    CAMERA,
-                    READ_CONTACTS
-            };
-        }else {
-            permistion = new String[]{
-                    ANSWER_PHONE_CALLS,
-                    READ_PHONE_STATE,
-                    CALL_PHONE,
-                    READ_EXTERNAL_STORAGE,
-                    WRITE_EXTERNAL_STORAGE,
-                    CAMERA,
-                    READ_CALL_LOG,
-                    READ_CONTACTS
-            };
-        }
-        if (!AppUtils.checkPermission(this, permistion)) {
-            ActivityCompat.requestPermissions(this, permistion,
-                    Constant.PERMISSION_REQUEST_CODE);
-        }
     }
 
     public void checkPermissionActionCamera() {
