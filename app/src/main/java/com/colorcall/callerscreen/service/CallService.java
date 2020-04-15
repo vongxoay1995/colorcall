@@ -59,6 +59,7 @@ public class CallService extends Service {
     public static String CHANNEL = "Color_Call_channel";
     private static final String CHANNEL_ID = "ColorCall";
     public boolean isDisable;
+    public boolean isUnknow;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -70,7 +71,8 @@ public class CallService extends Service {
         if(intent!=null&&intent.getExtras()!=null){
             phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER);
             if(phoneNumber==null){
-                phoneNumber = "0000-0000-0000";
+                phoneNumber="";
+                isUnknow = true;
             }
             showViewCallColor();
         }
@@ -112,6 +114,11 @@ public class CallService extends Service {
                     txtName.setVisibility(View.GONE);
                 }else {
                     txtName.setVisibility(View.VISIBLE);
+                }
+                if(isUnknow){
+                    txtName.setText("Unknow contact");
+                    txtName.setVisibility(View.VISIBLE);
+                    txtPhoneNumber.setVisibility(View.GONE);
                 }
                 txtPhoneNumber.setText(String.valueOf(phoneNumber));
                 imgAccept = viewCall.findViewById(R.id.btnAccept);

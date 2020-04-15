@@ -25,9 +25,10 @@ public class CallReceiver extends BroadcastReceiver {
         if (intent.getExtras() != null) {
             String state = intent.getExtras().getString("state");
             String number = intent.getExtras().getString("incoming_number");
-            if (!intent.getExtras().containsKey(TelephonyManager.EXTRA_INCOMING_NUMBER)) {
-               return;
-            }
+            Log.e("TAN", "onReceive: "+number);
+//            if (!intent.getExtras().containsKey(TelephonyManager.EXTRA_INCOMING_NUMBER)) {
+//               return;
+//            }
             int stateType = 0;
             if (state != null && state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 stateType = TYPE_END_CALL;
