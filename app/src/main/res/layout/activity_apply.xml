@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingTop="@dimen/_10sdp"
-                android:text="0987 523 642"
+                android:text="0000-0000-0000"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/textsize20"

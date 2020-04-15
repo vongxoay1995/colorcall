@@ -238,7 +238,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                     ANSWER_PHONE_CALLS,
                     READ_PHONE_STATE,
                     CALL_PHONE,
-                    READ_CALL_LOG,
                     READ_CONTACTS
             };
         }
