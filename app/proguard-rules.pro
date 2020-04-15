@@ -161,5 +161,8 @@
 }
 -keep public class com.google.ads.**{ *;}
 -keep class com.orhanobut.hawk.** { *; }
+-keepclassmembers class * {
+   public <init> (org.json.JSONObject);
+}
 -dontwarn com.google.ads.**
 -dontwarn com.google.android.gms.**
