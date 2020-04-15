@@ -159,5 +159,7 @@
 -keepclassmembers class * {
   @com.google.api.client.util.Key <fields>;
 }
+-keep public class com.google.ads.**{ *;}
 -keep class com.orhanobut.hawk.** { *; }
+-dontwarn com.google.ads.**
 -dontwarn com.google.android.gms.**
