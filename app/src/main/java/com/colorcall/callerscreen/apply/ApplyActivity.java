@@ -43,7 +43,12 @@ import butterknife.OnClick;
 
 import static android.Manifest.permission.ANSWER_PHONE_CALLS;
 import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_CALL_LOG;
+import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener {
     @BindView(R.id.img_background_call)
@@ -133,9 +138,11 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             if (background.getPathItem().equals(backgroundCurrent.getPathItem())) {
                 layoutApply.setEnabled(false);
                 layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
+                txtApply.setText(getString(R.string.applied));
                 txtApply.setTextColor(Color.BLACK);
             } else {
                 layoutApply.setEnabled(true);
+                txtApply.setText(getString(R.string.applyContact));
                 layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_green_radius_60));
                 txtApply.setTextColor(Color.WHITE);
             }
@@ -217,12 +224,22 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             permistion = new String[]{
                     READ_PHONE_STATE,
                     CALL_PHONE,
+                    READ_CONTACTS
             };
-        } else {
+        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.P){
             permistion = new String[]{
                     ANSWER_PHONE_CALLS,
                     READ_PHONE_STATE,
                     CALL_PHONE,
+                    READ_CONTACTS
+            };
+        }else {
+            permistion = new String[]{
+                    ANSWER_PHONE_CALLS,
+                    READ_PHONE_STATE,
+                    CALL_PHONE,
+                    READ_CALL_LOG,
+                    READ_CONTACTS
             };
         }
 
@@ -258,6 +275,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 Toast.makeText(getBaseContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
                 layoutApply.setEnabled(false);
                 layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
+                txtApply.setText(getString(R.string.applied));
                 txtApply.setTextColor(Color.BLACK);
             }
         }, 2000);

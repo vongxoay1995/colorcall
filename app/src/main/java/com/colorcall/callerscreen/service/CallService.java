@@ -131,7 +131,6 @@ public class CallService extends Service {
                 handlingCallState();
                 listener();
             } catch (Exception e) {
-                Log.e("TAN", "ex: "+e);
                 finishService();
             }
         }

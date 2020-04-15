@@ -41,6 +41,6 @@ public class HawkHelper {
     }
     public static Background getBackgroundSelect(){
         Background background = new Background(null,0,"thumb/lovely/ll_f.webp","/raw/ll_f",false);
-       return Hawk.get(BACKGROUND_SELECT,background);
+       return Hawk.get(BACKGROUND_SELECT,null);
     }
 }
