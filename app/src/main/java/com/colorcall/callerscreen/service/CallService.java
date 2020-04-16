@@ -60,6 +60,7 @@ public class CallService extends Service {
     private static final String CHANNEL_ID = "ColorCall";
     public boolean isDisable;
     public boolean isUnknow;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -68,10 +69,10 @@ public class CallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent!=null&&intent.getExtras()!=null){
+        if (intent != null && intent.getExtras() != null) {
             phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER);
-            if(phoneNumber==null){
-                phoneNumber="";
+            if (phoneNumber == null) {
+                phoneNumber = "";
                 isUnknow = true;
             }
             showViewCallColor();
@@ -108,14 +109,18 @@ public class CallService extends Service {
                 }
                 txtPhoneNumber = viewCall.findViewById(R.id.txtPhone);
                 txtName = viewCall.findViewById(R.id.txtName);
-                name = AppUtils.getContactName(getApplicationContext(),String.valueOf(phoneNumber));
-                txtName.setText(name);
-                if(name.equals("")){
-                    txtName.setVisibility(View.GONE);
-                }else {
-                    txtName.setVisibility(View.VISIBLE);
+                try {
+                    name = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
+                    txtName.setText(name);
+                    if (name.equals("")) {
+                        txtName.setVisibility(View.GONE);
+                    } else {
+                        txtName.setVisibility(View.VISIBLE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                if(isUnknow){
+                if (isUnknow) {
                     txtName.setText("Unknow contact");
                     txtName.setVisibility(View.VISIBLE);
                     txtPhoneNumber.setVisibility(View.GONE);
@@ -180,15 +185,14 @@ public class CallService extends Service {
                     if (tm != null) {
                         boolean success = tm.endCall();
                     }
-                }else {
+                } else {
                     telephonyService.endCall();
                 }
                 isDisable = true;
             } catch (RemoteException e) {
                 finishService();
                 e.printStackTrace();
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 finishService();
             }
         });
