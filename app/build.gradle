@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'org.greenrobot.greendao'
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.colorcall.callerscreen"
         minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 8
-        versionName "1.0.6"
+        targetSdkVersion 29
+        versionCode 9
+        versionName "1.0.7"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
