@@ -252,6 +252,11 @@ public class AppUtils {
         adView.setStoreView(adView.findViewById(R.id.ad_store));
         adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
 
+        setListener(adView.findViewById(R.id.ad_headline));
+        setListener(adView.findViewById(R.id.ad_body));
+        setListener(adView.findViewById(R.id.ad_price));
+        setListener(adView.findViewById(R.id.ad_store));
+
         // The headline and mediaContent are guaranteed to be in every UnifiedNativeAd.
         ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
         adView.getMediaView().setMediaContent(nativeAd.getMediaContent());
@@ -334,6 +339,13 @@ public class AppUtils {
 
         return contactName;
     }
+
+    public static void setListener(View viewById) {
+        viewById.setOnClickListener(v -> {
+
+        });
+    }
+
     public static void showFullHeader(Context context, View toolBar){
         int statusBarHeight;
         RelativeLayout.LayoutParams layoutParams =

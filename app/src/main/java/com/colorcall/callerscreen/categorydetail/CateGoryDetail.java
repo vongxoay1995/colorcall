@@ -65,7 +65,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     private int positionSelectBg = -1;
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
-    private String ID_ADS_GG = "ca-app-pub-3222539657172474/1306195629";
+    private String ID_ADS_GG = "ca-app-pub-3222539657172474/3230923218";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,8 +95,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     }
 
     private void loadAds() {
-        bannerAdsUtils.setIdAds(ID_ADS_GG);
-        bannerAdsUtils.showAds();
+        bannerAdsUtils.showNativeAdsGG(ID_ADS_GG);
     }
 
     private void setTitlewithPos(int posTitle) {

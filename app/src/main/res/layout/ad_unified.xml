@@ -125,6 +125,7 @@
                             android:id="@+id/ad_call_to_action"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/bg_native_banner"
                             android:gravity="center"
                             android:textSize="12sp" />
                     </LinearLayout>
