@@ -59,7 +59,7 @@ public class SettingActivity extends AppCompatActivity {
     private UnifiedNativeAd nativeAd;
     private AdLoader adLoader;
     private FirebaseAnalystic firebaseAnalystic;
-    private String ID_ADS_GG = "ca-app-pub-3222539657172474/3702378380";
+    private String ID_ADS_GG = "ca-app-pub-3222539657172474/5477219704";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

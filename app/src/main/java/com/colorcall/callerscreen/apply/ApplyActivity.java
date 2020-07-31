@@ -67,7 +67,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     RelativeLayout layoutHead;
     private Background background;
     private Background backgroundCurrent;
-    private String ID_ADS = "ca-app-pub-3222539657172474/7680032285";
+    private String ID_ADS = "ca-app-pub-3222539657172474/5724276494";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
     private boolean allowAdsShow, allowPermission;

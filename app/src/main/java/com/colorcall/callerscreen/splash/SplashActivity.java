@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
     ImageView imgBgSplash;
     @BindView(R.id.progress)
     ProgressBar progress;
-    private String ID_ADS = "ca-app-pub-3222539657172474/3893950076";
+    private String ID_ADS = "ca-app-pub-3222539657172474/5177481580";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic ;
     @Override

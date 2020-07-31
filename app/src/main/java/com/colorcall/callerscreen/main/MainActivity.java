@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     private ArrayList<Category> listCategory;
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
-    private String ID_ADS_GG = "ca-app-pub-3222539657172474/2580868407";
+    private String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
