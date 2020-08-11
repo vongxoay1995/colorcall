@@ -28,23 +28,25 @@
             >
             <TextView
                 android:id="@+id/btnNo"
-                android:layout_width="match_parent"
+                android:padding="@dimen/_5sdp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fontFamily="@font/roboto_medium"
                 android:text="@string/nope"
                 android:textAllCaps="true"
                 android:textColor="#b1b1b1"
-                android:textSize="18sp"/>
+                android:textSize="16sp"/>
             <TextView
                 android:id="@+id/btnYes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
                 app:fontFamily="@font/roboto_medium"
                 android:text="@string/sure"
                 android:textAllCaps="true"
                 android:layout_alignParentEnd="true"
                 android:textColor="#2597f5"
-                android:textSize="18sp"/>
+                android:textSize="16sp"/>
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>
