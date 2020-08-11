@@ -20,7 +20,7 @@
             android:paddingBottom="@dimen/_15sdp"
             android:textColor="#de000000"
             android:gravity="center"
-            android:textSize="@dimen/_14sdp"/>
+            android:textSize="16sp"/>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:text="@string/nope"
                 android:textAllCaps="true"
                 android:textColor="#b1b1b1"
-                android:textSize="@dimen/_14sdp"/>
+                android:textSize="18sp"/>
             <TextView
                 android:id="@+id/btnYes"
                 android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
                 android:textAllCaps="true"
                 android:layout_alignParentEnd="true"
                 android:textColor="#2597f5"
-                android:textSize="@dimen/_14sdp"/>
+                android:textSize="18sp"/>
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

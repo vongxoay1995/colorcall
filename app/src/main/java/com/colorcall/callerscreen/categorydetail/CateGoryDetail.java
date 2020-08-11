@@ -71,7 +71,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
         setContentView(R.layout.activity_cate_gory_detail);
         ButterKnife.bind(this);
         AppUtils.showFullHeader(this, layoutHead);
-        loadAds();
+
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         posTitle = getIntent().getIntExtra(Constant.NUMBER_CATEGORY, 0);
         Gson gson = new Gson();
@@ -82,6 +82,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
         setTitlewithPos(posTitle);
         initData();
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
+        loadAds();
     }
 
     private void initData() {
