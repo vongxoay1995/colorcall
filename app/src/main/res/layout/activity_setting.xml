@@ -234,11 +234,44 @@
                     android:layout_centerVertical="true"
                     android:layout_height="wrap_content"/>
             </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/layoutFlash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imgFlash"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_10sdp"
+                    app:srcCompat="@drawable/ic_flash"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/imgFlash"
+                    android:layout_toStartOf="@id/swFlash"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:paddingEnd="@dimen/_10sdp"
+                    android:text="@string/ledFlash"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsizeNomal"
+                    app:fontFamily="@font/robotoregular" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swFlash"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
             <FrameLayout
                 android:id="@+id/fl_adplaceholder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_36sdp"
                 android:layout_marginBottom="@dimen/_16sdp"/>
         </LinearLayout>
     </ScrollView>

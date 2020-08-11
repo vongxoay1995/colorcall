@@ -65,13 +65,13 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     private int positionSelectBg = -1;
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
-    private String ID_ADS_GG = "ca-app-pub-3222539657172474/8602663222";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cate_gory_detail);
         ButterKnife.bind(this);
         AppUtils.showFullHeader(this, layoutHead);
+        loadAds();
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         posTitle = getIntent().getIntExtra(Constant.NUMBER_CATEGORY, 0);
         Gson gson = new Gson();
@@ -95,6 +95,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     }
 
     private void loadAds() {
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/8602663222";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.showAds();
     }
@@ -274,7 +275,6 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     @Override
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.seeMoreOpen());
-        loadAds();
         super.onResume();
     }
 

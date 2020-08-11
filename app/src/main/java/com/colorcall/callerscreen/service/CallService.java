@@ -75,7 +75,7 @@ public class CallService extends Service {
                 phoneNumber = "";
                 isUnknow = true;
             }
-            Log.e("TAN", "onStartCommand: "+phoneNumber );
+
             showViewCallColor();
         }
         return super.onStartCommand(intent, flags, startId);
@@ -144,7 +144,6 @@ public class CallService extends Service {
                 handlingCallState();
                 listener();
             } catch (Exception e) {
-                Log.e("TAN", "showViewCallColor: "+e.getLocalizedMessage());
                 finishService();
             }
         }

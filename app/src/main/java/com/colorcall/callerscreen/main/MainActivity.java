@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     private ArrayList<Category> listCategory;
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
-    private String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         AppUtils.showFullHeader(this,layout_head);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
+        loadAds();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.mainOpen());
         loadData(Constant.MENU_CATEGORY);
-        loadAds();
         super.onResume();
     }
 
@@ -291,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         }
     }
     private void loadAds() {
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.showAds();
     }

@@ -35,6 +35,7 @@
     <string name="contentDelete">Are you sure delete background?</string>
     <string name="apply_done">Completed</string>
     <string name="callerscreen">Caller screen</string>
+    <string name="ledFlash">LED Flash</string>
     <string name="contentSplash">Colorful incoming call display</string>
     <string name="start">Start</string>
     <string name="caller">Caller</string>
