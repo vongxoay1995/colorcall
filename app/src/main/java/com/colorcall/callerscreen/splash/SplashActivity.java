@@ -14,6 +14,7 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.main.MainActivity;
+import com.colorcall.callerscreen.utils.AppUtils;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -27,17 +28,25 @@ public class SplashActivity extends AppCompatActivity {
     ImageView imgBgSplash;
     @BindView(R.id.progress)
     ProgressBar progress;
-    private String ID_ADS = "ca-app-pub-3222539657172474/3893950076";
+    private String ID_ADS = "ca-app-pub-3222539657172474/5177481580";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         Glide.with(this).load(R.drawable.ic_bg_splash).into(imgBgSplash);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
-        loadAds();
+        if(AppUtils.isNetworkConnected(this)){
+            loadAds();
+        }else {
+           skip();
+        }
     }
     public void loadAds(){
         mInterstitialAd = new InterstitialAd(this);
@@ -57,6 +66,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
+                Log.e("TAN", "onAdFailedToLoad: ");
                 progress.setVisibility(View.GONE);
                 skip();
             }

@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -32,6 +30,8 @@ import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.model.Background;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.PermistionCallListener;
+import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -41,16 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.Manifest.permission.ANSWER_PHONE_CALLS;
-import static android.Manifest.permission.CALL_PHONE;
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_CALL_LOG;
-import static android.Manifest.permission.READ_CONTACTS;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_PHONE_STATE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
-public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener {
+public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener, PermistionCallListener {
     @BindView(R.id.img_background_call)
     ImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
@@ -66,13 +57,10 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
     private Background background;
-    private Background backgroundCurrent;
-    private String ID_ADS = "ca-app-pub-3222539657172474/7680032285";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
     private boolean allowAdsShow, allowPermission;
     private boolean isClickedApply;
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
@@ -85,6 +73,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
 
     private void loadAds() {
         mInterstitialAd = new InterstitialAd(this);
+        String ID_ADS = "ca-app-pub-3222539657172474/5724276494";
         mInterstitialAd.setAdUnitId(ID_ADS);
         AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
         String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
@@ -133,7 +122,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         }
         Gson gson = new Gson();
         background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
-        backgroundCurrent = HawkHelper.getBackgroundSelect();
+        Background backgroundCurrent = HawkHelper.getBackgroundSelect();
         if (backgroundCurrent != null) {
             if (background.getPathItem().equals(backgroundCurrent.getPathItem())) {
                 layoutApply.setEnabled(false);
@@ -196,7 +185,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             case R.id.layoutApply:
                 firebaseAnalystic.trackEvent(ManagerEvent.applyApplyClick());
                 isClickedApply = true;
-                checkPermission();
+                PermistionUtils.checkPermissionCall(this,this);
                 break;
             case R.id.imgDelete:
                 firebaseAnalystic.trackEvent(ManagerEvent.applyBinClick());
@@ -216,49 +205,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         intent.putExtra(Constant.IS_DELETE_BG, true);
         setResult(RESULT_OK, intent);
         finish();
-    }
-
-    private void checkPermission() {
-        String[] permistion;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            permistion = new String[]{
-                    READ_PHONE_STATE,
-                    CALL_PHONE,
-                    READ_CONTACTS
-            };
-        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.P){
-            permistion = new String[]{
-                    ANSWER_PHONE_CALLS,
-                    READ_PHONE_STATE,
-                    CALL_PHONE,
-                    READ_CONTACTS
-            };
-        }else {
-            permistion = new String[]{
-                    ANSWER_PHONE_CALLS,
-                    READ_PHONE_STATE,
-                    CALL_PHONE,
-                    READ_CONTACTS
-            };
-        }
-
-        if (!AppUtils.checkPermission(this, permistion)) {
-            ActivityCompat.requestPermissions(this, permistion, Constant.PERMISSION_REQUEST_CODE_CALL_PHONE);
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!AppUtils.canDrawOverlays(this)) {
-                    AppUtils.showDrawOverlayPermissionDialog(this);
-                } else if (!AppUtils.checkNotificationAccessSettings(this)) {
-                    AppUtils.showNotificationAccess(this);
-                } else {
-                    allowPermission = true;
-                    applyBgCall();
-                }
-            } else {
-                allowPermission = true;
-                applyBgCall();
-            }
-        }
     }
 
     private void applyBgCall() {
@@ -324,5 +270,11 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     protected void onStop() {
         allowAdsShow = false;
         super.onStop();
+    }
+
+    @Override
+    public void onHasCallPermistion() {
+        allowPermission = true;
+        applyBgCall();
     }
 }

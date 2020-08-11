@@ -11,7 +11,7 @@ public class HawkHelper {
     private static String LOAD_DATA_FIRST_FIRST = "LOAD_DATA_FIRST_FIRST";
     private static String ENABLE_COLOR = "ENABLE_COLOR";
     private static String BACKGROUND_SELECT = "BACKGROUND_SELECT";
-
+    private static String ENABLE_FLASH = "ENABLE_FLASH";
 
     private static String LIST_CATEGORY = "LIST_CATEGORY";
     public static boolean isLoadDataFirst() {
@@ -34,6 +34,14 @@ public class HawkHelper {
 
     public static void setStateColorCall(boolean value) {
         Hawk.put(ENABLE_COLOR, value);
+    }
+
+    public static boolean isEnableFlash() {
+        return Hawk.get(ENABLE_FLASH, false);
+    }
+
+    public static void setFlash(boolean value) {
+        Hawk.put(ENABLE_FLASH, value);
     }
 
     public static void setBackgroundSelect(Background backgroundSelect){

@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Contacts;
@@ -54,7 +55,11 @@ public class AppUtils {
         }
         return true;
     }
-
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        assert cm != null;
+        return cm.getActiveNetworkInfo() != null;
+    }
     public static boolean checkPermissionGrand(int[] grantResults) {
         boolean passed = true;
         for (int i : grantResults) {

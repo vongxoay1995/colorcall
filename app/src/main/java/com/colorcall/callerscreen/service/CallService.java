@@ -60,6 +60,7 @@ public class CallService extends Service {
     private static final String CHANNEL_ID = "ColorCall";
     public boolean isDisable;
     public boolean isUnknow;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -68,12 +69,13 @@ public class CallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(intent!=null&&intent.getExtras()!=null){
+        if (intent != null && intent.getExtras() != null) {
             phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER);
-            if(phoneNumber==null){
-                phoneNumber="";
+            if (phoneNumber == null) {
+                phoneNumber = "";
                 isUnknow = true;
             }
+
             showViewCallColor();
         }
         return super.onStartCommand(intent, flags, startId);
@@ -108,14 +110,18 @@ public class CallService extends Service {
                 }
                 txtPhoneNumber = viewCall.findViewById(R.id.txtPhone);
                 txtName = viewCall.findViewById(R.id.txtName);
-                name = AppUtils.getContactName(getApplicationContext(),String.valueOf(phoneNumber));
-                txtName.setText(name);
-                if(name.equals("")){
-                    txtName.setVisibility(View.GONE);
-                }else {
-                    txtName.setVisibility(View.VISIBLE);
+                try {
+                    name = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
+                    txtName.setText(name);
+                    if (name.equals("")) {
+                        txtName.setVisibility(View.GONE);
+                    } else {
+                        txtName.setVisibility(View.VISIBLE);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                if(isUnknow){
+                if (isUnknow) {
                     txtName.setText("Unknow contact");
                     txtName.setVisibility(View.VISIBLE);
                     txtPhoneNumber.setVisibility(View.GONE);
@@ -149,7 +155,7 @@ public class CallService extends Service {
         if (mWindowManager != null && viewCall.getWindowToken() != null) {
             mWindowManager.removeViewImmediate(viewCall);
         }
-        if (telephonyManager != null)
+        if (telephonyManager != null&&Build.VERSION.SDK_INT <Build.VERSION_CODES.Q)
             telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         stopSelf();
     }
@@ -180,15 +186,14 @@ public class CallService extends Service {
                     if (tm != null) {
                         boolean success = tm.endCall();
                     }
-                }else {
+                } else {
                     telephonyService.endCall();
                 }
                 isDisable = true;
             } catch (RemoteException e) {
                 finishService();
                 e.printStackTrace();
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 finishService();
             }
         });
@@ -198,21 +203,23 @@ public class CallService extends Service {
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         Class clazz = null;
         try {
-            clazz = Class.forName(telephonyManager.getClass().getName());
-            Method method = clazz.getDeclaredMethod("getITelephony");
-            method.setAccessible(true);
-            telephonyService = (ITelephony) method.invoke(telephonyManager);
+            if(Build.VERSION.SDK_INT <Build.VERSION_CODES.Q) {
+                clazz = Class.forName(telephonyManager.getClass().getName());
+                Method method = clazz.getDeclaredMethod("getITelephony");
+                method.setAccessible(true);
+                telephonyService = (ITelephony) method.invoke(telephonyManager);
 
-            phoneStateListener = new PhoneStateListener() {
-                @Override
-                public void onCallStateChanged(int state, String incomingNumber) {
-                    super.onCallStateChanged(state, incomingNumber);
-                    if (state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_IDLE) {
-                        viewCall.setVisibility(View.GONE);
+                phoneStateListener = new PhoneStateListener() {
+                    @Override
+                    public void onCallStateChanged(int state, String incomingNumber) {
+                        super.onCallStateChanged(state, incomingNumber);
+                        if (state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_IDLE) {
+                            viewCall.setVisibility(View.GONE);
+                        }
                     }
-                }
-            };
-            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+                };
+                telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+            }
         } catch (Exception e) {
             finishService();
             e.printStackTrace();
