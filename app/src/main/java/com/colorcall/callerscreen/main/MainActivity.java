@@ -26,7 +26,6 @@ import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
-import com.google.android.ads.mediationtestsuite.MediationTestSuite;
 import com.google.gson.Gson;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.categorydetail.CateGoryDetail;
