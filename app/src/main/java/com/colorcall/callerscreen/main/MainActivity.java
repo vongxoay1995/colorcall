@@ -24,7 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
+import com.google.android.ads.mediationtestsuite.MediationTestSuite;
 import com.google.gson.Gson;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.categorydetail.CateGoryDetail;
@@ -55,7 +57,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class MainActivity extends AppCompatActivity implements MainListCategoryAdapter.Listener, DialogGalleryListener {
+public class MainActivity extends AppCompatActivity implements MainListCategoryAdapter.Listener, DialogGalleryListener, AdListener {
     private MainListCategoryAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     @BindView(R.id.rcvCategory)
@@ -75,7 +77,11 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         AppUtils.showFullHeader(this,layout_head);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
-        loadAds();
+        if(AppUtils.isNetworkConnected(this)){
+            loadAds();
+        }else {
+            layoutAds.setVisibility(View.GONE);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -292,6 +298,17 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
-        bannerAdsUtils.showAds();
+        bannerAdsUtils.setAdListener(this);
+        bannerAdsUtils.showMediationBannerAds();
+    }
+
+    @Override
+    public void onAdloaded() {
+        layoutAds.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onAdFailed() {
+        layoutAds.setVisibility(View.GONE);
     }
 }

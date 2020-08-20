@@ -14,4 +14,5 @@
     <color name="blue">#77cffe</color>
     <color name="blackAlpha70">#B3000000</color>
     <color name="transparent">#00000000</color>
+    <color name="bg_seekBar">#0c68b4</color>
 </resources>

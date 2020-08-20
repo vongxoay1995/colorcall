@@ -30,6 +30,7 @@ import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.Background;
+import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.FileUtils;
@@ -48,7 +49,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
-public class CateGoryDetail extends AppCompatActivity implements CategoryDetailAdapter.Listener, DialogGalleryListener {
+public class CateGoryDetail extends AppCompatActivity implements CategoryDetailAdapter.Listener, DialogGalleryListener, AdListener {
     @BindView(R.id.titleCategory)
     TextView titleCategory;
     @BindView(R.id.rcvThemes)
@@ -82,7 +83,11 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
         setTitlewithPos(posTitle);
         initData();
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
-        loadAds();
+        if(AppUtils.isNetworkConnected(this)){
+            loadAds();
+        }else {
+            layoutAds.setVisibility(View.GONE);
+        }
     }
 
     private void initData() {
@@ -98,7 +103,8 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8602663222";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
-        bannerAdsUtils.showAds();
+        bannerAdsUtils.setAdListener(this);
+        bannerAdsUtils.showMediationBannerAds();
     }
 
     private void setTitlewithPos(int posTitle) {
@@ -303,4 +309,13 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
         }
     }
 
+    @Override
+    public void onAdloaded() {
+        layoutAds.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onAdFailed() {
+        layoutAds.setVisibility(View.GONE);
+    }
 }
