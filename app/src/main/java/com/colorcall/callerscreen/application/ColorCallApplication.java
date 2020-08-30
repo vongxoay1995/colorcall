@@ -16,13 +16,20 @@ import com.unity3d.ads.metadata.MetaData;
 
 
 public class ColorCallApplication extends MultiDexApplication {
+    private static ColorCallApplication callApplication;
+
     public void onCreate() {
         super.onCreate();
+        callApplication = this;
         MultiDex.install(this);
         MobileAds.initialize(this, initializationStatus -> {});
         Hawk.init(this).build();
         DataManager.getInstance().init(this);
         AppLovinPrivacySettings.setHasUserConsent(true, this);
         AppLovinSdk.getInstance(this).initializeSdk();
+    }
+
+    public static ColorCallApplication get() {
+        return callApplication;
     }
 }

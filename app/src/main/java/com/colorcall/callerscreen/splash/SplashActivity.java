@@ -1,6 +1,7 @@
 package com.colorcall.callerscreen.splash;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.SeekBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
@@ -40,32 +42,37 @@ public class SplashActivity extends AppCompatActivity {
     @BindView(R.id.layout_loading)
     LinearLayout layoutLoading;
     private int progress;
+    private String ID_ADS_TEST = "ca-app-pub-3940256099942544/1033173712";
     private String ID_ADS = "ca-app-pub-3222539657172474/5177481580";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
     private Disposable disposable;
     private boolean fullAdsLoaded = false;
+    private boolean endTimeTick;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isTaskRoot()) {
-            finish();
-            return;
-        }
+        if (!isTaskRoot()) finish();
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         Glide.with(this).load(R.drawable.ic_bg_splash).into(imgBgSplash);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
-        if(AppUtils.isNetworkConnected(this)){
+        if (AppUtils.isNetworkConnected(this)) {
             loadAds();
             startTimeLeft();
-        }else {
-           skip();
+        } else {
+            skip();
         }
     }
-    public void loadAds(){
+
+    public void loadAds() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(ID_ADS);
+        if (BuildConfig.DEBUG) {
+            mInterstitialAd.setAdUnitId(ID_ADS_TEST);
+        } else {
+            mInterstitialAd.setAdUnitId(ID_ADS);
+        }
         AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
         String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
         for (String testDevice : ggTestDevices) {
@@ -106,16 +113,18 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
     }
+
     private boolean allowAdsShow;
+
     private void showAds() {
-        if(mInterstitialAd!=null&&mInterstitialAd.isLoaded()&&allowAdsShow){
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded() && allowAdsShow) {
             mInterstitialAd.show();
         }
     }
 
-    public void hideLoading(){
+    public void hideLoading() {
         layoutLoading.setVisibility(View.INVISIBLE);
-        progress=100;
+        progress = 100;
     }
 
     private void countTimer() {
@@ -123,13 +132,19 @@ public class SplashActivity extends AppCompatActivity {
             if (fullAdsLoaded) {
                 showAds();
                 hideLoading();
-                if(disposable!=null){
+                if (disposable != null) {
                     disposable.dispose();
                 }
             }
         } else {
             hideLoading();
-            skip();
+            endTimeTick = true;
+            if (disposable != null) {
+                disposable.dispose();
+            }
+            if (allowAdsShow) {
+                skip();
+            }
         }
     }
 
@@ -143,14 +158,19 @@ public class SplashActivity extends AppCompatActivity {
                     countTimer();
                 }, throwable -> skip());
     }
+
     @Override
     protected void onResume() {
         super.onResume();
+        firebaseAnalystic.trackEvent(ManagerEvent.splashOpen());
         allowAdsShow = true;
-        if (fullAdsLoaded){
+        if (endTimeTick) {
+            skip();
+            return;
+        }
+        if (fullAdsLoaded) {
             showAds();
         }
-        firebaseAnalystic.trackEvent(ManagerEvent.splashOpen());
     }
 
     @Override
@@ -163,8 +183,9 @@ public class SplashActivity extends AppCompatActivity {
     public void onViewClicked() {
         firebaseAnalystic.trackEvent(ManagerEvent.splashStart());
     }
-    public void skip(){
-        if(disposable!=null){
+
+    public void skip() {
+        if (disposable != null) {
             disposable.dispose();
         }
         Intent intent = new Intent(this, MainActivity.class);
@@ -172,5 +193,13 @@ public class SplashActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (progress >= 100) {
+            skip();
+        }
+        super.onBackPressed();
     }
 }

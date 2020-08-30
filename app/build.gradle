@@ -53,8 +53,9 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.zhihu.android:matisse:0.5.2'
     implementation 'com.orhanobut:hawk:2.0.1'
-    implementation 'com.google.android.gms:play-services-ads:19.3.0'
-
+    //button back ads inter
+    implementation 'com.google.android.gms:play-services-ads:18.3.0'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.8'
     implementation 'com.google.firebase:firebase-analytics:17.5.0'
     implementation 'org.greenrobot:greendao:3.2.2'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.2'

@@ -53,7 +53,6 @@ public class CallService extends Service {
     private int typeBgCall;
     private Background backgroundSelect;
     private TelephonyManager telephonyManager;
-    private PhoneStateListener phoneStateListener;
     private ITelephony telephonyService;
     private static final int ID_NOTIFICATION = 1;
     public static String CHANNEL = "Color_Call_channel";
@@ -70,12 +69,14 @@ public class CallService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getExtras() != null) {
+
             phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER);
             if (phoneNumber == null) {
                 phoneNumber = "";
                 isUnknow = true;
+            }else {
+                phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER).replaceAll(" ", "").replaceAll("-", "");
             }
-
             showViewCallColor();
         }
         return super.onStartCommand(intent, flags, startId);
@@ -83,6 +84,7 @@ public class CallService extends Service {
 
     @Override
     public void onDestroy() {
+        removeUI();
         super.onDestroy();
     }
 
@@ -139,24 +141,26 @@ public class CallService extends Service {
                                 | View.SYSTEM_UI_FLAG_VISIBLE
                                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 );
-                new Handler().postDelayed(() -> startAnimation(), 400);
+                new Handler().postDelayed(this::startAnimation, 400);
                 ((WindowManager) getSystemService(WINDOW_SERVICE)).addView(viewCall, mLayoutParams);
                 handlingCallState();
                 listener();
             } catch (Exception e) {
                 finishService();
+                removeUI();
             }
         }
     }
 
-    private void finishService() {
+    public void removeUI() {
         viewCall.setVisibility(View.GONE);
         WindowManager mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         if (mWindowManager != null && viewCall.getWindowToken() != null) {
             mWindowManager.removeViewImmediate(viewCall);
         }
-        if (telephonyManager != null&&Build.VERSION.SDK_INT <Build.VERSION_CODES.Q)
-            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+    }
+
+    private void finishService() {
         stopSelf();
     }
 
@@ -167,6 +171,7 @@ public class CallService extends Service {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
+                assert tm != null;
                 tm.acceptRingingCall();
                 isDisable = true;
             } else {
@@ -182,46 +187,33 @@ public class CallService extends Service {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
-
                     if (tm != null) {
-                        boolean success = tm.endCall();
+                        tm.endCall();
                     }
                 } else {
                     telephonyService.endCall();
                 }
                 isDisable = true;
-            } catch (RemoteException e) {
-                finishService();
-                e.printStackTrace();
             } catch (Exception e) {
                 finishService();
+                removeUI();
             }
         });
     }
 
     private void handlingCallState() {
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        Class clazz = null;
+        Class clazz;
         try {
-            if(Build.VERSION.SDK_INT <Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 clazz = Class.forName(telephonyManager.getClass().getName());
                 Method method = clazz.getDeclaredMethod("getITelephony");
                 method.setAccessible(true);
                 telephonyService = (ITelephony) method.invoke(telephonyManager);
-
-                phoneStateListener = new PhoneStateListener() {
-                    @Override
-                    public void onCallStateChanged(int state, String incomingNumber) {
-                        super.onCallStateChanged(state, incomingNumber);
-                        if (state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_IDLE) {
-                            viewCall.setVisibility(View.GONE);
-                        }
-                    }
-                };
-                telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
             }
         } catch (Exception e) {
             finishService();
+            removeUI();
             e.printStackTrace();
         }
     }
@@ -259,6 +251,7 @@ public class CallService extends Service {
         }
         vdoBgCall.setOnErrorListener((mp, what, extra) -> {
             finishService();
+            removeUI();
             return true;
         });
         vdoBgCall.setOnPreparedListener(mp -> {

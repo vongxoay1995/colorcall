@@ -1,33 +1,74 @@
 package com.colorcall.callerscreen.service;
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.telecom.TelecomManager;
+import androidx.annotation.RequiresApi;
 
+import com.colorcall.callerscreen.application.ColorCallApplication;
+import com.colorcall.callerscreen.utils.PhoneUtils;
+
+import java.lang.ref.WeakReference;
+
+@SuppressLint("OverrideAbstract")
 public class NotificationService extends NotificationListenerService {
-    public StatusBarNotification[] getActiveNotifications() {
-        StatusBarNotification[] statusBarNotificationArr = null;
-        try {
-            statusBarNotificationArr = super.getActiveNotifications();
-        } catch (SecurityException e) {
-        } catch (Exception e2) {
-            e2.printStackTrace();
+    @RequiresApi(api = 19)
+    private static WeakReference<NotificationService> serviceWeakReference;
+    private StatusBarNotification inCallNotification;
+    private boolean isListen = false;
+
+    public StatusBarNotification getInCallNotification() {
+        return this.inCallNotification;
+    }
+
+    public static NotificationService get() {
+        WeakReference<NotificationService> weakReference = serviceWeakReference;
+        if (weakReference == null || weakReference.get() == null) {
+            return null;
         }
-        return statusBarNotificationArr == null ? new StatusBarNotification[0] : statusBarNotificationArr;
+        return serviceWeakReference.get();
+    }
+
+    public StatusBarNotification[] getActiveNotifications() {
+        return super.getActiveNotifications();
     }
 
     public void onCreate() {
         super.onCreate();
+        serviceWeakReference = new WeakReference<>(this);
+    }
+    @Override
+    public void onNotificationPosted(final StatusBarNotification statusBarNotification) {
+        super.onNotificationPosted(statusBarNotification);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            String str = "";
+            TelecomManager telecomManager = ColorCallApplication.get().getSystemService(TelecomManager.class);
+            if (telecomManager != null) {
+                str = telecomManager.getDefaultDialerPackage() + "";
+            }
+            if (!statusBarNotification.getPackageName().contains("incallui") && !statusBarNotification.getPackageName().equals(str)) {
+                return;
+            }
+            if (this.isListen) {
+                new Thread() {
+                    public void run() {
+                        super.run();
+                        PhoneUtils.get().getPhoneFromNotificationListen(statusBarNotification);
+                    }
+                }.start();
+                return;
+            }
+            this.inCallNotification = statusBarNotification;
+        }
     }
 
-    public void onDestroy() {
-        super.onDestroy();
+    public void stopListenColorCall() {
+        this.isListen = false;
     }
 
-    public void onListenerConnected() {
-    }
-
-    public void onNotificationPosted(StatusBarNotification statusBarNotification) {
-    }
-
-    public void onNotificationRemoved(StatusBarNotification statusBarNotification) {
+    @RequiresApi(api = 28)
+    public void startListenColorCall() {
+        this.isListen = true;
     }
 }

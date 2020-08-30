@@ -77,7 +77,6 @@ public class FlashUtils implements Runnable{
 
     public static FlashUtils getInstance(boolean z, Context context2) {
         if (instance == null) {
-            Log.e("TAN", "getInstance: 1");
             instance = new FlashUtils();
         }
         instance.setNormalMode(z);
@@ -105,11 +104,9 @@ public class FlashUtils implements Runnable{
         this.time_on = 500;
         this.time_off = 500;
         this.repeat = 0;
-        this.context = this.context;
     }
 
     public void run() {
-        Log.e("TAN", "run: 1");
         if (this.isStopping) {
             this.isStopping = false;
             if (this.repeat == 0) {
