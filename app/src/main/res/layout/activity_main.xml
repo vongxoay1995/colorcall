@@ -98,12 +98,15 @@
     <RelativeLayout
         android:id="@+id/layout_ads"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_48sdp"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/_10sdp"
         android:background="@drawable/border_ads"
-        android:visibility="gone"
-        android:padding="1dp"
+        android:paddingStart="1dp"
+        android:paddingEnd="1dp"
+        android:gravity="center"
+        android:paddingTop="@dimen/_3sdp"
+        android:paddingBottom="@dimen/_3sdp"
         >
 
     </RelativeLayout>

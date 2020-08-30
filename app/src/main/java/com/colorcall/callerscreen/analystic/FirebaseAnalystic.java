@@ -1,8 +1,6 @@
 package com.colorcall.callerscreen.analystic;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -25,6 +23,5 @@ public class FirebaseAnalystic {
     }
     public void trackEvent(Event event){
         mFirebaseAnalytics.logEvent(event.getKey(), event.getBundleValue());
-        Log.e("FirebaseAnalystic", ""+event);
     }
 }

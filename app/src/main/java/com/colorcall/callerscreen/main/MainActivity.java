@@ -7,11 +7,9 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -22,11 +20,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
-import com.colorcall.callerscreen.utils.BannerAdsUtils;
-import com.google.gson.Gson;
-import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.categorydetail.CateGoryDetail;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.DataManager;
@@ -34,10 +30,13 @@ import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.model.Background;
 import com.colorcall.callerscreen.model.Category;
 import com.colorcall.callerscreen.setting.SettingActivity;
+import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.CategoryUtils;
 import com.colorcall.callerscreen.utils.FileUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,16 +45,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.Manifest.permission.ANSWER_PHONE_CALLS;
-import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_CALL_LOG;
-import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-public class MainActivity extends AppCompatActivity implements MainListCategoryAdapter.Listener, DialogGalleryListener {
+public class MainActivity extends AppCompatActivity implements MainListCategoryAdapter.Listener, DialogGalleryListener, AdListener {
     private MainListCategoryAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     @BindView(R.id.rcvCategory)
@@ -75,7 +69,11 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         AppUtils.showFullHeader(this,layout_head);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
-        loadAds();
+        if(AppUtils.isNetworkConnected(this)){
+            loadAds();
+        }else {
+            layoutAds.setVisibility(View.GONE);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -292,6 +290,17 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
-        bannerAdsUtils.showAds();
+        bannerAdsUtils.setAdListener(this);
+        bannerAdsUtils.showMediationBannerAds();
+    }
+
+    @Override
+    public void onAdloaded() {
+        layoutAds.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onAdFailed() {
+        layoutAds.setVisibility(View.GONE);
     }
 }

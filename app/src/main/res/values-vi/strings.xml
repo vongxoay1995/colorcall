@@ -40,4 +40,5 @@
     <string name="applying">Đang áp dụng ...</string>
     <string name="applied">Đã áp dụng</string>
     <string name="ledFlash">Đèn Flash</string>
+    <string name="loading">Đang tải ...</string>
 </resources>

@@ -49,9 +49,33 @@
         android:visibility="gone"
         android:background="@drawable/bg_white_radius"
         />
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layout_loading"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_alignParentBottom="true"
+        android:gravity="center|bottom"
+        android:visibility="visible"
+        android:layout_marginBottom="@dimen/_30sdp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <SeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:max="100"
+            android:thumb="@null"
+            android:progressDrawable="@drawable/bg_seek_bar"
+            />
+
+    </LinearLayout>
 </RelativeLayout>
