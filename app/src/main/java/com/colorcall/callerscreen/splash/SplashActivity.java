@@ -53,7 +53,10 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isTaskRoot()) finish();
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         Glide.with(this).load(R.drawable.ic_bg_splash).into(imgBgSplash);
