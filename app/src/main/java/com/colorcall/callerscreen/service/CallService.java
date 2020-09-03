@@ -153,10 +153,12 @@ public class CallService extends Service {
     }
 
     public void removeUI() {
-        viewCall.setVisibility(View.GONE);
-        WindowManager mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        if (mWindowManager != null && viewCall.getWindowToken() != null) {
-            mWindowManager.removeViewImmediate(viewCall);
+        if(viewCall!=null){
+            viewCall.setVisibility(View.GONE);
+            WindowManager mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            if (mWindowManager != null && viewCall.getWindowToken() != null) {
+                mWindowManager.removeViewImmediate(viewCall);
+            }
         }
     }
 

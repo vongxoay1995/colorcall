@@ -3,9 +3,11 @@ package com.colorcall.callerscreen.apply;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -145,7 +147,12 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             } else {
                 vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
             }
-            vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> mediaPlayer.setLooping(true));
+            vdoBackgroundCall.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer ) {
+                   mediaPlayer.setLooping(true);
+                }
+            });
             vdoBackgroundCall.start();
         } else {
             imgBackgroundCall.setVisibility(View.VISIBLE);
