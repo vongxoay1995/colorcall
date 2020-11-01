@@ -361,8 +361,9 @@ public class AppUtils {
                     photo = BitmapFactory.decodeStream(inputStream);
                 }
 
-                assert inputStream != null;
-                inputStream.close();
+                if(inputStream != null) {
+                    inputStream.close();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

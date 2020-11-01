@@ -35,6 +35,7 @@
             android:name=".call.CallActivity"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleInstance"/>
         <activity
             android:name=".splash.SplashActivity"

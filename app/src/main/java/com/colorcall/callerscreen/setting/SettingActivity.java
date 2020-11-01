@@ -207,7 +207,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
             }
         } else if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE) {
             if (grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
-                if (AppUtils.canDrawOverlays(this)) {
+             /*   if (AppUtils.canDrawOverlays(this)) {
                     if (!AppUtils.checkNotificationAccessSettings(this)) {
                         resetStateCall();
                         AppUtils.showNotificationAccess(this);
@@ -215,11 +215,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 } else {
                     resetStateCall();
                     AppUtils.checkDrawOverlayApp(this);
-                }
-                /*if (!AppUtils.checkNotificationAccessSettings(this)) {
+                }*/
+                if (!AppUtils.checkNotificationAccessSettings(this)) {
                     resetStateCall();
                     AppUtils.showNotificationAccess(this);
-                }*/
+                }
             }
         }
     }
@@ -232,7 +232,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constant.REQUEST_OVERLAY) {
+       /* if (requestCode == Constant.REQUEST_OVERLAY) {
             if (AppUtils.canDrawOverlays(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     isCallState = true;
@@ -240,7 +240,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                     AppUtils.showNotificationAccess(this);
                 }
             }
-        } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
+        } else */if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 isCallState = true;
                 swStateApp.setChecked(true);

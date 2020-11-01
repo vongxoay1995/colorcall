@@ -11,8 +11,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.service.CallService;
-import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.FlashUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PhoneUtils;
@@ -79,7 +77,8 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     }
 
     private void onIncommingCall(Context context, String number) {
-        if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
+        Log.e("TAN", "onIncommingCall: ");
+        if (/*AppUtils.checkDrawOverlay(context) && */HawkHelper.isEnableColorCall()) {
             /*intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -87,6 +86,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             } else {
                 context.startService(intentCallService);
             }*/
+            Log.e("TAN", "onIncommingCall: 2");
             Intent intentCall =  new Intent(context, CallActivity.class);
             intentCall.putExtra(Constant.PHONE_NUMBER,phoneNumber);
             intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

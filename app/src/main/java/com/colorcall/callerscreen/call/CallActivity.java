@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.util.AndroidRuntimeException;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -80,12 +81,16 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        getWindow().setFlags(1024, 1024);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        try {
+            requestWindowFeature(1);
+        } catch (AndroidRuntimeException unused) {
+        }
         setContentView(R.layout.activity_call);
         ButterKnife.bind(this);
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
@@ -100,14 +105,15 @@ public class CallActivity extends AppCompatActivity {
     }
     private void showViewCall() {
         phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
+        if(phoneNumber==null){
+            isUnknow = true;
+        }
         backgroundSelect = HawkHelper.getBackgroundSelect();
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
             try {
                 name = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
-                bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
                 txtName.setText(name);
-                imgAvatar.setImageBitmap(bmpAvatar);
                 if (name.equals("")) {
                     txtName.setVisibility(View.GONE);
                 } else {
@@ -116,6 +122,8 @@ public class CallActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
+            imgAvatar.setImageBitmap(bmpAvatar);
             if (isUnknow) {
                 txtName.setText("Unknow contact");
                 txtName.setVisibility(View.VISIBLE);
