@@ -7,6 +7,9 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.service.CallService;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -77,26 +80,38 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
 
     private void onIncommingCall(Context context, String number) {
         if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
-            intentCallService = new Intent(context, CallService.class);
+            /*intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(intentCallService);
             } else {
                 context.startService(intentCallService);
-            }
+            }*/
+            Intent intentCall =  new Intent(context, CallActivity.class);
+            intentCall.putExtra(Constant.PHONE_NUMBER,phoneNumber);
+            intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intentCall);
         }
     }
 
     public void onIdle(Context context) {
-        if (intentCallService != null) {
+      /*  if (intentCallService != null) {
             context.stopService(intentCallService);
-        }
+        }*/
+        finishCall();
+    }
+
+    public void finishCall() {
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager
+                .getInstance(context);
+        localBroadcastManager.sendBroadcast(new Intent("com.colorcall.endCall"));
     }
 
     public void onOffhook(Context context) {
-        if (intentCallService != null) {
+       /* if (intentCallService != null) {
             context.stopService(intentCallService);
-        }
+        }*/
+        finishCall();
     }
 
     @Override

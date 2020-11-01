@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.categorydetail;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.model.Background;
+import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;
 
@@ -61,13 +63,22 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         RelativeLayout layout_item;
         @BindView(R.id.imgVideo)
         ImageView imgVideo;
+        @BindView(R.id.layoutSelected)
+        RelativeLayout layoutSelected;
+        private Background backgroundSelected;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            backgroundSelected = HawkHelper.getBackgroundSelect();
             ButterKnife.bind(this, itemView);
         }
 
         public void onBind(int i) {
             Background background = listBg.get(i);
+            if(background.getPathThumb().equals(backgroundSelected.getPathThumb())&&HawkHelper.isEnableColorCall()){
+                layoutSelected.setVisibility(View.VISIBLE);
+            }else {
+                layoutSelected.setVisibility(View.GONE);
+            }
             resizeItem(context,layout_item);
             if(background.getType()== Constant.TYPE_VIDEO){
                 imgVideo.setVisibility(View.VISIBLE);

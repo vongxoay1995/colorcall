@@ -12,7 +12,7 @@
     <string name="shareApp">Share app</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="sure">Sure, i want</string>
-    <string name="video_alert">Độ dài tối đa của video là 10s</string>
+    <string name="video_alert">The maximum length of videos is 10 seconds</string>
     <string name="video_not_found">Video not found</string>
     <string name="your_video">Open camera or select a new video</string>
     <string name="addYourVideo">Add your video or image</string>
@@ -21,12 +21,11 @@
     <string name="colorCall">Color Call</string>
     <string name="colorEffect">Color effect</string>
     <string name="contentApply">Call screen of all contacts will be applied</string>
-    <string name="define_roundedimageview" />
     <string name="getVip">Get VIP</string>
     <string name="overlay_permision">Permission dialog</string>
-    <string name="overlay_permision_content">Please allow drawing on other applications</string>
+    <string name="overlay_permision_content">Please allow drawing call screen on other applications</string>
     <string name="ok">OK</string>
-    <string name="turn_on_notifi">Please turn on notification access</string>
+    <string name="turn_on_notifi">Allows access to the notification to answer the call in call screen</string>
     <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
     <string name="video">Video</string>
     <string name="images">Images</string>
@@ -38,8 +37,8 @@
     <string name="ledFlash">LED Flash</string>
     <string name="contentSplash">Colorful incoming call display</string>
     <string name="start">Start</string>
-    <string name="caller">Caller</string>
     <string name="applying">Applying ...</string>
     <string name="applied">Applied</string>
     <string name="loading">Loading ...</string>
+    <string name="caller">Caller</string>
 </resources>

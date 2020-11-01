@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -36,6 +37,7 @@ import com.android.internal.telephony.ITelephony;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
+import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.model.Background;
@@ -44,11 +46,14 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.lang.reflect.Method;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class CallService extends Service {
     private String phoneNumber = "";
     private View viewCall;
     private CustomVideoView vdoBgCall;
     private ImageView imgBgCall, imgAccept, imgReject;
+    private CircleImageView imgAvatar;
     private TextView txtName, txtPhoneNumber;
     private int typeBgCall;
     private Background backgroundSelect;
@@ -59,17 +64,15 @@ public class CallService extends Service {
     private static final String CHANNEL_ID = "ColorCall";
     public boolean isDisable;
     public boolean isUnknow;
-
+    private Bitmap bmpAvatar;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getExtras() != null) {
-
             phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER);
             if (phoneNumber == null) {
                 phoneNumber = "";
@@ -77,14 +80,18 @@ public class CallService extends Service {
             }else {
                 phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER).replaceAll(" ", "").replaceAll("-", "");
             }
-            showViewCallColor();
+         //   showViewCallColor();
+            Intent intentCall =  new Intent(this, CallActivity.class);
+            intentCall.putExtra(Constant.PHONE_NUMBER,phoneNumber);
+            intentCall.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentCall);
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
-        removeUI();
+       // removeUI();
         super.onDestroy();
     }
 
@@ -111,10 +118,13 @@ public class CallService extends Service {
                     viewCall = inflater.inflate(R.layout.layout_call_color, null);
                 }
                 txtPhoneNumber = viewCall.findViewById(R.id.txtPhone);
+                imgAvatar = viewCall.findViewById(R.id.profile_image);
                 txtName = viewCall.findViewById(R.id.txtName);
                 try {
                     name = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
+                    bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(),String.valueOf(phoneNumber));
                     txtName.setText(name);
+                    imgAvatar.setImageBitmap(bmpAvatar);
                     if (name.equals("")) {
                         txtName.setVisibility(View.GONE);
                     } else {

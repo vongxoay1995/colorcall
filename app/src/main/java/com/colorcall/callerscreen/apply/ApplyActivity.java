@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
@@ -34,9 +35,13 @@ import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
+import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 import com.google.gson.Gson;
 
 import butterknife.BindView;
@@ -59,10 +64,10 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
     private Background background;
-    private InterstitialAd mInterstitialAd;
+    private PublisherInterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
-    private boolean allowAdsShow, allowPermission;
-    private boolean isClickedApply;
+    private boolean allowAdsShow;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
@@ -70,14 +75,17 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         AppUtils.showFullHeader(this, layoutHead);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         checkInforTheme();
-        loadAds();
     }
 
-    private void loadAds() {
-        mInterstitialAd = new InterstitialAd(this);
+    private void loadAds(ProgressDialog dialog) {
+        mInterstitialAd = new PublisherInterstitialAd(this);
         String ID_ADS = "ca-app-pub-3222539657172474/5724276494";
-        mInterstitialAd.setAdUnitId(ID_ADS);
-        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+        if (BuildConfig.DEBUG) {
+            mInterstitialAd.setAdUnitId(Constant.ID_INTER_TEST);
+        } else {
+            mInterstitialAd.setAdUnitId(ID_ADS);
+        }
+        PublisherAdRequest.Builder adRequestBuilder = new PublisherAdRequest.Builder();
         String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
         for (String testDevice : ggTestDevices) {
             adRequestBuilder.addTestDevice(testDevice);
@@ -86,12 +94,21 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                if (allowAdsShow) {
+                    if (mInterstitialAd.isLoaded()) {
+                        mInterstitialAd.show();
+                    }
+                }
             }
 
             @Override
-            public void onAdFailedToLoad(int errorCode) {
-
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                applyTheme();
+                finish();
+                super.onAdFailedToLoad(loadAdError);
             }
 
             @Override
@@ -111,6 +128,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
 
             @Override
             public void onAdClosed() {
+                applyTheme();
                 finish();
             }
         });
@@ -126,7 +144,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
         Background backgroundCurrent = HawkHelper.getBackgroundSelect();
         if (backgroundCurrent != null) {
-            if (background.getPathItem().equals(backgroundCurrent.getPathItem())) {
+            if (background.getPathItem().equals(backgroundCurrent.getPathItem())&&HawkHelper.isEnableColorCall()) {
                 layoutApply.setEnabled(false);
                 layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
                 txtApply.setText(getString(R.string.applied));
@@ -149,8 +167,8 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             }
             vdoBackgroundCall.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
-                public void onPrepared(MediaPlayer mediaPlayer ) {
-                   mediaPlayer.setLooping(true);
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.setLooping(true);
                 }
             });
             vdoBackgroundCall.start();
@@ -191,8 +209,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 break;
             case R.id.layoutApply:
                 firebaseAnalystic.trackEvent(ManagerEvent.applyApplyClick());
-                isClickedApply = true;
-                PermistionUtils.checkPermissionCall(this,this);
+                PermistionUtils.checkPermissionCall(this, this);
                 break;
             case R.id.imgDelete:
                 firebaseAnalystic.trackEvent(ManagerEvent.applyBinClick());
@@ -218,27 +235,21 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         ProgressDialog dialog = ProgressDialog.show(this, "",
                 getString(R.string.applying), true);
         dialog.show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dialog.dismiss();
-                showAds();
-                HawkHelper.setBackgroundSelect(background);
-                Toast.makeText(getBaseContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
-                layoutApply.setEnabled(false);
-                layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
-                txtApply.setText(getString(R.string.applied));
-                txtApply.setTextColor(Color.BLACK);
-            }
-        }, 2000);
+        loadAds(dialog);
+    }
 
+    public void applyTheme() {
+        HawkHelper.setBackgroundSelect(background);
+        HawkHelper.setStateColorCall(true);
+        Toast.makeText(getBaseContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
+        layoutApply.setEnabled(false);
+        layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
+        txtApply.setText(getString(R.string.applied));
+        txtApply.setTextColor(Color.BLACK);
     }
 
     public void showAds() {
-        if (isClickedApply
-                && mInterstitialAd != null
-                && mInterstitialAd.isLoaded()
-                && allowAdsShow && allowPermission) {
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         }
     }
@@ -265,6 +276,10 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                     AppUtils.showNotificationAccess(this);
                 }
             }
+        } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
+            if (AppUtils.checkNotificationAccessSettings(this)) {
+               applyBgCall();
+            }
         }
     }
 
@@ -280,8 +295,20 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        allowAdsShow = true;
+    }
+
+    @Override
     public void onHasCallPermistion() {
-        allowPermission = true;
         applyBgCall();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mInterstitialAd == null || !mInterstitialAd.isLoading()) {
+            super.onBackPressed();
+        }
     }
 }

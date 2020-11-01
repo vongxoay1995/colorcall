@@ -21,12 +21,11 @@
     <string name="colorCall">Color Call</string>
     <string name="colorEffect">Hiệu ứng màu</string>
     <string name="contentApply">Màn hình cuộc gọi của tất cả danh bạ sẽ được áp dụng</string>
-    <string name="define_roundedimageview" />
     <string name="getVip">Nhận VIP</string>
     <string name="overlay_permision">Hộp thoại cấp phép</string>
-    <string name="overlay_permision_content">Vui lòng cho phép vẽ trên các ứng dụng khác</string>
+    <string name="overlay_permision_content">Vui lòng cho phép vẽ màn hình cuộc gọi trên các ứng dụng khác</string>
     <string name="ok">OK</string>
-    <string name="turn_on_notifi">Vui lòng bật quyền truy cập thông báo</string>
+    <string name="turn_on_notifi">Cho phép truy cập thông báo để trả lời cuộc gọi trong màn hình cuộc gọi</string>
     <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
     <string name="video">Video</string>
     <string name="images">Hình ảnh</string>
@@ -41,4 +40,5 @@
     <string name="applied">Đã áp dụng</string>
     <string name="ledFlash">Đèn Flash</string>
     <string name="loading">Đang tải ...</string>
+    <string name="caller">Caller</string>
 </resources>

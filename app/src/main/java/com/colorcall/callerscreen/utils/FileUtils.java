@@ -37,7 +37,6 @@ public class FileUtils {
             if(cursor!=null){
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 cursor.moveToFirst();
-                Log.e("TAN", "getRealPathFromUri: "+cursor.getString(column_index));
                 return cursor.getString(column_index);
             }else {
                 return "";

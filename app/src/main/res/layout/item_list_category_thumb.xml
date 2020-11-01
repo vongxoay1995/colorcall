@@ -50,6 +50,25 @@
                     android:fontFamily="@font/robotoregular"
                     />
             </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/layoutSelected"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:visibility="gone"
+                android:layout_alignParentEnd="true">
+                <ImageView
+                    android:background="@drawable/quarter_circle"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp" />
+                <ImageView
+                    android:id="@+id/imgTick"
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_3sdp"
+                    android:layout_alignParentEnd="true"
+                    app:srcCompat="@drawable/ic_checked" />
+            </RelativeLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

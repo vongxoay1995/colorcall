@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
@@ -101,8 +102,14 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     }
 
     private void loadAds() {
+        String idGG;
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8602663222";
-        bannerAdsUtils.setIdAds(ID_ADS_GG);
+        if (BuildConfig.DEBUG) {
+            idGG = Constant.ID_TEST_BANNER_ADMOD;
+        } else {
+            idGG = ID_ADS_GG;
+        }
+        bannerAdsUtils.setIdAds(idGG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.showMediationBannerAds();
     }

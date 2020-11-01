@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
@@ -289,7 +290,13 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     }
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
-        bannerAdsUtils.setIdAds(ID_ADS_GG);
+        String idGG;
+        if (BuildConfig.DEBUG) {
+            idGG = Constant.ID_TEST_BANNER_ADMOD;
+        } else {
+            idGG = ID_ADS_GG;
+        }
+        bannerAdsUtils.setIdAds(idGG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.showMediationBannerAds();
     }

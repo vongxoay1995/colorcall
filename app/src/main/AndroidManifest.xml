@@ -21,18 +21,23 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
-        android:name="com.colorcall.callerscreen.application.ColorCallApplication"
+        android:name=".application.ColorCallApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
         <activity
-            android:name="com.colorcall.callerscreen.splash.SplashActivity"
+            android:name=".call.CallActivity"
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"/>
+        <activity
+            android:name=".splash.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,22 +54,20 @@
             android:value="iT-bWFdu_TKodLOWDrdzNEgfIVurwv5-_tJXSq6xGTc5TKFvFp_ItTX4c5nGISAmFHaOg_R71OkT3Oum_szQrz" />
 
         <activity
-            android:name="com.colorcall.callerscreen.main.MainActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:name=".main.MainActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.colorcall.callerscreen.setting.SettingActivity"
+            android:name=".setting.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.colorcall.callerscreen.apply.ApplyActivity"
+            android:name=".apply.ApplyActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.colorcall.callerscreen.categorydetail.CateGoryDetail"
+            android:name=".categorydetail.CateGoryDetail"
             android:screenOrientation="portrait" />
 
         <service
-            android:name="com.colorcall.callerscreen.service.NotificationService"
+            android:name=".service.NotificationService"
             android:enabled="true"
             android:exported="true"
             android:label="@string/app_name"
@@ -75,7 +78,7 @@
         </service>
 
         <receiver
-            android:name="com.colorcall.callerscreen.broadcast.CallReceiver"
+            android:name=".broadcast.CallReceiver"
             android:enabled="true">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.PHONE_STATE" />
@@ -83,10 +86,12 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.colorcall.callerscreen.service.CallService" />
+<!--
+        <service android:name=".service.CallService" />
+-->
 
         <activity
-            android:name="com.colorcall.callerscreen.service.AcceptCallActivity"
+            android:name=".service.AcceptCallActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"

@@ -16,6 +16,7 @@ import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.google.android.gms.ads.AdListener;
@@ -42,7 +43,6 @@ public class SplashActivity extends AppCompatActivity {
     @BindView(R.id.layout_loading)
     LinearLayout layoutLoading;
     private int progress;
-    private String ID_ADS_TEST = "ca-app-pub-3940256099942544/1033173712";
     private String ID_ADS = "ca-app-pub-3222539657172474/5177481580";
     private InterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
@@ -72,7 +72,7 @@ public class SplashActivity extends AppCompatActivity {
     public void loadAds() {
         mInterstitialAd = new InterstitialAd(this);
         if (BuildConfig.DEBUG) {
-            mInterstitialAd.setAdUnitId(ID_ADS_TEST);
+            mInterstitialAd.setAdUnitId(Constant.ID_INTER_TEST);
         } else {
             mInterstitialAd.setAdUnitId(ID_ADS);
         }

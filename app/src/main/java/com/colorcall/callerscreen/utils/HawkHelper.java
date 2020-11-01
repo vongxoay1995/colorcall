@@ -29,7 +29,7 @@ public class HawkHelper {
         Hawk.put(LIST_CATEGORY, listCategory);
     }
     public static boolean isEnableColorCall() {
-        return Hawk.get(ENABLE_COLOR, true);
+        return Hawk.get(ENABLE_COLOR, false);
     }
 
     public static void setStateColorCall(boolean value) {
@@ -49,6 +49,6 @@ public class HawkHelper {
     }
     public static Background getBackgroundSelect(){
         Background background = new Background(null,0,"thumb/lovely/ll_f.webp","/raw/ll_f",false);
-       return Hawk.get(BACKGROUND_SELECT,null);
+       return Hawk.get(BACKGROUND_SELECT,background);
     }
 }

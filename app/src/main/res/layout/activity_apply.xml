@@ -73,12 +73,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="@dimen/_40sdp">
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="@dimen/_92sdp"
                 android:layout_height="@dimen/_92sdp"
-                android:src="@drawable/ic_avatar_call"
+                android:src="@drawable/user"
                 android:layout_gravity="center"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#FFFFFF"
                 />
             <TextView
                 android:id="@+id/txtName"
