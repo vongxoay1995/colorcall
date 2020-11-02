@@ -41,6 +41,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.broadcast.CallReceiver;
 import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
@@ -102,6 +103,7 @@ public class CallService extends Service {
         mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
         removeUI();
         NotificationUtil.hideNotification(this);
+        firebaseAnalystic.trackEvent(ManagerEvent.callDismiss());
         super.onDestroy();
     }
 
@@ -166,6 +168,7 @@ public class CallService extends Service {
                 );*/
                 new Handler().postDelayed(this::startAnimation, 400);
                 mWindowManager.addView(viewCall, mLayoutParams);
+                firebaseAnalystic.trackEvent(ManagerEvent.callshow());
                 handlingCallState();
                 listener();
             } catch (Exception e) {
@@ -177,6 +180,7 @@ public class CallService extends Service {
 
     private void listener() {
         imgAccept.setOnClickListener(v -> {
+            firebaseAnalystic.trackEvent(ManagerEvent.callAcceptCall());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelecomManager tm = (TelecomManager) getSystemService(Context.TELECOM_SERVICE);
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED) {
@@ -196,6 +200,7 @@ public class CallService extends Service {
         });
 
         imgReject.setOnClickListener(v -> {
+            firebaseAnalystic.trackEvent(ManagerEvent.callRejectCall());
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
@@ -222,6 +227,9 @@ public class CallService extends Service {
                 Method method = clazz.getDeclaredMethod("getITelephony");
                 method.setAccessible(true);
                 telephonyService = (ITelephony) method.invoke(telephonyManager);
+                firebaseAnalystic.trackEvent(ManagerEvent.callSmallAndroidP());
+            }else{
+                firebaseAnalystic.trackEvent(ManagerEvent.callBiggerAndroidP());
             }
         } catch (Exception e) {
             stopSelf();
@@ -273,6 +281,7 @@ public class CallService extends Service {
 
     @Override
     public void onCreate() {
+        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("com.colorcall.endCall");
@@ -284,11 +293,12 @@ public class CallService extends Service {
         Animation anim8 = AnimationUtils.loadAnimation(this, R.anim.anm_accept_call);
         imgAccept.startAnimation(anim8);
     }
+
     LocalBroadcastManager mLocalBroadcastManager;
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("com.colorcall.endCall")){
+            if (intent.getAction().equals("com.colorcall.endCall")) {
                 stopSelf();
             }
         }

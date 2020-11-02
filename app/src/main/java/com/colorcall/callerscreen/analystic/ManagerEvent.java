@@ -113,6 +113,27 @@ public class ManagerEvent {
     public static Event settingShareAppClick(){
         return new Event(EventKey.SETTING_SHAREAPP_CLICKED,new Bundle());
     }
+
+    //call screen show
+    public static Event callshow(){
+        return new Event(EventKey.CALL_SHOW,new Bundle());
+    }
+    public static Event callAcceptCall(){
+        return new Event(EventKey.CALL_ACCETP_CALL,new Bundle());
+    }
+    public static Event callRejectCall(){
+        return new Event(EventKey.CALL_REJECT_CALL,new Bundle());
+    }
+    public static Event callDismiss(){
+        return new Event(EventKey.CALL_DISMISS,new Bundle());
+    }
+    public static Event callSmallAndroidP(){
+        return new Event(EventKey.CALL_ANDROID_SMALL_P,new Bundle());
+    }
+    public static Event callBiggerAndroidP(){
+        return new Event(EventKey.CALL_ANDROID_BIGGER_P,new Bundle());
+    }
+
     // position main tracking
     public static Event mainRecoClick(int position){
         return new Event("MAIN_RECOPICTURE_"+position+"_CLICKED ",new Bundle());
