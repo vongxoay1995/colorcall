@@ -43,9 +43,9 @@ public class PermistionUtils {
             ActivityCompat.requestPermissions(activity, permistion, Constant.PERMISSION_REQUEST_CODE_CALL_PHONE);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-              /*  if (!AppUtils.canDrawOverlays(activity)) {
+                if (!AppUtils.canDrawOverlays(activity)) {
                     AppUtils.showDrawOverlayPermissionDialog(activity);
-                } else */if (!AppUtils.checkNotificationAccessSettings(activity)) {
+                } else if (!AppUtils.checkNotificationAccessSettings(activity)) {
                     AppUtils.showNotificationAccess(activity);
                 } else {
                     if(listener!=null){

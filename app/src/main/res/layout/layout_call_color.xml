@@ -25,45 +25,49 @@
         android:weightSum="3"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/layoutInfor"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:orientation="vertical">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
-                android:layout_width="@dimen/_92sdp"
-                android:layout_height="@dimen/_92sdp"
-                android:src="@drawable/user"
-                android:layout_gravity="center"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#FFFFFF"
-                />
-            <TextView
-                android:id="@+id/txtName"
+            android:layout_weight="1.5">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/caller"
-                android:textColor="@color/white"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:textSize="@dimen/textsize30"
-                app:fontFamily="@font/robotobold" />
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="@dimen/_92sdp"
+                    android:layout_height="@dimen/_92sdp"
+                    android:src="@drawable/user"
+                    android:layout_gravity="center"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FFFFFF"
+                    />
+                <TextView
+                    android:id="@+id/txtName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/caller"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:textSize="@dimen/textsize30"
+                    app:fontFamily="@font/robotobold" />
 
-            <TextView
-                android:id="@+id/txtPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="@dimen/_10sdp"
-                android:text="0000-0000-0000"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/textsize20"
-                app:fontFamily="@font/robotoregular" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/txtPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="0000-0000-0000"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize20"
+                    app:fontFamily="@font/robotoregular" />
+            </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

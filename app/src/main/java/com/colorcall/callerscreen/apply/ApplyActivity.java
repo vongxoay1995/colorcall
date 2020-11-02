@@ -257,29 +257,29 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
-            /*if (AppUtils.canDrawOverlays(this)) {
+            if (AppUtils.canDrawOverlays(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 }
             } else {
                 AppUtils.checkDrawOverlayApp(this);
-            }*/
-            if (!AppUtils.checkNotificationAccessSettings(this)) {
-                AppUtils.showNotificationAccess(this);
             }
+          /*  if (!AppUtils.checkNotificationAccessSettings(this)) {
+                AppUtils.showNotificationAccess(this);
+            }*/
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /*if (requestCode == Constant.REQUEST_OVERLAY) {
+        if (requestCode == Constant.REQUEST_OVERLAY) {
             if (AppUtils.canDrawOverlays(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 }
             }
-        } else */if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
+        } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
                applyBgCall();
             }
