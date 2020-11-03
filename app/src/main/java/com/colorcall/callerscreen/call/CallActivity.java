@@ -31,6 +31,8 @@ import com.android.internal.telephony.ITelephony;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
+import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.model.Background;
@@ -61,7 +63,6 @@ public class CallActivity extends AppCompatActivity {
     CustomVideoView vdoBgCall;
     private String phoneNumber = "";
     public boolean isDisable;
-    public boolean isUnknow;
     private Bitmap bmpAvatar;
     private String name;
     private int typeBgCall;
@@ -69,6 +70,7 @@ public class CallActivity extends AppCompatActivity {
     private Background backgroundSelect;
     private TelephonyManager telephonyManager;
     private ITelephony telephonyService;
+    private FirebaseAnalystic firebaseAnalystic;
     LocalBroadcastManager mLocalBroadcastManager;
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -81,18 +83,15 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getWindow().setFlags(1024, 1024);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        try {
-            requestWindowFeature(1);
-        } catch (AndroidRuntimeException unused) {
-        }
         setContentView(R.layout.activity_call);
         ButterKnife.bind(this);
+        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        firebaseAnalystic.trackEvent(ManagerEvent.callshow());
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("com.colorcall.endCall");
@@ -105,9 +104,6 @@ public class CallActivity extends AppCompatActivity {
     }
     private void showViewCall() {
         phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
-        if(phoneNumber==null){
-            isUnknow = true;
-        }
         backgroundSelect = HawkHelper.getBackgroundSelect();
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
@@ -115,20 +111,13 @@ public class CallActivity extends AppCompatActivity {
                 name = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
                 txtName.setText(name);
                 if (name.equals("")) {
-                    txtName.setVisibility(View.GONE);
-                } else {
-                    txtName.setVisibility(View.VISIBLE);
+                    txtName.setText("Unknow contact");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
             imgAvatar.setImageBitmap(bmpAvatar);
-            if (isUnknow) {
-                txtName.setText("Unknow contact");
-                txtName.setVisibility(View.VISIBLE);
-                txtPhoneNumber.setVisibility(View.GONE);
-            }
             txtPhoneNumber.setText(String.valueOf(phoneNumber));
             vdoBgCall.setVisibility(View.VISIBLE);
             checkTypeCall(typeBgCall);
@@ -169,38 +158,40 @@ public class CallActivity extends AppCompatActivity {
     }
     private void listener() {
         imgAccept.setOnClickListener(v -> {
+            firebaseAnalystic.trackEvent(ManagerEvent.callAcceptCall());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelecomManager tm = (TelecomManager) getSystemService(Context.TELECOM_SERVICE);
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                assert tm != null;
-                tm.acceptRingingCall();
+                if (tm != null) {
+                    tm.acceptRingingCall();
+                }
             } else {
                 Intent intent = new Intent(getApplicationContext(), AcceptCallActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                         | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 getApplicationContext().startActivity(intent);
             }
-            finish();
             isDisable = true;
+            finish();
         });
 
         imgReject.setOnClickListener(v -> {
+            firebaseAnalystic.trackEvent(ManagerEvent.callRejectCall());
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
                     if (tm != null) {
                         tm.endCall();
-                        finish();
                     }
                 } else {
                     telephonyService.endCall();
-                    finish();
                 }
                 isDisable = true;
+                finish();
             } catch (Exception e) {
-               finish();
+                finish();
             }
         });
     }

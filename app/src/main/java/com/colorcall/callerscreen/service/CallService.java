@@ -80,6 +80,9 @@ public class CallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(ID_NOTIFICATION, NotificationUtil.initNotificationAndroidQ(this));
+        }else
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForeground(ID_NOTIFICATION, NotificationUtil.initNotificationAndroidO(this));
         }
@@ -93,17 +96,23 @@ public class CallService extends Service {
                 phoneNumber = " ";
             }
             phoneNumber = phoneNumber.replaceAll(" ", "").replaceAll("-", "");
-            showViewCallColor();
+            //showViewCallColor();
+            Intent intent2 = new Intent(getApplicationContext(), CallActivity.class);
+            intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
+            startActivity(intent2);
+
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
+      /*
+        removeUI();*/
         mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
-        removeUI();
         NotificationUtil.hideNotification(this);
-        firebaseAnalystic.trackEvent(ManagerEvent.callDismiss());
+       // firebaseAnalystic.trackEvent(ManagerEvent.callDismiss());
         super.onDestroy();
     }
 
