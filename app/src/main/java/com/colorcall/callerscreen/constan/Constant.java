@@ -31,4 +31,7 @@ public interface Constant {
     String ID_INTER_TEST = "ca-app-pub-3940256099942544/1033173712";
     String ID_NATIVE_TEST = "ca-app-pub-3940256099942544/2247696110";
     String ID_TEST_BANNER_ADMOD = "ca-app-pub-3940256099942544/6300978111";
+    String IS_UPDATE_LIST = "updateList";
+    String INTENT_APPLY_THEME = "applyTheme";
+    String INTENT_DELETE_THEME = "deleteTheme";
 }

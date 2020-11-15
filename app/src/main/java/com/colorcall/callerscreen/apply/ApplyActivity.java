@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -67,17 +68,19 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     private PublisherInterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
     private boolean allowAdsShow;
-
+    LocalBroadcastManager localBroadcastManager;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
+        localBroadcastManager = LocalBroadcastManager
+                .getInstance(this);
         AppUtils.showFullHeader(this, layoutHead);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         checkInforTheme();
     }
 
-    private void loadAds(ProgressDialog dialog) {
+    private void loadAds() {
         mInterstitialAd = new PublisherInterstitialAd(this);
         String ID_ADS = "ca-app-pub-3222539657172474/5724276494";
         if (BuildConfig.DEBUG) {
@@ -94,9 +97,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                if (dialog != null && dialog.isShowing()) {
-                    dialog.dismiss();
-                }
                 if (allowAdsShow) {
                     if (mInterstitialAd.isLoaded()) {
                         mInterstitialAd.show();
@@ -107,7 +107,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             @Override
             public void onAdFailedToLoad(LoadAdError loadAdError) {
                 applyTheme();
-                finish();
                 super.onAdFailedToLoad(loadAdError);
             }
 
@@ -129,7 +128,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             @Override
             public void onAdClosed() {
                 applyTheme();
-                finish();
             }
         });
     }
@@ -160,7 +158,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         if (background.getType() == Constant.TYPE_VIDEO) {
             imgBackgroundCall.setVisibility(View.GONE);
             vdoBackgroundCall.setVisibility(View.VISIBLE);
-            if (background.getPathItem().contains("storage")) {
+            if (background.getPathItem().contains("storage")||background.getPathItem().contains("data/user/")) {
                 vdoBackgroundCall.setVideoPath(background.getPathItem());
             } else {
                 vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
@@ -174,7 +172,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             vdoBackgroundCall.start();
         } else {
             imgBackgroundCall.setVisibility(View.VISIBLE);
-            if (background.getPathItem().contains("storage")) {
+            if (background.getPathItem().contains("storage")||background.getPathItem().contains("data/user/")) {
                 Glide.with(getApplicationContext())
                         .load(background.getPathItem())
                         .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
@@ -227,15 +225,16 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         deleteTheme(background);
         Intent intent = new Intent();
         intent.putExtra(Constant.IS_DELETE_BG, true);
+        localBroadcastManager.sendBroadcast(new Intent(Constant.INTENT_DELETE_THEME));
         setResult(RESULT_OK, intent);
         finish();
     }
-
+    ProgressDialog mProgressDialog;
     private void applyBgCall() {
-        ProgressDialog dialog = ProgressDialog.show(this, "",
+        mProgressDialog  = ProgressDialog.show(this, "",
                 getString(R.string.applying), true);
-        dialog.show();
-        loadAds(dialog);
+        mProgressDialog.show();
+        loadAds();
     }
 
     public void applyTheme() {
@@ -246,6 +245,14 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
         txtApply.setText(getString(R.string.applied));
         txtApply.setTextColor(Color.BLACK);
+        Intent intent = new Intent();
+        intent.putExtra(Constant.IS_UPDATE_LIST, true);
+        setResult(RESULT_OK, intent);
+        localBroadcastManager.sendBroadcast(new Intent(Constant.INTENT_APPLY_THEME));
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        finish();
     }
 
     public void showAds() {

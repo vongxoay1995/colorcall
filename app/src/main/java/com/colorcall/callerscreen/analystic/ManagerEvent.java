@@ -136,34 +136,34 @@ public class ManagerEvent {
 
     // position main tracking
     public static Event mainRecoClick(int position){
-        return new Event("MAIN_RECOPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_RECOPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event mainPopuClick(int position){
-        return new Event("MAIN_POPUPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_POPUPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event mainLovelyClick(int position){
-        return new Event("MAIN_LOVEPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_LOVEPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event mainColorEffectClick(int position){
-        return new Event("MAIN_COLORPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_COLORPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event mainYourPictureClick(int position){
-        return new Event("MAIN_YOURPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_YOURPICTURE_"+position+"_CLICKED",new Bundle());
     }
     // position seemore tracking
     public static Event seemoreRecoClick(int position){
-        return new Event("SEEMORE_RECOPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_RECOPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event seemorePopuClick(int position){
-        return new Event("SEEMORE_POPUPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_POPUPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event seemoreLovelyClick(int position){
-        return new Event("SEEMORE_LOVEPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_LOVEPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event seemoreColorEffectClick(int position){
-        return new Event("SEEMORE_COLORPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_COLORPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event seemoreYourPictureClick(int position){
-        return new Event("SEEMORE_YOURPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_YOURPICTURE_"+position+"_CLICKED",new Bundle());
     }
 }

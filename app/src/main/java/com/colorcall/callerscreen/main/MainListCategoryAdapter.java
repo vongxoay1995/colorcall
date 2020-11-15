@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.main;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +10,21 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
-import com.google.gson.Gson;
-import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.apply.ApplyActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.model.Background;
 import com.colorcall.callerscreen.model.Category;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.CategoryUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -39,6 +40,10 @@ public class MainListCategoryAdapter extends RecyclerView.Adapter<MainListCatego
     public MainListCategoryThumbAdapter.Listener listener;
     private int numberCategory;
     private FirebaseAnalystic firebaseAnalystic;
+
+    public void setNewData(ArrayList<Category> listCategory) {
+        arrCategory = listCategory;
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private MainListCategoryThumbAdapter adapter;
@@ -78,10 +83,10 @@ public class MainListCategoryAdapter extends RecyclerView.Adapter<MainListCatego
             } else {
                 isYourColor = false;
             }
-            linearLayoutManager = new LinearLayoutManager(MainListCategoryAdapter.this.context, LinearLayoutManager.HORIZONTAL, false);
-            rcvlistDemo.setLayoutManager(this.linearLayoutManager);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false);
+            rcvlistDemo.setLayoutManager(gridLayoutManager);
             rcvlistDemo.setItemAnimator(new DefaultItemAnimator());
-            rcvlistDemo.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
+           // rcvlistDemo.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
             adapter = new MainListCategoryThumbAdapter(context, listBg, isYourColor);
             adapter.setListener(new MainListCategoryThumbAdapter.Listener() {
                 @Override
@@ -101,7 +106,6 @@ public class MainListCategoryAdapter extends RecyclerView.Adapter<MainListCatego
             this.rcvlistDemo.setAdapter(this.adapter);
         }
     }
-
     private void trackingCategoryMain(int numberCategory, int position) {
         position = position + 1;
         switch (numberCategory) {
@@ -165,4 +169,5 @@ public class MainListCategoryAdapter extends RecyclerView.Adapter<MainListCatego
 
         void onAddClicked();
     }
+
 }

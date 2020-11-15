@@ -176,6 +176,8 @@ public class FlashUtils implements Runnable{
                 parameters2.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                 this.mCamera.setParameters(this.parameters);
                 this.mCamera.stopPreview();
+                //them vao fix
+                mCamera.release();
                 this.b = false;
             }
         }

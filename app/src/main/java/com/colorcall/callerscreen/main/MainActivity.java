@@ -2,7 +2,10 @@ package com.colorcall.callerscreen.main;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -10,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -17,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,6 +67,25 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     private ArrayList<Category> listCategory;
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
+    private final int indexYourData = 2;
+
+    LocalBroadcastManager mLocalBroadcastManager;
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()){
+                case Constant.INTENT_APPLY_THEME:
+                    adapter.notifyDataSetChanged();
+                    break;
+                case Constant.INTENT_DELETE_THEME:
+                    addDatafromDatabase();
+                    adapter.setNewData(listCategory);
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+    };
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,11 +94,17 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         AppUtils.showFullHeader(this,layout_head);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
+        loadData(Constant.MENU_CATEGORY);
         if(AppUtils.isNetworkConnected(this)){
             loadAds();
         }else {
             layoutAds.setVisibility(View.GONE);
         }
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(Constant.INTENT_APPLY_THEME);
+        mIntentFilter.addAction(Constant.INTENT_DELETE_THEME);
+        mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, mIntentFilter);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -91,20 +121,20 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
                     super.onPostExecute(list);
                     HawkHelper.setLoadDataFirst(true);
                     HawkHelper.setListCategory(list);
-                    addDatafromDatabase();
-                    initAdapterCategory();
+                    addAllData();
                 }
             }.execute();
         } else {
-            addDatafromDatabase();
-            initAdapterCategory();
+            addAllData();
         }
     }
-
+   public void addAllData(){
+       addDatafromDatabase();
+       initAdapterCategory();
+   }
     @Override
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.mainOpen());
-        loadData(Constant.MENU_CATEGORY);
         super.onResume();
     }
 
@@ -202,10 +232,16 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
                 Uri uriData = data.getData();
                 String path = FileUtils.getRealPathFromUri(this, uriData);
                 resetListDataVideo(path);
+                addDatafromDatabase();
+                adapter.setNewData(listCategory);
+                adapter.notifyItemChanged(indexYourData);
             } else if (requestCode == Constant.REQUEST_CODE_IMAGES) {
                 Uri uriData = data.getData();
                 String path = FileUtils.getRealPathFromUri(this, uriData);
                 resetListDataImage(path);
+                addDatafromDatabase();
+                adapter.setNewData(listCategory);
+                adapter.notifyItemChanged(indexYourData);
             }
         }
     }
@@ -310,4 +346,12 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     public void onAdFailed() {
         layoutAds.setVisibility(View.GONE);
     }
+
+    @Override
+    protected void onDestroy() {
+        mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
+    }
+
+
 }

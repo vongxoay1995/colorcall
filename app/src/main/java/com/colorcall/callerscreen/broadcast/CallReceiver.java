@@ -55,7 +55,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     }
 
     private void onCallStateChanged(Context context, int state) {
-        Log.e("TAN", "onCallStateChanged: "+lastStateCall+"--"+state);
      //   if (lastStateCall != state) {
             switch (state) {
                 case TYPE_RINGGING_CALL:
@@ -80,7 +79,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     }
 
     private void onIncommingCall(Context context, String number) {
-        Log.e("TAN", "onIncommingCall: ");
         if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
             intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);
@@ -89,7 +87,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             } else {
                 context.startService(intentCallService);
             }
-            Log.e("TAN", "onIncommingCall: 2");
         }
     }
 
@@ -105,7 +102,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             phoneNumber = phoneNumb;
             isFirstRun = true;
             isBiggerAndroidP = false;
-            Log.e("TAN", "getNumPhone: vao day "+phoneNumb);
             onCallStateChanged(context, stateType);
         }
     }

@@ -1,14 +1,20 @@
 package com.colorcall.callerscreen.main;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -34,12 +40,13 @@ public class MainListCategoryThumbAdapter extends RecyclerView.Adapter<RecyclerV
         @BindView(R.id.layoutAdd)
         RelativeLayout layoutAdd;
 
-        public AddHolder(@NonNull View itemView, Context context) {
+        public AddHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         public void onBind() {
+            resizeItemAdd(context,layoutAdd);
             this.layoutAdd.setOnClickListener(v->{
                 if(listener!=null){
                     listener.onAdd();
@@ -61,6 +68,8 @@ public class MainListCategoryThumbAdapter extends RecyclerView.Adapter<RecyclerV
         ImageView imgVideo;
         @BindView(R.id.layoutSelected)
         RelativeLayout layoutSelected;
+        @BindView(R.id.layout_item)
+        RelativeLayout layout_item;
         private Background backgroundSelected;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,6 +78,7 @@ public class MainListCategoryThumbAdapter extends RecyclerView.Adapter<RecyclerV
         }
 
         public void onBind(int i) {
+            resizeItem(context,layout_item);
             Background background =  listBg.get(i);
             if(background.getPathThumb().equals(backgroundSelected.getPathThumb())&&HawkHelper.isEnableColorCall()){
                 layoutSelected.setVisibility(View.VISIBLE);
@@ -117,7 +127,7 @@ public class MainListCategoryThumbAdapter extends RecyclerView.Adapter<RecyclerV
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         switch (i) {
             case 0:
-                return new AddHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.add_new, viewGroup, false), this.context);
+                return new AddHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.add_new, viewGroup, false));
             case 1:
                 return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_list_category_thumb, viewGroup, false));
             default:
@@ -146,10 +156,29 @@ public class MainListCategoryThumbAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     public int getItemCount() {
-        return Math.min(listBg.size(), 4);
+        return Math.min(listBg.size(), 3);
     }
 
     public void setListener(Listener listener2) {
         this.listener = listener2;
+    }
+
+    private void resizeItemAdd(Context context, RelativeLayout layout_item) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) layout_item.getLayoutParams();
+        layoutParams.width = (int) (width/3.2);
+        layoutParams.height = width/2;
+        layout_item.setLayoutParams(layoutParams);
+    }
+    private void resizeItem(Context context, RelativeLayout layout_item) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) layout_item.getLayoutParams();
+        layoutParams.width = (int) (width/3.2);
+        layoutParams.height = width/2;
+        layout_item.setLayoutParams(layoutParams);
     }
 }

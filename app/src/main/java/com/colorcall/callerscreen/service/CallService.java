@@ -259,7 +259,7 @@ public class CallService extends Service {
 
     private void handlingBgCallImage() {
         imgBgCall.setVisibility(View.VISIBLE);
-        if (backgroundSelect.getPathItem().contains("storage")) {
+        if (backgroundSelect.getPathItem().contains("storage")||backgroundSelect.getPathItem().contains("data/user/")) {
             Glide.with(getApplicationContext())
                     .load(backgroundSelect.getPathItem())
                     .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
@@ -271,7 +271,7 @@ public class CallService extends Service {
     private void handlingBgCallVideo() {
         imgBgCall.setVisibility(View.GONE);
         vdoBgCall.setVisibility(View.VISIBLE);
-        if (backgroundSelect.getPathItem().contains("storage")) {
+        if (backgroundSelect.getPathItem().contains("storage")||backgroundSelect.getPathItem().contains("data/user/")) {
             vdoBgCall.setVideoPath(backgroundSelect.getPathItem());
         } else {
             String uriPath = "android.resource://" + getPackageName() + backgroundSelect.getPathItem();

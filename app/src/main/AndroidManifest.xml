@@ -32,6 +32,9 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
         <activity
             android:name=".call.CallActivity"
             android:screenOrientation="portrait"
@@ -41,11 +44,7 @@
         <activity
             android:name=".splash.SplashActivity"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data
@@ -57,7 +56,13 @@
 
         <activity
             android:name=".main.MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".setting.SettingActivity"
             android:screenOrientation="portrait" />

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -309,6 +310,10 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
                     boolean isDelete = data.getBooleanExtra(Constant.IS_DELETE_BG, false);
                     if (isDelete && positionSelectBg > -1) {
                         list.remove(positionSelectBg);
+                        adapter.notifyDataSetChanged();
+                    }
+                    boolean isUpdateList = data.getBooleanExtra(Constant.IS_UPDATE_LIST,false);
+                    if(isUpdateList){
                         adapter.notifyDataSetChanged();
                     }
                 }

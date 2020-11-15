@@ -328,45 +328,48 @@ public class AppUtils {
     }
 
     public static Bitmap getContactPhoto(Context context, String number) {
-        ContentResolver contentResolver = context.getContentResolver();
-        String contactId = null;
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-
-        String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID};
-
-        Cursor cursor =
-                contentResolver.query(
-                        uri,
-                        projection,
-                        null,
-                        null,
-                        null);
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
-            }
-            cursor.close();
-        }
-
         Bitmap photo = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.user);
+        if(!number.equals("")){
+            ContentResolver contentResolver = context.getContentResolver();
+            String contactId = null;
+            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
 
-        try {
-            if(contactId != null) {
-                InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),
-                        ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactId)),true);
+            String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID};
 
-                if (inputStream != null) {
-                    photo = BitmapFactory.decodeStream(inputStream);
+            Cursor cursor =
+                    contentResolver.query(
+                            uri,
+                            projection,
+                            null,
+                            null,
+                            null);
+
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
                 }
-
-                if(inputStream != null) {
-                    inputStream.close();
-                }
+                cursor.close();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+
+
+            try {
+                if(contactId != null) {
+                    InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),
+                            ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactId)),true);
+
+                    if (inputStream != null) {
+                        photo = BitmapFactory.decodeStream(inputStream);
+                    }
+
+                    if(inputStream != null) {
+                        inputStream.close();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return photo;
     }

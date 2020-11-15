@@ -169,7 +169,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 return;
             case R.id.layoutPolicy:
                 firebaseAnalystic.trackEvent(ManagerEvent.settingPolicyClick());
-                startActivity(new Intent("android.intent.action.VIEW", Uri.parse(Constant.POLICY_URL)));
+                openWebPage(Constant.POLICY_URL);
                 return;
             case R.id.layoutShareApp:
                 firebaseAnalystic.trackEvent(ManagerEvent.settingShareAppClick());
@@ -187,6 +187,20 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 return;
             default:
                 return;
+        }
+    }
+
+    public void openWebPage(String url) {
+
+        Uri webpage = Uri.parse(url);
+
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            webpage = Uri.parse("http://" + url);
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
         }
     }
 

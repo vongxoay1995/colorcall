@@ -52,7 +52,7 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) layout_item.getLayoutParams();
-        layoutParams.width = width/2;
+        layoutParams.width = (int) (width/2.1);
         layoutParams.height = (2*width)/3;
         layout_item.setLayoutParams(layoutParams);
     }
@@ -68,11 +68,11 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private Background backgroundSelected;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            backgroundSelected = HawkHelper.getBackgroundSelect();
             ButterKnife.bind(this, itemView);
         }
 
         public void onBind(int i) {
+            backgroundSelected = HawkHelper.getBackgroundSelect();
             Background background = listBg.get(i);
             if(background.getPathThumb().equals(backgroundSelected.getPathThumb())&&HawkHelper.isEnableColorCall()){
                 layoutSelected.setVisibility(View.VISIBLE);
@@ -113,7 +113,6 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     Listener listener;
-
     public class AddHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.layoutAdd)
         RelativeLayout layoutAdd;
@@ -135,7 +134,6 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public interface Listener {
         void onAdd();
-
         void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete);
     }
 
