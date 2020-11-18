@@ -36,6 +36,16 @@ import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -52,8 +62,10 @@ import butterknife.OnClick;
 public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener, PermistionCallListener {
     @BindView(R.id.img_background_call)
     ImageView imgBackgroundCall;
-    @BindView(R.id.vdo_background_call)
-    CustomVideoView vdoBackgroundCall;
+   /* @BindView(R.id.vdo_background_call)
+    CustomVideoView vdoBackgroundCall;*/
+    @BindView(R.id.exo_player)
+    PlayerView playerView;
     @BindView(R.id.imgDelete)
     ImageView imgDelete;
     @BindView(R.id.layoutApply)
@@ -68,6 +80,8 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     private PublisherInterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
     private boolean allowAdsShow;
+    private ExoPlayer exoPlayer;
+    private String videoPath;
     LocalBroadcastManager localBroadcastManager;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,19 +171,23 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         String uriPath = "android.resource://" + getPackageName() + background.getPathItem();
         if (background.getType() == Constant.TYPE_VIDEO) {
             imgBackgroundCall.setVisibility(View.GONE);
-            vdoBackgroundCall.setVisibility(View.VISIBLE);
+         //   vdoBackgroundCall.setVisibility(View.VISIBLE);
+            playerView.setVisibility(View.VISIBLE);
             if (background.getPathItem().contains("storage")||background.getPathItem().contains("data/user/")) {
-                vdoBackgroundCall.setVideoPath(background.getPathItem());
+               // vdoBackgroundCall.setVideoPath(background.getPathItem());
+               videoPath = background.getPathItem();
             } else {
-                vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
+                //vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
+                videoPath = uriPath;
             }
-            vdoBackgroundCall.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    mediaPlayer.setLooping(true);
-                }
-            });
-            vdoBackgroundCall.start();
+//            vdoBackgroundCall.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                @Override
+//                public void onPrepared(MediaPlayer mediaPlayer) {
+//                    mediaPlayer.setLooping(true);
+//                }
+//            });
+//            vdoBackgroundCall.start();
+            initVideoView(videoPath);
         } else {
             imgBackgroundCall.setVisibility(View.VISIBLE);
             if (background.getPathItem().contains("storage")||background.getPathItem().contains("data/user/")) {
@@ -180,10 +198,42 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             } else {
 
             }
-            vdoBackgroundCall.setVisibility(View.GONE);
+          //  vdoBackgroundCall.setVisibility(View.GONE);
+            playerView.setVisibility(View.GONE);
         }
     }
+   public void initVideoView(String videoPath){
+       if (videoPath != null) {
+           exoPlayer = ExoPlayerFactory.newSimpleInstance(this, new DefaultTrackSelector());
+           exoPlayer.addListener(new Player.EventListener() {
+               @Override
+               public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                   switch (playbackState) {
+                       case ExoPlayer.STATE_READY:
+                           break;
+                       case ExoPlayer.STATE_ENDED:
+                           Log.e("TAN", "onPlayerStateChanged: end");
+                           exoPlayer.prepare(mediaSource);
+                           break;
+                   }
+               }
 
+               @Override
+               public void onPlayerError(ExoPlaybackException error) {
+                   Log.e("TAN", "onPlayerError: "+error.getLocalizedMessage());
+               }
+           });
+           exoPlayer.setPlayWhenReady(false);
+
+           Uri uri = Uri.parse(videoPath);
+
+           DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, getPackageName()));
+           mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+           exoPlayer.prepare(mediaSource);
+           playerView.setPlayer(exoPlayer);
+           exoPlayer.setPlayWhenReady(true);
+       }
+   }ExtractorMediaSource mediaSource;
     public void deleteTheme(Background background) {
         DataManager.query().getBackgroundDao().delete(background);
     }
@@ -191,13 +241,29 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     @Override
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.applyOpen());
-        vdoBackgroundCall.start();
+        playerView.onResume();
+        //vdoBackgroundCall.start();
         startAnimation();
         allowAdsShow = true;
         showAds();
         super.onResume();
     }
 
+
+    @Override
+    protected void onPause() {
+        stopPlayer();
+        super.onPause();
+    }
+    private void resetPlayer() {
+        stopPlayer();
+        exoPlayer.seekTo(0);
+        exoPlayer.setPlaybackParameters(new PlaybackParameters(1f));
+    }
+    private void stopPlayer() {
+        exoPlayer.setPlayWhenReady(false);
+        playerView.onPause();
+    }
     @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {

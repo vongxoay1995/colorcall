@@ -68,12 +68,13 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
     private final int indexYourData = 2;
+    private String pathUriImage;
 
     LocalBroadcastManager mLocalBroadcastManager;
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()){
+            switch (intent.getAction()) {
                 case Constant.INTENT_APPLY_THEME:
                     adapter.notifyDataSetChanged();
                     break;
@@ -91,13 +92,13 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        AppUtils.showFullHeader(this,layout_head);
+        AppUtils.showFullHeader(this, layout_head);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
         loadData(Constant.MENU_CATEGORY);
-        if(AppUtils.isNetworkConnected(this)){
+        if (AppUtils.isNetworkConnected(this)) {
             loadAds();
-        }else {
+        } else {
             layoutAds.setVisibility(View.GONE);
         }
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
@@ -128,10 +129,12 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
             addAllData();
         }
     }
-   public void addAllData(){
-       addDatafromDatabase();
-       initAdapterCategory();
-   }
+
+    public void addAllData() {
+        addDatafromDatabase();
+        initAdapterCategory();
+    }
+
     @Override
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.mainOpen());
@@ -186,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     }
 
     private void openDialogGallery() {
-        AppUtils.showDialogMyGallery(this, firebaseAnalystic,this);
+        AppUtils.showDialogMyGallery(this, firebaseAnalystic, this);
     }
 
     @Override
@@ -200,23 +203,23 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     }
 
     private void trackingSeemoClick(int position) {
-      switch (position){
-          case Constant.CTG_RECOMMEND:
-              firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllRecommend());
-              break;
-          case Constant.CTG_POPULAR:
-              firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllPopulated());
-              break;
-          case Constant.CTG_YOURTHEME:
-              firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllYourTheme());
-              break;
-          case Constant.CTG_COLOR_EFFECT:
-              firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllColorEffect());
-              break;
-          case Constant.CTG_LOVELY:
-              firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllLovelly());
-              break;
-      }
+        switch (position) {
+            case Constant.CTG_RECOMMEND:
+                firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllRecommend());
+                break;
+            case Constant.CTG_POPULAR:
+                firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllPopulated());
+                break;
+            case Constant.CTG_YOURTHEME:
+                firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllYourTheme());
+                break;
+            case Constant.CTG_COLOR_EFFECT:
+                firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllColorEffect());
+                break;
+            case Constant.CTG_LOVELY:
+                firebaseAnalystic.trackEvent(ManagerEvent.mainSeeAllLovelly());
+                break;
+        }
     }
 
     @Override
@@ -236,8 +239,13 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
                 adapter.setNewData(listCategory);
                 adapter.notifyItemChanged(indexYourData);
             } else if (requestCode == Constant.REQUEST_CODE_IMAGES) {
-                Uri uriData = data.getData();
-                String path = FileUtils.getRealPathFromUri(this, uriData);
+                String path;
+                if (data!=null&&data.getData() != null) {
+                    path = FileUtils.getRealPathFromUri(this, data.getData());
+                } else {
+                    path = pathUriImage;
+                }
+                Log.e("TAN", "onActivityResult: " + path);
                 resetListDataImage(path);
                 addDatafromDatabase();
                 adapter.setNewData(listCategory);
@@ -287,7 +295,9 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
     @Override
     public void onVideoClicked() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         photoPickerIntent.setType("video/*");
+        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
         Intent takePhotoIntent = new Intent("android.media.action.VIDEO_CAPTURE");
         Intent chooserIntent = Intent.createChooser(photoPickerIntent, getResources().getString(R.string.your_video));
@@ -297,19 +307,10 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
 
     @Override
     public void onImagesClicked() {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
-        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        String pickTitle = getResources().getString(R.string.select_picture);
-        Intent chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle);
-        chooserIntent.putExtra
-                (Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
-        startActivityForResult(chooserIntent, Constant.REQUEST_CODE_IMAGES);
+        pathUriImage = AppUtils.openCameraIntent(this, Constant.REQUEST_CODE_IMAGES);
     }
 
-    @OnClick({R.id.btnGift, R.id.btnCamera,R.id.btnVips})
+    @OnClick({R.id.btnGift, R.id.btnCamera, R.id.btnVips})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnGift:
@@ -324,6 +325,7 @@ public class MainActivity extends AppCompatActivity implements MainListCategoryA
                 break;
         }
     }
+
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
         String idGG;

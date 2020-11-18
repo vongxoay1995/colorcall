@@ -1,6 +1,8 @@
 package com.colorcall.callerscreen.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,8 +13,12 @@ import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.core.content.FileProvider;
+
+import com.colorcall.callerscreen.constan.Constant;
 import com.google.android.gms.common.util.IOUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,20 +44,27 @@ public class FileUtils {
             }
         }
     }
+
+    public static Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "ColorPhone_" + System.currentTimeMillis(), null);
+        return Uri.parse(path);
+    }
     public static String getRealPathFromUri(Context context, Uri contentUri) {
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
-            return getFilePathForN(context,contentUri);
-        }else {
-            if(contentUri!=null){
+        if (contentUri != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                return getFilePathForN(context, contentUri);
+            } else {
                 Cursor cursor = null;
                 try {
-                    String[] proj = { MediaStore.Images.Media.DATA };
+                    String[] proj = {MediaStore.Images.Media.DATA};
                     cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-                    if(cursor!=null){
+                    if (cursor != null) {
                         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                         cursor.moveToFirst();
                         return cursor.getString(column_index);
-                    }else {
+                    } else {
                         return "";
                     }
                 } finally {
@@ -59,11 +72,12 @@ public class FileUtils {
                         cursor.close();
                     }
                 }
-            }else
-                return "";
-        }
+            }
+        } else
+            return "";
     }
-    private static String getFilePathForN( Context context,Uri uri) {
+
+    private static String getFilePathForN(Context context, Uri uri) {
         Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
         /*
          * Get the column indexes of the data in the Cursor,
@@ -94,12 +108,18 @@ public class FileUtils {
             outputStream.close();
         } catch (Exception e) {
             Log.e("Exception", e.getMessage());
-        }
-        finally {
+        } finally {
             if (returnCursor != null) {
                 returnCursor.close();
             }
         }
         return file.getPath();
+    }
+
+    public static File createImageFile(Context context) throws IOException {
+        File storageDir =
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile("ColorCall_image_default",".jpg", storageDir);
+        return image;
     }
 }

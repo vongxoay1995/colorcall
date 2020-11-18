@@ -68,7 +68,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
     private int positionSelectBg = -1;
     private FirebaseAnalystic firebaseAnalystic;
     private BannerAdsUtils bannerAdsUtils;
-
+    private String pathUriImage;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cate_gory_detail);
@@ -233,16 +233,7 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
 
     @Override
     public void onImagesClicked() {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
-        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        String pickTitle = getResources().getString(R.string.select_picture);
-        Intent chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle);
-        chooserIntent.putExtra
-                (Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
-        startActivityForResult(chooserIntent, Constant.REQUEST_CODE_IMAGES);
+        pathUriImage = AppUtils.openCameraIntent(this, Constant.REQUEST_CODE_IMAGES);
     }
 
     private void resetListDataVideo(String path) {
@@ -302,8 +293,12 @@ public class CateGoryDetail extends AppCompatActivity implements CategoryDetailA
                 String path = FileUtils.getRealPathFromUri(this, uriData);
                 resetListDataVideo(path);
             } else if (requestCode == Constant.REQUEST_CODE_IMAGES) {
-                Uri uriData = data.getData();
-                String path = FileUtils.getRealPathFromUri(this, uriData);
+                String path;
+                if (data!=null&&data.getData() != null) {
+                    path = FileUtils.getRealPathFromUri(this, data.getData());
+                } else {
+                    path = pathUriImage;
+                }
                 resetListDataImage(path);
             } else if (requestCode == Constant.APPLY_REQUEST_CODE) {
                 if (data != null) {

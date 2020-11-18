@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Contacts;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
@@ -46,10 +48,13 @@ import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
 public class AppUtils {
     public static boolean checkPermission(Context context, String[] permission) {
@@ -414,5 +419,34 @@ public class AppUtils {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+    public static String openCameraIntent(Activity activity, int requestCode) {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+        photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        String pickTitle = activity.getResources().getString(R.string.select_picture);
+        Intent chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle);
+        chooserIntent.putExtra
+                (Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
+        if (takePhotoIntent.resolveActivity(activity.getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile(activity);
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(activity, activity.getPackageName() + Constant.PROVIDER, photoFile);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            photoURI);
+                }
+                activity.startActivityForResult(takePhotoIntent, requestCode);
+                return photoFile.getAbsolutePath();
+            } else return null;
+        } else return null;
     }
 }

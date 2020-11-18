@@ -18,6 +18,7 @@ public interface Constant {
     String PATH_THUMB_COLOR_CALL_IMAGES = "/ColorCall/Images";
     int APPLY_REQUEST_CODE =3 ;
     String IS_DELETE_BG = "delete_background" ;
+    String PROVIDER = ".provider";
     int PERMISSION_REQUEST_CODE_CAMERA = 99;
     int PERMISSION_REQUEST_CODE_CALL_PHONE = 98;
     String PHONE_NUMBER = "phone_number";
