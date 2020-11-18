@@ -62,10 +62,8 @@ import butterknife.OnClick;
 public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener, PermistionCallListener {
     @BindView(R.id.img_background_call)
     ImageView imgBackgroundCall;
-   /* @BindView(R.id.vdo_background_call)
-    CustomVideoView vdoBackgroundCall;*/
-    @BindView(R.id.exo_player)
-    PlayerView playerView;
+    @BindView(R.id.vdo_background_call)
+    CustomVideoView vdoBackgroundCall;
     @BindView(R.id.imgDelete)
     ImageView imgDelete;
     @BindView(R.id.layoutApply)
@@ -80,8 +78,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     private PublisherInterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
     private boolean allowAdsShow;
-    private ExoPlayer exoPlayer;
-    private String videoPath;
+
     LocalBroadcastManager localBroadcastManager;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,23 +168,26 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         String uriPath = "android.resource://" + getPackageName() + background.getPathItem();
         if (background.getType() == Constant.TYPE_VIDEO) {
             imgBackgroundCall.setVisibility(View.GONE);
-         //   vdoBackgroundCall.setVisibility(View.VISIBLE);
-            playerView.setVisibility(View.VISIBLE);
+            vdoBackgroundCall.setVisibility(View.VISIBLE);
             if (background.getPathItem().contains("storage")||background.getPathItem().contains("data/user/")) {
-               // vdoBackgroundCall.setVideoPath(background.getPathItem());
-               videoPath = background.getPathItem();
+                vdoBackgroundCall.setVideoPath(background.getPathItem());
             } else {
-                //vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
-                videoPath = uriPath;
+                vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
             }
-//            vdoBackgroundCall.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//                @Override
-//                public void onPrepared(MediaPlayer mediaPlayer) {
-//                    mediaPlayer.setLooping(true);
-//                }
-//            });
-//            vdoBackgroundCall.start();
-            initVideoView(videoPath);
+            vdoBackgroundCall.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.setLooping(true);
+                }
+            });
+            vdoBackgroundCall.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    firebaseAnalystic.trackEvent(ManagerEvent.applyVideoViewError(what,extra));
+                    return false;
+                }
+            });
+            vdoBackgroundCall.start();
         } else {
             imgBackgroundCall.setVisibility(View.VISIBLE);
             if (background.getPathItem().contains("storage")||background.getPathItem().contains("data/user/")) {
@@ -198,42 +198,9 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             } else {
 
             }
-          //  vdoBackgroundCall.setVisibility(View.GONE);
-            playerView.setVisibility(View.GONE);
+            vdoBackgroundCall.setVisibility(View.GONE);
         }
     }
-   public void initVideoView(String videoPath){
-       if (videoPath != null) {
-           exoPlayer = ExoPlayerFactory.newSimpleInstance(this, new DefaultTrackSelector());
-           exoPlayer.addListener(new Player.EventListener() {
-               @Override
-               public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                   switch (playbackState) {
-                       case ExoPlayer.STATE_READY:
-                           break;
-                       case ExoPlayer.STATE_ENDED:
-                           Log.e("TAN", "onPlayerStateChanged: end");
-                           exoPlayer.prepare(mediaSource);
-                           break;
-                   }
-               }
-
-               @Override
-               public void onPlayerError(ExoPlaybackException error) {
-                   Log.e("TAN", "onPlayerError: "+error.getLocalizedMessage());
-               }
-           });
-           exoPlayer.setPlayWhenReady(false);
-
-           Uri uri = Uri.parse(videoPath);
-
-           DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, getPackageName()));
-           mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
-           exoPlayer.prepare(mediaSource);
-           playerView.setPlayer(exoPlayer);
-           exoPlayer.setPlayWhenReady(true);
-       }
-   }ExtractorMediaSource mediaSource;
     public void deleteTheme(Background background) {
         DataManager.query().getBackgroundDao().delete(background);
     }
@@ -241,29 +208,13 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     @Override
     protected void onResume() {
         firebaseAnalystic.trackEvent(ManagerEvent.applyOpen());
-        playerView.onResume();
-        //vdoBackgroundCall.start();
+        vdoBackgroundCall.start();
         startAnimation();
         allowAdsShow = true;
         showAds();
         super.onResume();
     }
 
-
-    @Override
-    protected void onPause() {
-        stopPlayer();
-        super.onPause();
-    }
-    private void resetPlayer() {
-        stopPlayer();
-        exoPlayer.seekTo(0);
-        exoPlayer.setPlaybackParameters(new PlaybackParameters(1f));
-    }
-    private void stopPlayer() {
-        exoPlayer.setPlayWhenReady(false);
-        playerView.onPause();
-    }
     @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {

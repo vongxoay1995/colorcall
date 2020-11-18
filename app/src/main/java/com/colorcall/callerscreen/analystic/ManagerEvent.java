@@ -67,6 +67,14 @@ public class ManagerEvent {
     public static Event applyAdsClick(){
         return new Event(EventKey.APPLY_ADSBOX_CLICKED,new Bundle());
     }
+
+    public static Event applyVideoViewError(int what,int extra){
+        Bundle bundle =  new Bundle();
+        bundle.putInt("what",what);
+        bundle.putInt("extra",extra);
+        return new Event("ApplyVideoViewError",bundle);
+    }
+
     public static Event applyApplyClick(){
         return new Event(EventKey.APPLY_APPLY_CLICKED,new Bundle());
     }
@@ -133,7 +141,12 @@ public class ManagerEvent {
     public static Event callBiggerAndroidP(){
         return new Event(EventKey.CALL_ANDROID_BIGGER_P,new Bundle());
     }
-
+    public static Event callVideoViewError(int what,int extra){
+        Bundle bundle =  new Bundle();
+        bundle.putInt("what",what);
+        bundle.putInt("extra",extra);
+        return new Event("CallVideoViewError",bundle);
+    }
     // position main tracking
     public static Event mainRecoClick(int position){
         return new Event("MAIN_RECOPICTURE_"+position+"_CLICKED",new Bundle());

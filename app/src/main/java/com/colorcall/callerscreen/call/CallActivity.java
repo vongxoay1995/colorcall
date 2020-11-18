@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -205,6 +206,7 @@ public class CallActivity extends AppCompatActivity {
             vdoBgCall.setVideoURI(Uri.parse(uriPath));
         }
         vdoBgCall.setOnErrorListener((mp, what, extra) -> {
+            firebaseAnalystic.trackEvent(ManagerEvent.callVideoViewError(what,extra));
             finish();
             return true;
         });
