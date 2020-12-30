@@ -3,7 +3,6 @@ package com.colorcall.callerscreen.categorydetail;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.model.Background;
+import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;

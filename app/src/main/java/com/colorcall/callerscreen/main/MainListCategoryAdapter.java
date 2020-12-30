@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,9 +19,8 @@ import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.apply.ApplyActivity;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.model.Background;
+import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.model.Category;
-import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.CategoryUtils;
 import com.google.gson.Gson;
 

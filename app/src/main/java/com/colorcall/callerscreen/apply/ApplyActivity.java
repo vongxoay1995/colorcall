@@ -3,10 +3,8 @@ package com.colorcall.callerscreen.apply;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -22,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
@@ -29,37 +28,26 @@ import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
+import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
-import com.colorcall.callerscreen.model.Background;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.PlaybackParameters;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
-import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener, PermistionCallListener {
+public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener, PermistionCallListener, DownloadTask.Listener {
     @BindView(R.id.img_background_call)
     ImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
@@ -74,12 +62,15 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     ImageView btnAccept;
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
+    private String dataPath, folderApp;
     private Background background;
     private PublisherInterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
     private boolean allowAdsShow;
-
     LocalBroadcastManager localBroadcastManager;
+    ProgressDialog mProgressDialogDownload;
+    private String newPathItem;
+    private boolean isDownloaded=false;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
@@ -88,7 +79,25 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 .getInstance(this);
         AppUtils.showFullHeader(this, layoutHead);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        folderApp = Constant.LINK_VIDEO_CACHE;
         checkInforTheme();
+    }
+
+
+    private void startDownloadBg(String url, String videoName) {
+        AppUtils.createFolder(folderApp);
+        mProgressDialogDownload = new ProgressDialog(this);
+        mProgressDialogDownload.setMessage(getString(R.string.download));
+        mProgressDialogDownload.setIndeterminate(true);
+        mProgressDialogDownload.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialogDownload.setCancelable(true);
+        DownloadTask downloadTask = new DownloadTask(this);
+        downloadTask.setListener(this);
+        newPathItem = folderApp + videoName;
+        downloadTask.execute(url,newPathItem);
+        mProgressDialogDownload.setOnCancelListener(dialog -> {
+            downloadTask.cancel(true);
+        });
     }
 
     private void loadAds() {
@@ -153,56 +162,87 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
         Background backgroundCurrent = HawkHelper.getBackgroundSelect();
         if (backgroundCurrent != null) {
-            if (background.getPathItem().equals(backgroundCurrent.getPathItem())&&HawkHelper.isEnableColorCall()) {
+            if (background.getPathItem().equals(backgroundCurrent.getPathItem()) && HawkHelper.isEnableColorCall()) {
                 layoutApply.setEnabled(false);
                 layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
                 txtApply.setText(getString(R.string.applied));
                 txtApply.setTextColor(Color.BLACK);
             } else {
                 layoutApply.setEnabled(true);
-                txtApply.setText(getString(R.string.applyContact));
                 layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_green_radius_60));
                 txtApply.setTextColor(Color.WHITE);
             }
         }
-        String uriPath = "android.resource://" + getPackageName() + background.getPathItem();
+
+        String sPathThumb;
         if (background.getType() == Constant.TYPE_VIDEO) {
-            imgBackgroundCall.setVisibility(View.GONE);
-            vdoBackgroundCall.setVisibility(View.VISIBLE);
-            if (background.getPathItem().contains("storage")||background.getPathItem().contains("data/user/")) {
-                vdoBackgroundCall.setVideoPath(background.getPathItem());
-            } else {
-                vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
-            }
-            vdoBackgroundCall.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    mediaPlayer.setLooping(true);
-                }
-            });
-            vdoBackgroundCall.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    firebaseAnalystic.trackEvent(ManagerEvent.applyVideoViewError(what,extra));
-                    return false;
-                }
-            });
-            vdoBackgroundCall.start();
+            processVideo();
         } else {
             imgBackgroundCall.setVisibility(View.VISIBLE);
-            if (background.getPathItem().contains("storage")||background.getPathItem().contains("data/user/")) {
-                Glide.with(getApplicationContext())
-                        .load(background.getPathItem())
-                        .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
-                        .into(imgBackgroundCall);
+            if (background.getPathItem().contains("default")) {
+                sPathThumb = "file:///android_asset/" + background.getPathThumb();
             } else {
-
+                sPathThumb = background.getPathThumb();
             }
+            Glide.with(getApplicationContext())
+                    .load(sPathThumb)
+                    .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
+                    .into(imgBackgroundCall);
             vdoBackgroundCall.setVisibility(View.GONE);
         }
     }
+
+    private void processVideo() {
+        String sPath;
+        String sPathThumb;
+        String uriPath = "android.resource://" + getPackageName() + background.getPathItem();
+        if (background.getPathItem().contains("default")) {
+            sPathThumb = "file:///android_asset/" + background.getPathThumb();
+        } else {
+            sPathThumb = background.getPathThumb();
+        }
+        Glide.with(getApplicationContext())
+                .load(sPathThumb)
+                .thumbnail(0.001f)
+                .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
+                .into(imgBackgroundCall);
+        if (background.getPathItem().contains("storage") ||background.getPathItem().contains("/data/data")|| background.getPathItem().contains("data/user/")) {
+            sPath = background.getPathItem();
+            if (!sPath.startsWith("http")) {
+                isDownloaded = false;
+                vdoBackgroundCall.setVideoURI(Uri.parse(sPath));
+                playVideo();
+                txtApply.setText(getString(R.string.applyContact));
+            }else{
+                isDownloaded = true;
+                txtApply.setText(getString(R.string.download));
+            }
+        } else {
+            vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
+            playVideo();
+        }
+    }
+
     public void deleteTheme(Background background) {
         DataManager.query().getBackgroundDao().delete(background);
+        Log.e("TAN", "deleteTheme: "+background);
+        HawkHelper.getListBackground().remove(background);
+        ArrayList<Background> arr = HawkHelper.getListBackground();
+        for (int i=0;i<arr.size();i++){
+            Log.e("TAN", "deleteTheme: index "+i+"--"+arr.get(i));
+        }
+        Log.e("TAN", "aaa: "+arr.indexOf(background));
+    }
+
+    private void playVideo() {
+        imgBackgroundCall.setVisibility(View.GONE);
+        vdoBackgroundCall.setVisibility(View.VISIBLE);
+        vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> mediaPlayer.setLooping(true));
+        vdoBackgroundCall.setOnErrorListener((mp, what, extra) -> {
+            firebaseAnalystic.trackEvent(ManagerEvent.applyVideoViewError(what, extra));
+            return false;
+        });
+        vdoBackgroundCall.start();
     }
 
     @Override
@@ -224,7 +264,11 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 break;
             case R.id.layoutApply:
                 firebaseAnalystic.trackEvent(ManagerEvent.applyApplyClick());
-                PermistionUtils.checkPermissionCall(this, this);
+                if(isDownloaded){
+                    startDownloadBg(background.getPathItem(),background.getName());
+                }else{
+                    PermistionUtils.checkPermissionCall(this, this);
+                }
                 break;
             case R.id.imgDelete:
                 firebaseAnalystic.trackEvent(ManagerEvent.applyBinClick());
@@ -240,15 +284,14 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     @Override
     public void onDelete() {
         deleteTheme(background);
-        Intent intent = new Intent();
-        intent.putExtra(Constant.IS_DELETE_BG, true);
         localBroadcastManager.sendBroadcast(new Intent(Constant.INTENT_DELETE_THEME));
-        setResult(RESULT_OK, intent);
         finish();
     }
+
     ProgressDialog mProgressDialog;
+
     private void applyBgCall() {
-        mProgressDialog  = ProgressDialog.show(this, "",
+        mProgressDialog = ProgressDialog.show(this, "",
                 getString(R.string.applying), true);
         mProgressDialog.show();
         loadAds();
@@ -305,7 +348,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
-               applyBgCall();
+                applyBgCall();
             }
         }
     }
@@ -336,6 +379,36 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     public void onBackPressed() {
         if (mInterstitialAd == null || !mInterstitialAd.isLoading()) {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onPreExecute() {
+        mProgressDialogDownload.show();
+    }
+
+    @Override
+    public void onProgressUpdate(int value) {
+        mProgressDialogDownload.setIndeterminate(false);
+        mProgressDialogDownload.setMax(100);
+        mProgressDialogDownload.setProgress(value);
+    }
+
+    @Override
+    public void onPostExecute(String result) {
+        mProgressDialogDownload.dismiss();
+        if (result != null){
+            Toast.makeText(this, "Download error: " + result, Toast.LENGTH_LONG).show();
+        }else {
+            ArrayList<Background> arr = HawkHelper.getListBackground();
+            arr.get(background.getPosition()).setPathItem(newPathItem);
+            HawkHelper.setListBackground(arr);
+            vdoBackgroundCall.setVideoURI(Uri.parse(newPathItem));
+            txtApply.setText(getString(R.string.applyContact));
+            isDownloaded = false;
+            playVideo();
+            localBroadcastManager.sendBroadcast(new Intent(Constant.INTENT_DOWNLOAD_COMPLETE_THEME));
+            Toast.makeText(this, getString(R.string.downloadSuccess), Toast.LENGTH_SHORT).show();
         }
     }
 }

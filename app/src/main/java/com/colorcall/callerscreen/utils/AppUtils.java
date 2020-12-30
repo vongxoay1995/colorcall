@@ -17,7 +17,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -35,15 +34,16 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.model.Category;
-import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
@@ -52,7 +52,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
@@ -65,11 +64,13 @@ public class AppUtils {
         }
         return true;
     }
+
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         assert cm != null;
         return cm.getActiveNetworkInfo() != null;
     }
+
     public static boolean checkPermissionGrand(int[] grantResults) {
         boolean passed = true;
         for (int i : grantResults) {
@@ -134,12 +135,13 @@ public class AppUtils {
         }
         return false;
     }
+
     public static void showNotificationAccess(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getString(R.string.turn_on_notifi))
                 .setNegativeButton(R.string.ok, (dialogInterface, i) -> {
                     dialogInterface.dismiss();
-                    ((Activity)context).startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS), Constant.REQUEST_NOTIFICATION_ACCESS);
+                    ((Activity) context).startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS), Constant.REQUEST_NOTIFICATION_ACCESS);
                 });
         builder.setCancelable(false);
         AlertDialog getNotifiAcessDialog = builder.create();
@@ -155,7 +157,8 @@ public class AppUtils {
         ArrayList<Category> list = new ArrayList<>();
         return list;
     }
-    public static void showDialogMyGallery(Activity activity, FirebaseAnalystic firebaseAnalystic, DialogGalleryListener dialogGalleryListener){
+
+    public static void showDialogMyGallery(Activity activity, FirebaseAnalystic firebaseAnalystic, DialogGalleryListener dialogGalleryListener) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -166,20 +169,17 @@ public class AppUtils {
         imgImages = dialog.findViewById(R.id.imgSelectImage);
         dialog.show();
         firebaseAnalystic.trackEvent(ManagerEvent.mainDialogOpen());
-        imgVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(dialogGalleryListener!=null){
-                    dialogGalleryListener.onVideoClicked();
-                    firebaseAnalystic.trackEvent(ManagerEvent.mainDialogVideo());
-                }
-                dialog.dismiss();
+        imgVideo.setOnClickListener(v -> {
+            if (dialogGalleryListener != null) {
+                dialogGalleryListener.onVideoClicked();
+                firebaseAnalystic.trackEvent(ManagerEvent.mainDialogVideo());
             }
+            dialog.dismiss();
         });
         imgImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dialogGalleryListener!=null){
+                if (dialogGalleryListener != null) {
                     dialogGalleryListener.onImagesClicked();
                     firebaseAnalystic.trackEvent(ManagerEvent.mainDialogPicture());
                 }
@@ -187,7 +187,8 @@ public class AppUtils {
             }
         });
     }
-    public static void showDialogMyGallery(Activity activity, DialogGalleryListener dialogGalleryListener){
+
+    public static void showDialogMyGallery(Activity activity, DialogGalleryListener dialogGalleryListener) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -200,7 +201,7 @@ public class AppUtils {
         imgVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dialogGalleryListener!=null){
+                if (dialogGalleryListener != null) {
                     dialogGalleryListener.onVideoClicked();
                 }
                 dialog.dismiss();
@@ -209,13 +210,14 @@ public class AppUtils {
         imgImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dialogGalleryListener!=null){
+                if (dialogGalleryListener != null) {
                     dialogGalleryListener.onImagesClicked();
                 }
                 dialog.dismiss();
             }
         });
     }
+
     public static void showDialogDelete(Activity activity, DialogDeleteListener dialogDeleteListener) {
         LayoutInflater inflater = activity.getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.dialog_delete, null);
@@ -237,7 +239,7 @@ public class AppUtils {
         txtYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dialogDeleteListener!=null){
+                if (dialogDeleteListener != null) {
                     dialogDeleteListener.onDelete();
                 }
                 dialog.dismiss();
@@ -250,9 +252,11 @@ public class AppUtils {
             AppUtils.showDrawOverlayPermissionDialog(context);
         }
     }
+
     public static boolean checkDrawOverlay(Context context) {
         return Build.VERSION.SDK_INT < 23 || AppUtils.canDrawOverlays(context);
     }
+
     public static void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
         // Set the media view.
         adView.setMediaView((MediaView) adView.findViewById(R.id.ad_media));
@@ -335,7 +339,7 @@ public class AppUtils {
     public static Bitmap getContactPhoto(Context context, String number) {
         Bitmap photo = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.user);
-        if(!number.equals("")){
+        if (!number.equals("")) {
             ContentResolver contentResolver = context.getContentResolver();
             String contactId = null;
             Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
@@ -358,17 +362,16 @@ public class AppUtils {
             }
 
 
-
             try {
-                if(contactId != null) {
+                if (contactId != null) {
                     InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),
-                            ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactId)),true);
+                            ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactId)), true);
 
                     if (inputStream != null) {
                         photo = BitmapFactory.decodeStream(inputStream);
                     }
 
-                    if(inputStream != null) {
+                    if (inputStream != null) {
                         inputStream.close();
                     }
                 }
@@ -387,31 +390,32 @@ public class AppUtils {
             return null;
         }
         String contactName = "";
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if(cursor != null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
 
         return contactName;
     }
-    public static void showFullHeader(Context context, View toolBar){
+
+    public static void showFullHeader(Context context, View toolBar) {
         int statusBarHeight;
         RelativeLayout.LayoutParams layoutParams =
                 (RelativeLayout.LayoutParams) toolBar.getLayoutParams();
 
-        if(getStatusBarHeight(context)>0){
+        if (getStatusBarHeight(context) > 0) {
             statusBarHeight = getStatusBarHeight(context);
-        }
-        else {
-            statusBarHeight = layoutParams.height/3;
+        } else {
+            statusBarHeight = layoutParams.height / 3;
         }
         layoutParams.height = layoutParams.height + statusBarHeight;
         toolBar.setLayoutParams(layoutParams);
         toolBar.setPadding(toolBar.getPaddingLeft(), statusBarHeight, toolBar.getPaddingRight(), toolBar.getPaddingBottom());
     }
+
     public static int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -420,6 +424,7 @@ public class AppUtils {
         }
         return result;
     }
+
     public static String openCameraIntent(Activity activity, int requestCode) {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
@@ -448,5 +453,65 @@ public class AppUtils {
                 return photoFile.getAbsolutePath();
             } else return null;
         } else return null;
+    }
+    public static String openCameraIntent(Fragment fragment, Activity activity, int requestCode) {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+        photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*"});
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        String pickTitle = activity.getResources().getString(R.string.select_picture);
+        Intent chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle);
+        chooserIntent.putExtra
+                (Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
+        if (takePhotoIntent.resolveActivity(activity.getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile(activity);
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(activity, activity.getPackageName() + Constant.PROVIDER, photoFile);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            photoURI);
+                }
+                fragment.startActivityForResult(chooserIntent, requestCode);
+                return photoFile.getAbsolutePath();
+            } else return null;
+        } else return null;
+    }
+    public static ArrayList<Background> loadDataDefault(Context context, String path) {
+        ArrayList<Background> listBackground = new ArrayList<>();
+        String pathThumb, pathFile;
+        int type=0;
+        String prefixVideo = "/raw/";
+        Background background;
+        try {
+            String[] pathFiles = context.getAssets().list(path);
+            for (int i = 0; i < pathFiles.length; i++) {
+                pathThumb = path + "/" + pathFiles[i];
+                if(i>3){
+                    type=1;
+                    pathFile =pathThumb;
+                }else{
+                    type=0;
+                    pathFile = prefixVideo + pathFiles[i].substring(0, pathFiles[i].length() - 5);
+                }
+                background = new Background(type, pathThumb, pathFile, false,"default",i);
+                listBackground.add(background);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return listBackground;
+    }
+    public static void createFolder(String folderApp) {
+        File file = new File(folderApp);
+        if (!file.exists()) {
+            file.mkdir();
+        }
     }
 }

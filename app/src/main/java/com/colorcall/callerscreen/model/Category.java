@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.model;
 
+import com.colorcall.callerscreen.database.Background;
+
 import java.util.ArrayList;
 
 public class Category {

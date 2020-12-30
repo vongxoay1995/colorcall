@@ -29,7 +29,7 @@
             android:layout_toEndOf="@+id/btnBack"
             android:text="@string/settings"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize16"
+            android:textSize="@dimen/_16ssp"
             app:fontFamily="@font/robotobold" />
 
         <LinearLayout
@@ -121,7 +121,7 @@
                     android:paddingStart="@dimen/_5sdp"
                     android:text="@string/shareApp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/textsizeNomal"
+                    android:textSize="@dimen/_12ssp"
                     app:fontFamily="@font/robotoregular" />
 
                 <ImageView
@@ -155,7 +155,7 @@
                     android:paddingStart="@dimen/_5sdp"
                     android:text="@string/checkUpdate"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/textsizeNomal"
+                    android:textSize="@dimen/_12ssp"
                     app:fontFamily="@font/robotoregular" />
 
                 <ImageView
@@ -189,7 +189,7 @@
                     android:paddingStart="@dimen/_5sdp"
                     android:text="@string/policy"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/textsizeNomal"
+                    android:textSize="@dimen/_12ssp"
                     app:fontFamily="@font/robotoregular" />
 
                 <ImageView
@@ -224,7 +224,7 @@
                     android:paddingRight="@dimen/_10sdp"
                     android:text="@string/callerscreen"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/textsizeNomal"
+                    android:textSize="@dimen/_12ssp"
                     app:fontFamily="@font/robotoregular" />
 
                 <androidx.appcompat.widget.SwitchCompat
@@ -257,7 +257,7 @@
                     android:paddingEnd="@dimen/_10sdp"
                     android:text="@string/ledFlash"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/textsizeNomal"
+                    android:textSize="@dimen/_12ssp"
                     app:fontFamily="@font/robotoregular" />
 
                 <androidx.appcompat.widget.SwitchCompat

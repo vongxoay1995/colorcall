@@ -3,8 +3,6 @@ package com.colorcall.callerscreen.database;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
-import com.colorcall.callerscreen.model.Background;
-
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.internal.DaoConfig;

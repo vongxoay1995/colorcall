@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
     <com.colorcall.callerscreen.custom.CustomVideoView
         android:id="@+id/vdo_background_call"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         />
     <RelativeLayout
         android:id="@+id/layout_head"
@@ -90,7 +90,7 @@
                 android:paddingTop="@dimen/_20sdp"
                 android:text="@string/caller"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize30"
+                android:textSize="@dimen/_25ssp"
                 app:fontFamily="@font/robotobold" />
 
             <TextView
@@ -102,7 +102,7 @@
                 android:text="0000-0000-0000"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize20"
+                android:textSize="@dimen/_16ssp"
                 app:fontFamily="@font/robotoregular" />
         </LinearLayout>
 
@@ -164,7 +164,7 @@
                         android:fontFamily="@font/robotoregular"
                         android:text="@string/applyContact"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/textsize20" />
+                        android:textSize="@dimen/_16ssp" />
                 </RelativeLayout>
 
                 <RelativeLayout

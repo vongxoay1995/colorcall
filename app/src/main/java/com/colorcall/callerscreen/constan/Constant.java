@@ -1,8 +1,10 @@
 package com.colorcall.callerscreen.constan;
 
+import android.os.Environment;
+
 public interface Constant {
     String DATA_TYPE = "text/plain";
-    String MENU_CATEGORY = "thumb";
+    String THUMB_DEFAULT = "thumbDefault";
     int PERMISSION_REQUEST_CODE = 2;
     String PLAY_STORE_LINK = "https://play.google.com/store/apps/details?id=";
     String POLICY_URL = "https://bluewavevn.wordpress.com/2019/12/20/phone-caller-screen-color-call-app-privacy-policy/";
@@ -34,5 +36,9 @@ public interface Constant {
     String ID_TEST_BANNER_ADMOD = "ca-app-pub-3940256099942544/6300978111";
     String IS_UPDATE_LIST = "updateList";
     String INTENT_APPLY_THEME = "applyTheme";
+    String ACTION_LOAD_COMPLETE_THEME = "loadCompleteTheme";
+    String BASE_URL = "http://smartappvn.com";
+    String LINK_VIDEO_CACHE = Environment.getDataDirectory().toString()+"/data/com.colorcall.callerscreen/background/" ;
     String INTENT_DELETE_THEME = "deleteTheme";
+    String INTENT_DOWNLOAD_COMPLETE_THEME = "downloadTheme" ;
 }

@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Phone Caller Screen</string>
+    <string name="app_name">Call Color Flash</string>
     <string name="lovely">Tình yêu</string>
-    <string name="mytheme">Chủ đề của bạn</string>
+    <string name="mytheme">Tùy chỉnh</string>
     <string name="nope">Không</string>
     <string name="policy">Chính sách bảo mật</string>
     <string name="popular">Phổ biến</string>
@@ -41,4 +41,5 @@
     <string name="ledFlash">Đèn Flash</string>
     <string name="loading">Đang tải ...</string>
     <string name="caller">Caller</string>
+    <string name="videos">Videos</string>
 </resources>

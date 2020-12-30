@@ -21,14 +21,6 @@
                 android:scaleType="centerCrop"
                 android:id="@+id/img_item_thumb_theme"
                 tools:ignore="ContentDescription" />
-            <ImageView
-                android:id="@+id/imgVideo"
-                android:layout_width="@dimen/_25sdp"
-                android:layout_height="@dimen/_25sdp"
-                android:scaleType="fitXY"
-                android:layout_centerInParent="true"
-                app:srcCompat="@drawable/ic_video"
-                />
             <RelativeLayout
                 android:id="@+id/layoutSelected"
                 android:layout_width="@dimen/_30sdp"

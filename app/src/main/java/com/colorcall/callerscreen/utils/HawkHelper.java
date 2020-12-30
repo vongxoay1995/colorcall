@@ -1,7 +1,7 @@
 package com.colorcall.callerscreen.utils;
 
 
-import com.colorcall.callerscreen.model.Background;
+import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.model.Category;
 import com.orhanobut.hawk.Hawk;
 
@@ -14,6 +14,8 @@ public class HawkHelper {
     private static String ENABLE_FLASH = "ENABLE_FLASH";
 
     private static String LIST_CATEGORY = "LIST_CATEGORY";
+    private static String LIST_BACKGROUND = "LIST_BACKGROUND";
+    private static String TIME_STAMP = "TIME_STAMP";
     public static boolean isLoadDataFirst() {
         return Hawk.get(LOAD_DATA_FIRST_FIRST, false);
     }
@@ -28,12 +30,27 @@ public class HawkHelper {
     public static void setListCategory(ArrayList<Category> listCategory) {
         Hawk.put(LIST_CATEGORY, listCategory);
     }
+    public static ArrayList<Background> getListBackground() {
+        return Hawk.get(LIST_BACKGROUND, new ArrayList<>());
+    }
+
+    public static void setListBackground(ArrayList<Background> listBackground) {
+        Hawk.put(LIST_BACKGROUND, listBackground);
+    }
     public static boolean isEnableColorCall() {
         return Hawk.get(ENABLE_COLOR, false);
     }
 
     public static void setStateColorCall(boolean value) {
         Hawk.put(ENABLE_COLOR, value);
+    }
+
+    public static long getTimeStamp() {
+        return Hawk.get(TIME_STAMP,(long)0);
+    }
+
+    public static void setTimeStamp(long timeStamp) {
+        Hawk.put(TIME_STAMP, timeStamp);
     }
 
     public static boolean isEnableFlash() {
@@ -48,7 +65,7 @@ public class HawkHelper {
         Hawk.put(BACKGROUND_SELECT,backgroundSelect);
     }
     public static Background getBackgroundSelect(){
-        Background background = new Background(null,0,"thumb/lovely/ll_f.webp","/raw/ll_f",false);
+        Background background = new Background(null,0, "thumbDefault/default1.webp","/raw/default1",false);
        return Hawk.get(BACKGROUND_SELECT,background);
     }
 }

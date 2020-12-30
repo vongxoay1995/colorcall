@@ -40,6 +40,6 @@
             android:gravity="center"
             android:text="@string/addYourVideo"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize10" />
+            android:textSize="@dimen/_10ssp" />
     </LinearLayout>
 </RelativeLayout>
