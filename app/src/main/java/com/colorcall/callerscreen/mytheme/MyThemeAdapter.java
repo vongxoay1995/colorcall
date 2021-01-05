@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.database.Background;
+import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;
@@ -31,27 +32,14 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private Context context;
     public ArrayList<Background> listBg;
 
-    public MyThemeAdapter(Context context,ArrayList<Background> data) {
+    public MyThemeAdapter(Context context) {
         this.context = context;
-        this.listBg = new ArrayList<>();
-        distributeData(data);
+        setNewListBg();
     }
-
-    private void distributeData(ArrayList<Background> data) {
-        listBg.add(new Background(0,"","",false));
-        for (int i=0;i<data.size();i++){
-            if (!data.get(i).getDelete()){
-                data.remove(i);
-                i--;
-            }else {
-                listBg.add(data.get(i));
-            }
-        }
-    }
-
     public void setNewListBg() {
         this.listBg = new ArrayList<>();
-        distributeData(HawkHelper.getListBackground());
+        listBg.add(new Background(0,"","",false));
+        listBg.addAll(DataManager.query().getBackgroundDao().queryBuilder().list());
     }
     private void resizeItem(Context context, RelativeLayout layout_item) {
         DisplayMetrics displayMetrics = new DisplayMetrics();

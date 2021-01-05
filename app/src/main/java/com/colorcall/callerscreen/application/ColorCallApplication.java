@@ -35,6 +35,7 @@ public class ColorCallApplication extends MultiDexApplication {
         DataManager.getInstance().init(this);
         AppLovinPrivacySettings.setHasUserConsent(true, this);
         AppLovinSdk.getInstance(this).initializeSdk();
+
     }
     @SuppressLint("StaticFieldLeak")
     private void loadData(final String assetsDir) {

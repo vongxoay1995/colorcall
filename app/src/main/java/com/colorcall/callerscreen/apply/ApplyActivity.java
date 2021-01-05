@@ -225,13 +225,13 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
 
     public void deleteTheme(Background background) {
         DataManager.query().getBackgroundDao().delete(background);
-        Log.e("TAN", "deleteTheme: "+background);
-        HawkHelper.getListBackground().remove(background);
-        ArrayList<Background> arr = HawkHelper.getListBackground();
-        for (int i=0;i<arr.size();i++){
-            Log.e("TAN", "deleteTheme: index "+i+"--"+arr.get(i));
+        ArrayList<Background> arr =  HawkHelper.getListBackground();
+        arr.remove(background.getPosition());
+        HawkHelper.setListBackground(arr);
+        ArrayList<Background> bbb = HawkHelper.getListBackground();
+        for (int i=0;i<bbb.size();i++){
+            Log.e("TAN", "deleteTheme: index "+i+"--"+bbb.get(i));
         }
-        Log.e("TAN", "aaa: "+arr.indexOf(background));
     }
 
     private void playVideo() {

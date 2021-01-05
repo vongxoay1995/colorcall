@@ -55,7 +55,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     MyThemeAdapter adapter;
     private FirebaseAnalystic firebaseAnalystic;
     private String pathUriImage;
-    private ArrayList<Background> listBg;
     LocalBroadcastManager mLocalBroadcastManager;
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -91,12 +90,11 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
     private void init() {
         firebaseAnalystic = FirebaseAnalystic.getInstance(getContext());
-        listBg = HawkHelper.getListBackground();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
         rcvBgMyTheme.setLayoutManager(gridLayoutManager);
         rcvBgMyTheme.setItemAnimator(new DefaultItemAnimator());
         rcvBgMyTheme.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
-        adapter = new MyThemeAdapter(getContext(), listBg);
+        adapter = new MyThemeAdapter(getContext());
         adapter.setListener(this);
         rcvBgMyTheme.setAdapter(adapter);
     }
@@ -204,12 +202,9 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                         + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBgDb.size();
             }
-            listBg = HawkHelper.getListBackground();
-            video = new Background(0, imageUrl, path, true,"",listBg.size());
+            video = new Background(0, imageUrl, path, true);
             FileUtils.saveBitmap(imageUrl, bitmap);
             DataManager.query().getBackgroundDao().save(video);
-            listBg.add(video);
-            HawkHelper.setListBackground(listBg);
         }
     }
 
@@ -223,11 +218,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
             File file = new File(path);
 
             if (file.exists()) {
-                listBg = HawkHelper.getListBackground();
-                Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true,"",listBg.size());
+                Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true);
                 DataManager.query().getBackgroundDao().save(picture);
-                listBg.add(picture);
-                HawkHelper.setListBackground(listBg);
             } else {
                 Toast.makeText(getContext(), "File picture not found", Toast.LENGTH_LONG).show();
             }
