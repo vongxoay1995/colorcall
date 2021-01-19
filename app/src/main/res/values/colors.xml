@@ -7,13 +7,15 @@
     <color name="violet">#28019f</color>
     <color name="violetMain">#4917e0</color>
     <color name="white">#ffffff</color>
-    <color name="colorHeaderMain">#2196F3</color>
+    <color name="colorHeaderMain">#2C88FF</color>
     <color name="blackAlpha30">#4d000000</color>
     <color name="gray">#8a000000</color>
     <color name="colorApp">#f6f6f6</color>
     <color name="blue">#77cffe</color>
     <color name="blackAlpha70">#B3000000</color>
     <color name="transparent">#00000000</color>
+    <color name="blackAlpha10">#80FFFFFF</color>
     <color name="bg_seekBar">#0c68b4</color>
     <color name="colorTextApp">#292929</color>
+    <color name="grayalpha20">#9E9797</color>
 </resources>

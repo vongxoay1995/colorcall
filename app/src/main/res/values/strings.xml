@@ -15,7 +15,7 @@
     <string name="video_alert">The maximum length of videos is 10 seconds</string>
     <string name="video_not_found">Video not found</string>
     <string name="your_video">Open camera or select a new video</string>
-    <string name="addYourVideo">Add your video or image</string>
+    <string name="addYourVideo">Create your video or image</string>
     <string name="applyContact">Apply for all contact</string>
     <string name="checkUpdate">Check for update</string>
     <string name="colorCall">Color Call</string>
@@ -45,4 +45,9 @@
     <string name="videos">Videos</string>
     <string name="download">Download</string>
     <string name="downloadSuccess">Download success</string>
+    <string name="err_network" >Request failed, please check the network</string>
+    <string name="down_err" >Download error. No network connection!</string>
+    <string name="turn_on_network" >Connection errors! Please turn on the internet connection to update the latest themes</string>
+    <string name="downloading">Downloading ...</string>
+    <string name="file_not_found">File picture not found</string>
 </resources>

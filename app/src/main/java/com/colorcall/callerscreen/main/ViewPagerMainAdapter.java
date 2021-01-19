@@ -14,7 +14,7 @@ public class ViewPagerMainAdapter extends FragmentStatePagerAdapter {
     private final List<String> mFragmentTitleList = new ArrayList<>();
 
     public ViewPagerMainAdapter(FragmentManager manager) {
-        super(manager);
+        super(manager,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {

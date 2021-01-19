@@ -3,19 +3,70 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/layoutListTheme"
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/sw_refesh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:orientation="vertical">
+        android:layout_above="@id/layoutLoading"
+        android:layout_marginTop="@dimen/_10sdp">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvBgImages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/_5sdp"
-            android:paddingBottom="@dimen/_5sdp"
-            />
+            android:paddingBottom="@dimen/_5sdp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    >
+
+    <LinearLayout
+        android:id="@+id/layoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/progressList"
+            style="@style/SpinKitView.FadingCircle"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/colorAccent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/robotoregular"
+            android:text="@string/loading"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutNotNetwork"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/grayalpha20"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/robotoregular"
+            android:gravity="center"
+            android:text="@string/turn_on_network"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_13ssp" />
     </LinearLayout>
 </RelativeLayout>

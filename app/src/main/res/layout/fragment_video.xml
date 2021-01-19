@@ -4,19 +4,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".video.VideoFragment">
-    <LinearLayout
-        android:id="@+id/layoutListTheme"
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/sw_refesh"
+        android:layout_above="@id/layoutLoading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/_10sdp">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvBgVideo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/_5sdp"
-            android:paddingBottom="@dimen/_5sdp"
-            />
+            android:paddingBottom="@dimen/_5sdp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <LinearLayout
+        android:id="@+id/layoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        >
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/progressList"
+            style="@style/SpinKitView.FadingCircle"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/colorAccent"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/loading"
+            android:textSize="@dimen/_13ssp"
+            android:fontFamily="@font/robotoregular"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layoutNotNetwork"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/grayalpha20"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/turn_on_network"
+            android:gravity="center"
+            android:textSize="@dimen/_13ssp"
+            android:fontFamily="@font/robotoregular"
+            android:textColor="@color/black"/>
     </LinearLayout>
 </RelativeLayout>

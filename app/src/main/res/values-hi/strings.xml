@@ -16,7 +16,6 @@
     <string name="video_alert">वीडियो की अधिकतम लंबाई 10 सेकंड है</string>
     <string name="video_not_found">वीडियो नहीं मिला</string>
     <string name="your_video">कैमरा खोलें या एक नया वीडियो चुनें</string>
-    <string name="addYourVideo">अपना वीडियो या छवि जोड़ें</string>
     <string name="applyContact">सभी संपर्क के लिए आवेदन करें</string>
     <string name="checkUpdate">अपडेट के लिए देखें</string>
     <string name="colorCall">Color Call</string>

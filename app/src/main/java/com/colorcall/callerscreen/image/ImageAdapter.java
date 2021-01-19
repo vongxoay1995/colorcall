@@ -45,7 +45,10 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
         }
     }
-
+    public void setNewListBg() {
+        this.listBg = new ArrayList<>();
+        distributeData(HawkHelper.getListBackground());
+    }
     private void resizeItem(Context context, RelativeLayout layout_item) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -75,6 +78,9 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             Background background = listBg.get(i);
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
                 layoutSelected.setVisibility(View.VISIBLE);
+                if(listener!=null){
+                    listener.onItemThemeSelected(background,getAdapterPosition());
+                }
             } else {
                 layoutSelected.setVisibility(View.GONE);
             }
@@ -108,6 +114,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     public interface Listener {
         void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete);
+        void onItemThemeSelected(Background background,int position);
     }
 
     @NonNull

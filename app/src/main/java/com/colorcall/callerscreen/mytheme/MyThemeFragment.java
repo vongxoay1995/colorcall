@@ -1,8 +1,6 @@
 package com.colorcall.callerscreen.mytheme;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -12,7 +10,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,10 +30,16 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
+import com.colorcall.callerscreen.model.SignApplyMyTheme;
+import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.FileUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,22 +58,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     MyThemeAdapter adapter;
     private FirebaseAnalystic firebaseAnalystic;
     private String pathUriImage;
-    LocalBroadcastManager mLocalBroadcastManager;
-    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
-                case Constant.ACTION_LOAD_COMPLETE_THEME:
-                    init();
-                    break;
-                case Constant.INTENT_DELETE_THEME:
-                    Log.e("TAN", "onReceive:INTENT_DELETE_THEME ");
-                    adapter.setNewListBg();
-                    adapter.notifyDataSetChanged();
-                    break;
-            }
-        }
-    };
+    private Background itemThemeSelected;
+    private int positionItemThemeSelected = -1;
 
     public MyThemeFragment() {
     }
@@ -80,11 +69,11 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_theme, container, false);
         ButterKnife.bind(this, view);
-        mLocalBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+        init();
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constant.ACTION_LOAD_COMPLETE_THEME);
+        mIntentFilter.addAction(Constant.INTENT_APPLY_THEME);
         mIntentFilter.addAction(Constant.INTENT_DELETE_THEME);
-        mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, mIntentFilter);
         return view;
     }
 
@@ -112,6 +101,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete) {
         Background background = backgrounds.get(position);
         Intent intent = new Intent(getActivity(), ApplyActivity.class);
+        intent.putExtra(Constant.FROM_SCREEN, Constant.MYTHEME_FRAG_MENT);
         if (delete) {
             intent.putExtra(SHOW_IMG_DELETE, true);
         }
@@ -127,7 +117,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 CAMERA
         };
         if (!AppUtils.checkPermission(getContext(), permistion)) {
-            Log.e("TAN", "checkPermissionActionCamera: ");
             requestPermissions(permistion,
                     Constant.PERMISSION_REQUEST_CODE_CAMERA);
         } else {
@@ -162,7 +151,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     @Override
     public void onImagesClicked() {
         pathUriImage = AppUtils.openCameraIntent(this, getActivity(), Constant.REQUEST_CODE_IMAGES);
-        Log.e("TAN", "onImagesClicked: ");
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -202,7 +190,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                         + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBgDb.size();
             }
-            video = new Background(0, imageUrl, path, true);
+            video = new Background(0, imageUrl, path, true,path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf(".")));
             FileUtils.saveBitmap(imageUrl, bitmap);
             DataManager.query().getBackgroundDao().save(video);
         }
@@ -218,17 +206,64 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
             File file = new File(path);
 
             if (file.exists()) {
-                Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true);
+                Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true,
+                        file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().lastIndexOf(".")));
                 DataManager.query().getBackgroundDao().save(picture);
             } else {
-                Toast.makeText(getContext(), "File picture not found", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.file_not_found), Toast.LENGTH_LONG).show();
             }
         }
     }
 
     @Override
     public void onDestroy() {
-        mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
         super.onDestroy();
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onSignApply(SignApplyMyTheme signApplyMyTheme) {
+        switch (signApplyMyTheme.getAction()) {
+            case Constant.INTENT_APPLY_THEME:
+                adapter.notifyDataSetChanged();
+                break;
+            case Constant.INTENT_DELETE_THEME:
+                adapter.setNewListBg();
+                adapter.notifyDataSetChanged();
+                break;
+        }
+        EventBus.getDefault().removeStickyEvent(signApplyMyTheme);
+    }
+
+    @Override
+    public void onStart() {
+        EventBus.getDefault().register(this);
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onItemThemeSelected(Background background, int position) {
+        itemThemeSelected = background;
+        positionItemThemeSelected = position;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        Log.e("TAN", "onResume my theme: "+itemThemeSelected+"--"+
+//                positionItemThemeSelected+"--"+HawkHelper.getBackgroundSelect());
+        if (itemThemeSelected != null
+                && positionItemThemeSelected != -1
+                & !HawkHelper.getBackgroundSelect().getName().equals(itemThemeSelected.getName())
+                && adapter != null) {
+            adapter.notifyItemChanged(positionItemThemeSelected);
+            positionItemThemeSelected = -1;
+            itemThemeSelected = null;
+        }
     }
 }

@@ -80,6 +80,9 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             Background background = listBg.get(i);
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
                 layoutSelected.setVisibility(View.VISIBLE);
+                if(listener!=null){
+                    listener.onItemThemeSelected(background,getAdapterPosition());
+                }
             } else {
                 layoutSelected.setVisibility(View.GONE);
             }
@@ -129,7 +132,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface Listener {
         void onAdd();
-
+        void onItemThemeSelected(Background background,int position);
         void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete);
     }
 

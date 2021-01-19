@@ -425,39 +425,10 @@ public class AppUtils {
         return result;
     }
 
-    public static String openCameraIntent(Activity activity, int requestCode) {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-        photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
-        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        String pickTitle = activity.getResources().getString(R.string.select_picture);
-        Intent chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle);
-        chooserIntent.putExtra
-                (Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
-        if (takePhotoIntent.resolveActivity(activity.getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile(activity);
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(activity, activity.getPackageName() + Constant.PROVIDER, photoFile);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            photoURI);
-                }
-                activity.startActivityForResult(takePhotoIntent, requestCode);
-                return photoFile.getAbsolutePath();
-            } else return null;
-        } else return null;
-    }
     public static String openCameraIntent(Fragment fragment, Activity activity, int requestCode) {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+        //photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*"});
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -500,7 +471,7 @@ public class AppUtils {
                     type=0;
                     pathFile = prefixVideo + pathFiles[i].substring(0, pathFiles[i].length() - 5);
                 }
-                background = new Background(type, pathThumb, pathFile, false,"default",i);
+                background = new Background(type, pathThumb, pathFile, false,"default"+(i+1),i);
                 listBackground.add(background);
             }
         } catch (IOException e) {

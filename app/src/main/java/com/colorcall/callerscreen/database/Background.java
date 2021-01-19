@@ -48,6 +48,14 @@ public class Background {
         this.name = name;
         this.position = position;
     }
+    public Background( int type, @NotNull String pathThumb, @NotNull String pathItem,
+                       boolean delete,String name) {
+        this.type = type;
+        this.pathThumb = pathThumb;
+        this.pathItem = pathItem;
+        this.delete = delete;
+        this.name = name;
+    }
     public Background(int type, @NotNull String pathThumb, @NotNull String pathItem,
                       boolean delete) {
         this.type = type;
@@ -55,7 +63,16 @@ public class Background {
         this.pathItem = pathItem;
         this.delete = delete;
     }
-
+    @Generated
+    public Background( Long id,int type, @NotNull String pathThumb, @NotNull String pathItem,
+                       boolean delete,String name) {
+        this.type = type;
+        this.pathThumb = pathThumb;
+        this.pathItem = pathItem;
+        this.id = id;
+        this.delete = delete;
+        this.name = name;
+    }
     @Generated
     public Background( Long id,int type, @NotNull String pathThumb, @NotNull String pathItem,
             boolean delete) {

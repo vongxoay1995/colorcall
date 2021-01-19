@@ -23,13 +23,6 @@ public class HawkHelper {
     public static void setLoadDataFirst(boolean value) {
         Hawk.put(LOAD_DATA_FIRST_FIRST, value);
     }
-    public static ArrayList<Category> getListCategory() {
-        return Hawk.get(LIST_CATEGORY, new ArrayList<>());
-    }
-
-    public static void setListCategory(ArrayList<Category> listCategory) {
-        Hawk.put(LIST_CATEGORY, listCategory);
-    }
     public static ArrayList<Background> getListBackground() {
         return Hawk.get(LIST_BACKGROUND, new ArrayList<>());
     }
@@ -65,7 +58,7 @@ public class HawkHelper {
         Hawk.put(BACKGROUND_SELECT,backgroundSelect);
     }
     public static Background getBackgroundSelect(){
-        Background background = new Background(null,0, "thumbDefault/default1.webp","/raw/default1",false);
+        Background background = new Background(null,0, "thumbDefault/default1.webp","/raw/default1",false,"default1");
        return Hawk.get(BACKGROUND_SELECT,background);
     }
 }

@@ -78,8 +78,12 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void onBind(int i) {
             backgroundSelected = HawkHelper.getBackgroundSelect();
             Background background = listBg.get(i);
+            Log.e("TAN", "onBind: "+background.getPathThumb()+"--"+backgroundSelected.getPathThumb());
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
                 layoutSelected.setVisibility(View.VISIBLE);
+                if(listener!=null){
+                    listener.onItemThemeSelected(background,getAdapterPosition());
+                }
             } else {
                 layoutSelected.setVisibility(View.GONE);
             }
@@ -113,6 +117,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public interface Listener {
         void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete);
+        void onItemThemeSelected(Background background,int position);
     }
 
     @NonNull

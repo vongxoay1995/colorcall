@@ -1,12 +1,15 @@
 package com.colorcall.callerscreen.apply;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -17,7 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -31,6 +33,9 @@ import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
+import com.colorcall.callerscreen.model.SignApplyImage;
+import com.colorcall.callerscreen.model.SignApplyMyTheme;
+import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
@@ -40,6 +45,8 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -62,42 +69,44 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     ImageView btnAccept;
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
-    private String dataPath, folderApp;
+    TextView txtPercentDownloading;
+    private String folderApp;
     private Background background;
     private PublisherInterstitialAd mInterstitialAd;
     private FirebaseAnalystic firebaseAnalystic;
     private boolean allowAdsShow;
-    LocalBroadcastManager localBroadcastManager;
-    ProgressDialog mProgressDialogDownload;
     private String newPathItem;
-    private boolean isDownloaded=false;
+    private boolean isDownloaded = false;
+    private int position;
+    private int fromScreen;
+    private Dialog dialog;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
-        localBroadcastManager = LocalBroadcastManager
-                .getInstance(this);
+        position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
         AppUtils.showFullHeader(this, layoutHead);
         firebaseAnalystic = FirebaseAnalystic.getInstance(this);
         folderApp = Constant.LINK_VIDEO_CACHE;
         checkInforTheme();
+        fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
     }
 
 
     private void startDownloadBg(String url, String videoName) {
         AppUtils.createFolder(folderApp);
-        mProgressDialogDownload = new ProgressDialog(this);
-        mProgressDialogDownload.setMessage(getString(R.string.download));
-        mProgressDialogDownload.setIndeterminate(true);
-        mProgressDialogDownload.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialogDownload.setCancelable(true);
+        dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_download);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        txtPercentDownloading = dialog.findViewById(R.id.tv_progress);
         DownloadTask downloadTask = new DownloadTask(this);
         downloadTask.setListener(this);
         newPathItem = folderApp + videoName;
-        downloadTask.execute(url,newPathItem);
-        mProgressDialogDownload.setOnCancelListener(dialog -> {
-            downloadTask.cancel(true);
-        });
+        downloadTask.execute(url, newPathItem);
     }
 
     private void loadAds() {
@@ -206,14 +215,14 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 .thumbnail(0.001f)
                 .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
                 .into(imgBackgroundCall);
-        if (background.getPathItem().contains("storage") ||background.getPathItem().contains("/data/data")|| background.getPathItem().contains("data/user/")) {
+        if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
             sPath = background.getPathItem();
             if (!sPath.startsWith("http")) {
                 isDownloaded = false;
                 vdoBackgroundCall.setVideoURI(Uri.parse(sPath));
                 playVideo();
                 txtApply.setText(getString(R.string.applyContact));
-            }else{
+            } else {
                 isDownloaded = true;
                 txtApply.setText(getString(R.string.download));
             }
@@ -224,14 +233,13 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     }
 
     public void deleteTheme(Background background) {
-        DataManager.query().getBackgroundDao().delete(background);
-        ArrayList<Background> arr =  HawkHelper.getListBackground();
-        arr.remove(background.getPosition());
-        HawkHelper.setListBackground(arr);
-        ArrayList<Background> bbb = HawkHelper.getListBackground();
-        for (int i=0;i<bbb.size();i++){
-            Log.e("TAN", "deleteTheme: index "+i+"--"+bbb.get(i));
+        if(HawkHelper.getBackgroundSelect().getPathThumb().equals(background.getPathThumb())){
+            Background bg = new Background(null,0, "thumbDefault/default1.webp","/raw/default1",false,"default1");
+            HawkHelper.setBackgroundSelect(bg);
+            SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.APPLY_ITEM_DEFAULT);
+            EventBus.getDefault().postSticky(signApplyVideo);
         }
+        DataManager.query().getBackgroundDao().delete(background);
     }
 
     private void playVideo() {
@@ -264,9 +272,9 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 break;
             case R.id.layoutApply:
                 firebaseAnalystic.trackEvent(ManagerEvent.applyApplyClick());
-                if(isDownloaded){
-                    startDownloadBg(background.getPathItem(),background.getName());
-                }else{
+                if (isDownloaded) {
+                    startDownloadBg(background.getPathItem(), background.getName());
+                } else {
                     PermistionUtils.checkPermissionCall(this, this);
                 }
                 break;
@@ -284,7 +292,8 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     @Override
     public void onDelete() {
         deleteTheme(background);
-        localBroadcastManager.sendBroadcast(new Intent(Constant.INTENT_DELETE_THEME));
+        SignApplyMyTheme signApplyMyTheme = new SignApplyMyTheme(Constant.INTENT_DELETE_THEME);
+        EventBus.getDefault().postSticky(signApplyMyTheme);
         finish();
     }
 
@@ -307,8 +316,23 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         txtApply.setTextColor(Color.BLACK);
         Intent intent = new Intent();
         intent.putExtra(Constant.IS_UPDATE_LIST, true);
+        intent.setAction(Constant.INTENT_APPLY_THEME);
+        intent.putExtra(Constant.ITEM_POSITION, position);
         setResult(RESULT_OK, intent);
-        localBroadcastManager.sendBroadcast(new Intent(Constant.INTENT_APPLY_THEME));
+        SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.INTENT_APPLY_THEME);
+        SignApplyMyTheme signApplyMyTheme = new SignApplyMyTheme(Constant.INTENT_APPLY_THEME);
+        SignApplyImage signApplyImage = new SignApplyImage(Constant.INTENT_APPLY_THEME);
+        switch (fromScreen) {
+            case Constant.VIDEO_FRAG_MENT:
+                EventBus.getDefault().postSticky(signApplyVideo);
+                break;
+            case Constant.IMAGES_FRAG_MENT:
+                EventBus.getDefault().postSticky(signApplyImage);
+                break;
+            case Constant.MYTHEME_FRAG_MENT:
+                EventBus.getDefault().postSticky(signApplyMyTheme);
+                break;
+        }
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
@@ -331,9 +355,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             } else {
                 AppUtils.checkDrawOverlayApp(this);
             }
-          /*  if (!AppUtils.checkNotificationAccessSettings(this)) {
-                AppUtils.showNotificationAccess(this);
-            }*/
         }
     }
 
@@ -384,22 +405,20 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
 
     @Override
     public void onPreExecute() {
-        mProgressDialogDownload.show();
+        dialog.show();
     }
 
     @Override
     public void onProgressUpdate(int value) {
-        mProgressDialogDownload.setIndeterminate(false);
-        mProgressDialogDownload.setMax(100);
-        mProgressDialogDownload.setProgress(value);
+        txtPercentDownloading.setText(value + "%");
     }
 
     @Override
     public void onPostExecute(String result) {
-        mProgressDialogDownload.dismiss();
-        if (result != null){
-            Toast.makeText(this, "Download error: " + result, Toast.LENGTH_LONG).show();
-        }else {
+        dialog.dismiss();
+        if (result != null) {
+            Toast.makeText(this, getString(R.string.down_err), Toast.LENGTH_LONG).show();
+        } else {
             ArrayList<Background> arr = HawkHelper.getListBackground();
             arr.get(background.getPosition()).setPathItem(newPathItem);
             HawkHelper.setListBackground(arr);
@@ -407,7 +426,8 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             txtApply.setText(getString(R.string.applyContact));
             isDownloaded = false;
             playVideo();
-            localBroadcastManager.sendBroadcast(new Intent(Constant.INTENT_DOWNLOAD_COMPLETE_THEME));
+            SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.INTENT_DOWNLOAD_COMPLETE_THEME);
+            EventBus.getDefault().postSticky(signApplyVideo);
             Toast.makeText(this, getString(R.string.downloadSuccess), Toast.LENGTH_SHORT).show();
         }
     }

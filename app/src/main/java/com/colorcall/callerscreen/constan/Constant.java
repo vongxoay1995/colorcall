@@ -41,4 +41,11 @@ public interface Constant {
     String LINK_VIDEO_CACHE = Environment.getDataDirectory().toString()+"/data/com.colorcall.callerscreen/background/" ;
     String INTENT_DELETE_THEME = "deleteTheme";
     String INTENT_DOWNLOAD_COMPLETE_THEME = "downloadTheme" ;
+    String REFRESH_All = "refresh_all";
+    String ITEM_POSITION = "item_position";
+    String FROM_SCREEN = "from_screen";
+    int IMAGES_FRAG_MENT = 1;
+    int VIDEO_FRAG_MENT = 2;
+    int MYTHEME_FRAG_MENT = 3;
+    String APPLY_ITEM_DEFAULT = "apply_default";
 }
