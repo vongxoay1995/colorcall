@@ -24,7 +24,7 @@ public class InterstitialUtil {
     private InterstitialAd interstitialAd;
     private AdCloseListener adCloseListener;
     private boolean isReload;
-    private long limitTime;
+    private long limitTime = 30;
     private Context mContext;
 
     public interface AdCloseListener {
@@ -95,15 +95,9 @@ public class InterstitialUtil {
     private void getLimitTime() {
         FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
         config.fetchAndActivate()
-                .addOnCompleteListener(new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.isSuccessful()) {
-                            limitTime = FirebaseRemoteConfig.getInstance().getLong("interstitial_interval");
-                            Log.e("TAN", "onComplete: " + limitTime);
-                        } else {
-                            Log.e("TAN", "Loi r: ");
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        limitTime = FirebaseRemoteConfig.getInstance().getLong("interstitial_interval");
                     }
                 });
     }
