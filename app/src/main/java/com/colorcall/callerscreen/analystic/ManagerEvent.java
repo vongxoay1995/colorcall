@@ -67,7 +67,12 @@ public class ManagerEvent {
     public static Event applyAdsClick(){
         return new Event(EventKey.APPLY_ADSBOX_CLICKED,new Bundle());
     }
-
+    public static Event applyItemVideo(int index,String name){
+        return new Event(EventKey.APPLY_ITEM+"_"+index+"_"+name,new Bundle());
+    }
+    public static Event applyItemImage(int index,String name){
+        return new Event(EventKey.APPLY_ITEM+"_"+index+"_"+name,new Bundle());
+    }
     public static Event applyVideoViewError(int what,int extra){
         Bundle bundle =  new Bundle();
         bundle.putInt("what",what);

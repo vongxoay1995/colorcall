@@ -37,7 +37,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
@@ -158,7 +158,7 @@ public class AppUtils {
         return list;
     }
 
-    public static void showDialogMyGallery(Activity activity, FirebaseAnalystic firebaseAnalystic, DialogGalleryListener dialogGalleryListener) {
+    public static void showDialogMyGallery(Activity activity, Analystic analystic, DialogGalleryListener dialogGalleryListener) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -168,11 +168,11 @@ public class AppUtils {
         imgVideo = dialog.findViewById(R.id.imgSelectVideo);
         imgImages = dialog.findViewById(R.id.imgSelectImage);
         dialog.show();
-        firebaseAnalystic.trackEvent(ManagerEvent.mainDialogOpen());
+        analystic.trackEvent(ManagerEvent.mainDialogOpen());
         imgVideo.setOnClickListener(v -> {
             if (dialogGalleryListener != null) {
                 dialogGalleryListener.onVideoClicked();
-                firebaseAnalystic.trackEvent(ManagerEvent.mainDialogVideo());
+                analystic.trackEvent(ManagerEvent.mainDialogVideo());
             }
             dialog.dismiss();
         });
@@ -181,7 +181,7 @@ public class AppUtils {
             public void onClick(View v) {
                 if (dialogGalleryListener != null) {
                     dialogGalleryListener.onImagesClicked();
-                    firebaseAnalystic.trackEvent(ManagerEvent.mainDialogPicture());
+                    analystic.trackEvent(ManagerEvent.mainDialogPicture());
                 }
                 dialog.dismiss();
             }
@@ -428,7 +428,6 @@ public class AppUtils {
     public static String openCameraIntent(Fragment fragment, Activity activity, int requestCode) {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        //photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*"});
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 

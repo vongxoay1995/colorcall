@@ -56,10 +56,11 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) layout_item.getLayoutParams();
-        layoutParams.width = (int) (width / 2.1);
+        layoutParams.width = (int) (width / 2.08);
         layoutParams.height = (2 * width) / 3;
         layout_item.setLayoutParams(layoutParams);
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.img_item_thumb_theme)
@@ -93,6 +94,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)
                         .thumbnail(0.001f)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
                         .into(imgThumb);
             }

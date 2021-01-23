@@ -48,4 +48,5 @@ public interface EventKey {
     String CALL_DISMISS = "CALL_DISMISS";
     String CALL_ANDROID_SMALL_P = "CALL_ANDROID_SMALL_P";
     String CALL_ANDROID_BIGGER_P = "CALL_ANDROID_BIGGER_P";
+    String APPLY_ITEM = "APPLY_ITEM";
 }

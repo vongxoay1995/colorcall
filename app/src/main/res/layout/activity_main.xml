@@ -86,6 +86,7 @@
         android:fillViewport="true"
         app:tabIndicatorColor="#2196F3"
         app:tabMode="fixed"
+        app:tabRippleColor="@null"
         style="@style/MyCustomTabLayout"
         app:tabSelectedTextColor="#2196F3"
         app:tabTextColor="@color/colorTextApp"

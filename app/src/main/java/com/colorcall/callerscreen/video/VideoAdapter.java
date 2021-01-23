@@ -78,7 +78,6 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void onBind(int i) {
             backgroundSelected = HawkHelper.getBackgroundSelect();
             Background background = listBg.get(i);
-            Log.e("TAN", "onBind: "+background.getPathThumb()+"--"+backgroundSelected.getPathThumb());
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
                 layoutSelected.setVisibility(View.VISIBLE);
                 if(listener!=null){
@@ -97,6 +96,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .thumbnail(0.001f)
                         .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
                         .into(imgThumb);

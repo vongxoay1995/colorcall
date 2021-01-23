@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.mytheme;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -23,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.apply.ApplyActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
@@ -31,7 +30,6 @@ import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
-import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.FileUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -56,11 +54,10 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     @BindView(R.id.rcvBgYourTheme)
     RecyclerView rcvBgMyTheme;
     MyThemeAdapter adapter;
-    private FirebaseAnalystic firebaseAnalystic;
+    private Analystic analystic;
     private String pathUriImage;
     private Background itemThemeSelected;
     private int positionItemThemeSelected = -1;
-
     public MyThemeFragment() {
     }
 
@@ -70,15 +67,11 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         View view = inflater.inflate(R.layout.fragment_my_theme, container, false);
         ButterKnife.bind(this, view);
         init();
-        IntentFilter mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(Constant.ACTION_LOAD_COMPLETE_THEME);
-        mIntentFilter.addAction(Constant.INTENT_APPLY_THEME);
-        mIntentFilter.addAction(Constant.INTENT_DELETE_THEME);
         return view;
     }
 
     private void init() {
-        firebaseAnalystic = FirebaseAnalystic.getInstance(getContext());
+        analystic = Analystic.getInstance(getContext());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
         rcvBgMyTheme.setLayoutManager(gridLayoutManager);
         rcvBgMyTheme.setItemAnimator(new DefaultItemAnimator());
@@ -132,7 +125,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     }
 
     private void openDialogGallery() {
-        AppUtils.showDialogMyGallery(getActivity(), firebaseAnalystic, this);
+        AppUtils.showDialogMyGallery(getActivity(), analystic, this);
     }
 
     @Override
@@ -140,7 +133,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         photoPickerIntent.setType("video/*");
-        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+        //  photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
         Intent takePhotoIntent = new Intent("android.media.action.VIDEO_CAPTURE");
         Intent chooserIntent = Intent.createChooser(photoPickerIntent, getResources().getString(R.string.your_video));
@@ -190,7 +183,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                         + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBgDb.size();
             }
-            video = new Background(0, imageUrl, path, true,path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf(".")));
+            video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
+            Log.e("TAN", "resetListDataVideo: " + video);
             FileUtils.saveBitmap(imageUrl, bitmap);
             DataManager.query().getBackgroundDao().save(video);
         }
@@ -207,7 +201,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
             if (file.exists()) {
                 Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true,
-                        file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1, file.getAbsolutePath().lastIndexOf(".")));
+                        file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1));
+                Log.e("TAN", "resetListDataImage: " + picture);
                 DataManager.query().getBackgroundDao().save(picture);
             } else {
                 Toast.makeText(getContext(), getString(R.string.file_not_found), Toast.LENGTH_LONG).show();
@@ -224,6 +219,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     public void onSignApply(SignApplyMyTheme signApplyMyTheme) {
         switch (signApplyMyTheme.getAction()) {
             case Constant.INTENT_APPLY_THEME:
+                Log.e("TAN", "onSignApply: ");
                 adapter.notifyDataSetChanged();
                 break;
             case Constant.INTENT_DELETE_THEME:
@@ -248,6 +244,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
     @Override
     public void onItemThemeSelected(Background background, int position) {
+        Log.e("TAN", "onItemThemeSelected: ");
         itemThemeSelected = background;
         positionItemThemeSelected = position;
     }
@@ -255,12 +252,13 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     @Override
     public void onResume() {
         super.onResume();
-//        Log.e("TAN", "onResume my theme: "+itemThemeSelected+"--"+
-//                positionItemThemeSelected+"--"+HawkHelper.getBackgroundSelect());
+        Log.e("TAN", "onResume my theme: " + itemThemeSelected + "--" +
+                positionItemThemeSelected + "--" + HawkHelper.getBackgroundSelect());
         if (itemThemeSelected != null
                 && positionItemThemeSelected != -1
-                & !HawkHelper.getBackgroundSelect().getName().equals(itemThemeSelected.getName())
+                & !HawkHelper.getBackgroundSelect().getPathItem().equals(itemThemeSelected.getPathItem())
                 && adapter != null) {
+            Log.e("TAN", "onResume: notifyItemChanged");
             adapter.notifyItemChanged(positionItemThemeSelected);
             positionItemThemeSelected = -1;
             itemThemeSelected = null;

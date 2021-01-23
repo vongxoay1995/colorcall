@@ -15,7 +15,6 @@
     <string name="video_alert">Độ dài tối đa của video là 10s</string>
     <string name="video_not_found">Không tìm thấy video</string>
     <string name="your_video">Mở camera hoặc chọn video mới</string>
-    <string name="addYourVideo">Thêm hình ảnh hoặc video của bạn</string>
     <string name="applyContact">Áp dụng cho mọi liên hệ</string>
     <string name="checkUpdate">Kiểm tra cập nhật</string>
     <string name="colorCall">Color Call</string>
@@ -42,4 +41,13 @@
     <string name="loading">Đang tải ...</string>
     <string name="caller">Caller</string>
     <string name="videos">Videos</string>
+    <string name="download">Tải về</string>
+    <string name="downloadSuccess">Tải xuống thành công</string>
+    <string name="err_network" >Yêu cầu không thành công, vui lòng kiểm tra mạng</string>
+    <string name="down_err" >Lỗi tải xuống. Không có kết nối mạng!</string>
+    <string name="turn_on_network" >Lỗi kết nối! Vui lòng bật kết nối internet để cập nhật các chủ đề mới nhất</string>
+    <string name="downloading">Đang tải ...</string>
+    <string name="file_not_found">Không tìm thấy file</string>
+    <string name="unknowContact">Ẩn danh</string>
+    <string name="addYourVideo">Tạo video hoặc hình ảnh của bạn</string>
 </resources>

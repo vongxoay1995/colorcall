@@ -41,4 +41,15 @@
     <string name="applied">تطبيق</string>
     <string name="loading">تحميل...</string>
     <string name="caller">المتصل</string>
+    <string name="download">تحميل</string>
+    <string name="videos">أشرطة فيديو</string>
+    <string name="downloadSuccess">نجاح التنزيل</string>
+    <string name="err_network" >فشل الطلب ، يرجى التحقق من الشبكة</string>
+    <string name="down_err" >الخطأ تحميل. لا يوجد اتصال شبكة!</string>
+    <string name="turn_on_network" >أخطاء الاتصال! يرجى تشغيل اتصال الإنترنت لتحديث أحدث السمات</string>
+    <string name="downloading">جارى التحميل...</string>
+    <string name="file_not_found">لم يتم العثور على الملف</string>
+    <string name="unknowContact">جهة اتصال غير معروفة</string>
+    <string name="addYourVideo">قم بإنشاء الفيديو أو الصورة الخاصة بك</string>
+
 </resources>

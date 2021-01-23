@@ -3,7 +3,6 @@ package com.colorcall.callerscreen.setting;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -17,7 +16,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -66,7 +65,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     @BindView(R.id.layoutFlash)
     RelativeLayout layoutFlash;
     private UnifiedNativeAd nativeAd;
-    private FirebaseAnalystic firebaseAnalystic;
+    private Analystic analystic;
     private boolean isFlashState, isCallState;
     private boolean isResultDenyPermission, isResultDenyCallPermission;
 
@@ -75,7 +74,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
         AppUtils.showFullHeader(this, layoutHead);
-        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        analystic = Analystic.getInstance(this);
         swStateApp.setChecked(HawkHelper.isEnableColorCall());
         swFlash.setChecked(HawkHelper.isEnableFlash());
         loadAds();
@@ -155,11 +154,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingBackClick());
+                analystic.trackEvent(ManagerEvent.settingBackClick());
                 finish();
                 return;
             case R.id.layoutCheckUpdate:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingCheckUpdateClick());
+                analystic.trackEvent(ManagerEvent.settingCheckUpdateClick());
                 Intent intentRate = new Intent("android.intent.action.VIEW");
                 StringBuilder sb = new StringBuilder();
                 sb.append(Constant.PLAY_STORE_LINK);
@@ -168,11 +167,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 startActivity(intentRate);
                 return;
             case R.id.layoutPolicy:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingPolicyClick());
+                analystic.trackEvent(ManagerEvent.settingPolicyClick());
                 openWebPage(Constant.POLICY_URL);
                 return;
             case R.id.layoutShareApp:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingShareAppClick());
+                analystic.trackEvent(ManagerEvent.settingShareAppClick());
                 Intent sendIntent = new Intent();
                 sendIntent.setAction("android.intent.action.SEND");
                 StringBuilder sb2 = new StringBuilder();
@@ -183,7 +182,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 startActivity(sendIntent);
                 return;
             case R.id.btnAds:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingAdsClick());
+                analystic.trackEvent(ManagerEvent.settingAdsClick());
                 return;
             default:
                 return;
@@ -206,7 +205,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
 
     @Override
     protected void onResume() {
-        firebaseAnalystic.trackEvent(ManagerEvent.settingOpen());
+        analystic.trackEvent(ManagerEvent.settingOpen());
         super.onResume();
     }
 
@@ -230,10 +229,8 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                     resetStateCall();
                     AppUtils.checkDrawOverlayApp(this);
                 }
-               /* if (!AppUtils.checkNotificationAccessSettings(this)) {
-                    resetStateCall();
-                    AppUtils.showNotificationAccess(this);
-                }*/
+            } else {
+                resetStateCall();
             }
         }
     }

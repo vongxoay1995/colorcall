@@ -41,4 +41,15 @@
     <string name="applied">लागू किया</string>
     <string name="loading">लोड...</string>
     <string name="caller">कॉलर</string>
+    <string name="videos">Videos</string>
+    <string name="download">डाउनलोड</string>
+    <string name="downloadSuccess">डाउनलोड करें सफलता</string>
+    <string name="err_network" >अनुरोध विफल हुआ, कृपया नेटवर्क जांचें</string>
+    <string name="down_err" >डाउनलोड त्रुटि। नेटवर्क कनेक्शन नहीं है!</string>
+    <string name="turn_on_network" >कनेक्शन त्रुटियों! नवीनतम विषयों को अपडेट करने के लिए कृपया इंटरनेट कनेक्शन चालू करें</string>
+    <string name="downloading">डाउनलोड ...</string>
+    <string name="file_not_found">फाइल नहीं मिली</string>
+    <string name="unknowContact">अज्ञात संपर्क</string>
+    <string name="addYourVideo">अपना वीडियो या चित्र बनाएं</string>
+
 </resources>

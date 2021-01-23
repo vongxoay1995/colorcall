@@ -28,6 +28,7 @@ import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.model.SignMainVideo;
+import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -57,11 +58,12 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     private ArrayList<Background> listBg;
     private Background itemThemeSelected;
     private int positionItemThemeSelected = -1;
-
     public VideoFragment(MainActivity activity) {
         this.mainActivity = activity;
     }
-
+    public VideoFragment() {
+        // doesn't do anything special
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,7 +119,17 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
 
     @Override
     public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete) {
-        moveApplyTheme(backgrounds, position, delete);
+        InterstitialUtil.getInstance().showInterstitialAds(new InterstitialUtil.AdCloseListener() {
+            @Override
+            public void onAdClose() {
+                moveApplyTheme(backgrounds, position, delete);
+            }
+
+            @Override
+            public void onMove() {
+                moveApplyTheme(backgrounds, position, delete);
+            }
+        });
     }
 
     @Override
@@ -181,7 +193,6 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onSignApplyVideo(SignApplyVideo signApplyVideo) {
-        Log.e("TAN", "onSignApplyVideo: "+signApplyVideo.getAction());
         switch (signApplyVideo.getAction()) {
             case Constant.INTENT_DOWNLOAD_COMPLETE_THEME:
                 if (positionDownload != -1) {
@@ -213,14 +224,13 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("TAN", "onResume video: "+HawkHelper.getBackgroundSelect());
-        if (itemThemeSelected != null
-                && positionItemThemeSelected != -1
-                & !HawkHelper.getBackgroundSelect().getName().equals(itemThemeSelected.getName())
-                && adapter != null) {
-               adapter.notifyItemChanged(positionItemThemeSelected);
-               positionItemThemeSelected=-1;
-               itemThemeSelected=null;
-        }
+            if (itemThemeSelected != null
+                    && positionItemThemeSelected != -1
+                    & !HawkHelper.getBackgroundSelect().getPathItem().equals(itemThemeSelected.getPathItem())
+                    && adapter != null) {
+                adapter.notifyItemChanged(positionItemThemeSelected);
+                positionItemThemeSelected=-1;
+                itemThemeSelected=null;
+            }
     }
 }

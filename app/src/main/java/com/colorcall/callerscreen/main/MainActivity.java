@@ -2,8 +2,11 @@ package com.colorcall.callerscreen.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -11,7 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
@@ -27,6 +30,7 @@ import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.model.SignMainVideo;
+import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.material.tabs.TabLayout;
 
@@ -50,23 +54,30 @@ public class MainActivity extends AppCompatActivity implements AdListener {
     RelativeLayout layoutAds;
     @BindView(R.id.layout_head)
     RelativeLayout layout_head;
-    private FirebaseAnalystic firebaseAnalystic;
+    private Analystic analystic;
     private BannerAdsUtils bannerAdsUtils;
     private Fragment imageFrag, videoFrag, mythemeFrag;
-    private int callApi;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         AppUtils.showFullHeader(this, layout_head);
         loadDataApi(true);
-        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        analystic = Analystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
         initDataPage();
         if (AppUtils.isNetworkConnected(this)) {
             loadAds();
         } else {
             layoutAds.setVisibility(View.GONE);
+        }
+        disableToolTipTextTab();
+    }
+
+    private void disableToolTipTextTab() {
+        LinearLayout tabStrip = (LinearLayout) tab_layout.getChildAt(0);
+        for (int i = 0; i < tabStrip.getChildCount(); i++) {
+            tabStrip.getChildAt(i).setOnLongClickListener(v -> true);
         }
     }
 
@@ -99,21 +110,18 @@ public class MainActivity extends AppCompatActivity implements AdListener {
 
             }
         });
-
+        InterstitialUtil.getInstance().init(this);
     }
 
     @Override
     protected void onResume() {
-        firebaseAnalystic.trackEvent(ManagerEvent.mainOpen());
-//        if(callApi>0&&AppUtils.isNetworkConnected(this)&&HawkHelper.getListBackground().size()<10){
-//            loadDataApi(false);
-//        }
+        analystic.trackEvent(ManagerEvent.mainOpen());
         super.onResume();
     }
 
     @OnClick({R.id.btnMenu})
     public void onViewClicked() {
-        firebaseAnalystic.trackEvent(ManagerEvent.mainSlideClick());
+        analystic.trackEvent(ManagerEvent.mainSlideClick());
         startActivity(new Intent(this, SettingActivity.class));
     }
 
@@ -154,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements AdListener {
     }
 
     private void loadDataApi(boolean isRefresh) {
-        callApi++;
         AppService appService = AppClient.getInstance();
         Call<AppData> app = appService.getTheme();
         app.enqueue(new Callback<AppData>() {
@@ -199,8 +206,26 @@ public class MainActivity extends AppCompatActivity implements AdListener {
                     isSelected = true;
                 }
             }
+
+        /*    if(!contains(listBg.get(i))) {
+                listBg.get(i).setPosition(initPosition+i);
+                arr.add(listBg.get(i));
+                if(!isSelected){
+                    HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTime_update()));
+                    isSelected = true;
+                }
+            }*/
+
         }
         HawkHelper.setListBackground(arr);
+        Log.e("TAN", "checkHasNewData: "+HawkHelper.getListBackground().size());
     }
-
+    private boolean contains(Background item) {
+        for(Background i : HawkHelper.getListBackground()) {
+            if(i.getName().equals(item.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

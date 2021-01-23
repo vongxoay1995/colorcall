@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Call Color Flash </string>
+    <string name="facebook_app_id">455970115781205</string>
+    <string name="fb_login_protocol_scheme">fb455970115781205</string>
     <string name="lovely">Lovely</string>
     <string name="mytheme">My Theme</string>
     <string name="nope">Nope</string>
@@ -49,5 +51,6 @@
     <string name="down_err" >Download error. No network connection!</string>
     <string name="turn_on_network" >Connection errors! Please turn on the internet connection to update the latest themes</string>
     <string name="downloading">Downloading ...</string>
-    <string name="file_not_found">File picture not found</string>
+    <string name="file_not_found">File not found</string>
+    <string name="unknowContact">Unknow contact</string>
 </resources>

@@ -95,6 +95,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)
                         .thumbnail(0.001f)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
                         .into(imgThumb);
             }

@@ -16,6 +16,7 @@ public class HawkHelper {
     private static String LIST_CATEGORY = "LIST_CATEGORY";
     private static String LIST_BACKGROUND = "LIST_BACKGROUND";
     private static String TIME_STAMP = "TIME_STAMP";
+    private static String LAST_TIME_SHOW_INTER = "LAST_TIME_SHOW_INTER";
     public static boolean isLoadDataFirst() {
         return Hawk.get(LOAD_DATA_FIRST_FIRST, false);
     }
@@ -60,5 +61,11 @@ public class HawkHelper {
     public static Background getBackgroundSelect(){
         Background background = new Background(null,0, "thumbDefault/default1.webp","/raw/default1",false,"default1");
        return Hawk.get(BACKGROUND_SELECT,background);
+    }
+    public static long getLastTimeShowInter() {
+        return Hawk.get(LAST_TIME_SHOW_INTER, (long)0);
+    }
+    public static void setLastTimeShowInter(long timeStamp) {
+        Hawk.put(LAST_TIME_SHOW_INTER, timeStamp);
     }
 }

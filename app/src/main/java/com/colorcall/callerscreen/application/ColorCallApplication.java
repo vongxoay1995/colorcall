@@ -15,6 +15,8 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.ads.MobileAds;
 import com.orhanobut.hawk.Hawk;
 import com.unity3d.ads.metadata.MetaData;
@@ -35,6 +37,8 @@ public class ColorCallApplication extends MultiDexApplication {
         DataManager.getInstance().init(this);
         AppLovinPrivacySettings.setHasUserConsent(true, this);
         AppLovinSdk.getInstance(this).initializeSdk();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
 
     }
     @SuppressLint("StaticFieldLeak")

@@ -30,6 +30,7 @@ import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -61,7 +62,9 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     public ImagesFragment(MainActivity activity) {
         this.mainActivity = activity;
     }
-
+    public ImagesFragment() {
+        // doesn't do anything special
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,7 +104,17 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
 
     @Override
     public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete) {
-        moveApplyTheme(backgrounds, position, delete);
+        InterstitialUtil.getInstance().showInterstitialAds(new InterstitialUtil.AdCloseListener() {
+            @Override
+            public void onAdClose() {
+                moveApplyTheme(backgrounds, position, delete);
+            }
+
+            @Override
+            public void onMove() {
+                moveApplyTheme(backgrounds, position, delete);
+            }
+        });
     }
 
     private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete) {
@@ -198,13 +211,13 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     @Override
     public void onResume() {
         super.onResume();
-        if (itemThemeSelected != null
-                && positionItemThemeSelected != -1
-                & !HawkHelper.getBackgroundSelect().getName().equals(itemThemeSelected.getName())
-                && adapter != null) {
-            adapter.notifyItemChanged(positionItemThemeSelected);
-            positionItemThemeSelected=-1;
-            itemThemeSelected=null;
-        }
+            if (itemThemeSelected != null
+                    && positionItemThemeSelected != -1
+                    & !HawkHelper.getBackgroundSelect().getPathItem().equals(itemThemeSelected.getPathItem())
+                    && adapter != null) {
+                adapter.notifyItemChanged(positionItemThemeSelected);
+                positionItemThemeSelected=-1;
+                itemThemeSelected=null;
+            }
     }
 }

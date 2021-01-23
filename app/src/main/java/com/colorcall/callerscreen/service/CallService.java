@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ import com.android.internal.telephony.ITelephony;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
@@ -61,7 +62,7 @@ public class CallService extends Service {
     public boolean isDisable;
     private Bitmap bmpAvatar;
     private WindowManager mWindowManager;
-    private FirebaseAnalystic firebaseAnalystic;
+    private Analystic analystic;
 
     @Nullable
     @Override
@@ -76,6 +77,11 @@ public class CallService extends Service {
         }else
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForeground(ID_NOTIFICATION, NotificationUtil.initNotificationAndroidO(this));
+        }
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         if (intent != null && intent.getExtras() != null) {
             try {
@@ -168,7 +174,7 @@ public class CallService extends Service {
                 );*/
                 new Handler().postDelayed(this::startAnimation, 400);
                 mWindowManager.addView(viewCall, mLayoutParams);
-                firebaseAnalystic.trackEvent(ManagerEvent.callshow());
+                analystic.trackEvent(ManagerEvent.callshow());
                 handlingCallState();
                 listener();
             } catch (Exception e) {
@@ -180,7 +186,7 @@ public class CallService extends Service {
 
     private void listener() {
         imgAccept.setOnClickListener(v -> {
-            firebaseAnalystic.trackEvent(ManagerEvent.callAcceptCall());
+            analystic.trackEvent(ManagerEvent.callAcceptCall());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelecomManager tm = (TelecomManager) getSystemService(Context.TELECOM_SERVICE);
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED) {
@@ -200,7 +206,7 @@ public class CallService extends Service {
         });
 
         imgReject.setOnClickListener(v -> {
-            firebaseAnalystic.trackEvent(ManagerEvent.callRejectCall());
+            analystic.trackEvent(ManagerEvent.callRejectCall());
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
@@ -227,9 +233,9 @@ public class CallService extends Service {
                 Method method = clazz.getDeclaredMethod("getITelephony");
                 method.setAccessible(true);
                 telephonyService = (ITelephony) method.invoke(telephonyManager);
-                firebaseAnalystic.trackEvent(ManagerEvent.callSmallAndroidP());
+                analystic.trackEvent(ManagerEvent.callSmallAndroidP());
             }else{
-                firebaseAnalystic.trackEvent(ManagerEvent.callBiggerAndroidP());
+                analystic.trackEvent(ManagerEvent.callBiggerAndroidP());
             }
         } catch (Exception e) {
             stopSelf();
@@ -281,7 +287,7 @@ public class CallService extends Service {
 
     @Override
     public void onCreate() {
-        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        analystic = Analystic.getInstance(this);
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("com.colorcall.endCall");

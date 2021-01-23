@@ -26,7 +26,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
+import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
@@ -73,21 +74,20 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     private String folderApp;
     private Background background;
     private PublisherInterstitialAd mInterstitialAd;
-    private FirebaseAnalystic firebaseAnalystic;
+    private Analystic analystic;
     private boolean allowAdsShow;
     private String newPathItem;
     private boolean isDownloaded = false;
     private int position;
     private int fromScreen;
     private Dialog dialog;
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
         AppUtils.showFullHeader(this, layoutHead);
-        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        analystic = Analystic.getInstance(this);
         folderApp = Constant.LINK_VIDEO_CACHE;
         checkInforTheme();
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
@@ -160,7 +160,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             }
         });
     }
-
     private void checkInforTheme() {
         if (getIntent().getBooleanExtra(Constant.SHOW_IMG_DELETE, false)) {
             imgDelete.setVisibility(View.VISIBLE);
@@ -233,8 +232,8 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     }
 
     public void deleteTheme(Background background) {
-        if(HawkHelper.getBackgroundSelect().getPathThumb().equals(background.getPathThumb())){
-            Background bg = new Background(null,0, "thumbDefault/default1.webp","/raw/default1",false,"default1");
+        if (HawkHelper.getBackgroundSelect().getPathThumb().equals(background.getPathThumb())) {
+            Background bg = new Background(null, 0, "thumbDefault/default1.webp", "/raw/default1", false, "default1");
             HawkHelper.setBackgroundSelect(bg);
             SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.APPLY_ITEM_DEFAULT);
             EventBus.getDefault().postSticky(signApplyVideo);
@@ -247,7 +246,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         vdoBackgroundCall.setVisibility(View.VISIBLE);
         vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> mediaPlayer.setLooping(true));
         vdoBackgroundCall.setOnErrorListener((mp, what, extra) -> {
-            firebaseAnalystic.trackEvent(ManagerEvent.applyVideoViewError(what, extra));
+            analystic.trackEvent(ManagerEvent.applyVideoViewError(what, extra));
             return false;
         });
         vdoBackgroundCall.start();
@@ -255,7 +254,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
 
     @Override
     protected void onResume() {
-        firebaseAnalystic.trackEvent(ManagerEvent.applyOpen());
+        analystic.trackEvent(ManagerEvent.applyOpen());
         vdoBackgroundCall.start();
         startAnimation();
         allowAdsShow = true;
@@ -267,11 +266,11 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
-                firebaseAnalystic.trackEvent(ManagerEvent.applyBackClick());
+                analystic.trackEvent(ManagerEvent.applyBackClick());
                 finish();
                 break;
             case R.id.layoutApply:
-                firebaseAnalystic.trackEvent(ManagerEvent.applyApplyClick());
+                analystic.trackEvent(ManagerEvent.applyApplyClick());
                 if (isDownloaded) {
                     startDownloadBg(background.getPathItem(), background.getName());
                 } else {
@@ -279,11 +278,11 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 }
                 break;
             case R.id.imgDelete:
-                firebaseAnalystic.trackEvent(ManagerEvent.applyBinClick());
+                analystic.trackEvent(ManagerEvent.applyBinClick());
                 AppUtils.showDialogDelete(this, this);
                 break;
             case R.id.btnAds:
-                firebaseAnalystic.trackEvent(ManagerEvent.applyAdsClick());
+                analystic.trackEvent(ManagerEvent.applyAdsClick());
                 AppUtils.showDialogDelete(this, this);
                 break;
         }
@@ -322,11 +321,17 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.INTENT_APPLY_THEME);
         SignApplyMyTheme signApplyMyTheme = new SignApplyMyTheme(Constant.INTENT_APPLY_THEME);
         SignApplyImage signApplyImage = new SignApplyImage(Constant.INTENT_APPLY_THEME);
+        Bundle bundle =  new Bundle();
+        bundle.putString("name",background.getName());
+        bundle.putInt("position",position);
+        analystic.trackEvent(new Event("APPLY_ITEM_INFOR",bundle));
         switch (fromScreen) {
             case Constant.VIDEO_FRAG_MENT:
+                analystic.trackEvent(ManagerEvent.applyItemVideo(position, background.getName()));
                 EventBus.getDefault().postSticky(signApplyVideo);
                 break;
             case Constant.IMAGES_FRAG_MENT:
+                analystic.trackEvent(ManagerEvent.applyItemImage(position, background.getName()));
                 EventBus.getDefault().postSticky(signApplyImage);
                 break;
             case Constant.MYTHEME_FRAG_MENT:
@@ -420,7 +425,9 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             Toast.makeText(this, getString(R.string.down_err), Toast.LENGTH_LONG).show();
         } else {
             ArrayList<Background> arr = HawkHelper.getListBackground();
+            background.setPathItem(newPathItem);
             arr.get(background.getPosition()).setPathItem(newPathItem);
+            Log.e("TAN", "download complete : " + background);
             HawkHelper.setListBackground(arr);
             vdoBackgroundCall.setVideoURI(Uri.parse(newPathItem));
             txtApply.setText(getString(R.string.applyContact));

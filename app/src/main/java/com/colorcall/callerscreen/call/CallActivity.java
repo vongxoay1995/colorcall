@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -28,7 +29,7 @@ import com.android.internal.telephony.ITelephony;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
@@ -67,7 +68,7 @@ public class CallActivity extends AppCompatActivity {
     private Background backgroundSelect;
     private TelephonyManager telephonyManager;
     private ITelephony telephonyService;
-    private FirebaseAnalystic firebaseAnalystic;
+    private Analystic analystic;
     LocalBroadcastManager mLocalBroadcastManager;
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -80,6 +81,7 @@ public class CallActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("TAN", "CallActivity onCreate: ");
         getWindow().setFlags(1024, 1024);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -87,8 +89,8 @@ public class CallActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_call);
         ButterKnife.bind(this);
-        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
-        firebaseAnalystic.trackEvent(ManagerEvent.callshow());
+        analystic = Analystic.getInstance(this);
+        analystic.trackEvent(ManagerEvent.callshow());
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("com.colorcall.endCall");
@@ -99,6 +101,19 @@ public class CallActivity extends AppCompatActivity {
         super.onDestroy();
         mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
     }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
     private void showViewCall() {
         phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
         backgroundSelect = HawkHelper.getBackgroundSelect();
@@ -108,7 +123,7 @@ public class CallActivity extends AppCompatActivity {
                 name = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
                 txtName.setText(name);
                 if (name.equals("")) {
-                    txtName.setText("Unknow contact");
+                    txtName.setText(getString(R.string.unknowContact));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -155,7 +170,7 @@ public class CallActivity extends AppCompatActivity {
     }
     private void listener() {
         imgAccept.setOnClickListener(v -> {
-            firebaseAnalystic.trackEvent(ManagerEvent.callAcceptCall());
+            analystic.trackEvent(ManagerEvent.callAcceptCall());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelecomManager tm = (TelecomManager) getSystemService(Context.TELECOM_SERVICE);
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED) {
@@ -175,7 +190,7 @@ public class CallActivity extends AppCompatActivity {
         });
 
         imgReject.setOnClickListener(v -> {
-            firebaseAnalystic.trackEvent(ManagerEvent.callRejectCall());
+            analystic.trackEvent(ManagerEvent.callRejectCall());
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
@@ -193,16 +208,18 @@ public class CallActivity extends AppCompatActivity {
         });
     }
     private void handlingBgCallVideo() {
+        String sPath;
         imgBgCall.setVisibility(View.GONE);
         vdoBgCall.setVisibility(View.VISIBLE);
-        if (backgroundSelect.getPathItem().contains("storage")||backgroundSelect.getPathItem().contains("data/user/")) {
-            vdoBgCall.setVideoPath(backgroundSelect.getPathItem());
+        if (backgroundSelect.getPathItem().contains("storage")|| backgroundSelect.getPathItem().contains("/data/data")||backgroundSelect.getPathItem().contains("data/user/")) {
+            sPath = backgroundSelect.getPathItem();
         } else {
             String uriPath = "android.resource://" + getPackageName() + backgroundSelect.getPathItem();
-            vdoBgCall.setVideoURI(Uri.parse(uriPath));
+            sPath = uriPath;
         }
+        vdoBgCall.setVideoURI(Uri.parse(sPath));
         vdoBgCall.setOnErrorListener((mp, what, extra) -> {
-            firebaseAnalystic.trackEvent(ManagerEvent.callVideoViewError(what,extra));
+            analystic.trackEvent(ManagerEvent.callVideoViewError(what,extra));
             finish();
             return true;
         });
@@ -221,5 +238,4 @@ public class CallActivity extends AppCompatActivity {
         }
         vdoBgCall.setVisibility(View.GONE);
     }
-
 }
