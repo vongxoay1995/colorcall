@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -96,9 +97,8 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .thumbnail(0.001f)
-                        .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
                         .into(imgThumb);
             }
             listener();

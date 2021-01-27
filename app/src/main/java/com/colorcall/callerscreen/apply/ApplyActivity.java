@@ -211,8 +211,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         }
         Glide.with(getApplicationContext())
                 .load(sPathThumb)
-                .thumbnail(0.001f)
-                .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).skipMemoryCache(true))
+                .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.DATA))
                 .into(imgBackgroundCall);
         if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
             sPath = background.getPathItem();
@@ -420,7 +419,9 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
 
     @Override
     public void onPostExecute(String result) {
-        dialog.dismiss();
+        if ((dialog != null) && dialog.isShowing()) {
+            dialog.dismiss();
+        }
         if (result != null) {
             Toast.makeText(this, getString(R.string.down_err), Toast.LENGTH_LONG).show();
         } else {

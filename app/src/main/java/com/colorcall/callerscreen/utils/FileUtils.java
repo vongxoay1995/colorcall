@@ -84,13 +84,12 @@ public class FileUtils {
          *     * move to the first row in the Cursor, get the data,
          *     * and display it.
          * */
-        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-        returnCursor.moveToFirst();
-        String name = (returnCursor.getString(nameIndex));
-        String size = (Long.toString(returnCursor.getLong(sizeIndex)));
-        File file = new File(context.getFilesDir(), name);
+        File file=null;
         try {
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            returnCursor.moveToFirst();
+            String name = (returnCursor.getString(nameIndex));
+            file = new File(context.getFilesDir(), name);
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
             FileOutputStream outputStream = new FileOutputStream(file);
             int read = 0;
@@ -113,7 +112,11 @@ public class FileUtils {
                 returnCursor.close();
             }
         }
-        return file.getPath();
+        if(file!=null){
+            return file.getPath();
+        }else {
+            return "";
+        }
     }
 
     public static File createImageFile(Context context) throws IOException {

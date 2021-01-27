@@ -10,11 +10,10 @@ import android.util.Log;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
 
-public class FlashUtils implements Runnable{
+public class FlashUtils implements Runnable {
     public static FlashUtils instance;
     private boolean b;
     private CameraManager camManager;
-    private Camera camera;
     private Context context;
     private int count;
     public volatile boolean done;
@@ -112,16 +111,16 @@ public class FlashUtils implements Runnable{
             if (this.repeat == 0) {
                 while (!this.isStopping) {
                     turnOnFlash();
-                    SystemClock.sleep( this.time_on);
+                    SystemClock.sleep(this.time_on);
                     turnOffFlash();
-                    SystemClock.sleep( this.time_off);
+                    SystemClock.sleep(this.time_off);
                 }
             } else {
                 for (int i = 0; i < this.repeat && !this.isStopping; i++) {
                     turnOnFlash();
-                    SystemClock.sleep( this.time_on);
+                    SystemClock.sleep(this.time_on);
                     turnOffFlash();
-                    SystemClock.sleep( this.time_off);
+                    SystemClock.sleep(this.time_off);
                 }
             }
             turnOffFlash();
@@ -144,14 +143,19 @@ public class FlashUtils implements Runnable{
             } catch (CameraAccessException unused) {
             }
         } else {
-            this.b = true;
-            Camera open = Camera.open();
-            this.mCamera = open;
-            Camera.Parameters parameters2 = open.getParameters();
-            this.parameters1 = parameters2;
-            parameters2.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-            this.mCamera.setParameters(this.parameters1);
-            this.mCamera.startPreview();
+          //  try {
+                this.b = true;
+                releaseCamera();
+                Camera open = Camera.open();
+                this.mCamera = open;
+                Camera.Parameters parameters2 = open.getParameters();
+                this.parameters1 = parameters2;
+                parameters2.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                this.mCamera.setParameters(this.parameters1);
+                this.mCamera.startPreview();
+           // } catch (Exception e) {
+            //    e.printStackTrace();
+           // }
         }
     }
 
@@ -169,16 +173,21 @@ public class FlashUtils implements Runnable{
                     e.printStackTrace();
                 }
             } else {
-                Camera open = Camera.open();
-                this.mCamera = open;
-                Camera.Parameters parameters2 = open.getParameters();
-                this.parameters = parameters2;
-                parameters2.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                this.mCamera.setParameters(this.parameters);
-                this.mCamera.stopPreview();
-                //them vao fix
-                mCamera.release();
-                this.b = false;
+                //try {
+                    releaseCamera();
+                    Camera open = Camera.open();
+                    this.mCamera = open;
+                    Camera.Parameters parameters2 = open.getParameters();
+                    this.parameters = parameters2;
+                    parameters2.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                    this.mCamera.setParameters(this.parameters);
+                    this.mCamera.stopPreview();
+                    //them vao fix
+                    mCamera.release();
+                    this.b = false;
+               // } catch (Exception e) {
+               //     e.printStackTrace();
+               // }
             }
         }
     }
@@ -191,5 +200,10 @@ public class FlashUtils implements Runnable{
     public boolean isRunning() {
         return !this.isStopping;
     }
-
+    private void releaseCamera() {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+    }
 }

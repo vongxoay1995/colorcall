@@ -27,7 +27,9 @@ import android.widget.TextView;
 
 import com.android.internal.telephony.ITelephony;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
@@ -233,6 +235,7 @@ public class CallActivity extends AppCompatActivity {
         if (backgroundSelect.getPathItem().contains("storage")||backgroundSelect.getPathItem().contains("data/user/")) {
             Glide.with(getApplicationContext())
                     .load(backgroundSelect.getPathItem())
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
                     .into(imgBgCall);
         }
