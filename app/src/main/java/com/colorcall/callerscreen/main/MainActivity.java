@@ -37,6 +37,7 @@ import com.google.android.material.tabs.TabLayout;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements AdListener {
     private Analystic analystic;
     private BannerAdsUtils bannerAdsUtils;
     private Fragment imageFrag, videoFrag, mythemeFrag;
+    ViewPagerMainAdapter mAdapter;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements AdListener {
     }
 
     private void initDataPage() {
-        ViewPagerMainAdapter mAdapter = new ViewPagerMainAdapter(getSupportFragmentManager());
+        mAdapter = new ViewPagerMainAdapter(getSupportFragmentManager());
         videoFrag = new VideoFragment(this);
         imageFrag = new ImagesFragment(this);
         mythemeFrag = new MyThemeFragment();
@@ -129,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements AdListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
         String idGG;
@@ -157,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements AdListener {
         super.onDestroy();
     }
 
-    public void refreshCalApi(){
+    public void refreshCalApi() {
         loadDataApi(false);
     }
 
@@ -167,14 +171,14 @@ public class MainActivity extends AppCompatActivity implements AdListener {
         app.enqueue(new Callback<AppData>() {
             @Override
             public void onResponse(Call<AppData> call, Response<AppData> response) {
-                if (response.body().getApp().size() > 0) {
+                if (response.body() != null && response.body().getApp().size() > 0) {
                     checkHasNewData(response.body().getApp());
                 }
                 Intent intent = new Intent();
                 intent.setAction(Constant.ACTION_LOAD_COMPLETE_THEME);
-                intent.putExtra(Constant.REFRESH_All,isRefresh);
-                SignMainVideo signMainVideo =  new SignMainVideo(true,isRefresh);
-                SignMainImage signMainImage =  new SignMainImage(true,isRefresh);
+                intent.putExtra(Constant.REFRESH_All, isRefresh);
+                SignMainVideo signMainVideo = new SignMainVideo(true, isRefresh);
+                SignMainImage signMainImage = new SignMainImage(true, isRefresh);
                 EventBus.getDefault().postSticky(signMainVideo);
                 EventBus.getDefault().postSticky(signMainImage);
             }
@@ -183,9 +187,9 @@ public class MainActivity extends AppCompatActivity implements AdListener {
             public void onFailure(Call<AppData> call, Throwable t) {
                 Intent intent = new Intent();
                 intent.setAction(Constant.ACTION_LOAD_COMPLETE_THEME);
-                intent.putExtra(Constant.REFRESH_All,isRefresh);
-                SignMainVideo signMainVideo =  new SignMainVideo(true,isRefresh);
-                SignMainImage signMainImage =  new SignMainImage(true,isRefresh);
+                intent.putExtra(Constant.REFRESH_All, isRefresh);
+                SignMainVideo signMainVideo = new SignMainVideo(true, isRefresh);
+                SignMainImage signMainImage = new SignMainImage(true, isRefresh);
                 EventBus.getDefault().postSticky(signMainVideo);
                 EventBus.getDefault().postSticky(signMainImage);
             }
@@ -194,14 +198,14 @@ public class MainActivity extends AppCompatActivity implements AdListener {
 
     private void checkHasNewData(ArrayList<Background> listBg) {
         long lastTimeUpdate = HawkHelper.getTimeStamp();
-        boolean isSelected =false;
+        boolean isSelected = false;
         int initPosition = HawkHelper.getListBackground().size();
         ArrayList<Background> arr = HawkHelper.getListBackground();
         for (int i = 0; i < listBg.size(); i++) {
             if (Long.parseLong(listBg.get(i).getTime_update()) > lastTimeUpdate) {
-                listBg.get(i).setPosition(initPosition+i);
+                listBg.get(i).setPosition(initPosition + i);
                 arr.add(listBg.get(i));
-                if(!isSelected){
+                if (!isSelected) {
                     HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTime_update()));
                     isSelected = true;
                 }
@@ -218,11 +222,11 @@ public class MainActivity extends AppCompatActivity implements AdListener {
 
         }
         HawkHelper.setListBackground(arr);
-        Log.e("TAN", "checkHasNewData: "+HawkHelper.getListBackground().size());
     }
+
     private boolean contains(Background item) {
-        for(Background i : HawkHelper.getListBackground()) {
-            if(i.getName().equals(item.getName())) {
+        for (Background i : HawkHelper.getListBackground()) {
+            if (i.getName().equals(item.getName())) {
                 return true;
             }
         }

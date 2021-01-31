@@ -38,6 +38,7 @@ import com.colorcall.callerscreen.model.SignApplyImage;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
@@ -57,7 +58,7 @@ import butterknife.OnClick;
 
 public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener, PermistionCallListener, DownloadTask.Listener {
     @BindView(R.id.img_background_call)
-    ImageView imgBackgroundCall;
+    DynamicImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
     CustomVideoView vdoBackgroundCall;
     @BindView(R.id.imgDelete)
@@ -81,6 +82,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     private int position;
     private int fromScreen;
     private Dialog dialog;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
@@ -160,6 +162,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             }
         });
     }
+
     private void checkInforTheme() {
         if (getIntent().getBooleanExtra(Constant.SHOW_IMG_DELETE, false)) {
             imgDelete.setVisibility(View.VISIBLE);
@@ -187,14 +190,15 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             processVideo();
         } else {
             imgBackgroundCall.setVisibility(View.VISIBLE);
-            if (background.getPathItem().contains("default")) {
-                sPathThumb = "file:///android_asset/" + background.getPathThumb();
+            if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
+                sPathThumb = "file:///android_asset/" + background.getPathItem();
             } else {
-                sPathThumb = background.getPathThumb();
+                sPathThumb = background.getPathItem();
             }
             Glide.with(getApplicationContext())
                     .load(sPathThumb)
-                    .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .thumbnail(0.1f)
                     .into(imgBackgroundCall);
             vdoBackgroundCall.setVisibility(View.GONE);
         }
@@ -204,14 +208,15 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         String sPath;
         String sPathThumb;
         String uriPath = "android.resource://" + getPackageName() + background.getPathItem();
-        if (background.getPathItem().contains("default")) {
+        if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
             sPathThumb = "file:///android_asset/" + background.getPathThumb();
         } else {
             sPathThumb = background.getPathThumb();
         }
         Glide.with(getApplicationContext())
                 .load(sPathThumb)
-                .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green).diskCacheStrategy(DiskCacheStrategy.DATA))
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .thumbnail(0.1f)
                 .into(imgBackgroundCall);
         if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
             sPath = background.getPathItem();
@@ -320,10 +325,10 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.INTENT_APPLY_THEME);
         SignApplyMyTheme signApplyMyTheme = new SignApplyMyTheme(Constant.INTENT_APPLY_THEME);
         SignApplyImage signApplyImage = new SignApplyImage(Constant.INTENT_APPLY_THEME);
-        Bundle bundle =  new Bundle();
-        bundle.putString("name",background.getName());
-        bundle.putInt("position",position);
-        analystic.trackEvent(new Event("APPLY_ITEM_INFOR",bundle));
+        Bundle bundle = new Bundle();
+        bundle.putString("name", background.getName());
+        bundle.putInt("position", position);
+        analystic.trackEvent(new Event("APPLY_ITEM_INFOR", bundle));
         switch (fromScreen) {
             case Constant.VIDEO_FRAG_MENT:
                 analystic.trackEvent(ManagerEvent.applyItemVideo(position, background.getName()));
@@ -419,8 +424,12 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
 
     @Override
     public void onPostExecute(String result) {
-        if ((dialog != null) && dialog.isShowing()) {
-            dialog.dismiss();
+        try {
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        } catch (Exception e) {
+
         }
         if (result != null) {
             Toast.makeText(this, getString(R.string.down_err), Toast.LENGTH_LONG).show();
@@ -428,7 +437,6 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             ArrayList<Background> arr = HawkHelper.getListBackground();
             background.setPathItem(newPathItem);
             arr.get(background.getPosition()).setPathItem(newPathItem);
-            Log.e("TAN", "download complete : " + background);
             HawkHelper.setListBackground(arr);
             vdoBackgroundCall.setVideoURI(Uri.parse(newPathItem));
             txtApply.setText(getString(R.string.applyContact));

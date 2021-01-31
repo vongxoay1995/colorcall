@@ -11,7 +11,15 @@
             android:minHeight="50dp"
             android:orientation="vertical">
 
-            <TextView style="@style/AppTheme.AdAttribution" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_ad"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Ad"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"

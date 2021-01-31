@@ -38,6 +38,7 @@ import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.service.AcceptCallActivity;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.lang.reflect.Method;
@@ -54,7 +55,7 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.txtPhone)
     TextView txtPhoneNumber;
     @BindView(R.id.img_background_call)
-    ImageView imgBgCall;
+    DynamicImageView imgBgCall;
     @BindView(R.id.btnAccept)
     ImageView imgAccept;
     @BindView(R.id.btnReject)
@@ -75,15 +76,15 @@ public class CallActivity extends AppCompatActivity {
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("com.colorcall.endCall")){
+            if (intent.getAction().equals("com.colorcall.endCall")) {
                 finish();
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("TAN", "CallActivity onCreate: ");
         getWindow().setFlags(1024, 1024);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -99,10 +100,12 @@ public class CallActivity extends AppCompatActivity {
         mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, mIntentFilter);
         showViewCall();
     }
+
     protected void onDestroy() {
         super.onDestroy();
         mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
     }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -116,6 +119,7 @@ public class CallActivity extends AppCompatActivity {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
     private void showViewCall() {
         phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
         backgroundSelect = HawkHelper.getBackgroundSelect();
@@ -151,10 +155,12 @@ public class CallActivity extends AppCompatActivity {
                 break;
         }
     }
+
     public void startAnimation() {
         Animation anim8 = AnimationUtils.loadAnimation(this, R.anim.anm_accept_call);
         imgAccept.startAnimation(anim8);
     }
+
     private void handlingCallState() {
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         Class clazz;
@@ -170,6 +176,7 @@ public class CallActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void listener() {
         imgAccept.setOnClickListener(v -> {
             analystic.trackEvent(ManagerEvent.callAcceptCall());
@@ -209,11 +216,12 @@ public class CallActivity extends AppCompatActivity {
             }
         });
     }
+
     private void handlingBgCallVideo() {
         String sPath;
         imgBgCall.setVisibility(View.GONE);
         vdoBgCall.setVisibility(View.VISIBLE);
-        if (backgroundSelect.getPathItem().contains("storage")|| backgroundSelect.getPathItem().contains("/data/data")||backgroundSelect.getPathItem().contains("data/user/")) {
+        if (backgroundSelect.getPathItem().contains("storage") || backgroundSelect.getPathItem().contains("/data/data") || backgroundSelect.getPathItem().contains("data/user/")) {
             sPath = backgroundSelect.getPathItem();
         } else {
             String uriPath = "android.resource://" + getPackageName() + backgroundSelect.getPathItem();
@@ -221,7 +229,7 @@ public class CallActivity extends AppCompatActivity {
         }
         vdoBgCall.setVideoURI(Uri.parse(sPath));
         vdoBgCall.setOnErrorListener((mp, what, extra) -> {
-            analystic.trackEvent(ManagerEvent.callVideoViewError(what,extra));
+            analystic.trackEvent(ManagerEvent.callVideoViewError(what, extra));
             finish();
             return true;
         });
@@ -230,15 +238,21 @@ public class CallActivity extends AppCompatActivity {
             vdoBgCall.start();
         });
     }
+
     private void handlingBgCallImage() {
         imgBgCall.setVisibility(View.VISIBLE);
-        if (backgroundSelect.getPathItem().contains("storage")||backgroundSelect.getPathItem().contains("data/user/")) {
-            Glide.with(getApplicationContext())
-                    .load(backgroundSelect.getPathItem())
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
-                    .into(imgBgCall);
+        Log.e("TAN", "handlingBgCallImage: " + backgroundSelect.getPathItem());
+        String sPathThumb;
+        if (backgroundSelect.getPathItem().contains("default") && backgroundSelect.getPathItem().contains("thumbDefault")) {
+            sPathThumb = "file:///android_asset/" + backgroundSelect.getPathItem();
+        } else {
+            sPathThumb = backgroundSelect.getPathItem();
         }
+        Glide.with(getApplicationContext())
+                .load(sPathThumb)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .thumbnail(0.1f)
+                .into(imgBgCall);
         vdoBgCall.setVisibility(View.GONE);
     }
 }

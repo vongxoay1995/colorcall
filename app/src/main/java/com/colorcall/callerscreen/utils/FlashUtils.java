@@ -143,7 +143,7 @@ public class FlashUtils implements Runnable {
             } catch (CameraAccessException unused) {
             }
         } else {
-          //  try {
+            try {
                 this.b = true;
                 releaseCamera();
                 Camera open = Camera.open();
@@ -153,9 +153,9 @@ public class FlashUtils implements Runnable {
                 parameters2.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                 this.mCamera.setParameters(this.parameters1);
                 this.mCamera.startPreview();
-           // } catch (Exception e) {
-            //    e.printStackTrace();
-           // }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -173,7 +173,7 @@ public class FlashUtils implements Runnable {
                     e.printStackTrace();
                 }
             } else {
-                //try {
+                try {
                     releaseCamera();
                     Camera open = Camera.open();
                     this.mCamera = open;
@@ -185,9 +185,9 @@ public class FlashUtils implements Runnable {
                     //them vao fix
                     mCamera.release();
                     this.b = false;
-               // } catch (Exception e) {
-               //     e.printStackTrace();
-               // }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

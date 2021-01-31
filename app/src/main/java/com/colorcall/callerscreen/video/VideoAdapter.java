@@ -98,7 +98,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .apply(RequestOptions.placeholderOf(R.drawable.bg_gradient_green))
+                        .thumbnail(0.1f)
                         .into(imgThumb);
             }
             listener();

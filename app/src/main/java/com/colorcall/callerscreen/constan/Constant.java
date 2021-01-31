@@ -48,4 +48,5 @@ public interface Constant {
     int VIDEO_FRAG_MENT = 2;
     int MYTHEME_FRAG_MENT = 3;
     String APPLY_ITEM_DEFAULT = "apply_default";
+    String CAPTURE_IMAGE_PATH = "capture_image_path";
 }

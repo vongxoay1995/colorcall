@@ -10,6 +10,7 @@ import android.widget.SeekBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
@@ -57,7 +58,10 @@ public class SplashActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        Glide.with(this).load(R.drawable.ic_bg_splash).into(imgBgSplash);
+        Glide.with(getApplicationContext())
+                .load(R.drawable.ic_bg_splash)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(imgBgSplash);
         analystic = Analystic.getInstance(this);
         if (AppUtils.isNetworkConnected(this)) {
             loadAds();
