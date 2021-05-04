@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.utils;
 
 
 import com.colorcall.callerscreen.database.Background;
-import com.colorcall.callerscreen.model.Category;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;

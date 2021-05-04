@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.apply.ApplyActivity;
@@ -117,11 +119,20 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     }
 
     public void checkPermissionActionCamera() {
-        String[] permistion = {
-                READ_EXTERNAL_STORAGE,
-                WRITE_EXTERNAL_STORAGE,
-                CAMERA
-        };
+        String[] permistion;
+        if(Build.VERSION.SDK_INT <=28){
+            permistion = new String[]{
+                    READ_EXTERNAL_STORAGE,
+                    WRITE_EXTERNAL_STORAGE,
+                    CAMERA
+            };
+        }else {
+            permistion = new String[]{
+                    READ_EXTERNAL_STORAGE,
+                    CAMERA
+            };
+        }
+
         if (!AppUtils.checkPermission(getContext(), permistion)) {
             requestPermissions(permistion,
                     Constant.PERMISSION_REQUEST_CODE_CAMERA);
@@ -146,7 +157,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         photoPickerIntent.setType("video/*");
-        //  photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
         Intent takePhotoIntent = new Intent("android.media.action.VIDEO_CAPTURE");
         Intent chooserIntent = Intent.createChooser(photoPickerIntent, getResources().getString(R.string.your_video));
@@ -157,7 +167,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     @Override
     public void onImagesClicked() {
         pathUriImage = AppUtils.openCameraIntent(this, getActivity(), Constant.REQUEST_CODE_IMAGES);
-        //takePhoto();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -195,12 +204,20 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
             Background video;
             String imageUrl = "";
             if (listBgDb != null) {
-                imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBgDb.size();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    imageUrl = getActivity().getFilesDir()
+                            + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBgDb.size();
+                    video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
+                    FileUtils.saveBitmap(getActivity().getFilesDir()
+                            + Constant.PATH_THUMB_COLOR_CALL,"thumb_" + listBgDb.size(), bitmap);
+                }else {
+                    imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                            + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBgDb.size();
+                    video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
+                    FileUtils.saveBitmap(imageUrl, bitmap);
+                }
+                DataManager.query().getBackgroundDao().save(video);
             }
-            video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
-            FileUtils.saveBitmap(imageUrl, bitmap);
-            DataManager.query().getBackgroundDao().save(video);
         }
     }
 

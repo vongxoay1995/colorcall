@@ -39,7 +39,6 @@ public class ColorCallApplication extends MultiDexApplication {
         AppLovinSdk.getInstance(this).initializeSdk();
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
-
     }
     @SuppressLint("StaticFieldLeak")
     private void loadData(final String assetsDir) {

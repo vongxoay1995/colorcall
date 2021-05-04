@@ -21,6 +21,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -43,7 +44,6 @@ import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
-import com.colorcall.callerscreen.model.Category;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
@@ -153,10 +153,6 @@ public class AppUtils {
         return Math.round(dp * density);
     }
 
-    public static ArrayList<Category> loadDataFirst(Context context) {
-        ArrayList<Category> list = new ArrayList<>();
-        return list;
-    }
 
     public static void showDialogMyGallery(Activity activity, Analystic analystic, DialogGalleryListener dialogGalleryListener) {
         final Dialog dialog = new Dialog(activity);
@@ -435,11 +431,13 @@ public class AppUtils {
         Intent chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle);
         chooserIntent.putExtra
                 (Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
+        Log.e("TAN", "openCameraIntent: "+takePhotoIntent.resolveActivity(activity.getPackageManager()));
         if (takePhotoIntent.resolveActivity(activity.getPackageManager()) != null) {
             File photoFile = null;
             try {
                 photoFile = createImageFile(activity);
-            } catch (IOException ex) {
+            } catch (IOException ex)
+            {
                 // Error occurred while creating the File
             }
             if (photoFile != null) {

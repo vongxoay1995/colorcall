@@ -49,4 +49,5 @@ public interface Constant {
     int MYTHEME_FRAG_MENT = 3;
     String APPLY_ITEM_DEFAULT = "apply_default";
     String CAPTURE_IMAGE_PATH = "capture_image_path";
+    String THUMB_DIR = "thumb_";
 }

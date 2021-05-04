@@ -1,22 +1,19 @@
 package com.colorcall.callerscreen.utils;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.text.TextUtils;
 import android.util.Log;
 
-import androidx.core.content.FileProvider;
-
+import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
-import com.google.android.gms.common.util.IOUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import static android.util.Log.i;
 
 public class FileUtils {
     public static void saveBitmap(String path, Bitmap bitmap) {
@@ -44,7 +43,29 @@ public class FileUtils {
             }
         }
     }
-
+    public static void saveBitmap(String path,String name, Bitmap bitmap) {
+        File myDir = new File(path);
+        if (!myDir.exists()) {
+            myDir.mkdirs();
+        }
+        File file = new File (myDir,name);
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public static Uri getImageUri(Context context, Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
@@ -124,5 +145,47 @@ public class FileUtils {
                 context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile("ColorCall_image_default",".jpg", storageDir);
         return image;
+    }
+    public interface CreateImageInputInterface {
+        void onImageCreateSuccess(String videoInputPath);
+        void onImageCreateFailed();
+    }
+    public static File getInternalFileDir(Context context) {
+        File file = new File(context.getFilesDir(), Constant.THUMB_DIR);
+        if (!file.exists()) {
+            boolean created = file.mkdir();
+        }
+        return file;
+    }
+    public static void createImagefromPath(Context context, Uri mUri,String name, CreateImageInputInterface listener) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage(context.getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        Handler handler = new Handler();
+        Thread thread = new Thread(() -> {
+            File inputFile = new File(getInternalFileDir(context), name);
+            try {
+                InputStream inputStream = context.getContentResolver().openInputStream(mUri);
+                OutputStream outputStream = new FileOutputStream(inputFile);
+                byte[] buf = new byte[2048];
+                int length;
+                while ((length = inputStream.read(buf)) > 0) {
+                    outputStream.write(buf, 0, length);
+                }
+                outputStream.close();
+                inputStream.close();
+                handler.post(() -> {
+                    progressDialog.dismiss();
+                    listener.onImageCreateSuccess(inputFile.getAbsolutePath());
+                });
+            } catch (IOException e) {
+                handler.post(() -> {
+                    progressDialog.dismiss();
+                    listener.onImageCreateFailed();
+                });
+            }
+        });
+        thread.start();
     }
 }

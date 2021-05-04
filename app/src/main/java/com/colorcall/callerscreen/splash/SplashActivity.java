@@ -61,6 +61,7 @@ public class SplashActivity extends AppCompatActivity {
         Glide.with(getApplicationContext())
                 .load(R.drawable.ic_bg_splash)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .thumbnail(0.1f)
                 .into(imgBgSplash);
         analystic = Analystic.getInstance(this);
         if (AppUtils.isNetworkConnected(this)) {
