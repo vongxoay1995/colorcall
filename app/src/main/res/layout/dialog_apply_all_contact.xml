@@ -16,7 +16,7 @@ android:layout_height="match_parent">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/questionApply"
-        android:textColor="#de000000"
+        android:textColor="@color/colorTextApp"
         android:textSize="@dimen/textsize20"
         app:fontFamily="@font/roboto_medium" />
 
@@ -26,7 +26,7 @@ android:layout_height="match_parent">
         android:fontFamily="@font/robotoregular"
         android:paddingTop="@dimen/_10sdp"
         android:text="@string/contentApply"
-        android:textColor="@color/gray"
+        android:textColor="@color/colorTextApp"
         android:textSize="@dimen/_14sdp" />
 
     <RelativeLayout
@@ -51,7 +51,7 @@ android:layout_height="match_parent">
             android:layout_alignParentEnd="true"
             android:text="@string/sure"
             android:textAllCaps="true"
-            android:textColor="@color/violet"
+            android:textColor="@color/colorHeaderMain"
             android:textSize="@dimen/_15sdp"
             app:fontFamily="@font/roboto_medium" />
     </RelativeLayout>

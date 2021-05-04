@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Call Color Flash</string>
+    <string name="lovely">جميله</string>
+    <string name="mytheme">نسقك</string>
+    <string name="nope">كلا</string>
+    <string name="policy">سياسة الخصوصية</string>
+    <string name="popular">شعبيه</string>
+    <string name="questionApply">التقدم بطلب للحصول على جميع جهات الاتصال</string>
+    <string name="recommend">اوصى لك</string>
+    <string name="search_menu_title">البحث</string>
+    <string name="settings">اعداد</string>
+    <string name="shareApp">مشاركة التطبيق</string>
+    <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="sure">بالتأكيد، أريد</string>
+    <string name="video_alert">Độ dài tοi đa của الفيديو là 10s</string>
+    <string name="video_not_found">لم يتم العثور على الفيديو</string>
+    <string name="your_video">فتح الكاميرا أو تحديد فيديو جديد</string>
+    <string name="applyContact">التقدم بطلب للحصول على جميع جهات الاتصال</string>
+    <string name="checkUpdate">التحقق من وجود تحديث</string>
+    <string name="colorCall">Color Call</string>
+    <string name="colorEffect">تأثير اللون</string>
+    <string name="contentApply">سيتم تطبيق شاشة الاتصال لجميع جهات الاتصال</string>
+    <string name="getVip">الحصول على VIP</string>
+    <string name="overlay_permision">مربع حوار الإذن</string>
+    <string name="overlay_permision_content">يرجى السماح رسم شاشة المكالمة على التطبيقات الأخرى</string>
+    <string name="ok">موافق</string>
+    <string name="turn_on_notifi">يسمح بالوصول إلى الإشعار للرد على المكالمة في شاشة الاتصال</string>
+    <string name="error_gif">يجب أن يكون حجم x أو y منضم على الأقل %1$dpx ويجب ألا يزيد حجم الملف عن %2$sM</string>
+    <string name="video">الفيديو</string>
+    <string name="images">الصور</string>
+    <string name="select_picture">تحديد صورة جديدة</string>
+    <string name="questionDelete">هل تريد حذف هذه الخلفية؟</string>
+    <string name="contentDelete">هل أنت متأكد من حذف الخلفية؟</string>
+    <string name="apply_done">اكمال</string>
+    <string name="callerscreen">شاشة المتصل</string>
+    <string name="ledFlash">فلاش LED</string>
+    <string name="contentSplash">شاشة مكالمة واردة ملونة</string>
+    <string name="start">بدء</string>
+    <string name="applying">تطبيق...</string>
+    <string name="applied">تطبيق</string>
+    <string name="loading">تحميل...</string>
+    <string name="caller">المتصل</string>
+    <string name="download">تحميل</string>
+    <string name="videos">أشرطة فيديو</string>
+    <string name="downloadSuccess">نجاح التنزيل</string>
+    <string name="err_network" >فشل الطلب ، يرجى التحقق من الشبكة</string>
+    <string name="down_err" >الخطأ تحميل. لا يوجد اتصال شبكة!</string>
+    <string name="turn_on_network" >أخطاء الاتصال! يرجى تشغيل اتصال الإنترنت لتحديث أحدث السمات</string>
+    <string name="downloading">جارى التحميل...</string>
+    <string name="file_not_found">لم يتم العثور على الملف</string>
+    <string name="unknowContact">جهة اتصال غير معروفة</string>
+    <string name="addYourVideo">قم بإنشاء الفيديو أو الصورة الخاصة بك</string>
+
+</resources>

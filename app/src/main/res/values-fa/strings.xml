@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Call Color Flash</string>
+    <string name="lovely">دوست داشتنی</string>
+    <string name="mytheme">تم شما</string>
+    <string name="nope">نوپ</string>
+    <string name="policy">سیاست حفظ حریم خصوصی</string>
+    <string name="popular">محبوب</string>
+    <string name="questionApply">درخواست برای همه تماس</string>
+    <string name="recommend">توصیه برای شما</string>
+    <string name="search_menu_title">جستجو</string>
+    <string name="settings">تنظیم</string>
+    <string name="shareApp">برنامه اشتراک گذاری</string>
+    <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="sure">حتما ، ميخوام</string>
+    <string name="video_alert">Độ dài tối đa của ویدیو là 10s</string>
+    <string name="video_not_found">ویدیو یافت نشد</string>
+    <string name="your_video">باز کردن دوربین یا انتخاب یک ویدیو جدید</string>
+    <string name="applyContact">درخواست برای همه تماس</string>
+    <string name="checkUpdate">بررسی برای به روز رسانی</string>
+    <string name="colorCall">Color Call</string>
+    <string name="colorEffect">اثر رنگ</string>
+    <string name="contentApply">صفحه تماس تمام مخاطبین اعمال خواهد شد</string>
+    <string name="getVip">دریافت VIP</string>
+    <string name="overlay_permision">گفتگوی اجازه</string>
+    <string name="overlay_permision_content">لطفا اجازه دهید رسم صفحه نمایش تماس در برنامه های کاربردی دیگر</string>
+    <string name="ok">باشه</string>
+    <string name="turn_on_notifi">اجازه می دهد تا دسترسی به اعلان برای پاسخ به تماس در صفحه تماس</string>
+    <string name="error_gif">اندازه محدود x یا y باید حداقل %1$dpx باشد و اندازه پرونده نباید بیش از %2$sM باشد</string>
+    <string name="video">ویدئو</string>
+    <string name="images">تصاویر</string>
+    <string name="select_picture">انتخاب عکس جدید</string>
+    <string name="questionDelete">حذف این پس زمینه؟</string>
+    <string name="contentDelete">آیا مطمئن هستید که پس زمینه را حذف کنید؟</string>
+    <string name="apply_done">تکمیل</string>
+    <string name="callerscreen">صفحه تماس گیرنده</string>
+    <string name="ledFlash">LED فلش</string>
+    <string name="contentSplash">رنگارنگ ورودی صفحه نمایش تماس</string>
+    <string name="start">شروع</string>
+    <string name="applying">استفاده...</string>
+    <string name="applied">کاربردی</string>
+    <string name="loading">بارگذاری...</string>
+    <string name="caller">تماس گیرنده</string>
+    <string name="videos">Videos</string>
+    <string name="download">Download</string>
+    <string name="downloadSuccess">Download success</string>
+    <string name="err_network" >Request failed, please check the network</string>
+    <string name="down_err" >Download error. No network connection!</string>
+    <string name="turn_on_network" >Connection errors! Please turn on the internet connection to update the latest themes</string>
+    <string name="downloading">Downloading ...</string>
+    <string name="file_not_found">File not found</string>
+    <string name="unknowContact">Unknow contact</string>
+    <string name="addYourVideo">Create your video or image</string>
+
+</resources>

@@ -164,5 +164,15 @@
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# And if you use AsyncExecutor:
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
 -dontwarn com.google.ads.**
 -dontwarn com.google.android.gms.**

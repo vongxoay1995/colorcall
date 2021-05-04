@@ -30,9 +30,11 @@
             android:layout_toStartOf="@+id/layoutBottom"
             android:layout_toEndOf="@+id/btnMenu"
             android:text="@string/app_name"
+            app:tabBackground="@color/transparent"
             android:textAllCaps="true"
+            android:fontFamily="@font/roboto_light"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize12"
+            android:textSize="@dimen/_14ssp"
             app:fontFamily="@font/robotobold" />
 
         <LinearLayout
@@ -72,29 +74,33 @@
                 android:layout_weight="1"
                 android:padding="@dimen/_12sdp"
                 app:srcCompat="@drawable/ic_cam"
-                tools:ignore="VectorDrawableCompat" />
+                tools:ignore="VectorDrawableCompat"
+                android:visibility="gone"/>
         </LinearLayout>
     </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutListTheme"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        app:tabIndicatorColor="#2196F3"
+        app:tabMode="fixed"
+        app:tabRippleColor="@null"
+        style="@style/MyCustomTabLayout"
+        app:tabSelectedTextColor="#2196F3"
+        app:tabTextColor="@color/colorTextApp"
+        android:layout_below="@id/layout_head"/>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pageBgColor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_below="@+id/layout_head"
+        android:layout_below="@id/tab_layout"
         android:layout_above="@id/layout_ads"
-        android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcvCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorApp"
-            android:paddingStart="@dimen/_5sdp"
-            android:paddingEnd="@dimen/_5sdp"
-            android:paddingBottom="@dimen/_5sdp"
-            />
-    </LinearLayout>
+        android:layout_marginTop="2dp">
+
+    </androidx.viewpager.widget.ViewPager>
+   <!-- -->
     <RelativeLayout
         android:id="@+id/layout_ads"
         android:layout_width="match_parent"

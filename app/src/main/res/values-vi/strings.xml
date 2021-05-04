@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Phone Caller Screen</string>
+    <string name="app_name">Call Color Flash</string>
     <string name="lovely">Tình yêu</string>
-    <string name="mytheme">Chủ đề của bạn</string>
+    <string name="mytheme">Tùy chỉnh</string>
     <string name="nope">Không</string>
     <string name="policy">Chính sách bảo mật</string>
     <string name="popular">Phổ biến</string>
@@ -15,18 +15,16 @@
     <string name="video_alert">Độ dài tối đa của video là 10s</string>
     <string name="video_not_found">Không tìm thấy video</string>
     <string name="your_video">Mở camera hoặc chọn video mới</string>
-    <string name="addYourVideo">Thêm hình ảnh hoặc video của bạn</string>
     <string name="applyContact">Áp dụng cho mọi liên hệ</string>
     <string name="checkUpdate">Kiểm tra cập nhật</string>
     <string name="colorCall">Color Call</string>
     <string name="colorEffect">Hiệu ứng màu</string>
     <string name="contentApply">Màn hình cuộc gọi của tất cả danh bạ sẽ được áp dụng</string>
-    <string name="define_roundedimageview" />
     <string name="getVip">Nhận VIP</string>
     <string name="overlay_permision">Hộp thoại cấp phép</string>
-    <string name="overlay_permision_content">Vui lòng cho phép vẽ trên các ứng dụng khác</string>
+    <string name="overlay_permision_content">Vui lòng cho phép vẽ màn hình cuộc gọi trên các ứng dụng khác</string>
     <string name="ok">OK</string>
-    <string name="turn_on_notifi">Vui lòng bật quyền truy cập thông báo</string>
+    <string name="turn_on_notifi">Cho phép truy cập thông báo để trả lời cuộc gọi trong màn hình cuộc gọi</string>
     <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
     <string name="video">Video</string>
     <string name="images">Hình ảnh</string>
@@ -41,4 +39,15 @@
     <string name="applied">Đã áp dụng</string>
     <string name="ledFlash">Đèn Flash</string>
     <string name="loading">Đang tải ...</string>
+    <string name="caller">Caller</string>
+    <string name="videos">Videos</string>
+    <string name="download">Tải về</string>
+    <string name="downloadSuccess">Tải xuống thành công</string>
+    <string name="err_network" >Yêu cầu không thành công, vui lòng kiểm tra mạng</string>
+    <string name="down_err" >Lỗi tải xuống. Không có kết nối mạng!</string>
+    <string name="turn_on_network" >Lỗi kết nối! Vui lòng bật kết nối internet để cập nhật các chủ đề mới nhất</string>
+    <string name="downloading">Đang tải ...</string>
+    <string name="file_not_found">Không tìm thấy file</string>
+    <string name="unknowContact">Ẩn danh</string>
+    <string name="addYourVideo">Tạo video hoặc hình ảnh của bạn</string>
 </resources>

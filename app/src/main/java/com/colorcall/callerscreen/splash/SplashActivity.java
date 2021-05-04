@@ -1,9 +1,7 @@
 package com.colorcall.callerscreen.splash;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,10 +10,12 @@ import android.widget.SeekBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.google.android.gms.ads.AdListener;
@@ -42,10 +42,9 @@ public class SplashActivity extends AppCompatActivity {
     @BindView(R.id.layout_loading)
     LinearLayout layoutLoading;
     private int progress;
-    private String ID_ADS_TEST = "ca-app-pub-3940256099942544/1033173712";
     private String ID_ADS = "ca-app-pub-3222539657172474/5177481580";
     private InterstitialAd mInterstitialAd;
-    private FirebaseAnalystic firebaseAnalystic;
+    private Analystic analystic;
     private Disposable disposable;
     private boolean fullAdsLoaded = false;
     private boolean endTimeTick;
@@ -59,8 +58,12 @@ public class SplashActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        Glide.with(this).load(R.drawable.ic_bg_splash).into(imgBgSplash);
-        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        Glide.with(getApplicationContext())
+                .load(R.drawable.ic_bg_splash)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .thumbnail(0.1f)
+                .into(imgBgSplash);
+        analystic = Analystic.getInstance(this);
         if (AppUtils.isNetworkConnected(this)) {
             loadAds();
             startTimeLeft();
@@ -72,7 +75,7 @@ public class SplashActivity extends AppCompatActivity {
     public void loadAds() {
         mInterstitialAd = new InterstitialAd(this);
         if (BuildConfig.DEBUG) {
-            mInterstitialAd.setAdUnitId(ID_ADS_TEST);
+            mInterstitialAd.setAdUnitId(Constant.ID_INTER_TEST);
         } else {
             mInterstitialAd.setAdUnitId(ID_ADS);
         }
@@ -165,7 +168,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        firebaseAnalystic.trackEvent(ManagerEvent.splashOpen());
+        analystic.trackEvent(ManagerEvent.splashOpen());
         allowAdsShow = true;
         if (endTimeTick) {
             skip();
@@ -184,7 +187,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSplash)
     public void onViewClicked() {
-        firebaseAnalystic.trackEvent(ManagerEvent.splashStart());
+        analystic.trackEvent(ManagerEvent.splashStart());
     }
 
     public void skip() {

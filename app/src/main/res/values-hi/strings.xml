@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Call Color Flash</string>
+    <string name="lovely">सुंदर</string>
+    <string name="mytheme">आपका विषय</string>
+    <string name="nope">नहीं</string>
+    <string name="policy">गोपनीयता नीति</string>
+    <string name="popular">लोकप्रिय</string>
+    <string name="questionApply">सभी संपर्क के लिए आवेदन करें</string>
+    <string name="recommend">आपके लिए सलाह दें</string>
+    <string name="search_menu_title">खोज</string>
+    <string name="settings">सेटिंग</string>
+    <string name="shareApp">ऐप साझा करें</string>
+    <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="sure">ज़रूर, मैं चाहता हूं</string>
+    <string name="video_alert">वीडियो की अधिकतम लंबाई 10 सेकंड है</string>
+    <string name="video_not_found">वीडियो नहीं मिला</string>
+    <string name="your_video">कैमरा खोलें या एक नया वीडियो चुनें</string>
+    <string name="applyContact">सभी संपर्क के लिए आवेदन करें</string>
+    <string name="checkUpdate">अपडेट के लिए देखें</string>
+    <string name="colorCall">Color Call</string>
+    <string name="colorEffect">रंग प्रभाव</string>
+    <string name="contentApply">सभी संपर्कों की कॉल स्क्रीन लागू की जाएगी</string>
+    <string name="getVip">वीआईपी प्राप्त करें</string>
+    <string name="overlay_permision">अनुमति संवाद</string>
+    <string name="overlay_permision_content">कृपया अन्य अनुप्रयोगों पर कॉल स्क्रीन ड्राइंग की अनुमति दें</string>
+    <string name="ok">ठीक है</string>
+    <string name="turn_on_notifi">कॉल स्क्रीन में कॉल का जवाब देने के लिए अधिसूचना तक पहुंच की अनुमति देता है</string>
+    <string name="error_gif">x या वाई बाउंड आकार कम से कम % 1 $ dpx होना चाहिए और फ़ाइल का आकार % 2 $ SM से अधिक नहीं होना चाहिए</string>
+    <string name="video">वीडियो</string>
+    <string name="images">छवियां</string>
+    <string name="select_picture">नई तस्वीर का चयन करें</string>
+    <string name="questionDelete">इस पृष्ठभूमि को हटा दें?</string>
+    <string name="contentDelete">क्या आप सुनिश्चित हैं कि पृष्ठभूमि को हटा दें?</string>
+    <string name="apply_done">पूरा किया</string>
+    <string name="callerscreen">कॉलर स्क्रीन</string>
+    <string name="ledFlash">एलईडी फ्लैश</string>
+    <string name="contentSplash">रंगीन आने वाली कॉल डिस्प्ले</string>
+    <string name="start">प्रारंभ</string>
+    <string name="applying">लागू...</string>
+    <string name="applied">लागू किया</string>
+    <string name="loading">लोड...</string>
+    <string name="caller">कॉलर</string>
+    <string name="videos">Videos</string>
+    <string name="download">डाउनलोड</string>
+    <string name="downloadSuccess">डाउनलोड करें सफलता</string>
+    <string name="err_network" >अनुरोध विफल हुआ, कृपया नेटवर्क जांचें</string>
+    <string name="down_err" >डाउनलोड त्रुटि। नेटवर्क कनेक्शन नहीं है!</string>
+    <string name="turn_on_network" >कनेक्शन त्रुटियों! नवीनतम विषयों को अपडेट करने के लिए कृपया इंटरनेट कनेक्शन चालू करें</string>
+    <string name="downloading">डाउनलोड ...</string>
+    <string name="file_not_found">फाइल नहीं मिली</string>
+    <string name="unknowContact">अज्ञात संपर्क</string>
+    <string name="addYourVideo">अपना वीडियो या चित्र बनाएं</string>
+
+</resources>

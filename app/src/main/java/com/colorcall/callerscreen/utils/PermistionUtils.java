@@ -51,7 +51,6 @@ public class PermistionUtils {
                     if(listener!=null){
                         listener.onHasCallPermistion();
                     }
-
                 }
             } else {
                 if(listener!=null){

@@ -7,6 +7,9 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.service.CallService;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -22,11 +25,11 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     public final int TYPE_RINGGING_CALL = 1;
     public static int lastStateCall = 0;
     public static FlashUtils flashUtils;
-    public static Intent intentCallService;
+    public  Intent intentCallService;
     public boolean isBiggerAndroidP;
     public int stateType = 0;
     public Context context;
-
+    public boolean isFirstRun;
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
@@ -45,37 +48,38 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 stateType = TYPE_RINGGING_CALL;
             }
-            if (!isBiggerAndroidP) {
+           // if (!isBiggerAndroidP) {
                 onCallStateChanged(context, stateType);
-            }
+            //}
         }
     }
 
     private void onCallStateChanged(Context context, int state) {
-        if (lastStateCall != state) {
+     //   if (lastStateCall != state) {
             switch (state) {
                 case TYPE_RINGGING_CALL:
-                    onIncommingCall(context, phoneNumber);
+                    if(phoneNumber!=null){
+                        onIncommingCall(context, phoneNumber);
+                    }
                     if (HawkHelper.isEnableFlash()) {
                         flashUtils = FlashUtils.getInstance(true, context);
                         new Thread(flashUtils).start();
                     }
                     break;
                 case TYPE_END_CALL:
-                    onIdle(context);
-                    break;
                 case TYPE_IN_CALL:
-                    onOffhook(context);
+                    finishCall();
                     break;
             }
             if (flashUtils != null && flashUtils.isRunning()) {
                 flashUtils.stop();
             }
-            lastStateCall = state;
-        }
+           // lastStateCall = state;
+       // }
     }
 
     private void onIncommingCall(Context context, String number) {
+        Log.e("TAN", "onIncommingCall: "+number);
         if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
             intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);
@@ -87,22 +91,20 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
         }
     }
 
-    public void onIdle(Context context) {
-        if (intentCallService != null) {
-            context.stopService(intentCallService);
-        }
-    }
-
-    public void onOffhook(Context context) {
-        if (intentCallService != null) {
-            context.stopService(intentCallService);
-        }
+    public void finishCall() {
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager
+                .getInstance(context);
+        localBroadcastManager.sendBroadcast(new Intent("com.colorcall.endCall"));
     }
 
     @Override
     public void getNumPhone(String phoneNumb) {
-        phoneNumber = phoneNumb;
-        isBiggerAndroidP = false;
-        onCallStateChanged(context, stateType);
+        if(!isFirstRun){
+            phoneNumber = phoneNumb;
+            isFirstRun = true;
+            isBiggerAndroidP = false;
+            onCallStateChanged(context, stateType);
+        }
     }
+
 }

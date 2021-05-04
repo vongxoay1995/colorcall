@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <ImageView
+    <!--<com.colorcall.callerscreen.utils.DynamicImageView
         android:id="@+id/img_background_call"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:visibility="gone"/>
+        android:visibility="gone"/>-->
     <com.colorcall.callerscreen.custom.CustomVideoView
         android:id="@+id/vdo_background_call"
         android:layout_width="match_parent"
@@ -32,12 +32,14 @@
             android:layout_weight="1.5"
             android:gravity="center"
             android:orientation="vertical">
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="@dimen/_92sdp"
                 android:layout_height="@dimen/_92sdp"
-                android:src="@drawable/ic_avatar_call"
+                android:src="@drawable/user"
                 android:layout_gravity="center"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#FFFFFF"
                 />
             <TextView
                 android:id="@+id/txtName"
@@ -47,7 +49,7 @@
                 android:text="@string/caller"
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/_20sdp"
-                android:textSize="@dimen/textsize30"
+                android:textSize="@dimen/_25ssp"
                 app:fontFamily="@font/robotobold" />
 
             <TextView
@@ -56,10 +58,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:paddingTop="@dimen/_10sdp"
-                android:text="0987 523 642"
+                android:text="0000-0000-0000"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/textsize20"
+                android:textSize="@dimen/_16ssp"
                 app:fontFamily="@font/robotoregular" />
         </LinearLayout>
 

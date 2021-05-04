@@ -10,15 +10,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.FirebaseAnalystic;
+import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionFlashListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.android.gms.ads.AdListener;
@@ -32,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SettingActivity extends AppCompatActivity implements PermistionFlashListener {
+public class SettingActivity extends AppCompatActivity implements PermistionFlashListener, PermistionCallListener {
     @BindView(R.id.btnBack)
     ImageView btnBack;
     @BindView(R.id.btnCheckUpdate)
@@ -62,15 +65,16 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     @BindView(R.id.layoutFlash)
     RelativeLayout layoutFlash;
     private UnifiedNativeAd nativeAd;
-    private FirebaseAnalystic firebaseAnalystic;
-    private boolean isFlashState;
-    private boolean isResultDenyPermission;
+    private Analystic analystic;
+    private boolean isFlashState, isCallState;
+    private boolean isResultDenyPermission, isResultDenyCallPermission;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
         AppUtils.showFullHeader(this, layoutHead);
-        firebaseAnalystic = FirebaseAnalystic.getInstance(this);
+        analystic = Analystic.getInstance(this);
         swStateApp.setChecked(HawkHelper.isEnableColorCall());
         swFlash.setChecked(HawkHelper.isEnableFlash());
         loadAds();
@@ -78,8 +82,14 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     }
 
     public void loadAds() {
+        String idGG;
         String ID_ADS_GG = "ca-app-pub-3222539657172474/5477219704";
-        AdLoader adLoader = new AdLoader.Builder(this, ID_ADS_GG)
+        if (BuildConfig.DEBUG) {
+            idGG = Constant.ID_NATIVE_TEST;
+        } else {
+            idGG = ID_ADS_GG;
+        }
+        AdLoader adLoader = new AdLoader.Builder(this, idGG)
                 .forUnifiedNativeAd(unifiedNativeAd -> {
                     if (nativeAd != null) {
                         nativeAd.destroy();
@@ -121,27 +131,34 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     }
 
     private void listener() {
-        swStateApp.setOnCheckedChangeListener((buttonView, isChecked) -> HawkHelper.setStateColorCall(isChecked));
-
-        swFlash.setOnCheckedChangeListener((buttonView, isChecked) ->{
-            isFlashState = isChecked;
-            if(!isResultDenyPermission) {
-                PermistionUtils.checkPermissionFlash(SettingActivity.this, this);
-            }else {
-                isResultDenyPermission=false;
+        swStateApp.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isCallState = isChecked;
+            if (!isResultDenyCallPermission) {
+                PermistionUtils.checkPermissionCall(SettingActivity.this, this);
+            } else {
+                isResultDenyCallPermission = false;
             }
-        } );
+        });
+
+        swFlash.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isFlashState = isChecked;
+            if (!isResultDenyPermission) {
+                PermistionUtils.checkPermissionFlash(SettingActivity.this, this);
+            } else {
+                isResultDenyPermission = false;
+            }
+        });
     }
 
     @OnClick({R.id.btnBack, R.id.layoutShareApp, R.id.layoutPolicy, R.id.layoutCheckUpdate, R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingBackClick());
+                analystic.trackEvent(ManagerEvent.settingBackClick());
                 finish();
                 return;
             case R.id.layoutCheckUpdate:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingCheckUpdateClick());
+                analystic.trackEvent(ManagerEvent.settingCheckUpdateClick());
                 Intent intentRate = new Intent("android.intent.action.VIEW");
                 StringBuilder sb = new StringBuilder();
                 sb.append(Constant.PLAY_STORE_LINK);
@@ -150,11 +167,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 startActivity(intentRate);
                 return;
             case R.id.layoutPolicy:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingPolicyClick());
-                startActivity(new Intent("android.intent.action.VIEW", Uri.parse(Constant.POLICY_URL)));
+                analystic.trackEvent(ManagerEvent.settingPolicyClick());
+                openWebPage(Constant.POLICY_URL);
                 return;
             case R.id.layoutShareApp:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingShareAppClick());
+                analystic.trackEvent(ManagerEvent.settingShareAppClick());
                 Intent sendIntent = new Intent();
                 sendIntent.setAction("android.intent.action.SEND");
                 StringBuilder sb2 = new StringBuilder();
@@ -165,31 +182,91 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 startActivity(sendIntent);
                 return;
             case R.id.btnAds:
-                firebaseAnalystic.trackEvent(ManagerEvent.settingAdsClick());
+                analystic.trackEvent(ManagerEvent.settingAdsClick());
                 return;
             default:
                 return;
         }
     }
 
-    @Override
-    protected void onResume() {
-        firebaseAnalystic.trackEvent(ManagerEvent.settingOpen());
-        super.onResume();
-    }
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Constant.PERMISSION_REQUEST_CODE_CAMERA){
-           if(grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)){
-               HawkHelper.setFlash(isFlashState);
-           }else {
-               isResultDenyPermission = true;
-                swFlash.setChecked(!isFlashState);
-           }
+    public void openWebPage(String url) {
+
+        Uri webpage = Uri.parse(url);
+
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            webpage = Uri.parse("http://" + url);
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
         }
     }
+
+    @Override
+    protected void onResume() {
+        analystic.trackEvent(ManagerEvent.settingOpen());
+        super.onResume();
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == Constant.PERMISSION_REQUEST_CODE_CAMERA) {
+            if (grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
+                HawkHelper.setFlash(isFlashState);
+            } else {
+                isResultDenyPermission = true;
+                swFlash.setChecked(!isFlashState);
+            }
+        } else if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE) {
+            if (grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
+                if (AppUtils.canDrawOverlays(this)) {
+                    if (!AppUtils.checkNotificationAccessSettings(this)) {
+                        resetStateCall();
+                        AppUtils.showNotificationAccess(this);
+                    }
+                } else {
+                    resetStateCall();
+                    AppUtils.checkDrawOverlayApp(this);
+                }
+            } else {
+                resetStateCall();
+            }
+        }
+    }
+
+    public void resetStateCall() {
+        isResultDenyCallPermission = true;
+        swStateApp.setChecked(!isCallState);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constant.REQUEST_OVERLAY) {
+            if (AppUtils.canDrawOverlays(this)) {
+                if (!AppUtils.checkNotificationAccessSettings(this)) {
+                    isCallState = true;
+                    resetStateCall();
+                    AppUtils.showNotificationAccess(this);
+                }
+            }
+        } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
+            if (AppUtils.checkNotificationAccessSettings(this)) {
+                isCallState = true;
+                swStateApp.setChecked(true);
+                onHasCallPermistion();
+            }
+        }
+    }
+
     @Override
     public void onHasFlashPermistion() {
         HawkHelper.setFlash(isFlashState);
+    }
+
+    @Override
+    public void onHasCallPermistion() {
+        HawkHelper.setStateColorCall(isCallState);
     }
 }

@@ -2,37 +2,72 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.colorcall.callerscreen">
-
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature
         android:name="android.hardware.camera2"
         android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
-        android:name="com.colorcall.callerscreen.application.ColorCallApplication"
-        android:allowBackup="true"
+        android:name=".application.ColorCallApplication"
+        android:allowBackup="false"
         android:hardwareAccelerated="true"
-        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <activity android:name="com.facebook.FacebookActivity" android:configChanges= "keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="@string/app_name" /> <activity android:name="com.facebook.CustomTabActivity" android:exported="true"> <intent-filter> <action android:name="android.intent.action.VIEW" /> <category android:name="android.intent.category.DEFAULT" /> <category android:name="android.intent.category.BROWSABLE" /> <data android:scheme="@string/fb_login_protocol_scheme" /> </intent-filter> </activity>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
         <activity
-            android:name="com.colorcall.callerscreen.splash.SplashActivity"
+            android:name=".call.CallActivity"
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleInstance"/>
+        <activity
+            android:name=".splash.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,22 +84,17 @@
             android:value="iT-bWFdu_TKodLOWDrdzNEgfIVurwv5-_tJXSq6xGTc5TKFvFp_ItTX4c5nGISAmFHaOg_R71OkT3Oum_szQrz" />
 
         <activity
-            android:name="com.colorcall.callerscreen.main.MainActivity"
+            android:name=".main.MainActivity"
             android:screenOrientation="portrait">
-
         </activity>
         <activity
-            android:name="com.colorcall.callerscreen.setting.SettingActivity"
+            android:name=".setting.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.colorcall.callerscreen.apply.ApplyActivity"
+            android:name=".apply.ApplyActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.colorcall.callerscreen.categorydetail.CateGoryDetail"
-            android:screenOrientation="portrait" />
-
         <service
-            android:name="com.colorcall.callerscreen.service.NotificationService"
+            android:name=".service.NotificationService"
             android:enabled="true"
             android:exported="true"
             android:label="@string/app_name"
@@ -75,18 +105,20 @@
         </service>
 
         <receiver
-            android:name="com.colorcall.callerscreen.broadcast.CallReceiver"
+            android:name=".broadcast.CallReceiver"
             android:enabled="true">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.PHONE_STATE" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+
             </intent-filter>
         </receiver>
 
-        <service android:name="com.colorcall.callerscreen.service.CallService" />
+        <service android:name=".service.CallService" />
 
         <activity
-            android:name="com.colorcall.callerscreen.service.AcceptCallActivity"
+            android:name=".service.AcceptCallActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"

@@ -67,6 +67,19 @@ public class ManagerEvent {
     public static Event applyAdsClick(){
         return new Event(EventKey.APPLY_ADSBOX_CLICKED,new Bundle());
     }
+    public static Event applyItemVideo(int index,String name){
+        return new Event(EventKey.APPLY_ITEM+"_"+index+"_"+name,new Bundle());
+    }
+    public static Event applyItemImage(int index,String name){
+        return new Event(EventKey.APPLY_ITEM+"_"+index+"_"+name,new Bundle());
+    }
+    public static Event applyVideoViewError(int what,int extra){
+        Bundle bundle =  new Bundle();
+        bundle.putInt("what",what);
+        bundle.putInt("extra",extra);
+        return new Event("ApplyVideoViewError",bundle);
+    }
+
     public static Event applyApplyClick(){
         return new Event(EventKey.APPLY_APPLY_CLICKED,new Bundle());
     }
@@ -113,36 +126,62 @@ public class ManagerEvent {
     public static Event settingShareAppClick(){
         return new Event(EventKey.SETTING_SHAREAPP_CLICKED,new Bundle());
     }
+
+    //call screen show
+    public static Event callshow(){
+        return new Event(EventKey.CALL_SHOW,new Bundle());
+    }
+    public static Event callAcceptCall(){
+        return new Event(EventKey.CALL_ACCETP_CALL,new Bundle());
+    }
+    public static Event callRejectCall(){
+        return new Event(EventKey.CALL_REJECT_CALL,new Bundle());
+    }
+    public static Event callDismiss(){
+        return new Event(EventKey.CALL_DISMISS,new Bundle());
+    }
+    public static Event callSmallAndroidP(){
+        return new Event(EventKey.CALL_ANDROID_SMALL_P,new Bundle());
+    }
+    public static Event callBiggerAndroidP(){
+        return new Event(EventKey.CALL_ANDROID_BIGGER_P,new Bundle());
+    }
+    public static Event callVideoViewError(int what,int extra){
+        Bundle bundle =  new Bundle();
+        bundle.putInt("what",what);
+        bundle.putInt("extra",extra);
+        return new Event("CallVideoViewError",bundle);
+    }
     // position main tracking
     public static Event mainRecoClick(int position){
-        return new Event("MAIN_RECOPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_RECOPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event mainPopuClick(int position){
-        return new Event("MAIN_POPUPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_POPUPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event mainLovelyClick(int position){
-        return new Event("MAIN_LOVEPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_LOVEPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event mainColorEffectClick(int position){
-        return new Event("MAIN_COLORPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_COLORPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event mainYourPictureClick(int position){
-        return new Event("MAIN_YOURPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("MAIN_YOURPICTURE_"+position+"_CLICKED",new Bundle());
     }
     // position seemore tracking
     public static Event seemoreRecoClick(int position){
-        return new Event("SEEMORE_RECOPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_RECOPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event seemorePopuClick(int position){
-        return new Event("SEEMORE_POPUPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_POPUPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event seemoreLovelyClick(int position){
-        return new Event("SEEMORE_LOVEPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_LOVEPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event seemoreColorEffectClick(int position){
-        return new Event("SEEMORE_COLORPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_COLORPICTURE_"+position+"_CLICKED",new Bundle());
     }
     public static Event seemoreYourPictureClick(int position){
-        return new Event("SEEMORE_YOURPICTURE_"+position+"_CLICKED ",new Bundle());
+        return new Event("SEEMORE_YOURPICTURE_"+position+"_CLICKED",new Bundle());
     }
 }
