@@ -79,7 +79,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     }
 
     private void onIncommingCall(Context context, String number) {
-        Log.e("TAN", "onIncommingCall: "+number);
         if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
             intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);

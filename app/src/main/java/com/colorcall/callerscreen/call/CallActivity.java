@@ -241,7 +241,6 @@ public class CallActivity extends AppCompatActivity {
 
     private void handlingBgCallImage() {
         imgBgCall.setVisibility(View.VISIBLE);
-        Log.e("TAN", "handlingBgCallImage: " + backgroundSelect.getPathItem());
         String sPathThumb;
         if (backgroundSelect.getPathItem().contains("default") && backgroundSelect.getPathItem().contains("thumbDefault")) {
             sPathThumb = "file:///android_asset/" + backgroundSelect.getPathItem();

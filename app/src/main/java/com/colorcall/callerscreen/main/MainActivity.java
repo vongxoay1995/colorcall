@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements AdListener {
         Call<AppData> app = appService.getTheme();
         app.enqueue(new Callback<AppData>() {
             @Override
-            public void onResponse(Call<AppData> call, Response<AppData> response) {
+            public void onResponse(@NonNull Call<AppData> call, @NonNull Response<AppData> response) {
                 if (response.body() != null && response.body().getApp().size() > 0) {
                     checkHasNewData(response.body().getApp());
                 }

@@ -18,6 +18,8 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.FirebaseCommonRegistrar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.orhanobut.hawk.Hawk;
 import com.unity3d.ads.metadata.MetaData;
 
@@ -39,6 +41,9 @@ public class ColorCallApplication extends MultiDexApplication {
         AppLovinSdk.getInstance(this).initializeSdk();
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
+        if (BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+        }
     }
     @SuppressLint("StaticFieldLeak")
     private void loadData(final String assetsDir) {

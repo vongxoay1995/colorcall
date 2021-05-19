@@ -431,7 +431,6 @@ public class AppUtils {
         Intent chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle);
         chooserIntent.putExtra
                 (Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
-        Log.e("TAN", "openCameraIntent: "+takePhotoIntent.resolveActivity(activity.getPackageManager()));
         if (takePhotoIntent.resolveActivity(activity.getPackageManager()) != null) {
             File photoFile = null;
             try {
