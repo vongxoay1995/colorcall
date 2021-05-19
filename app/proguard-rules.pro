@@ -90,39 +90,14 @@
 
 -keep class **$Properties
 -keep public class * extends androidx.core.app.ActivityCompat
-#-dontwarn com.google.android.material.**
-#-dontnote com.google.android.material.**
-
-#-dontwarn androidx.**
-#-dontwarn rx.**
-#-dontwarn javax.**
-#-dontwarn org.**
--dontwarn java.rmi.**
--dontwarn com.sun.**
 -dontwarn net.sqlcipher.**
-
-#-keep class androidx.** { *; }
-#-keep class rx.** { *; }
-#-keep class javax.** { *; }
-#-keep class org.** { *; }
--keep class java.rmi** { *; }
 -keep class net.sqlcipher.** {
     *;
 }
-#-keep class com.sun.** {
-#    *;
-#}
-#-keep interface androidx.** { *; }
 
-#-dontnote androidx.renderscript.**
-#-dontwarn androidx.renderscript.**
 -dontwarn androidx.core.app.ActivityCompat
-# support design
 -keep class com.android.internal.telephony.ITelephony { *; }
 
-#-keep public class * extends android.support.design.widget.CoordinatorLayout$Behavior {
-#    public <init>(android.content.Context, android.util.AttributeSet);
-#}
 -keep public class com.google.android.gms.ads.**{ *;}
 -keepclassmembers class * {
   @com.google.api.client.util.Key <fields>;
