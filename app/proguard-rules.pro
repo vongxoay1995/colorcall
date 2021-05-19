@@ -23,7 +23,6 @@
 -verbose
 -dontskipnonpubliclibraryclassmembers
 -dontwarn **CompatHoneycomb
--keep class android.support.v13.** { *; }
 -ignorewarnings
 
 #-libraryjars /libs/StartAppInApp-2.4.11.jar
@@ -48,29 +47,9 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
-#-keep public class * extends android.app.Activity
-#-keep public class * extends android.app.Application
-#-keep public class * extends android.app.Service
-#-keep public class * extends android.content.BroadcastReceiver
-#-keep public class * extends android.content.ContentProvider
-#-keep public class * extends android.app.backup.BackupAgentHelper
-#-keep public class * extends android.preference.Preference
-#-keep public class com.android.vending.licensing.ILicensingService
-
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 -keep class com.apperhand.** {
 *;}
-
-
-# --------------------------------------------------------------------
-# REMOVE all Log messages except warnings and errors
-# --------------------------------------------------------------------
-#-assumenosideeffects class android.util.Log {
-#    public static *** d(...);
-#    public static *** v(...);
-#    public static *** i(...);
-#    public static *** w(...);
-#}
 -keepclasseswithmembernames class * {
     native <methods>;
 }
@@ -93,10 +72,11 @@
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
--keep class com.colorcall.callerscreen.** { *; }
+#-keep class com.colorcall.callerscreen.** { *; }
 -keep class org.sqlite.** { *; }
 -keep class org.sqlite.database.** { *; }
--keep class com.crashlytics.** { *; }
+#keep model database
+-keep class com.colorcall.callerscreen.database.* { *; }
 ### greenDAO 3
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
     public static java.lang.String TABLENAME;
@@ -108,53 +88,16 @@
 # If you do not use RxJava:
 -dontwarn rx.**
 
-### greenDAO 2
--keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
-    public static java.lang.String TABLENAME;
-}
 -keep class **$Properties
--dontwarn com.crashlytics.**
 -keep public class * extends androidx.core.app.ActivityCompat
--keep class com.google.android.material.** { *; }
-
--dontwarn com.google.android.material.**
--dontnote com.google.android.material.**
-
--dontwarn androidx.**
--dontwarn rx.**
--dontwarn javax.**
--dontwarn org.**
--dontwarn java.rmi.**
--dontwarn com.sun.**
 -dontwarn net.sqlcipher.**
-
--keep class androidx.** { *; }
--keep class rx.** { *; }
--keep class javax.** { *; }
--keep class org.** { *; }
--keep class java.rmi** { *; }
 -keep class net.sqlcipher.** {
     *;
 }
--keep class com.sun.** {
-    *;
-}
--keep interface androidx.** { *; }
 
--dontnote androidx.renderscript.**
--dontwarn androidx.renderscript.**
 -dontwarn androidx.core.app.ActivityCompat
-# support design
--dontwarn android.support.design.**
--keep class android.support.design.** { *; }
--keep interface android.support.design.** { *; }
--keep public class android.support.design.R$* { *; }
 -keep class com.android.internal.telephony.ITelephony { *; }
 
-
--keep public class * extends android.support.design.widget.CoordinatorLayout$Behavior {
-    public <init>(android.content.Context, android.util.AttributeSet);
-}
 -keep public class com.google.android.gms.ads.**{ *;}
 -keepclassmembers class * {
   @com.google.api.client.util.Key <fields>;
@@ -176,3 +119,23 @@
 }
 -dontwarn com.google.ads.**
 -dontwarn com.google.android.gms.**
+
+# retrofit
+-dontwarn retrofit.**
+-keep class retrofit.** { *; }
+# For okhttp
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+-keepattributes Signature
+# Retain service method parameters.
+-keepclassmembernames,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+#-keep class com.response.** {*;}
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}

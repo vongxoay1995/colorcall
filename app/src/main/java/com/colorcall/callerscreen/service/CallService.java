@@ -100,7 +100,6 @@ public class CallService extends Service {
                 phoneNumber = " ";
             }
             phoneNumber = phoneNumber.replaceAll(" ", "").replaceAll("-", "");
-            Log.e("TAN", "onStartCommand: "+phoneNumber);
             //showViewCallColor();
             Intent intent2 = new Intent(getApplicationContext(), CallActivity.class);
             intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -113,7 +112,6 @@ public class CallService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e("TAN", "onDestroy: ");
        // removeUI();
      //   mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
         NotificationUtil.hideNotification(this);
@@ -123,7 +121,6 @@ public class CallService extends Service {
     public void removeUI() {
         try {
             if (viewCall != null && mWindowManager != null) {
-                Log.e("TAN", "removeUI: ");
                 mWindowManager.removeView(viewCall);
             }
         } catch (Exception e) {
@@ -133,7 +130,6 @@ public class CallService extends Service {
 
     public void showViewCallColor() {
         backgroundSelect = HawkHelper.getBackgroundSelect();
-        Log.e("TAN", "showViewCallColor: ");
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
             int LAYOUT_TYPE;
@@ -202,7 +198,6 @@ public class CallService extends Service {
                 handlingCallState();
                 listener();
             } catch (Exception e) {
-                Log.e("TAN", "Exception showViewCallColor: "+e.getLocalizedMessage());
                 stopSelf();
             }
         }
@@ -322,7 +317,6 @@ public class CallService extends Service {
 
     private void handlingBgCallImage() {
        // imgBgCall.setVisibility(View.VISIBLE);
-        Log.e("TAN", "handlingBgCallImage: " + backgroundSelect.getPathItem());
         String sPathThumb;
         if (backgroundSelect.getPathItem().contains("default") && backgroundSelect.getPathItem().contains("thumbDefault")) {
             sPathThumb = "file:///android_asset/" + backgroundSelect.getPathItem();

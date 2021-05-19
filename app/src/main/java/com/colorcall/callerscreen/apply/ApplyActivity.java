@@ -43,6 +43,7 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
