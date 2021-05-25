@@ -79,7 +79,16 @@ public class ManagerEvent {
         bundle.putInt("extra",extra);
         return new Event("ApplyVideoViewError",bundle);
     }
-
+    public static Event applyVideoThemeSelected(String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Video_Theme_selected",name);
+        return new Event("Video_Theme_Apply",bundle);
+    }
+    public static Event applyImageThemeSelected(String name) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Image_Theme_selected",name);
+        return new Event("Image_Theme_Apply",bundle);
+    }
     public static Event applyApplyClick(){
         return new Event(EventKey.APPLY_APPLY_CLICKED,new Bundle());
     }

@@ -332,11 +332,11 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         analystic.trackEvent(new Event("APPLY_ITEM_INFOR", bundle));
         switch (fromScreen) {
             case Constant.VIDEO_FRAG_MENT:
-                analystic.trackEvent(ManagerEvent.applyItemVideo(position, background.getName()));
+                analystic.trackEvent(ManagerEvent.applyVideoThemeSelected(background.getName()));
                 EventBus.getDefault().postSticky(signApplyVideo);
                 break;
             case Constant.IMAGES_FRAG_MENT:
-                analystic.trackEvent(ManagerEvent.applyItemImage(position, background.getName()));
+                analystic.trackEvent(ManagerEvent.applyImageThemeSelected(background.getName()));
                 EventBus.getDefault().postSticky(signApplyImage);
                 break;
             case Constant.MYTHEME_FRAG_MENT:
