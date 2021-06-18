@@ -140,7 +140,7 @@ public class FlashUtils implements Runnable {
                 if (cameraManager != null) {
                     this.camManager.setTorchMode(cameraManager.getCameraIdList()[0], true);
                 }
-            } catch (CameraAccessException unused) {
+            } catch (Exception unused) {
             }
         } else {
             try {
@@ -169,7 +169,7 @@ public class FlashUtils implements Runnable {
                     if (cameraManager != null) {
                         this.camManager.setTorchMode(cameraManager.getCameraIdList()[0], false);
                     }
-                } catch (CameraAccessException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {

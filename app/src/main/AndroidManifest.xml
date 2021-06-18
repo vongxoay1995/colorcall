@@ -92,7 +92,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".apply.ApplyActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
         <service
             android:name=".service.NotificationService"
             android:enabled="true"

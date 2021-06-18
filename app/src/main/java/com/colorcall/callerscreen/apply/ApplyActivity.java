@@ -7,9 +7,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -38,6 +38,7 @@ import com.colorcall.callerscreen.model.SignApplyImage;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
@@ -57,7 +58,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener, PermistionCallListener, DownloadTask.Listener {
+public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener,DialogDeleteListener, PermistionCallListener, DownloadTask.Listener  {
     @BindView(R.id.img_background_call)
     DynamicImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
@@ -72,6 +73,8 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     ImageView btnAccept;
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
+    @BindView(R.id.layout_ads)
+    RelativeLayout layoutAds;
     TextView txtPercentDownloading;
     private String folderApp;
     private Background background;
@@ -83,17 +86,31 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     private int position;
     private int fromScreen;
     private Dialog dialog;
-
+    private BannerAdsUtils bannerAdsUtils;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
-        AppUtils.showFullHeader(this, layoutHead);
+        bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
         analystic = Analystic.getInstance(this);
         folderApp = Constant.LINK_VIDEO_CACHE;
         checkInforTheme();
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
+        loadAdsBanner();
+    }
+
+    private void loadAdsBanner() {
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/9030792883";
+        String idGG;
+        if (BuildConfig.DEBUG) {
+            idGG = Constant.ID_TEST_BANNER_ADMOD;
+        } else {
+            idGG = ID_ADS_GG;
+        }
+        bannerAdsUtils.setIdAds(idGG);
+        bannerAdsUtils.setAdListener(this);
+        bannerAdsUtils.showMediationBannerAds();
     }
 
 
@@ -447,5 +464,16 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             EventBus.getDefault().postSticky(signApplyVideo);
             Toast.makeText(this, getString(R.string.downloadSuccess), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onAdloaded() {
+
+    }
+
+    @Override
+    public void onAdFailed() {
+        layoutAds.setVisibility(View.GONE);
+        //AppUtils.showFullHeader(this, layoutHead);
     }
 }

@@ -53,6 +53,7 @@ public class PhoneUtils {
                 super.run();
                 getListNameContact();
                 NotificationService notificationReceiverService = NotificationService.get();
+                Log.e("TAN", "notificationReceiverService run: "+notificationReceiverService);
                 if (notificationReceiverService != null) {
                     StatusBarNotification inCallNotification = notificationReceiverService.getInCallNotification();
                     if (inCallNotification != null) {
