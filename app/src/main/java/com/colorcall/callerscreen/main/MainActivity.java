@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements AdListener {
         for (int i = 0; i < listBg.size(); i++) {
             if (Long.parseLong(listBg.get(i).getTime_update()) > lastTimeUpdate) {
                 listBg.get(i).setPosition(initPosition + i);
+                Log.e("TAN", "checkHasNewData: "+listBg.get(i));
                 arr.add(listBg.get(i));
                 if (!isSelected) {
                     HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTime_update()));

@@ -112,8 +112,8 @@
                     android:paddingTop="@dimen/_20sdp"
                     android:text="@string/caller"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_25ssp"
-                    app:fontFamily="@font/robotobold" />
+                    android:textSize="@dimen/_25sdp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtPhone"
@@ -124,8 +124,7 @@
                     android:text="0000-0000-0000"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_16ssp"
-                    app:fontFamily="@font/robotoregular" />
+                    android:textSize="@dimen/_14sdp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -183,10 +182,9 @@
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:gravity="center"
-                            android:fontFamily="@font/robotoregular"
                             android:text="@string/applyContact"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_16ssp" />
+                            android:textSize="@dimen/_14sdp" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -195,12 +193,12 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_marginStart="@dimen/_15sdp"
-                        android:background="@drawable/bg_green_radius_15"
-                        android:paddingLeft="@dimen/_15sdp"
-                        android:paddingRight="@dimen/_15sdp"
-                        android:visibility="gone">
+                        android:background="@drawable/bg_gradient_blue"
+                        android:visibility="visible"
+                        >
 
                         <ImageView
+
                             android:layout_width="@dimen/_35sdp"
                             android:layout_height="@dimen/_35sdp"
                             android:padding="@dimen/_8sdp"

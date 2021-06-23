@@ -14,13 +14,12 @@
             android:id="@+id/txtContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/robotoregular"
             android:text="@string/contentDelete"
             android:paddingTop="@dimen/_10sdp"
             android:paddingBottom="@dimen/_15sdp"
             android:textColor="@color/colorTextApp"
             android:gravity="center"
-            android:textSize="16sp"/>
+            android:textSize="@dimen/_15sdp"/>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +34,7 @@
                 android:text="@string/nope"
                 android:textAllCaps="true"
                 android:textColor="#b1b1b1"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/_15sdp"/>
             <TextView
                 android:id="@+id/btnYes"
                 android:layout_width="wrap_content"
@@ -46,7 +45,7 @@
                 android:textAllCaps="true"
                 android:layout_alignParentEnd="true"
                 android:textColor="#2597f5"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/_15sdp"/>
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

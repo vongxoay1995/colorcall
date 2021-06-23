@@ -34,8 +34,8 @@
             android:textAllCaps="true"
             android:fontFamily="@font/roboto_light"
             android:textColor="@color/white"
-            android:textSize="@dimen/_14ssp"
-            app:fontFamily="@font/robotobold" />
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/layoutBottom"

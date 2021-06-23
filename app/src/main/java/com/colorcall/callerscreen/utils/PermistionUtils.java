@@ -1,10 +1,12 @@
 package com.colorcall.callerscreen.utils;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.colorcall.callerscreen.constan.Constant;
 
@@ -13,8 +15,10 @@ import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_PHONE_STATE;
+import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
 
 public class PermistionUtils {
+
     public static void checkPermissionCall(Activity activity, PermistionCallListener listener) {
         String[] permistion;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -71,6 +75,23 @@ public class PermistionUtils {
            if (listener!=null){
                listener.onHasFlashPermistion();
            }
+        }
+    }
+    public static void requestContactPermission(Activity activity,PermissionContactListener listener) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{android.Manifest.permission.READ_CONTACTS},
+                        PERMISSIONS_REQUEST_READ_CONTACTS);
+            } else {
+                if (listener!=null){
+                    listener.onHasContactPermistion();
+                }
+            }
+        } else {
+            if (listener!=null){
+                listener.onHasContactPermistion();
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.apply;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.contact.SelectContactActivity;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
@@ -41,6 +43,7 @@ import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.android.gms.ads.AdListener;
@@ -58,7 +61,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener,DialogDeleteListener, PermistionCallListener, DownloadTask.Listener  {
+import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
+import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
+
+public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener,DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener {
     @BindView(R.id.img_background_call)
     DynamicImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
@@ -284,7 +290,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         super.onResume();
     }
 
-    @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.btnAds})
+    @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.layoutContact,R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
@@ -306,6 +312,9 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             case R.id.btnAds:
                 analystic.trackEvent(ManagerEvent.applyAdsClick());
                 AppUtils.showDialogDelete(this, this);
+                break;
+            case R.id.layoutContact:
+                PermistionUtils.requestContactPermission(this, this);
                 break;
         }
     }
@@ -382,6 +391,14 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             } else {
                 AppUtils.checkDrawOverlayApp(this);
             }
+        }else if(requestCode ==PERMISSIONS_REQUEST_READ_CONTACTS){
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onHasContactPermistion();
+            } else {
+                Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
+            }
+            return;
         }
     }
 
@@ -475,5 +492,13 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     public void onAdFailed() {
         layoutAds.setVisibility(View.GONE);
         //AppUtils.showFullHeader(this, layoutHead);
+    }
+
+    @Override
+    public void onHasContactPermistion() {
+        Intent intent = new Intent(this, SelectContactActivity.class);
+        Gson gson = new Gson();
+        intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
+        startActivity(intent);
     }
 }

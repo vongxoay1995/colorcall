@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="@string/downloading"
             android:fontFamily="@font/roboto_light"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_13sdp"
             android:textColor="@color/black"
             />
         <RelativeLayout
@@ -41,7 +41,7 @@
                 android:id="@+id/tv_progress"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_12sdp"
                 android:layout_centerInParent="true"
                 app:layout_constraintBottom_toBottomOf="@+id/progressBar"
                 app:layout_constraintEnd_toEndOf="@+id/progressBar"

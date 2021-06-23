@@ -42,8 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/loading"
-            android:textSize="@dimen/_13ssp"
-            android:fontFamily="@font/robotoregular"
+            android:textSize="@dimen/_13sdp"
             android:textColor="@color/black"/>
     </LinearLayout>
     <LinearLayout
@@ -63,8 +62,7 @@
             android:layout_marginStart="10dp"
             android:text="@string/turn_on_network"
             android:gravity="center"
-            android:textSize="@dimen/_13ssp"
-            android:fontFamily="@font/robotoregular"
+            android:textSize="@dimen/_13sdp"
             android:textColor="@color/black"/>
     </LinearLayout>
 </RelativeLayout>

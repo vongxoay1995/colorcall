@@ -135,7 +135,7 @@ public class AppUtils {
         }
         return false;
     }
-
+    
     public static void showNotificationAccess(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getString(R.string.turn_on_notifi))

@@ -33,10 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@string/video"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_12sdp"
                 android:layout_gravity="center"
                 android:textColor="@color/colorTextApp"
-                android:fontFamily="@font/robotoregular"
                 />
         </LinearLayout>
         <LinearLayout
@@ -54,10 +53,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:text="@string/images"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_12sdp"
                 android:textColor="@color/colorTextApp"
                 android:layout_gravity="center"
-                android:fontFamily="@font/robotoregular"
                 />
         </LinearLayout>
     </LinearLayout>

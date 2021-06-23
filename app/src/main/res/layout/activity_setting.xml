@@ -29,8 +29,8 @@
             android:layout_toEndOf="@+id/btnBack"
             android:text="@string/settings"
             android:textColor="@color/white"
-            android:textSize="@dimen/_16ssp"
-            app:fontFamily="@font/robotobold" />
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold"/>
 
         <LinearLayout
             android:id="@+id/layoutBottom"
@@ -88,7 +88,7 @@
                     android:text="@string/getVip"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsizeNomal"
-                    app:fontFamily="@font/robotoregular" />
+                    android:textStyle="bold"/>
 
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
@@ -121,8 +121,7 @@
                     android:paddingStart="@dimen/_5sdp"
                     android:text="@string/shareApp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12ssp"
-                    app:fontFamily="@font/robotoregular" />
+                    android:textSize="@dimen/_13sdp" />
 
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
@@ -155,8 +154,7 @@
                     android:paddingStart="@dimen/_5sdp"
                     android:text="@string/checkUpdate"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12ssp"
-                    app:fontFamily="@font/robotoregular" />
+                    android:textSize="@dimen/_13sdp" />
 
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
@@ -189,8 +187,7 @@
                     android:paddingStart="@dimen/_5sdp"
                     android:text="@string/policy"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12ssp"
-                    app:fontFamily="@font/robotoregular" />
+                    android:textSize="@dimen/_13sdp" />
 
                 <ImageView
                     android:layout_width="@dimen/_40sdp"
@@ -224,8 +221,7 @@
                     android:paddingRight="@dimen/_10sdp"
                     android:text="@string/callerscreen"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12ssp"
-                    app:fontFamily="@font/robotoregular" />
+                    android:textSize="@dimen/_13sdp" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/swStateApp"
@@ -257,8 +253,7 @@
                     android:paddingEnd="@dimen/_10sdp"
                     android:text="@string/ledFlash"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12ssp"
-                    app:fontFamily="@font/robotoregular" />
+                    android:textSize="@dimen/_13sdp" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/swFlash"
