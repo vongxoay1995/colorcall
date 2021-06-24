@@ -29,7 +29,7 @@
     <RelativeLayout
         android:id="@+id/layout_head"
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
+        android:layout_height="@dimen/_40sdp"
         android:background="@color/blackAlpha30">
 
         <ImageView
@@ -76,7 +76,7 @@
             android:layout_marginEnd="8dp"
             android:layout_toEndOf="@id/btnBack"
             android:background="@drawable/bg_edit_search_contact"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:visibility="gone">
 
             <EditText
@@ -84,10 +84,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/_12sdp"
-                android:paddingEnd="12dp"
+                android:layout_marginEnd="@dimen/_30sdp"
                 android:background="@null"
                 android:imeOptions="actionSearch"
                 android:singleLine="true"
+                android:layout_centerVertical="true"
                 android:textColor="#ffffff"
                 android:textSize="13sp" />
 

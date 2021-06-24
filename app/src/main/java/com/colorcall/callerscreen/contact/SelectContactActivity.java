@@ -95,10 +95,10 @@ public class SelectContactActivity extends AppCompatActivity {
         edtSearch.setFocusable(true);
         edtSearch.setFocusableInTouchMode(true);
         edtSearch.requestFocus();
-//        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        if (inputMethodManager.isActive()) {
-//            inputMethodManager.showSoftInput(edtSearch, 0);
-//        }
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager.isActive()) {
+            inputMethodManager.showSoftInput(edtSearch, 0);
+        }
     }
 
     private void init() {
@@ -150,9 +150,11 @@ public class SelectContactActivity extends AppCompatActivity {
             isSearchShow = false;
             header_1.setVisibility(View.VISIBLE);
             header_2.setVisibility(View.GONE);
+            AppUtils.hideSoftKeyboard(this);
         } else {
             super.onBackPressed();
         }
+
     }
 
     public final void getAllContact() {
