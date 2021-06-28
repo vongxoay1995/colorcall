@@ -2,6 +2,7 @@ package com.colorcall.callerscreen.custom;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.Checkable;
 import android.widget.ImageView;
 
@@ -53,10 +54,7 @@ public class CircleSelectImageView extends androidx.appcompat.widget.AppCompatIm
 
     @Override
     public void toggle() {
-        if(isChecked){
-            setChecked(true);
-        }else {
-            setChecked(false);
-        }
+        Log.e("TAN", "toggle: "+isChecked);
+        setChecked(!this.isChecked);
     }
 }

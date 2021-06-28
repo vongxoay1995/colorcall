@@ -65,12 +65,12 @@ public class SelectContactActivity extends AppCompatActivity {
     private boolean isSearchShow;
     private ContactAdapter adapter;
     private Background background;
-
     public class EditTextListener implements TextWatcher {
         public EditTextListener() {
         }
 
         public void afterTextChanged(Editable editable) {
+
         }
 
         public void beforeTextChanged(CharSequence charSequence, int start, int before, int after) {
@@ -78,7 +78,9 @@ public class SelectContactActivity extends AppCompatActivity {
 
         public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
             imgClear.setVisibility(TextUtils.isEmpty(charSequence) ? View.GONE : View.VISIBLE);
-            //SelectContactActivity.this.c.a(charSequence.toString());
+            if(adapter!=null){
+                adapter.search(charSequence);
+            }
         }
     }
 
@@ -87,7 +89,6 @@ public class SelectContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contact);
         ButterKnife.bind(this);
-        AppUtils.showFullHeader(this, layoutHead);
         init();
     }
 
@@ -179,7 +180,6 @@ public class SelectContactActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.e("TAN", "getAllContact: " + background);
         ArrayList arrListContact = new ArrayList(linkedHashSet);
         List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
                 .where(ContactDao.Properties.Background_path.eq(background.getPathItem()))
