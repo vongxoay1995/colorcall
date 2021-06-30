@@ -33,7 +33,10 @@ public class Contact {
         this.contact_id = contact_id;
         this.background_path = background_path;
     }
-
+    public Contact( String contact_id, String background_path) {
+        this.contact_id = contact_id;
+        this.background_path = background_path;
+    }
     public Long getId() {
         return id;
     }

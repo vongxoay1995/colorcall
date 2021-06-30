@@ -54,7 +54,6 @@ public class CircleSelectImageView extends androidx.appcompat.widget.AppCompatIm
 
     @Override
     public void toggle() {
-        Log.e("TAN", "toggle: "+isChecked);
         setChecked(!this.isChecked);
     }
 }

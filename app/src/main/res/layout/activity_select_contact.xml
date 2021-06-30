@@ -19,8 +19,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvContact"
             android:layout_width="match_parent"
@@ -34,7 +33,8 @@
             android:id="@+id/layout_head"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
-            android:background="@color/blackAlpha30">
+            android:background="#1E1E1E"
+>
 
             <ImageView
                 android:id="@+id/btnBack"
@@ -121,24 +121,24 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/layoutFooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingLeft="@dimen/_15sdp"
-            android:paddingTop="@dimen/_25sdp"
-            android:paddingRight="@dimen/_15sdp"
-            android:paddingBottom="@dimen/_15sdp">
+            android:background="#1E1E1E"
+            android:orientation="horizontal"
+            android:padding="@dimen/_10sdp">
 
             <RelativeLayout
                 android:id="@+id/layoutSet"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_30sdp"
-                android:layout_marginEnd="@dimen/_30sdp"
                 android:background="@drawable/bg_green_radius_60"
                 android:paddingTop="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_35sdp"
+                android:layout_marginEnd="@dimen/_35sdp"
                 android:paddingBottom="@dimen/_10sdp">
 
                 <TextView
@@ -151,6 +151,6 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_14sdp" />
             </RelativeLayout>
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>
