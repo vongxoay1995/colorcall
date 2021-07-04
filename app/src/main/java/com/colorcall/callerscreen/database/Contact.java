@@ -19,6 +19,9 @@ public class Contact {
     @NotNull
     private String background_path;
 
+    @NotNull
+    private String background;
+
     @Generated
     public Contact() {
     }
@@ -28,14 +31,16 @@ public class Contact {
     }
 
     @Generated
-    public Contact(Long id, String contact_id, String background_path) {
+    public Contact(Long id, String contact_id, String background_path, String background) {
         this.id = id;
         this.contact_id = contact_id;
         this.background_path = background_path;
+        this.background = background;
     }
-    public Contact( String contact_id, String background_path) {
+    public Contact( String contact_id, String background_path, String background) {
         this.contact_id = contact_id;
         this.background_path = background_path;
+        this.background = background;
     }
     public Long getId() {
         return id;
@@ -63,6 +68,16 @@ public class Contact {
     /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setBackground_path(@NotNull String background_path) {
         this.background_path = background_path;
+    }
+
+    @NotNull
+    public String getBackground() {
+        return background;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setBackground(@NotNull String background) {
+        this.background = background;
     }
 
 }

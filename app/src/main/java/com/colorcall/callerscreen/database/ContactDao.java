@@ -25,6 +25,7 @@ public class ContactDao extends AbstractDao<Contact, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Contact_id = new Property(1, String.class, "contact_id", false, "CONTACT_ID");
         public final static Property Background_path = new Property(2, String.class, "background_path", false, "BACKGROUND_PATH");
+        public final static Property Background = new Property(3, String.class, "background", false, "BACKGROUND");
     }
 
 
@@ -42,7 +43,8 @@ public class ContactDao extends AbstractDao<Contact, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"CONTACT\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"CONTACT_ID\" TEXT NOT NULL ," + // 1: contact_id
-                "\"BACKGROUND_PATH\" TEXT NOT NULL );"); // 2: background_path
+                "\"BACKGROUND_PATH\" TEXT NOT NULL ," + // 2: background_path
+                "\"BACKGROUND\" TEXT NOT NULL );"); // 3: background
     }
 
     /** Drops the underlying database table. */
@@ -61,6 +63,7 @@ public class ContactDao extends AbstractDao<Contact, Long> {
         }
         stmt.bindString(2, entity.getContact_id());
         stmt.bindString(3, entity.getBackground_path());
+        stmt.bindString(4, entity.getBackground());
     }
 
     @Override
@@ -73,6 +76,7 @@ public class ContactDao extends AbstractDao<Contact, Long> {
         }
         stmt.bindString(2, entity.getContact_id());
         stmt.bindString(3, entity.getBackground_path());
+        stmt.bindString(4, entity.getBackground());
     }
 
     @Override
@@ -85,7 +89,8 @@ public class ContactDao extends AbstractDao<Contact, Long> {
         Contact entity = new Contact( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // contact_id
-            cursor.getString(offset + 2) // background_path
+            cursor.getString(offset + 2), // background_path
+            cursor.getString(offset + 3) // background
         );
         return entity;
     }
@@ -95,6 +100,7 @@ public class ContactDao extends AbstractDao<Contact, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setContact_id(cursor.getString(offset + 1));
         entity.setBackground_path(cursor.getString(offset + 2));
+        entity.setBackground(cursor.getString(offset + 3));
      }
     
     @Override

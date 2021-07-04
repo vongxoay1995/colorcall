@@ -37,6 +37,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             String state = intent.getExtras().getString("state");
             phoneNumber = intent.getExtras().getString("incoming_number");
             if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                Log.e("TAN", "onReceive: 1");
                 isBiggerAndroidP = true;
                 PhoneUtils.get().getNumberPhoneWhenNull(CallReceiver.this);
             }
@@ -55,9 +56,10 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     }
 
     private void onCallStateChanged(Context context, int state) {
-     //   if (lastStateCall != state) {
+        Log.e("TAN", "onCallStateChanged: "+state);
             switch (state) {
                 case TYPE_RINGGING_CALL:
+                    Log.e("TAN", "onCallStateChanged: TYPE_RINGGING_CALL");
                     if(phoneNumber!=null){
                         onIncommingCall(context, phoneNumber);
                     }
@@ -74,12 +76,11 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             if (flashUtils != null && flashUtils.isRunning()) {
                 flashUtils.stop();
             }
-           // lastStateCall = state;
-       // }
     }
 
     private void onIncommingCall(Context context, String number) {
         if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
+            Log.e("TAN", "onIncommingCall: ");
             intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -98,6 +99,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
 
     @Override
     public void getNumPhone(String phoneNumb) {
+        Log.e("TAN", "getNumPhone: "+phoneNumber);
         if(!isFirstRun){
             phoneNumber = phoneNumb;
             isFirstRun = true;

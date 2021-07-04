@@ -42,9 +42,11 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.contact.ContactInfor;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
+import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
@@ -138,7 +140,7 @@ public class AppUtils {
         }
         return false;
     }
-    
+
     public static void showNotificationAccess(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getString(R.string.turn_on_notifi))
@@ -381,23 +383,26 @@ public class AppUtils {
         return photo;
     }
 
-    public static String getContactName(Context context, String phoneNumber) {
+    public static ContactRetrieve getContactName(Context context, String phoneNumber) {
         ContentResolver cr = context.getContentResolver();
+        ContactRetrieve contactRetrieve;
+        String contactId = "";
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID}, null, null, null);
         if (cursor == null) {
             return null;
         }
         String contactName = "";
         if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+            contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
         }
 
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
-
-        return contactName;
+        contactRetrieve = new ContactRetrieve(contactName, contactId);
+        return contactRetrieve;
     }
 
     public static void showFullHeader(Context context, View toolBar) {
@@ -438,8 +443,7 @@ public class AppUtils {
             File photoFile = null;
             try {
                 photoFile = createImageFile(activity);
-            } catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 // Error occurred while creating the File
             }
             if (photoFile != null) {
@@ -453,24 +457,25 @@ public class AppUtils {
             } else return null;
         } else return null;
     }
+
     public static ArrayList<Background> loadDataDefault(Context context, String path) {
         ArrayList<Background> listBackground = new ArrayList<>();
         String pathThumb, pathFile;
-        int type=0;
+        int type = 0;
         String prefixVideo = "/raw/";
         Background background;
         try {
             String[] pathFiles = context.getAssets().list(path);
             for (int i = 0; i < pathFiles.length; i++) {
                 pathThumb = path + "/" + pathFiles[i];
-                if(i>3){
-                    type=1;
-                    pathFile =pathThumb;
-                }else{
-                    type=0;
+                if (i > 3) {
+                    type = 1;
+                    pathFile = pathThumb;
+                } else {
+                    type = 0;
                     pathFile = prefixVideo + pathFiles[i].substring(0, pathFiles[i].length() - 5);
                 }
-                background = new Background(type, pathThumb, pathFile, false,"default"+(i+1),i);
+                background = new Background(type, pathThumb, pathFile, false, "default" + (i + 1), i);
                 listBackground.add(background);
             }
         } catch (IOException e) {
@@ -478,17 +483,18 @@ public class AppUtils {
         }
         return listBackground;
     }
+
     public static void createFolder(String folderApp) {
         File file = new File(folderApp);
         if (!file.exists()) {
             file.mkdir();
         }
     }
-    public static void hideSoftKeyboard(Activity activity) {
-        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        if (activity.getCurrentFocus() != null) {
-            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+
+    public static void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null) {
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layoutHeader">
-        <com.colorcall.callerscreen.utils.DynamicImageView
+        <ImageView
             android:id="@+id/img_background_call"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -192,17 +192,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingEnd="@dimen/_5sdp"
                         android:layout_marginStart="@dimen/_15sdp"
-                        android:background="@drawable/bg_gradient_blue"
+                        android:background="@drawable/bg_person_contact"
                         android:visibility="visible"
                         >
 
                         <ImageView
-
                             android:layout_width="@dimen/_35sdp"
                             android:layout_height="@dimen/_35sdp"
                             android:padding="@dimen/_8sdp"
-                            app:srcCompat="@drawable/ic_contact"
+                            app:srcCompat="@drawable/ic_person"
                             tools:ignore="VectorDrawableCompat" />
                     </RelativeLayout>
                 </RelativeLayout>

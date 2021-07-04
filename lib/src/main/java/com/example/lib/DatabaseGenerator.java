@@ -23,5 +23,6 @@ public class DatabaseGenerator {
         contact.addIdProperty().autoincrement();
         contact.addStringProperty("contact_id").notNull();
         contact.addStringProperty("background_path").notNull();
+        contact.addStringProperty("background").notNull();
     }
 }

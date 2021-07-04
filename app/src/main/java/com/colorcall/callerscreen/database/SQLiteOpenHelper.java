@@ -24,7 +24,8 @@ public class SQLiteOpenHelper extends DaoMaster.DevOpenHelper{
                 Log.e("TAN", "onUpgrade: aaa");
                 db.execSQL("CREATE TABLE CONTACT (`ID` INTEGER PRIMARY KEY AUTOINCREMENT," +
                         " `CONTACT_ID` TEXT ," +
-                        "`BACKGROUND_PATH` TEXT )");
+                        "`BACKGROUND_PATH` TEXT,"+
+                        "`BACKGROUND` TEXT )");
             }
         } catch (SQLException e) {
             Log.e("TBB", "Error " + e.getLocalizedMessage());

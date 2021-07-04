@@ -198,6 +198,7 @@ public class PhoneUtils {
         }
     }
     public void getPhoneFromNotificationListen(StatusBarNotification statusBarNotification) {
+        Log.e("TAN", "getPhoneFromNotificationListen: "+statusBarNotification);
         String phoneFromNotification = getPhoneFromNotification(statusBarNotification, contacts);
         if (phoneFromNotification != null) {
             PhoneListener phoneListener = listener;

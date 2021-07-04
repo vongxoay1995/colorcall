@@ -1,5 +1,6 @@
 package com.colorcall.callerscreen.apply;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -7,13 +8,17 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -64,9 +70,9 @@ import butterknife.OnClick;
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
 import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
-public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener,DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener {
+public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener, DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener {
     @BindView(R.id.img_background_call)
-    DynamicImageView imgBackgroundCall;
+    ImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
     CustomVideoView vdoBackgroundCall;
     @BindView(R.id.imgDelete)
@@ -79,6 +85,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     ImageView btnAccept;
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
+    @BindView(R.id.layoutHeader)
+    LinearLayout layoutHeader;
     @BindView(R.id.layout_ads)
     RelativeLayout layoutAds;
     TextView txtPercentDownloading;
@@ -93,6 +101,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private int fromScreen;
     private Dialog dialog;
     private BannerAdsUtils bannerAdsUtils;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
@@ -290,7 +299,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         super.onResume();
     }
 
-    @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.layoutContact,R.id.btnAds})
+    @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.layoutContact, R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
@@ -391,7 +400,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             } else {
                 AppUtils.checkDrawOverlayApp(this);
             }
-        }else if(requestCode ==PERMISSIONS_REQUEST_READ_CONTACTS){
+        } else if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 onHasContactPermistion();
@@ -490,8 +499,16 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     @Override
     public void onAdFailed() {
-        layoutAds.setVisibility(View.GONE);
-        //AppUtils.showFullHeader(this, layoutHead);
+        layoutHeader.setVisibility(View.GONE);
+        setTranslucent();
+    }
+
+    public void setTranslucent() {
+        Window w = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&&Build.VERSION.SDK_INT<Build.VERSION_CODES.R) {
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            AppUtils.showFullHeader(this, layoutHead);
+        }
     }
 
     @Override

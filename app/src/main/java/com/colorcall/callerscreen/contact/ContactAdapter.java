@@ -68,6 +68,11 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public List<String> getContactSelected() {
         ArrayList arrayList = new ArrayList();
+        /*for (ContactInfor contactInfor : this.listContact) {
+            if (contactInfor.isChecked()) {
+                Log.e("TAN", "check1: "+contactInfor.getDisplayName());
+            }
+        }*/
         for (ContactInfor contactInfor : this.listTemp) {
             if (contactInfor.isChecked()) {
                 arrayList.add(contactInfor.getContactId());
@@ -107,14 +112,13 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         @OnClick({R.id.layoutItem, R.id.imgSelectContact})
         public void onViewClicked(View view) {
-            Log.e("TAN", "onViewClicked: aaaaa");
             switch (view.getId()) {
                 case R.id.layoutItem:
                     imgSelectContact.performClick();
+                    contactInfor.setChecked(imgSelectContact.isChecked());
                     return;
                 case R.id.imgSelectContact:
                     contactInfor.setChecked(imgSelectContact.isChecked());
-                    // imgSelectContact.setColorFilter(Color.parseColor(imgSelectContact.isChecked() ? "#0060D6" : "#AAAAAA"));
                     return;
                 default:
                     return;

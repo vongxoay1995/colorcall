@@ -95,4 +95,11 @@ public class ContactInfor {
         return Objects.hash(this.contactId);
     }
 
+    @Override
+    public String toString() {
+        return "ContactInfor{" +
+                "isChecked=" + isChecked +
+                ", displayName='" + displayName + '\n' +
+                '}';
+    }
 }

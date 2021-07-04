@@ -57,4 +57,5 @@
     <string name="set">Set</string>
     <string name="search">Search ...</string>
     <string name="selectAll">Select all</string>
+    <string name="set_theme_success">Set theme successfully</string>
 </resources>

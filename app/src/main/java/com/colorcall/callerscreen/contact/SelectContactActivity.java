@@ -18,14 +18,18 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
@@ -33,7 +37,9 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
 import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
 
@@ -49,7 +55,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SelectContactActivity extends AppCompatActivity {
+import static com.unity3d.services.core.properties.ClientProperties.getActivity;
+
+public class SelectContactActivity extends AppCompatActivity{
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
     @BindView(R.id.btnBack)
@@ -71,6 +79,8 @@ public class SelectContactActivity extends AppCompatActivity {
     private boolean isSearchShow;
     private ContactAdapter adapter;
     private Background background;
+
+
     public class EditTextListener implements TextWatcher {
         public EditTextListener() {
         }
@@ -88,6 +98,7 @@ public class SelectContactActivity extends AppCompatActivity {
                 adapter.search(charSequence);
             }
         }
+
     }
 
     @Override
@@ -97,7 +108,6 @@ public class SelectContactActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         init();
     }
-
     public void showSearch() {
         edtSearch.setFocusable(true);
         edtSearch.setFocusableInTouchMode(true);
@@ -110,9 +120,7 @@ public class SelectContactActivity extends AppCompatActivity {
 
     private void init() {
         Gson gson = new Gson();
-        background = new Background(null, 0, "thumbDefault/default1.webp", "/raw/default1", false, "default1");
-        // background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
-        Log.e("TAN", "init: " + background);
+         background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
         String pathFile;
         if (!background.getPathThumb().equals("")) {
             if (background.getPathItem().contains("default")) {
@@ -160,7 +168,8 @@ public class SelectContactActivity extends AppCompatActivity {
             isSearchShow = false;
             header_1.setVisibility(View.VISIBLE);
             header_2.setVisibility(View.GONE);
-            AppUtils.hideSoftKeyboard(this);
+            edtSearch.setText("");
+            AppUtils.hideKeyboard(edtSearch);
         } else {
             super.onBackPressed();
         }
@@ -189,10 +198,12 @@ public class SelectContactActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         ArrayList arrListContact = new ArrayList(linkedHashSet);
         List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
                 .where(ContactDao.Properties.Background_path.eq(background.getPathItem()))
                 .list();
+        Log.e("TAN", "getAllContactDatabase: "+DataManager.query().getContactDao().queryBuilder().list());
         for (int i = 0; i < listContactDB.size(); i++) {
             Iterator it = arrListContact.iterator();
             while (true) {
@@ -210,9 +221,7 @@ public class SelectContactActivity extends AppCompatActivity {
         rcvContact.setAdapter(adapter);
     }
     public void setTheme() {
-        Log.e("TAN", "setTheme: ");
         if (adapter != null) {
-            //iv ivVar = this.b;
             List<String> listContactIdSelected = adapter.getContactSelected();
             List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
                     .where(ContactDao.Properties.Background_path.eq(background.getPathItem()))
@@ -226,49 +235,25 @@ public class SelectContactActivity extends AppCompatActivity {
                     DataManager.query().getContactDao().detachAll();
                 }
             }
-           /* Background themeBean = this.a;
-            SQLiteDatabase writableDatabase = ivVar.getWritableDatabase();
-            int i = 1;
-            char c2 = 0;
-            Cursor query = writableDatabase.query("CONTACT_TABLE", null, "theme=?", new String[]{themeBean.folder}, null, null, null);
-            while (query.moveToNext()) {
-                String string = query.getString(query.getColumnIndex("contact_id"));
-                if (!a2.contains(string)) {
-                    writableDatabase.delete("CONTACT_TABLE", "contact_id=?", new String[]{string});
-                }
-            }*/
-           // query.close();
             Iterator<String> it = listContactIdSelected.iterator();
+            Contact contact;
             while (it.hasNext()) {
                 String contactID = it.next();
-               /* List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
+                List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
                         .where(ContactDao.Properties.Contact_id.eq(contactID))
-                        .list();*/
-                Contact contact = new Contact(contactID,background.getPathItem());
-                DataManager.query().getContactDao().insertOrReplace(contact);
-               /* if(listQueryContactID.size()>0){
-                    Contact contact = listQueryContactID.get(0);
+                        .list();
+                if(listQueryContactID.size()>0){
+                    contact = listQueryContactID.get(0);
                     contact.setBackground_path(background.getPathItem());
+                    contact.setBackground(new Gson().toJson(background));
                     DataManager.query().getContactDao().update(contact);
                 }else{
-                    DataManager.query().getContactDao().insertOrReplace(contact);
+                    contact =  new Contact(contactID,background.getPathItem(),new Gson().toJson(background));
+                    DataManager.query().getContactDao().insert(contact);
                 }
-                Cursor query2 = writableDatabase.query("CONTACT_TABLE", null, "contact_id=?", strArr, null, null, null);
-                if (query2.getCount() > 0) {
-                    writableDatabase.update("CONTACT_TABLE", contentValues, "contact_id=?", strArr);
-                } else {
-                    contentValues.put("contact_id", next);
-                    writableDatabase.insert("CONTACT_TABLE", null, contentValues);
-                }
-                query2.close();
-                it = it;
-                i = 1;
-                c2 = 0;*/
             }
-            Toast.makeText(this, "set theme success", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
             finish();
         }
     }
-
-
 }

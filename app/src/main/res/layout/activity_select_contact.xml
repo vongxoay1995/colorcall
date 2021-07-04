@@ -5,152 +5,154 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".contact.SelectContactActivity">
-
-    <ImageView
-        android:id="@+id/imgBG"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#b3000000" />
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcvContact"
+        <ImageView
+            android:id="@+id/imgBG"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/layoutFooter"
-            android:layout_below="@id/layout_head"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:fitsSystemWindows="false"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY" />
 
-        <RelativeLayout
-            android:id="@+id/layout_head"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:background="#1E1E1E"
->
-
-            <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:layout_alignParentStart="true"
-                android:padding="@dimen/_12sdp"
-                app:srcCompat="@drawable/ic_white_w"
-                tools:ignore="VectorDrawableCompat" />
+            android:layout_height="match_parent"
+            android:background="#b3000000" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvContact"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/layoutFooter"
+                android:layout_below="@id/layout_head"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <RelativeLayout
-                android:id="@+id/header_1"
+                android:id="@+id/layout_head"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/btnBack"
-                android:paddingStart="@dimen/_5sdp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:text="@string/select_contact"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15sdp" />
+                android:layout_height="@dimen/_40sdp"
+                android:gravity="center"
+                android:background="#1E1E1E"
+                >
 
                 <ImageView
-                    android:id="@+id/imgSearch"
-                    android:layout_width="@dimen/_37sdp"
-                    android:layout_height="@dimen/_37sdp"
-                    android:layout_alignParentEnd="true"
-                    android:padding="@dimen/_8sdp"
-                    app:srcCompat="@drawable/ic_search" />
+                    android:id="@+id/btnBack"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentStart="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_white_w"
+                    tools:ignore="VectorDrawableCompat" />
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/header_2"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp"
-                android:layout_toEndOf="@id/btnBack"
-                android:background="@drawable/bg_edit_search_contact"
-                android:gravity="center_vertical"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/edtSearch"
+                <RelativeLayout
+                    android:id="@+id/header_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_12sdp"
-                    android:layout_marginEnd="@dimen/_30sdp"
-                    android:background="@null"
-                    android:imeOptions="actionSearch"
-                    android:singleLine="true"
-                    android:layout_centerVertical="true"
-                    android:textColor="#ffffff"
-                    android:textSize="13sp" />
+                    android:layout_toEndOf="@id/btnBack"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:visibility="visible">
 
-                <!-- <EditText
-                     android:id="@+id/edtSearch"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:gravity="center_vertical"
-                     android:imeOptions="actionSearch"
-                     android:includeFontPadding="false"
-                     android:paddingStart="@dimen/_12sdp"
-                     android:paddingEnd="12dp"
-                     android:singleLine="true"
-                     android:textColor="#ffffff"
-                     android:textSize="15sp" />-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:text="@string/select_contact"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_15sdp" />
 
-                <ImageView
-                    android:id="@+id/imgClear"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
+                    <ImageView
+                        android:id="@+id/imgSearch"
+                        android:layout_width="@dimen/_37sdp"
+                        android:layout_height="@dimen/_37sdp"
+                        android:layout_alignParentEnd="true"
+                        android:padding="@dimen/_8sdp"
+                        app:srcCompat="@drawable/ic_search" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/header_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginEnd="8dp"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_clear" />
+                    android:layout_toEndOf="@id/btnBack"
+                    android:background="@drawable/bg_edit_search_contact"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/edtSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/_12sdp"
+                        android:layout_marginEnd="@dimen/_30sdp"
+                        android:background="@null"
+                        android:imeOptions="actionSearch"
+                        android:singleLine="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="#ffffff"
+                        android:textSize="13sp" />
+
+                    <!-- <EditText
+                         android:id="@+id/edtSearch"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:gravity="center_vertical"
+                         android:imeOptions="actionSearch"
+                         android:includeFontPadding="false"
+                         android:paddingStart="@dimen/_12sdp"
+                         android:paddingEnd="12dp"
+                         android:singleLine="true"
+                         android:textColor="#ffffff"
+                         android:textSize="15sp" />-->
+
+                    <ImageView
+                        android:id="@+id/imgClear"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/ic_clear" />
+                </RelativeLayout>
             </RelativeLayout>
-        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutFooter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="#1E1E1E"
-            android:orientation="horizontal"
-            android:padding="@dimen/_10sdp">
-
-            <RelativeLayout
-                android:id="@+id/layoutSet"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <LinearLayout
+                android:id="@+id/layoutFooter"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_green_radius_60"
-                android:paddingTop="@dimen/_10sdp"
-                android:layout_marginStart="@dimen/_35sdp"
-                android:layout_marginEnd="@dimen/_35sdp"
-                android:paddingBottom="@dimen/_10sdp">
+                android:layout_alignParentBottom="true"
+                android:background="#1E1E1E"
+                android:orientation="horizontal"
+                android:padding="@dimen/_10sdp">
 
-                <TextView
-                    android:id="@+id/txtSet"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/layoutSet"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:text="@string/set"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_14sdp" />
-            </RelativeLayout>
-        </LinearLayout>
-    </RelativeLayout>
+                    android:background="@drawable/bg_green_radius_60"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_35sdp"
+                    android:layout_marginEnd="@dimen/_35sdp"
+                    android:paddingBottom="@dimen/_10sdp">
+
+                    <TextView
+                        android:id="@+id/txtSet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:text="@string/set"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_14sdp" />
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
 </RelativeLayout>
