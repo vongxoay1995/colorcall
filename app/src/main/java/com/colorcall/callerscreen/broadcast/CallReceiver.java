@@ -23,7 +23,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     public final int TYPE_END_CALL = 0;
     public final int TYPE_IN_CALL = 2;
     public final int TYPE_RINGGING_CALL = 1;
-    public static int lastStateCall = 0;
     public static FlashUtils flashUtils;
     public  Intent intentCallService;
     public boolean isBiggerAndroidP;
@@ -37,7 +36,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             String state = intent.getExtras().getString("state");
             phoneNumber = intent.getExtras().getString("incoming_number");
             if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                Log.e("TAN", "onReceive: 1");
                 isBiggerAndroidP = true;
                 PhoneUtils.get().getNumberPhoneWhenNull(CallReceiver.this);
             }
@@ -49,17 +47,13 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 stateType = TYPE_RINGGING_CALL;
             }
-           // if (!isBiggerAndroidP) {
                 onCallStateChanged(context, stateType);
-            //}
         }
     }
 
     private void onCallStateChanged(Context context, int state) {
-        Log.e("TAN", "onCallStateChanged: "+state);
             switch (state) {
                 case TYPE_RINGGING_CALL:
-                    Log.e("TAN", "onCallStateChanged: TYPE_RINGGING_CALL");
                     if(phoneNumber!=null){
                         onIncommingCall(context, phoneNumber);
                     }
@@ -80,7 +74,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
 
     private void onIncommingCall(Context context, String number) {
         if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
-            Log.e("TAN", "onIncommingCall: ");
             intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -99,7 +92,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
 
     @Override
     public void getNumPhone(String phoneNumb) {
-        Log.e("TAN", "getNumPhone: "+phoneNumber);
         if(!isFirstRun){
             phoneNumber = phoneNumb;
             isFirstRun = true;

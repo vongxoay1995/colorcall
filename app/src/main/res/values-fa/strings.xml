@@ -41,15 +41,19 @@
     <string name="applied">کاربردی</string>
     <string name="loading">بارگذاری...</string>
     <string name="caller">تماس گیرنده</string>
-    <string name="videos">Videos</string>
-    <string name="download">Download</string>
-    <string name="downloadSuccess">Download success</string>
-    <string name="err_network" >Request failed, please check the network</string>
-    <string name="down_err" >Download error. No network connection!</string>
-    <string name="turn_on_network" >Connection errors! Please turn on the internet connection to update the latest themes</string>
-    <string name="downloading">Downloading ...</string>
-    <string name="file_not_found">File not found</string>
-    <string name="unknowContact">Unknow contact</string>
-    <string name="addYourVideo">Create your video or image</string>
-
+    <string name="videos">فیلم های</string>
+    <string name="download">دانلود</string>
+    <string name="downloadSuccess">موفقیت بارگیری کنید</string>
+    <string name="err_network" >درخواست ناموفق بود ، لطفاً شبکه را بررسی کنید</string>
+    <string name="down_err" >خطا در بارگیری. بدون اتصال به شبکه!</string>
+    <string name="turn_on_network" >خطاهای اتصال! لطفاً برای به روزرسانی جدیدترین مضامین ، اتصال اینترنت را روشن کنید</string>
+    <string name="downloading">در حال بارگیری...</string>
+    <string name="file_not_found">پرونده یافت نشد</string>
+    <string name="unknowContact">مخاطب ناشناخته</string>
+    <string name="addYourVideo">فیلم یا تصویر خود را ایجاد کنید</string>
+    <string name="select_contact">مخاطب را انتخاب کنید</string>
+    <string name="set">تنظیم</string>
+    <string name="search">جستجو کردن...</string>
+    <string name="selectAll">Select all</string>
+    <string name="set_theme_success">طرح زمینه با موفقیت</string>
 </resources>

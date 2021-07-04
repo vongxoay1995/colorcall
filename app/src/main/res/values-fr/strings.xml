@@ -53,4 +53,9 @@
     <string name="downloading">Téléchargement ...</string>
     <string name="file_not_found">Fichier non trouvé</string>
     <string name="unknowContact">Contact inconnu</string>
+    <string name="select_contact">Sélectionnez un contact</string>
+    <string name="set">Ensemble</string>
+    <string name="search">Rechercher ...</string>
+    <string name="selectAll">Select all</string>
+    <string name="set_theme_success">Définir le thème avec succès</string>
 </resources>

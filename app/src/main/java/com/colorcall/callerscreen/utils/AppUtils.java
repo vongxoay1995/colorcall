@@ -388,16 +388,29 @@ public class AppUtils {
         ContactRetrieve contactRetrieve;
         String contactId = "";
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID}, null, null, null);
+        Cursor cursor =
+                cr.query(
+                        uri,
+                        new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},
+                        null,
+                        null,
+                        null);
         if (cursor == null) {
             return null;
         }
         String contactName = "";
-        if (cursor.moveToFirst()) {
+        Log.e("TAN", "getContactNameaaaaa: "+phoneNumber+"--"+cursor.getCount());
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                contactName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
+            }
+        }
+      /*  if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
             contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
-        }
-
+        }*/
+        Log.e("TAN", "getContactName: "+contactName+"--"+contactId);
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }

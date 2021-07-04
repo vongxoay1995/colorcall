@@ -134,7 +134,6 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void showViewCall() {
-        Log.e("TAN", "showViewCall: ");
         phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
         backgroundSelect = HawkHelper.getBackgroundSelect();
         if (backgroundSelect != null) {
@@ -150,22 +149,7 @@ public class CallActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            try {
-                InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(),
-                        ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId)));
-                if (inputStream != null) {
-                    bmpAvatar = BitmapFactory.decodeStream(inputStream);
-
-
-                    inputStream.close();
-                } else {
-                    Glide.with(this).load(R.drawable.ic_avatar).apply(RequestOptions.circleCropTransform()).into(imgAvatar);
-                }
-            } catch (IOException e) {
-                //bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
-                e.printStackTrace();
-            }
-
+            bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
             imgAvatar.setImageBitmap(bmpAvatar);
             txtPhoneNumber.setText(String.valueOf(phoneNumber));
             vdoBgCall.setVisibility(View.VISIBLE);
@@ -178,8 +162,8 @@ public class CallActivity extends AppCompatActivity {
             }
             if(back_ground_contact!=null){
                 backgroundSelect = back_ground_contact;
+                typeBgCall = back_ground_contact.getType();
             }
-            Log.e("TAN", "showViewCall: "+back_ground_contact);
             checkTypeCall(typeBgCall);
             new Handler().postDelayed(this::startAnimation, 400);
             handlingCallState();

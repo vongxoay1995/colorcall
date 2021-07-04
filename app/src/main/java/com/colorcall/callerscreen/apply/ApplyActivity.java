@@ -79,6 +79,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     ImageView imgDelete;
     @BindView(R.id.layoutApply)
     RelativeLayout layoutApply;
+    @BindView(R.id.layoutFooter)
+    RelativeLayout layoutFooter;
     @BindView(R.id.txtApply)
     TextView txtApply;
     @BindView(R.id.btnAccept)
@@ -89,6 +91,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     LinearLayout layoutHeader;
     @BindView(R.id.layout_ads)
     RelativeLayout layoutAds;
+    @BindView(R.id.layoutContact)
+    RelativeLayout layoutContact;
     TextView txtPercentDownloading;
     private String folderApp;
     private Background background;
@@ -222,6 +226,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         if (background.getType() == Constant.TYPE_VIDEO) {
             processVideo();
         } else {
+            layoutContact.setVisibility(View.VISIBLE);
             imgBackgroundCall.setVisibility(View.VISIBLE);
             if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
                 sPathThumb = "file:///android_asset/" + background.getPathItem();
@@ -257,12 +262,18 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 isDownloaded = false;
                 vdoBackgroundCall.setVideoURI(Uri.parse(sPath));
                 playVideo();
+                layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+                layoutContact.setVisibility(View.VISIBLE);
                 txtApply.setText(getString(R.string.applyContact));
             } else {
                 isDownloaded = true;
+                layoutContact.setVisibility(View.GONE);
+                layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._45sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._45sdp),layoutFooter.getPaddingBottom());
                 txtApply.setText(getString(R.string.download));
             }
         } else {
+            layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+            layoutContact.setVisibility(View.VISIBLE);
             vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
             playVideo();
         }
@@ -323,6 +334,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 AppUtils.showDialogDelete(this, this);
                 break;
             case R.id.layoutContact:
+                analystic.trackEvent(ManagerEvent.applyContactClick());
                 PermistionUtils.requestContactPermission(this, this);
                 break;
         }
@@ -484,6 +496,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             HawkHelper.setListBackground(arr);
             vdoBackgroundCall.setVideoURI(Uri.parse(newPathItem));
             txtApply.setText(getString(R.string.applyContact));
+            layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+            layoutContact.setVisibility(View.VISIBLE);
             isDownloaded = false;
             playVideo();
             SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.INTENT_DOWNLOAD_COMPLETE_THEME);
