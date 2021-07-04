@@ -23,7 +23,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     public final int TYPE_END_CALL = 0;
     public final int TYPE_IN_CALL = 2;
     public final int TYPE_RINGGING_CALL = 1;
-    public static int lastStateCall = 0;
     public static FlashUtils flashUtils;
     public  Intent intentCallService;
     public boolean isBiggerAndroidP;
@@ -48,14 +47,11 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 stateType = TYPE_RINGGING_CALL;
             }
-           // if (!isBiggerAndroidP) {
                 onCallStateChanged(context, stateType);
-            //}
         }
     }
 
     private void onCallStateChanged(Context context, int state) {
-     //   if (lastStateCall != state) {
             switch (state) {
                 case TYPE_RINGGING_CALL:
                     if(phoneNumber!=null){
@@ -74,8 +70,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             if (flashUtils != null && flashUtils.isRunning()) {
                 flashUtils.stop();
             }
-           // lastStateCall = state;
-       // }
     }
 
     private void onIncommingCall(Context context, String number) {

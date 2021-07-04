@@ -37,10 +37,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
-            android:fontFamily="@font/robotoregular"
             android:gravity="center"
             android:text="@string/addYourVideo"
             android:textColor="@color/white"
-            android:textSize="@dimen/_9ssp" />
+            android:textSize="@dimen/_9sdp" />
     </LinearLayout>
 </RelativeLayout>

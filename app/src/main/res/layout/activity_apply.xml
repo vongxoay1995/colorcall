@@ -5,186 +5,210 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.colorcall.callerscreen.utils.DynamicImageView
-        android:id="@+id/img_background_call"
+    <LinearLayout
+        android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:visibility="visible"/>
-    <com.colorcall.callerscreen.custom.CustomVideoView
-        android:id="@+id/vdo_background_call"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        />
-    <RelativeLayout
-        android:id="@+id/layout_head"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/blackAlpha30"
-        android:gravity="center">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/_12sdp"
-            app:srcCompat="@drawable/ic_white_w"
-            tools:ignore="VectorDrawableCompat" />
-
-        <LinearLayout
-            android:id="@+id/layoutBottom"
-            android:layout_width="wrap_content"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal"
+        <RelativeLayout
+            android:id="@+id/layout_ads"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:background="@drawable/border_ads"
+            android:gravity="center"
+            android:padding="1dp"
             android:visibility="visible">
+
+        </RelativeLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/layoutContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layoutHeader">
+        <ImageView
+            android:id="@+id/img_background_call"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="visible"/>
+        <com.colorcall.callerscreen.custom.CustomVideoView
+            android:id="@+id/vdo_background_call"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
+        <RelativeLayout
+            android:id="@+id/layout_head"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/blackAlpha30"
+            android:gravity="center">
+
             <ImageView
-                android:id="@+id/imgDelete"
-                android:layout_width="?attr/actionBarSize"
+                android:id="@+id/btnBack"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/_12sdp"
+                app:srcCompat="@drawable/ic_white_w"
+                tools:ignore="VectorDrawableCompat" />
+
+            <LinearLayout
+                android:id="@+id/layoutBottom"
+                android:layout_width="wrap_content"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_alignParentEnd="true"
-                android:padding="@dimen/_11sdp"
-                app:srcCompat="@drawable/ic_del" />
-            <ImageView
-                android:id="@+id/btnAds"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/_12sdp"
-                app:srcCompat="@drawable/ic_ad"
-                tools:ignore="VectorDrawableCompat"
-                android:visibility="gone"/>
-        </LinearLayout>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/layout_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/layout_head">
-
-        <LinearLayout
-            android:id="@+id/layoutInfor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/_40sdp">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
-                android:layout_width="@dimen/_92sdp"
-                android:layout_height="@dimen/_92sdp"
-                android:src="@drawable/user"
-                android:layout_gravity="center"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#FFFFFF"
-                />
-            <TextView
-                android:id="@+id/txtName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="@dimen/_20sdp"
-                android:text="@string/caller"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_25ssp"
-                app:fontFamily="@font/robotobold" />
-
-            <TextView
-                android:id="@+id/txtPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="@dimen/_10sdp"
-                android:text="0000-0000-0000"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_16ssp"
-                app:fontFamily="@font/robotoregular" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/_30sdp"
-                android:paddingRight="@dimen/_30sdp">
-
+                android:visibility="visible">
                 <ImageView
-                    android:id="@+id/btnReject"
-                    android:layout_width="@dimen/_100sdp"
-                    android:layout_height="@dimen/_100sdp"
-                    android:padding="@dimen/_20sdp"
-                    android:layout_alignParentStart="true"
-                    app:srcCompat="@drawable/ic_end_call"
-                    tools:ignore="VectorDrawableCompat" />
-
-                <ImageView
-                    android:id="@+id/btnAccept"
-                    android:layout_width="@dimen/_100sdp"
-                    android:layout_height="@dimen/_100sdp"
+                    android:id="@+id/imgDelete"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:layout_alignParentEnd="true"
-                    app:srcCompat="@drawable/ic_call"
-                    android:padding="@dimen/_20sdp"
-                    tools:ignore="VectorDrawableCompat" />
-            </RelativeLayout>
+                    android:padding="@dimen/_11sdp"
+                    app:srcCompat="@drawable/ic_del" />
+                <ImageView
+                    android:id="@+id/btnAds"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ad"
+                    tools:ignore="VectorDrawableCompat"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </RelativeLayout>
 
-            <RelativeLayout
+        <RelativeLayout
+            android:id="@+id/layout_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_head">
+
+            <LinearLayout
+                android:id="@+id/layoutInfor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/_15sdp"
-                android:paddingTop="@dimen/_25sdp"
-                android:paddingRight="@dimen/_15sdp"
-                android:paddingBottom="@dimen/_15sdp">
-
-                <RelativeLayout
-                    android:id="@+id/layoutApply"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/_40sdp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="@dimen/_92sdp"
+                    android:layout_height="@dimen/_92sdp"
+                    android:src="@drawable/user"
+                    android:layout_gravity="center"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#FFFFFF"
+                    />
+                <TextView
+                    android:id="@+id/txtName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toStartOf="@+id/layoutContact"
-                    android:background="@drawable/bg_green_radius_60"
-                    android:paddingTop="@dimen/_10sdp"
-                    android:paddingBottom="@dimen/_10sdp">
+                    android:gravity="center"
+                    android:paddingTop="@dimen/_20sdp"
+                    android:text="@string/caller"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_25sdp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/txtApply"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:fontFamily="@font/robotoregular"
-                        android:text="@string/applyContact"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_16ssp" />
+                <TextView
+                    android:id="@+id/txtPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="0000-0000-0000"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_14sdp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/_30sdp"
+                    android:paddingRight="@dimen/_30sdp">
+
+                    <ImageView
+                        android:id="@+id/btnReject"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:padding="@dimen/_20sdp"
+                        android:layout_alignParentStart="true"
+                        app:srcCompat="@drawable/ic_end_call"
+                        tools:ignore="VectorDrawableCompat" />
+
+                    <ImageView
+                        android:id="@+id/btnAccept"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="@dimen/_100sdp"
+                        android:layout_alignParentEnd="true"
+                        app:srcCompat="@drawable/ic_call"
+                        android:padding="@dimen/_20sdp"
+                        tools:ignore="VectorDrawableCompat" />
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/layoutContact"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/layoutFooter"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="@dimen/_15sdp"
-                    android:background="@drawable/bg_green_radius_15"
                     android:paddingLeft="@dimen/_15sdp"
+                    android:paddingTop="@dimen/_25sdp"
                     android:paddingRight="@dimen/_15sdp"
-                    android:visibility="gone">
+                    android:paddingBottom="@dimen/_15sdp">
 
-                    <ImageView
-                        android:layout_width="@dimen/_35sdp"
-                        android:layout_height="@dimen/_35sdp"
-                        android:padding="@dimen/_8sdp"
-                        app:srcCompat="@drawable/ic_contact"
-                        tools:ignore="VectorDrawableCompat" />
+                    <RelativeLayout
+                        android:id="@+id/layoutApply"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toStartOf="@+id/layoutContact"
+                        android:background="@drawable/bg_green_radius_60"
+                        android:paddingTop="@dimen/_10sdp"
+                        android:paddingBottom="@dimen/_10sdp">
+
+                        <TextView
+                            android:id="@+id/txtApply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center"
+                            android:text="@string/applyContact"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_14sdp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/layoutContact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:paddingStart="@dimen/_5sdp"
+                        android:paddingEnd="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:background="@drawable/bg_person_contact"
+                        android:visibility="visible"
+                        >
+                        <ImageView
+                            android:layout_width="@dimen/_35sdp"
+                            android:layout_height="@dimen/_35sdp"
+                            android:padding="@dimen/_8sdp"
+                            app:srcCompat="@drawable/ic_person"
+                            tools:ignore="VectorDrawableCompat" />
+                    </RelativeLayout>
                 </RelativeLayout>
-            </RelativeLayout>
-        </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

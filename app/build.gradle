@@ -9,8 +9,8 @@ android {
         applicationId "com.colorcall.callerscreen"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 29
-        versionName "1.2.6"
+        versionCode 32
+        versionName "1.2.9"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

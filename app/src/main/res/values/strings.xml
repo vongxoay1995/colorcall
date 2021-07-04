@@ -47,10 +47,15 @@
     <string name="videos">Videos</string>
     <string name="download">Download</string>
     <string name="downloadSuccess">Download success</string>
-    <string name="err_network" >Request failed, please check the network</string>
-    <string name="down_err" >Download error. No network connection!</string>
-    <string name="turn_on_network" >Connection errors! Please turn on the internet connection to update the latest themes</string>
+    <string name="err_network">Request failed, please check the network</string>
+    <string name="down_err">Download error. No network connection!</string>
+    <string name="turn_on_network">Connection errors! Please turn on the internet connection to update the latest themes</string>
     <string name="downloading">Downloading ...</string>
     <string name="file_not_found">File not found</string>
     <string name="unknowContact">Unknow contact</string>
+    <string name="select_contact">Select contact</string>
+    <string name="set">Set</string>
+    <string name="search">Search ...</string>
+    <string name="selectAll">Select all</string>
+    <string name="set_theme_success">Set theme successfully</string>
 </resources>

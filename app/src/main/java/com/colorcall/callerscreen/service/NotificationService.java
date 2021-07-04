@@ -4,6 +4,8 @@ import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.telecom.TelecomManager;
+import android.util.Log;
+
 import androidx.annotation.RequiresApi;
 
 import com.colorcall.callerscreen.application.ColorCallApplication;
@@ -42,6 +44,7 @@ public class NotificationService extends NotificationListenerService {
     public void onNotificationPosted(final StatusBarNotification statusBarNotification) {
         super.onNotificationPosted(statusBarNotification);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (!statusBarNotification.getPackageName().contains("incallui"))return;
             String str = "";
             TelecomManager telecomManager = ColorCallApplication.get().getSystemService(TelecomManager.class);
             if (telecomManager != null) {
@@ -64,6 +67,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
     public void stopListenColorCall() {
+        stopSelf();
         this.isListen = false;
     }
 

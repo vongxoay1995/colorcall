@@ -51,5 +51,9 @@
     <string name="file_not_found">फाइल नहीं मिली</string>
     <string name="unknowContact">अज्ञात संपर्क</string>
     <string name="addYourVideo">अपना वीडियो या चित्र बनाएं</string>
-
+    <string name="select_contact">संपर्क चुनें</string>
+    <string name="set">सेट</string>
+    <string name="search">खोज ...</string>
+    <string name="selectAll">Select all</string>
+    <string name="set_theme_success">थीम सफलतापूर्वक सेट करें</string>
 </resources>

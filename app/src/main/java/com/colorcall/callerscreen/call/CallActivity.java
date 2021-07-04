@@ -6,17 +6,21 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,12 +40,20 @@ import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.database.Background;
+import com.colorcall.callerscreen.database.Contact;
+import com.colorcall.callerscreen.database.ContactDao;
+import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.colorcall.callerscreen.service.AcceptCallActivity;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,11 +79,12 @@ public class CallActivity extends AppCompatActivity {
     private Bitmap bmpAvatar;
     private String name;
     private int typeBgCall;
-
-    private Background backgroundSelect;
+    private String contactId="";
+    private Background backgroundSelect,back_ground_contact;
     private TelephonyManager telephonyManager;
     private ITelephony telephonyService;
     private Analystic analystic;
+    private Contact mContact;
     LocalBroadcastManager mLocalBroadcastManager;
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -126,7 +139,9 @@ public class CallActivity extends AppCompatActivity {
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
             try {
-                name = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
+                ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
+                name = contactRetrieve.getName();
+                contactId = contactRetrieve.getContact_id();
                 txtName.setText(name);
                 if (name.equals("")) {
                     txtName.setText(getString(R.string.unknowContact));
@@ -138,6 +153,17 @@ public class CallActivity extends AppCompatActivity {
             imgAvatar.setImageBitmap(bmpAvatar);
             txtPhoneNumber.setText(String.valueOf(phoneNumber));
             vdoBgCall.setVisibility(View.VISIBLE);
+            List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
+                    .where(ContactDao.Properties.Contact_id.eq(contactId))
+                    .list();
+            if(listQueryContactID.size()>0){
+                mContact = listQueryContactID.get(0);
+                back_ground_contact = new Gson().fromJson(mContact.getBackground(),Background.class);
+            }
+            if(back_ground_contact!=null){
+                backgroundSelect = back_ground_contact;
+                typeBgCall = back_ground_contact.getType();
+            }
             checkTypeCall(typeBgCall);
             new Handler().postDelayed(this::startAnimation, 400);
             handlingCallState();

@@ -50,4 +50,9 @@
     <string name="file_not_found">Không tìm thấy file</string>
     <string name="unknowContact">Ẩn danh</string>
     <string name="addYourVideo">Tạo video hoặc hình ảnh của bạn</string>
+    <string name="select_contact">Chọn liên hệ</string>
+    <string name="set">Áp dụng</string>
+    <string name="search">Tìm kiếm ...</string>
+    <string name="selectAll">Select all</string>
+    <string name="set_theme_success">Đặt chủ đề thành công</string>
 </resources>

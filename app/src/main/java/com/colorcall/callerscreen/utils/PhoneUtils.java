@@ -53,6 +53,7 @@ public class PhoneUtils {
                 super.run();
                 getListNameContact();
                 NotificationService notificationReceiverService = NotificationService.get();
+                Log.e("TAN", "notificationReceiverService run: "+notificationReceiverService);
                 if (notificationReceiverService != null) {
                     StatusBarNotification inCallNotification = notificationReceiverService.getInCallNotification();
                     if (inCallNotification != null) {
@@ -197,6 +198,7 @@ public class PhoneUtils {
         }
     }
     public void getPhoneFromNotificationListen(StatusBarNotification statusBarNotification) {
+        Log.e("TAN", "getPhoneFromNotificationListen: "+statusBarNotification);
         String phoneFromNotification = getPhoneFromNotification(statusBarNotification, contacts);
         if (phoneFromNotification != null) {
             PhoneListener phoneListener = listener;

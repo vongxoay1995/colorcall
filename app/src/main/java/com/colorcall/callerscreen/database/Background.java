@@ -11,6 +11,7 @@ import org.greenrobot.greendao.annotation.*;
  */
 @Entity
 public class Background {
+
     @SerializedName("type")
     private int type;
     @SerializedName("path-thumb")
@@ -31,16 +32,13 @@ public class Background {
     @NotNull
     private String time_update;
     private int position;
-    @Generated
-    public Background() {
-    }
 
     public Background(Long id) {
         this.id = id;
     }
 
     public Background( int type, @NotNull String pathThumb, @NotNull String pathItem,
-                      boolean delete,String name,int position) {
+                       boolean delete,String name,int position) {
         this.type = type;
         this.pathThumb = pathThumb;
         this.pathItem = pathItem;
@@ -75,7 +73,7 @@ public class Background {
     }
     @Generated
     public Background( Long id,int type, @NotNull String pathThumb, @NotNull String pathItem,
-            boolean delete) {
+                       boolean delete) {
         this.type = type;
         this.pathThumb = pathThumb;
         this.pathItem = pathItem;
@@ -163,4 +161,5 @@ public class Background {
                 ", position=" + position +
                 '}';
     }
+
 }

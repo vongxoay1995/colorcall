@@ -1,18 +1,24 @@
 package com.colorcall.callerscreen.apply;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -30,6 +37,7 @@ import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.contact.SelectContactActivity;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
@@ -38,8 +46,10 @@ import com.colorcall.callerscreen.model.SignApplyImage;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.android.gms.ads.AdListener;
@@ -57,21 +67,32 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ApplyActivity extends AppCompatActivity implements DialogDeleteListener, PermistionCallListener, DownloadTask.Listener {
+import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
+import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
+
+public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener, DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener {
     @BindView(R.id.img_background_call)
-    DynamicImageView imgBackgroundCall;
+    ImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
     CustomVideoView vdoBackgroundCall;
     @BindView(R.id.imgDelete)
     ImageView imgDelete;
     @BindView(R.id.layoutApply)
     RelativeLayout layoutApply;
+    @BindView(R.id.layoutFooter)
+    RelativeLayout layoutFooter;
     @BindView(R.id.txtApply)
     TextView txtApply;
     @BindView(R.id.btnAccept)
     ImageView btnAccept;
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
+    @BindView(R.id.layoutHeader)
+    LinearLayout layoutHeader;
+    @BindView(R.id.layout_ads)
+    RelativeLayout layoutAds;
+    @BindView(R.id.layoutContact)
+    RelativeLayout layoutContact;
     TextView txtPercentDownloading;
     private String folderApp;
     private Background background;
@@ -83,17 +104,32 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
     private int position;
     private int fromScreen;
     private Dialog dialog;
+    private BannerAdsUtils bannerAdsUtils;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
-        AppUtils.showFullHeader(this, layoutHead);
+        bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
         analystic = Analystic.getInstance(this);
         folderApp = Constant.LINK_VIDEO_CACHE;
         checkInforTheme();
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
+        loadAdsBanner();
+    }
+
+    private void loadAdsBanner() {
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/9030792883";
+        String idGG;
+        if (BuildConfig.DEBUG) {
+            idGG = Constant.ID_TEST_BANNER_ADMOD;
+        } else {
+            idGG = ID_ADS_GG;
+        }
+        bannerAdsUtils.setIdAds(idGG);
+        bannerAdsUtils.setAdListener(this);
+        bannerAdsUtils.showMediationBannerAds();
     }
 
 
@@ -190,6 +226,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         if (background.getType() == Constant.TYPE_VIDEO) {
             processVideo();
         } else {
+            layoutContact.setVisibility(View.VISIBLE);
             imgBackgroundCall.setVisibility(View.VISIBLE);
             if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
                 sPathThumb = "file:///android_asset/" + background.getPathItem();
@@ -225,12 +262,18 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
                 isDownloaded = false;
                 vdoBackgroundCall.setVideoURI(Uri.parse(sPath));
                 playVideo();
+                layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+                layoutContact.setVisibility(View.VISIBLE);
                 txtApply.setText(getString(R.string.applyContact));
             } else {
                 isDownloaded = true;
+                layoutContact.setVisibility(View.GONE);
+                layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._45sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._45sdp),layoutFooter.getPaddingBottom());
                 txtApply.setText(getString(R.string.download));
             }
         } else {
+            layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+            layoutContact.setVisibility(View.VISIBLE);
             vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
             playVideo();
         }
@@ -267,7 +310,7 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         super.onResume();
     }
 
-    @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.btnAds})
+    @OnClick({R.id.btnBack, R.id.imgDelete, R.id.layoutApply, R.id.layoutContact, R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
@@ -289,6 +332,10 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             case R.id.btnAds:
                 analystic.trackEvent(ManagerEvent.applyAdsClick());
                 AppUtils.showDialogDelete(this, this);
+                break;
+            case R.id.layoutContact:
+                analystic.trackEvent(ManagerEvent.applyContactClick());
+                PermistionUtils.requestContactPermission(this, this);
                 break;
         }
     }
@@ -332,11 +379,11 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
         analystic.trackEvent(new Event("APPLY_ITEM_INFOR", bundle));
         switch (fromScreen) {
             case Constant.VIDEO_FRAG_MENT:
-                analystic.trackEvent(ManagerEvent.applyItemVideo(position, background.getName()));
+                analystic.trackEvent(ManagerEvent.applyVideoThemeSelected(background.getName()));
                 EventBus.getDefault().postSticky(signApplyVideo);
                 break;
             case Constant.IMAGES_FRAG_MENT:
-                analystic.trackEvent(ManagerEvent.applyItemImage(position, background.getName()));
+                analystic.trackEvent(ManagerEvent.applyImageThemeSelected(background.getName()));
                 EventBus.getDefault().postSticky(signApplyImage);
                 break;
             case Constant.MYTHEME_FRAG_MENT:
@@ -365,6 +412,14 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             } else {
                 AppUtils.checkDrawOverlayApp(this);
             }
+        } else if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onHasContactPermistion();
+            } else {
+                Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
+            }
+            return;
         }
     }
 
@@ -441,11 +496,40 @@ public class ApplyActivity extends AppCompatActivity implements DialogDeleteList
             HawkHelper.setListBackground(arr);
             vdoBackgroundCall.setVideoURI(Uri.parse(newPathItem));
             txtApply.setText(getString(R.string.applyContact));
+            layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+            layoutContact.setVisibility(View.VISIBLE);
             isDownloaded = false;
             playVideo();
             SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.INTENT_DOWNLOAD_COMPLETE_THEME);
             EventBus.getDefault().postSticky(signApplyVideo);
             Toast.makeText(this, getString(R.string.downloadSuccess), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onAdloaded() {
+
+    }
+
+    @Override
+    public void onAdFailed() {
+        layoutHeader.setVisibility(View.GONE);
+        setTranslucent();
+    }
+
+    public void setTranslucent() {
+        Window w = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&&Build.VERSION.SDK_INT<Build.VERSION_CODES.R) {
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            AppUtils.showFullHeader(this, layoutHead);
+        }
+    }
+
+    @Override
+    public void onHasContactPermistion() {
+        Intent intent = new Intent(this, SelectContactActivity.class);
+        Gson gson = new Gson();
+        intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
+        startActivity(intent);
     }
 }

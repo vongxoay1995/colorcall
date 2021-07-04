@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -41,9 +42,11 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.contact.ContactInfor;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
+import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
@@ -53,6 +56,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
 public class AppUtils {
@@ -378,23 +383,39 @@ public class AppUtils {
         return photo;
     }
 
-    public static String getContactName(Context context, String phoneNumber) {
+    public static ContactRetrieve getContactName(Context context, String phoneNumber) {
         ContentResolver cr = context.getContentResolver();
+        ContactRetrieve contactRetrieve;
+        String contactId = "";
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        Cursor cursor =
+                cr.query(
+                        uri,
+                        new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},
+                        null,
+                        null,
+                        null);
         if (cursor == null) {
             return null;
         }
         String contactName = "";
-        if (cursor.moveToFirst()) {
-            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        Log.e("TAN", "getContactNameaaaaa: "+phoneNumber+"--"+cursor.getCount());
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                contactName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
+            }
         }
-
+      /*  if (cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+            contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
+        }*/
+        Log.e("TAN", "getContactName: "+contactName+"--"+contactId);
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
-
-        return contactName;
+        contactRetrieve = new ContactRetrieve(contactName, contactId);
+        return contactRetrieve;
     }
 
     public static void showFullHeader(Context context, View toolBar) {
@@ -435,8 +456,7 @@ public class AppUtils {
             File photoFile = null;
             try {
                 photoFile = createImageFile(activity);
-            } catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 // Error occurred while creating the File
             }
             if (photoFile != null) {
@@ -450,24 +470,25 @@ public class AppUtils {
             } else return null;
         } else return null;
     }
+
     public static ArrayList<Background> loadDataDefault(Context context, String path) {
         ArrayList<Background> listBackground = new ArrayList<>();
         String pathThumb, pathFile;
-        int type=0;
+        int type = 0;
         String prefixVideo = "/raw/";
         Background background;
         try {
             String[] pathFiles = context.getAssets().list(path);
             for (int i = 0; i < pathFiles.length; i++) {
                 pathThumb = path + "/" + pathFiles[i];
-                if(i>3){
-                    type=1;
-                    pathFile =pathThumb;
-                }else{
-                    type=0;
+                if (i > 3) {
+                    type = 1;
+                    pathFile = pathThumb;
+                } else {
+                    type = 0;
                     pathFile = prefixVideo + pathFiles[i].substring(0, pathFiles[i].length() - 5);
                 }
-                background = new Background(type, pathThumb, pathFile, false,"default"+(i+1),i);
+                background = new Background(type, pathThumb, pathFile, false, "default" + (i + 1), i);
                 listBackground.add(background);
             }
         } catch (IOException e) {
@@ -475,10 +496,18 @@ public class AppUtils {
         }
         return listBackground;
     }
+
     public static void createFolder(String folderApp) {
         File file = new File(folderApp);
         if (!file.exists()) {
             file.mkdir();
+        }
+    }
+
+    public static void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null) {
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

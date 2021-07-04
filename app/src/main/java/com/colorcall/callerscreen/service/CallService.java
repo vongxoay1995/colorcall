@@ -41,6 +41,7 @@ import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.database.Background;
+import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -164,7 +165,8 @@ public class CallService extends Service {
                 imgAvatar = viewCall.findViewById(R.id.profile_image);
                 txtName = viewCall.findViewById(R.id.txtName);
                 try {
-                    name = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
+                    ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
+                    name = contactRetrieve.getName();
                     bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
                     txtName.setText(name);
                     imgAvatar.setImageBitmap(bmpAvatar);

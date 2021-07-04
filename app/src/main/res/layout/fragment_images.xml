@@ -42,10 +42,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:fontFamily="@font/robotoregular"
             android:text="@string/loading"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp" />
+            android:textSize="@dimen/_13sdp" />
     </LinearLayout>
 
     <LinearLayout
@@ -63,10 +62,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:fontFamily="@font/robotoregular"
             android:gravity="center"
             android:text="@string/turn_on_network"
             android:textColor="@color/black"
-            android:textSize="@dimen/_13ssp" />
+            android:textSize="@dimen/_13sdp" />
     </LinearLayout>
 </RelativeLayout>
