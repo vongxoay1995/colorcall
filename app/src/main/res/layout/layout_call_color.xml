@@ -6,18 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <!--<com.colorcall.callerscreen.utils.DynamicImageView
+    <com.colorcall.callerscreen.utils.DynamicImageView
         android:id="@+id/img_background_call"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:visibility="gone"/>-->
+        android:visibility="gone"/>
     <com.colorcall.callerscreen.custom.CustomVideoView
         android:id="@+id/vdo_background_call"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         />
+    <ImageView
+        android:id="@+id/imgExit"
+        android:layout_width="@dimen/_45sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_alignParentEnd="true"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        app:srcCompat="@drawable/ic_exit"/>
     <LinearLayout
         android:id="@+id/layout_content"
         android:layout_width="match_parent"

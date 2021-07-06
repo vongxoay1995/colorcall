@@ -41,13 +41,18 @@ import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.CustomVideoView;
 import com.colorcall.callerscreen.database.Background;
+import com.colorcall.callerscreen.database.Contact;
+import com.colorcall.callerscreen.database.ContactDao;
+import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.NotificationUtil;
+import com.google.gson.Gson;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,12 +60,12 @@ public class CallService extends Service {
     private String phoneNumber = "";
     private View viewCall;
     private CustomVideoView vdoBgCall;
-    private ImageView  imgAccept, imgReject;
+    private ImageView  imgAccept, imgReject,imgExit;
     private CircleImageView imgAvatar;
-    //private DynamicImageView imgBgCall;
+    private DynamicImageView imgBgCall;
     private TextView txtName, txtPhoneNumber;
     private int typeBgCall;
-    private Background backgroundSelect;
+    private Background backgroundSelect,back_ground_contact;
     private TelephonyManager telephonyManager;
     private ITelephony telephonyService;
     private static final int ID_NOTIFICATION = 1;
@@ -71,6 +76,9 @@ public class CallService extends Service {
     private LocalBroadcastManager mLocalBroadcastManager;
     private String name;
     public WindowManager.LayoutParams mLayoutParams;
+    private String contactId="";
+    private Contact mContact;
+    private LayoutInflater inflater;
 
     @Nullable
     @Override
@@ -101,11 +109,11 @@ public class CallService extends Service {
                 phoneNumber = " ";
             }
             phoneNumber = phoneNumber.replaceAll(" ", "").replaceAll("-", "");
-            //showViewCallColor();
-            Intent intent2 = new Intent(getApplicationContext(), CallActivity.class);
-            intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
-            startActivity(intent2);
+            showViewCallColor();
+//            Intent intent2 = new Intent(getApplicationContext(), CallActivity.class);
+//            intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
+//            startActivity(intent2);
 
         }
         return super.onStartCommand(intent, flags, startId);
@@ -113,8 +121,8 @@ public class CallService extends Service {
 
     @Override
     public void onDestroy() {
-       // removeUI();
-     //   mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
+        removeUI();
+        mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
         NotificationUtil.hideNotification(this);
         super.onDestroy();
     }
@@ -131,16 +139,84 @@ public class CallService extends Service {
 
     public void showViewCallColor() {
         backgroundSelect = HawkHelper.getBackgroundSelect();
-        if (backgroundSelect != null) {
-            typeBgCall = backgroundSelect.getType();
-            int LAYOUT_TYPE;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                LAYOUT_TYPE = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-            } else {
-                LAYOUT_TYPE = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        try{
+            if (backgroundSelect != null) {
+                initLayoutColor();
+                if (inflater != null) {
+                    viewCall = inflater.inflate(R.layout.layout_call_color, null);
+                }
+                txtPhoneNumber = viewCall.findViewById(R.id.txtPhone);
+                imgAvatar = viewCall.findViewById(R.id.profile_image);
+                txtName = viewCall.findViewById(R.id.txtName);
+                imgAccept = viewCall.findViewById(R.id.btnAccept);
+                imgReject = viewCall.findViewById(R.id.btnReject);
+                imgExit = viewCall.findViewById(R.id.imgExit);
+                imgExit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (viewCall != null){
+                            viewCall.setVisibility(View.GONE);
+                        }
+                        removeUI();
+                        stopSelf();
+                    }
+                });
+                imgBgCall = viewCall.findViewById(R.id.img_background_call);
+                vdoBgCall = viewCall.findViewById(R.id.vdo_background_call);
+                typeBgCall = backgroundSelect.getType();
+                try {
+                    ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
+                    name = contactRetrieve.getName();
+                    contactId = contactRetrieve.getContact_id();
+                    txtName.setText(name);
+                    if (name.equals("")) {
+                        txtName.setText(getString(R.string.unknowContact));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
+                imgAvatar.setImageBitmap(bmpAvatar);
+                txtPhoneNumber.setText(String.valueOf(phoneNumber));
+                vdoBgCall.setVisibility(View.VISIBLE);
+                viewCall.setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                mWindowManager.addView(viewCall, mLayoutParams);
+                List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
+                        .where(ContactDao.Properties.Contact_id.eq(contactId))
+                        .list();
+                if(listQueryContactID.size()>0){
+                    mContact = listQueryContactID.get(0);
+                    back_ground_contact = new Gson().fromJson(mContact.getBackground(),Background.class);
+                }
+                if(back_ground_contact!=null){
+                    backgroundSelect = back_ground_contact;
+                    typeBgCall = back_ground_contact.getType();
+                }
+                checkTypeCall(typeBgCall);
+                new Handler().postDelayed(this::startAnimation, 400);
+                handlingCallState();
+                listener();
             }
-            mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            mLayoutParams =  new WindowManager.LayoutParams();
+        } catch (Exception e) {
+            stopSelf();
+        }
+    }
+    private void initLayoutColor() {
+        int LAYOUT_TYPE;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LAYOUT_TYPE = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            LAYOUT_TYPE = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        }
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        mLayoutParams =  new WindowManager.LayoutParams();
 //            final WindowManager.LayoutParams mLayoutParams = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                    ViewGroup.LayoutParams.MATCH_PARENT, LAYOUT_TYPE, 40371457,
 //                    /*WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -149,62 +225,16 @@ public class CallService extends Service {
 //                            | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
 //                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD,*/
 //                    PixelFormat.TRANSLUCENT);
-            mLayoutParams.type = LAYOUT_TYPE;
-            mLayoutParams.format=-2;
-            mLayoutParams.flags =  524584;
-            mLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            mLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            mLayoutParams.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-            mLayoutParams.windowAnimations = 16973826;
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            try {
-                if (inflater != null) {
-                    viewCall = inflater.inflate(R.layout.layout_call_color, null);
-                }
-                txtPhoneNumber = viewCall.findViewById(R.id.txtPhone);
-                imgAvatar = viewCall.findViewById(R.id.profile_image);
-                txtName = viewCall.findViewById(R.id.txtName);
-                try {
-                    ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
-                    name = contactRetrieve.getName();
-                    bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
-                    txtName.setText(name);
-                    imgAvatar.setImageBitmap(bmpAvatar);
-                    if (name.equals("")) {
-                        txtName.setText(getString(R.string.unknowContact));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                txtPhoneNumber.setText(String.valueOf(phoneNumber));
-                imgAccept = viewCall.findViewById(R.id.btnAccept);
-                imgReject = viewCall.findViewById(R.id.btnReject);
-                vdoBgCall = viewCall.findViewById(R.id.vdo_background_call);
-                vdoBgCall.setVisibility(View.VISIBLE);
-                checkTypeCall(typeBgCall);
-                viewCall.setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                new Handler().postDelayed(this::startAnimation, 400);
-                mWindowManager.addView(viewCall, mLayoutParams);
-                analystic.trackEvent(ManagerEvent.callshow());
-                imgAvatar.setImageBitmap(bmpAvatar);
-                txtPhoneNumber.setText(String.valueOf(phoneNumber));
-                vdoBgCall.setVisibility(View.VISIBLE);
-                checkTypeCall(typeBgCall);
-                new Handler().postDelayed(this::startAnimation, 400);
-                handlingCallState();
-                listener();
-            } catch (Exception e) {
-                stopSelf();
-            }
-        }
+        mLayoutParams.type = LAYOUT_TYPE;
+        mLayoutParams.format=-2;
+        mLayoutParams.flags = 524584;
+        mLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        mLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        mLayoutParams.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        mLayoutParams.windowAnimations = 16973826;
+        inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
     }
-    
+
     @Override
     public void onCreate() {
         analystic = Analystic.getInstance(this);
@@ -214,7 +244,7 @@ public class CallService extends Service {
         mLocalBroadcastManager.registerReceiver(mBroadcastReceiver, mIntentFilter);
         super.onCreate();
     }
-    
+
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -297,7 +327,7 @@ public class CallService extends Service {
 
     private void handlingBgCallVideo() {
         String sPath;
-        //imgBgCall.setVisibility(View.GONE);
+        imgBgCall.setVisibility(View.GONE);
         vdoBgCall.setVisibility(View.VISIBLE);
         if (backgroundSelect.getPathItem().contains("storage") || backgroundSelect.getPathItem().contains("/data/data") || backgroundSelect.getPathItem().contains("data/user/")) {
             sPath = backgroundSelect.getPathItem();
@@ -318,18 +348,18 @@ public class CallService extends Service {
     }
 
     private void handlingBgCallImage() {
-       // imgBgCall.setVisibility(View.VISIBLE);
+        imgBgCall.setVisibility(View.VISIBLE);
         String sPathThumb;
         if (backgroundSelect.getPathItem().contains("default") && backgroundSelect.getPathItem().contains("thumbDefault")) {
             sPathThumb = "file:///android_asset/" + backgroundSelect.getPathItem();
         } else {
             sPathThumb = backgroundSelect.getPathItem();
         }
-//        Glide.with(getApplicationContext())
-//                .load(sPathThumb)
-//                .diskCacheStrategy(DiskCacheStrategy.DATA)
-//                .thumbnail(0.1f)
-//                .into(imgBgCall);
+        Glide.with(getApplicationContext())
+                .load(sPathThumb)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .thumbnail(0.1f)
+                .into(imgBgCall);
         vdoBgCall.setVisibility(View.GONE);
     }
 }
