@@ -54,9 +54,10 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     private void onCallStateChanged(Context context, int state) {
             switch (state) {
                 case TYPE_RINGGING_CALL:
-                    if(phoneNumber!=null){
+                    Log.e("TAN","TYPE_RING" );
+                    //if(phoneNumber!=null){
                         onIncommingCall(context, phoneNumber);
-                    }
+                   // }
                     if (HawkHelper.isEnableFlash()) {
                         flashUtils = FlashUtils.getInstance(true, context);
                         new Thread(flashUtils).start();

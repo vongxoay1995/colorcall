@@ -43,7 +43,9 @@ public class NotificationService extends NotificationListenerService {
     @Override
     public void onNotificationPosted(final StatusBarNotification statusBarNotification) {
         super.onNotificationPosted(statusBarNotification);
+        Log.e("TAN",statusBarNotification.getPackageName()+"---");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Log.e("TAN","0" );
             if (!statusBarNotification.getPackageName().contains("incallui"))return;
             String str = "";
             TelecomManager telecomManager = ColorCallApplication.get().getSystemService(TelecomManager.class);
@@ -51,6 +53,7 @@ public class NotificationService extends NotificationListenerService {
                 str = telecomManager.getDefaultDialerPackage() + "";
             }
             if (!statusBarNotification.getPackageName().contains("incallui") && !statusBarNotification.getPackageName().equals(str)) {
+                Log.e("TAN","1" );
                 return;
             }
             if (this.isListen) {

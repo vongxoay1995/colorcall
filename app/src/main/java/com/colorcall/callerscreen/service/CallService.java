@@ -121,6 +121,7 @@ public class CallService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.e("TAN", "service onDestroy: " );
         removeUI();
         mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
         NotificationUtil.hideNotification(this);
@@ -151,15 +152,13 @@ public class CallService extends Service {
                 imgAccept = viewCall.findViewById(R.id.btnAccept);
                 imgReject = viewCall.findViewById(R.id.btnReject);
                 imgExit = viewCall.findViewById(R.id.imgExit);
-                imgExit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (viewCall != null){
-                            viewCall.setVisibility(View.GONE);
-                        }
-                        removeUI();
-                        stopSelf();
+                Glide.with(this).load(R.drawable.ic_exit).into(imgExit);
+                imgExit.setOnClickListener(v -> {
+                    if (viewCall != null){
+                        viewCall.setVisibility(View.GONE);
                     }
+                    removeUI();
+                    stopSelf();
                 });
                 imgBgCall = viewCall.findViewById(R.id.img_background_call);
                 vdoBgCall = viewCall.findViewById(R.id.vdo_background_call);

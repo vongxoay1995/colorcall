@@ -1,6 +1,8 @@
 package com.colorcall.callerscreen.application;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.multidex.MultiDex;
@@ -11,6 +13,7 @@ import com.applovin.sdk.AppLovinSdk;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.service.CallService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.facebook.FacebookSdk;
@@ -40,6 +43,13 @@ public class ColorCallApplication extends MultiDexApplication {
         if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         }
+//        Intent intentCallService = new Intent(getApplicationContext(), CallService.class);
+//        intentCallService.putExtra(Constant.PHONE_NUMBER, "0983518971");
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            getApplicationContext().startForegroundService(intentCallService);
+//        } else {
+//            getApplicationContext().startService(intentCallService);
+//        }
     }
     @SuppressLint("StaticFieldLeak")
     private void loadData() {

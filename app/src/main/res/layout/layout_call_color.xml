@@ -25,7 +25,7 @@
         android:layout_alignParentEnd="true"
         android:padding="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_35sdp"
         app:srcCompat="@drawable/ic_exit"/>
     <LinearLayout
         android:id="@+id/layout_content"
