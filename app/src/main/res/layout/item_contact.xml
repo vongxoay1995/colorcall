@@ -31,5 +31,5 @@
         android:layout_width="@dimen/_20sdp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_13sdp"
-        android:src="@drawable/toggle_select" />
+        app:srcCompat="@drawable/toggle_select" />
 </LinearLayout>

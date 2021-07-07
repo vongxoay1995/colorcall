@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.application;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
@@ -40,6 +41,7 @@ public class ColorCallApplication extends MultiDexApplication {
         if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         }
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
     @SuppressLint("StaticFieldLeak")
     private void loadData() {
