@@ -37,7 +37,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             phoneNumber = intent.getExtras().getString("incoming_number");
             if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 isBiggerAndroidP = true;
-                PhoneUtils.get().getNumberPhoneWhenNull(CallReceiver.this);
+                PhoneUtils.get(context).getNumberPhoneWhenNull(CallReceiver.this);
             }
 
             if (state != null && state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
@@ -54,10 +54,9 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     private void onCallStateChanged(Context context, int state) {
             switch (state) {
                 case TYPE_RINGGING_CALL:
-                    Log.e("TAN","TYPE_RING" );
-                    //if(phoneNumber!=null){
+                    if(phoneNumber!=null){
                         onIncommingCall(context, phoneNumber);
-                   // }
+                    }
                     if (HawkHelper.isEnableFlash()) {
                         flashUtils = FlashUtils.getInstance(true, context);
                         new Thread(flashUtils).start();

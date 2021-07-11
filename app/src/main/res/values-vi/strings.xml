@@ -55,4 +55,7 @@
     <string name="search">Tìm kiếm ...</string>
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">Đặt chủ đề thành công</string>
+    <string name="titleDrawrOver">Để hiển thị màn hình cuộc gọi</string>
+    <string name="rateApp">Rate app</string>
+    <string name="allow_permission">Cấp quyền cho Call color flash</string>
 </resources>

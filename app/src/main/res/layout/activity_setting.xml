@@ -99,105 +99,6 @@
                     app:srcCompat="@drawable/ic_ar_right"
                     tools:ignore="VectorDrawableCompat" />
             </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/layoutShareApp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/btnShareApp"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:padding="@dimen/_12sdp"
-                    app:srcCompat="@drawable/ic_share"
-                    tools:ignore="VectorDrawableCompat" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/btnShareApp"
-                    android:paddingStart="@dimen/_5sdp"
-                    android:text="@string/shareApp"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_13sdp" />
-
-                <ImageView
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:padding="@dimen/_12sdp"
-                    app:srcCompat="@drawable/ic_ar_right"
-                    tools:ignore="VectorDrawableCompat" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/layoutCheckUpdate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/btnCheckUpdate"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:padding="@dimen/_12sdp"
-                    app:srcCompat="@drawable/ic_updated"
-                    tools:ignore="VectorDrawableCompat" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/btnCheckUpdate"
-                    android:paddingStart="@dimen/_5sdp"
-                    android:text="@string/checkUpdate"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_13sdp" />
-
-                <ImageView
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:padding="@dimen/_12sdp"
-                    app:srcCompat="@drawable/ic_ar_right"
-                    tools:ignore="VectorDrawableCompat" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/layoutPolicy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/btnPolicy"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:padding="@dimen/_12sdp"
-                    app:srcCompat="@drawable/ic_policy"
-                    tools:ignore="VectorDrawableCompat" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/btnPolicy"
-                    android:paddingStart="@dimen/_5sdp"
-                    android:text="@string/policy"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_13sdp" />
-
-                <ImageView
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:padding="@dimen/_12sdp"
-                    app:srcCompat="@drawable/ic_ar_right"
-                    tools:ignore="VectorDrawableCompat" />
-            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/layoutStateApp"
                 android:layout_width="match_parent"
@@ -261,6 +162,136 @@
                     android:layout_width="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_height="wrap_content"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/layoutShareApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnShareApp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_share"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnShareApp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/shareApp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layoutCheckUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnCheckUpdate"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_check_updated"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnCheckUpdate"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/checkUpdate"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layoutPolicy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnPolicy"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_policy"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnPolicy"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/policy"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/layoutRateApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/btnRateApp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_rate"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnRateApp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/rateApp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+                <ImageView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
             </RelativeLayout>
             <FrameLayout
                 android:id="@+id/fl_adplaceholder"

@@ -56,4 +56,6 @@
     <string name="search">खोज ...</string>
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">थीम सफलतापूर्वक सेट करें</string>
+    <string name="titleDrawrOver">Để hiển thị màn hình cuộc gọi</string>
+    <string name="rateApp">Rate app</string>
 </resources>

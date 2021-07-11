@@ -1,6 +1,5 @@
 package com.colorcall.callerscreen.apply;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,8 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,11 +23,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
@@ -38,7 +33,7 @@ import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.contact.SelectContactActivity;
-import com.colorcall.callerscreen.custom.CustomVideoView;
+import com.colorcall.callerscreen.custom.FullScreenVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
@@ -47,13 +42,11 @@ import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
-import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
 import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
@@ -68,13 +61,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
-import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
 public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener, DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener {
     @BindView(R.id.img_background_call)
     ImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
-    CustomVideoView vdoBackgroundCall;
+    FullScreenVideoView vdoBackgroundCall;
     @BindView(R.id.imgDelete)
     ImageView imgDelete;
     @BindView(R.id.layoutApply)
@@ -93,6 +85,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     RelativeLayout layoutAds;
     @BindView(R.id.layoutContact)
     RelativeLayout layoutContact;
+    @BindView(R.id.profile_image)
+    ImageView imgAvatar;
+    @BindView(R.id.txtName)
+    TextView txtName;
+    @BindView(R.id.txtPhone)
+    TextView txtPhone;
     TextView txtPercentDownloading;
     private String folderApp;
     private Background background;
@@ -105,11 +103,13 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private int fromScreen;
     private Dialog dialog;
     private BannerAdsUtils bannerAdsUtils;
+    private int posRandom;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
+        posRandom = getIntent().getIntExtra(Constant.POS_RANDOM, 0);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
         analystic = Analystic.getInstance(this);
@@ -200,7 +200,21 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         });
     }
 
+    private void initInfor() {
+        String pathAvatar = Constant.avatarRandom[posRandom];
+        String name = Constant.nameRandom[posRandom];
+        String phone = Constant.phoneRandom[posRandom];
+        Glide.with(getApplicationContext())
+                .load("file:///android_asset/avatar/" + pathAvatar)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .thumbnail(0.1f)
+                .into(imgAvatar);
+        txtName.setText(name);
+        txtPhone.setText(phone);
+    }
+
     private void checkInforTheme() {
+        initInfor();
         if (getIntent().getBooleanExtra(Constant.SHOW_IMG_DELETE, false)) {
             imgDelete.setVisibility(View.VISIBLE);
         } else {
@@ -262,17 +276,17 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 isDownloaded = false;
                 vdoBackgroundCall.setVideoURI(Uri.parse(sPath));
                 playVideo();
-                layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+                layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp), layoutFooter.getPaddingTop(), getResources().getDimensionPixelSize(R.dimen._15sdp), layoutFooter.getPaddingBottom());
                 layoutContact.setVisibility(View.VISIBLE);
                 txtApply.setText(getString(R.string.applyContact));
             } else {
                 isDownloaded = true;
                 layoutContact.setVisibility(View.GONE);
-                layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._45sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._45sdp),layoutFooter.getPaddingBottom());
+                layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._45sdp), layoutFooter.getPaddingTop(), getResources().getDimensionPixelSize(R.dimen._45sdp), layoutFooter.getPaddingBottom());
                 txtApply.setText(getString(R.string.download));
             }
         } else {
-            layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+            layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp), layoutFooter.getPaddingTop(), getResources().getDimensionPixelSize(R.dimen._15sdp), layoutFooter.getPaddingBottom());
             layoutContact.setVisibility(View.VISIBLE);
             vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
             playVideo();
@@ -496,7 +510,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             HawkHelper.setListBackground(arr);
             vdoBackgroundCall.setVideoURI(Uri.parse(newPathItem));
             txtApply.setText(getString(R.string.applyContact));
-            layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingTop(),getResources().getDimensionPixelSize(R.dimen._15sdp),layoutFooter.getPaddingBottom());
+            layoutFooter.setPadding(getResources().getDimensionPixelSize(R.dimen._15sdp), layoutFooter.getPaddingTop(), getResources().getDimensionPixelSize(R.dimen._15sdp), layoutFooter.getPaddingBottom());
             layoutContact.setVisibility(View.VISIBLE);
             isDownloaded = false;
             playVideo();
@@ -519,7 +533,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     public void setTranslucent() {
         Window w = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&&Build.VERSION.SDK_INT<Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             AppUtils.showFullHeader(this, layoutHead);
         }

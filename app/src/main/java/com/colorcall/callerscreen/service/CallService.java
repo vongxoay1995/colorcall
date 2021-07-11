@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -33,13 +32,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.android.internal.telephony.ITelephony;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
-import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.custom.CustomVideoView;
+import com.colorcall.callerscreen.custom.FullScreenVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
@@ -59,7 +56,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CallService extends Service {
     private String phoneNumber = "";
     private View viewCall;
-    private CustomVideoView vdoBgCall;
+    private FullScreenVideoView vdoBgCall;
     private ImageView  imgAccept, imgReject,imgExit;
     private CircleImageView imgAvatar;
     private DynamicImageView imgBgCall;
@@ -114,7 +111,6 @@ public class CallService extends Service {
 //            intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
 //            startActivity(intent2);
-
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -158,7 +154,7 @@ public class CallService extends Service {
                         viewCall.setVisibility(View.GONE);
                     }
                     removeUI();
-                    stopSelf();
+                    stopCallService();
                 });
                 imgBgCall = viewCall.findViewById(R.id.img_background_call);
                 vdoBgCall = viewCall.findViewById(R.id.vdo_background_call);
@@ -204,7 +200,7 @@ public class CallService extends Service {
                 listener();
             }
         } catch (Exception e) {
-            stopSelf();
+            stopCallService();
         }
     }
     private void initLayoutColor() {
@@ -248,7 +244,7 @@ public class CallService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("com.colorcall.endCall")) {
-                stopSelf();
+                stopCallService();
             }
         }
     };
@@ -279,7 +275,7 @@ public class CallService extends Service {
                 telephonyService = (ITelephony) method.invoke(telephonyManager);
             }
         } catch (Exception e) {
-            stopSelf();
+            stopCallService();
             e.printStackTrace();
         }
     }
@@ -302,7 +298,7 @@ public class CallService extends Service {
                 getApplicationContext().startActivity(intent);
             }
             isDisable = true;
-            stopSelf();
+            stopCallService();
         });
 
         imgReject.setOnClickListener(v -> {
@@ -317,9 +313,9 @@ public class CallService extends Service {
                     telephonyService.endCall();
                 }
                 isDisable = true;
-                stopSelf();
+                stopCallService();
             } catch (Exception e) {
-                stopSelf();
+                stopCallService();
             }
         });
     }
@@ -337,7 +333,7 @@ public class CallService extends Service {
         vdoBgCall.setVideoURI(Uri.parse(sPath));
         vdoBgCall.setOnErrorListener((mp, what, extra) -> {
             analystic.trackEvent(ManagerEvent.callVideoViewError(what, extra));
-            stopSelf();
+            stopCallService();
             return true;
         });
         vdoBgCall.setOnPreparedListener(mp -> {
@@ -360,5 +356,8 @@ public class CallService extends Service {
                 .thumbnail(0.1f)
                 .into(imgBgCall);
         vdoBgCall.setVisibility(View.GONE);
+    }
+    public void stopCallService(){
+            getApplicationContext().stopService(new Intent(getApplicationContext(), CallService.class));
     }
 }

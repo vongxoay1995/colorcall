@@ -58,4 +58,12 @@
     <string name="search">Search ...</string>
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">Set theme successfully</string>
+    <string name="titleDrawrOver">To show call screen</string>
+    <string name="titleNotification">To answer the call in call screen and show phone number</string>
+    <string name="prompt_permission_draw_window_msg">Screen Permission</string>
+    <string name="prompt_permission_notification_msg">Notification Access</string>
+    <string name="rateApp">Rate app</string>
+    <string name="allow_permission">Cấp quyền cho Call color flash</string>
+    <string name="go_to_setting">Go setting</string>
+
 </resources>

@@ -2,29 +2,34 @@ package com.colorcall.callerscreen.mytheme;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.signature.ObjectKey;
 import com.colorcall.callerscreen.R;
+import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.custom.FullScreenVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,8 +52,8 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) layout_item.getLayoutParams();
-        layoutParams.width = width / 2;
-        layoutParams.height = (2 * width) / 3;
+        layoutParams.width = (int)((float)width / 2.1f);
+        layoutParams.height = (5 * width) / 6;
         layout_item.setLayoutParams(layoutParams);
     }
 
@@ -57,8 +62,8 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) layout_item.getLayoutParams();
-        layoutParams.width = (int) (width / 2.08);
-        layoutParams.height = (2 * width) / 3;
+        layoutParams.width = (int) (width / 2.1);
+        layoutParams.height = (5 * width) / 6;
         layout_item.setLayoutParams(layoutParams);
     }
 
@@ -68,25 +73,50 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ImageView imgThumb;
         @BindView(R.id.layout_item)
         RelativeLayout layout_item;
+        @BindView(R.id.imgAvatar)
+        ImageView imgAvatar;
+        @BindView(R.id.txtName)
+        TextView txtName;
+        @BindView(R.id.txtPhone)
+        TextView txtPhone;
         @BindView(R.id.layoutSelected)
-        RelativeLayout layoutSelected;
+        ConstraintLayout layoutSelected;
+        @BindView(R.id.layoutBorderItemSelect)
+        RelativeLayout layoutBorderItemSelect;
+        @BindView(R.id.vdo_background_call)
+        FullScreenVideoView vdo_background_call;
+        @BindView(R.id.btnAccept)
+        ImageView btnAccept;
         private Background backgroundSelected;
-
+        private int position;
+        private int posRandom;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         public void onBind(int i) {
+            position = i;
+            initInfor();
             backgroundSelected = HawkHelper.getBackgroundSelect();
             Background background = listBg.get(i);
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
                 layoutSelected.setVisibility(View.VISIBLE);
+                layoutBorderItemSelect.setVisibility(View.VISIBLE);
+                if (background.getType() == Constant.TYPE_VIDEO) {
+                    imgThumb.setVisibility(View.GONE);
+                    vdo_background_call.setVisibility(View.VISIBLE);
+                    processVideo(background);
+                }
+                startAnimation();
                 if(listener!=null){
-                    listener.onItemThemeSelected(background,getAdapterPosition());
+                    listener.onItemThemeSelected(background,position);
                 }
             } else {
+                vdo_background_call.setVisibility(View.GONE);
+                imgThumb.setVisibility(View.VISIBLE);
                 layoutSelected.setVisibility(View.GONE);
+                layoutBorderItemSelect.setVisibility(View.GONE);
             }
             resizeItem(context, layout_item);
             String pathFile;
@@ -100,13 +130,59 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             listener();
         }
-
+        private void initInfor() {
+            posRandom = new Random().nextInt(10);
+            String pathAvatar = Constant.avatarRandom[posRandom];
+            String name = Constant.nameRandom[posRandom];
+            String phone = Constant.phoneRandom[posRandom];
+            Glide.with(context.getApplicationContext())
+                    .load("file:///android_asset/avatar/" + pathAvatar)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .thumbnail(0.1f)
+                    .into(imgAvatar);
+            txtName.setText(name);
+            txtPhone.setText(phone);
+        }
         private void listener() {
             this.imgThumb.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onItemClick(listBg, getAdapterPosition(), listBg.get(getAdapterPosition()).getDelete());
+                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(),posRandom);
                 }
             });
+        }
+        public void startAnimation() {
+            Animation anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call);
+            btnAccept.startAnimation(anim8);
+        }
+        private void processVideo(Background background) {
+            String sPath;
+            String sPathThumb;
+            String uriPath = "android.resource://" + context.getPackageName() + background.getPathItem();
+            if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
+                sPathThumb = "file:///android_asset/" + background.getPathThumb();
+            } else {
+                sPathThumb = background.getPathThumb();
+            }
+            Glide.with(context.getApplicationContext())
+                    .load(sPathThumb)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .thumbnail(0.1f)
+                    .into(imgThumb);
+            if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
+                sPath = background.getPathItem();
+                if (!sPath.startsWith("http")) {
+                    vdo_background_call.setVideoURI(Uri.parse(sPath));
+                    playVideo();
+                }
+            } else {
+                vdo_background_call.setVideoURI(Uri.parse(uriPath));
+                playVideo();
+            }
+        }
+        private void playVideo() {
+            vdo_background_call.setOnPreparedListener(mediaPlayer -> mediaPlayer.setLooping(true));
+            vdo_background_call.setOnErrorListener((mp, what, extra) -> false);
+            vdo_background_call.start();
         }
     }
 
@@ -135,7 +211,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public interface Listener {
         void onAdd();
         void onItemThemeSelected(Background background,int position);
-        void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete);
+        void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom);
     }
 
     @NonNull
@@ -144,7 +220,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case 0:
                 return new AddHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.add_new, viewGroup, false));
             case 1:
-                return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_thumbs_category_detail, viewGroup, false));
+                return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_theme, viewGroup, false));
             default:
                 return null;
         }

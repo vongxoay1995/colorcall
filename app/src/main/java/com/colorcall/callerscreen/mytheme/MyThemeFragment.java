@@ -98,15 +98,15 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     }
 
     @Override
-    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete) {
-        moveApplyTheme(backgrounds, position, delete);
+    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
+        moveApplyTheme(backgrounds, position, delete,posRandom);
     }
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(Constant.CAPTURE_IMAGE_PATH, pathUriImage);
     }
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete) {
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
         Background background = backgrounds.get(position);
         Intent intent = new Intent(getActivity(), ApplyActivity.class);
         intent.putExtra(Constant.FROM_SCREEN, Constant.MYTHEME_FRAG_MENT);
@@ -115,6 +115,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         }
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
+        intent.putExtra(Constant.POS_RANDOM, posRandom);
         getActivity().startActivity(intent);
     }
 

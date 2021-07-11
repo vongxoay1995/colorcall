@@ -1,6 +1,7 @@
 package com.colorcall.callerscreen.application;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.applovin.sdk.AppLovinSdk;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.promt.PermissionOverLayActivity;
 import com.colorcall.callerscreen.service.CallService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -28,10 +30,10 @@ import java.util.concurrent.Executors;
 
 
 public class ColorCallApplication extends MultiDexApplication {
-    private static ColorCallApplication callApplication;
+   // private static ColorCallApplication callApplication;
     public void onCreate() {
         super.onCreate();
-        callApplication = this;
+        //callApplication = this;
         MultiDex.install(this);
         MobileAds.initialize(this, initializationStatus -> {});
         Hawk.init(this).build();
@@ -45,6 +47,8 @@ public class ColorCallApplication extends MultiDexApplication {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         }
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
+        //PermissionOverLayActivity.open(this,0);
 
 //        Intent intentCallService = new Intent(getApplicationContext(), CallService.class);
 //        intentCallService.putExtra(Constant.PHONE_NUMBER, "0983518971");
@@ -65,7 +69,7 @@ public class ColorCallApplication extends MultiDexApplication {
             });
         }
     }
-    public static ColorCallApplication get() {
+    /*public static ColorCallApplication get() {
         return callApplication;
-    }
+    }*/
 }

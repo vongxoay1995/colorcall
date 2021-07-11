@@ -1,13 +1,16 @@
 package com.colorcall.callerscreen.setting;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -150,7 +153,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         });
     }
 
-    @OnClick({R.id.btnBack, R.id.layoutShareApp, R.id.layoutPolicy, R.id.layoutCheckUpdate, R.id.btnAds})
+    @OnClick({R.id.btnBack, R.id.layoutShareApp, R.id.layoutPolicy, R.id.layoutCheckUpdate, R.id.layoutRateApp,R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
@@ -170,6 +173,9 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 analystic.trackEvent(ManagerEvent.settingPolicyClick());
                 openWebPage(Constant.POLICY_URL);
                 return;
+            case R.id.layoutRateApp:
+                rateApp();
+                return;
             case R.id.layoutShareApp:
                 analystic.trackEvent(ManagerEvent.settingShareAppClick());
                 Intent sendIntent = new Intent();
@@ -188,18 +194,23 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 return;
         }
     }
+    private void rateApp() {
+        final String appPackageName = getPackageName();
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+        } catch (ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        }
+    }
 
     public void openWebPage(String url) {
-
-        Uri webpage = Uri.parse(url);
-
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            webpage = Uri.parse("http://" + url);
+        try {
+            Intent intentUpdate = new Intent(Intent.ACTION_VIEW);
+            intentUpdate.setData(Uri.parse(url));
+            startActivity(intentUpdate);
         }
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
+        catch (ActivityNotFoundException anfe) {
+            anfe.printStackTrace();
         }
     }
 

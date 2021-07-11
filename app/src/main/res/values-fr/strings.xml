@@ -58,4 +58,6 @@
     <string name="search">Rechercher ...</string>
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">Définir le thème avec succès</string>
+    <string name="titleDrawrOver">Để hiển thị màn hình cuộc gọi</string>
+    <string name="rateApp">Rate app</string>
 </resources>

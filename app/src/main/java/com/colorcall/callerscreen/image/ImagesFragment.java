@@ -103,27 +103,28 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     }
 
     @Override
-    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete) {
+    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
         InterstitialUtil.getInstance().showInterstitialAds(new InterstitialUtil.AdCloseListener() {
             @Override
             public void onAdClose() {
-                moveApplyTheme(backgrounds, position, delete);
+                moveApplyTheme(backgrounds, position, delete,posRandom);
             }
 
             @Override
             public void onMove() {
-                moveApplyTheme(backgrounds, position, delete);
+                moveApplyTheme(backgrounds, position, delete,posRandom);
             }
         });
     }
 
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete) {
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
         Background background = backgrounds.get(position);
         Intent intent = new Intent(getActivity(), ApplyActivity.class);
         if (delete) {
             intent.putExtra(SHOW_IMG_DELETE, true);
         }
         intent.putExtra(Constant.FROM_SCREEN, Constant.IMAGES_FRAG_MENT);
+        intent.putExtra(Constant.POS_RANDOM,posRandom);
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
         getActivity().startActivity(intent);
