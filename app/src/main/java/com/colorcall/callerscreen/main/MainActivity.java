@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         }
         disableToolTipTextTab();
         KeyboardVisibilityEvent.setEventListener(this, this);
-        reviewManager = ReviewManagerFactory.create(this);
-        showDialogRate();
     }
 
     private void moveStore() {
@@ -312,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onSignShowRate(SignApplyMain signApplyMain) {
         if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
-           //showDialogRate();
+           showDialogRate();
         }
         EventBus.getDefault().removeStickyEvent(signApplyMain);
     }
