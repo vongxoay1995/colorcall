@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.service.NotificationService;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
@@ -54,7 +53,6 @@ public class PhoneUtils {
                 super.run();
                 getListNameContact();
                 NotificationService notificationReceiverService = NotificationService.get();
-                Log.e("TAN", "notificationReceiverService run: "+notificationReceiverService);
                 if (notificationReceiverService != null) {
                     StatusBarNotification inCallNotification = notificationReceiverService.getInCallNotification();
                     if (inCallNotification != null) {

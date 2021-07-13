@@ -34,7 +34,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:visibility="visible"/>
-        <com.colorcall.callerscreen.custom.FullScreenVideoView
+        <com.colorcall.callerscreen.custom.TextureVideoView
             android:id="@+id/vdo_background_call"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

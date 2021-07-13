@@ -42,7 +42,6 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.contact.ContactInfor;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
@@ -57,8 +56,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
 public class AppUtils {
@@ -511,6 +508,14 @@ public class AppUtils {
         InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputMethodManager != null) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+    public static void hideSoftKeyBoard(Activity activity) {
+        if (activity != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            // verify if the soft keyboard is open
+            if (inputMethodManager.isAcceptingText())
+                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
     }
 }

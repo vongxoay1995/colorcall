@@ -104,6 +104,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             } else {
                 layoutSelected.setVisibility(View.GONE);
                 layoutBorderItemSelect.setVisibility(View.GONE);
+                btnAccept.clearAnimation();
             }
             resizeItem(context, layout_item);
             String pathFile;
@@ -122,7 +123,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             listener();
         }
         private void initInfor() {
-            posRandom = new Random().nextInt(10);
+            posRandom = position%10;
             String pathAvatar = Constant.avatarRandom[posRandom];
             String name = Constant.nameRandom[posRandom];
             String phone = Constant.phoneRandom[posRandom];

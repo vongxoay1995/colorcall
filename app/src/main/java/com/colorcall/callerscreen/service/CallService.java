@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,7 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.custom.FullScreenVideoView;
+import com.colorcall.callerscreen.custom.TextureVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
@@ -56,7 +55,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CallService extends Service {
     private String phoneNumber = "";
     private View viewCall;
-    private FullScreenVideoView vdoBgCall;
+    private TextureVideoView vdoBgCall;
     private ImageView  imgAccept, imgReject,imgExit;
     private CircleImageView imgAvatar;
     private DynamicImageView imgBgCall;
@@ -117,7 +116,6 @@ public class CallService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e("TAN", "service onDestroy: " );
         removeUI();
         mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
         NotificationUtil.hideNotification(this);
@@ -338,6 +336,7 @@ public class CallService extends Service {
         });
         vdoBgCall.setOnPreparedListener(mp -> {
             mp.setLooping(true);
+            mp.setVolume(0.0f, 0.0f);
             vdoBgCall.start();
         });
     }

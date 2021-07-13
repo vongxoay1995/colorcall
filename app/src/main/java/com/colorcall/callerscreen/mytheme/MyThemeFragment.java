@@ -7,24 +7,20 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.colorcall.callerscreen.BuildConfig;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.apply.ApplyActivity;
@@ -35,8 +31,8 @@ import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.FileUtils;
-import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,11 +40,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,7 +56,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     MyThemeAdapter adapter;
     private Analystic analystic;
     private String pathUriImage;
-    private Background itemThemeSelected;
     private int positionItemThemeSelected = -1;
     public MyThemeFragment() {
     }
@@ -87,9 +78,27 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         rcvBgMyTheme.setLayoutManager(gridLayoutManager);
         rcvBgMyTheme.setItemAnimator(new DefaultItemAnimator());
         rcvBgMyTheme.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
+        RecyclerView.ItemAnimator animator = rcvBgMyTheme.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
         adapter = new MyThemeAdapter(getContext());
         adapter.setListener(this);
         rcvBgMyTheme.setAdapter(adapter);
+        rcvBgMyTheme.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!AppUtils.isNetworkConnected(getContext())) {
+                        Boast.makeText(getContext(), getString(R.string.err_network)).show();
+                    }
+                }
+                if(newState==0&&positionItemThemeSelected!=-1){
+                    adapter.notifyItemChanged(positionItemThemeSelected);
+                }
+            }
+        });
     }
 
     @Override
@@ -273,21 +282,15 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     }
 
     @Override
-    public void onItemThemeSelected(Background background, int position) {
-        itemThemeSelected = background;
+    public void onItemThemeSelected(int position) {
         positionItemThemeSelected = position;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (itemThemeSelected != null
-                && positionItemThemeSelected != -1
-                & !HawkHelper.getBackgroundSelect().getPathItem().equals(itemThemeSelected.getPathItem())
-                && adapter != null) {
+        if(adapter!=null){
             adapter.notifyItemChanged(positionItemThemeSelected);
-            positionItemThemeSelected = -1;
-            itemThemeSelected = null;
         }
     }
 }

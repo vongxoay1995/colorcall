@@ -56,6 +56,27 @@
     <string name="search">खोज ...</string>
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">थीम सफलतापूर्वक सेट करें</string>
-    <string name="titleDrawrOver">Để hiển thị màn hình cuộc gọi</string>
-    <string name="rateApp">Rate app</string>
+
+    <string name="titleDrawrOver">कॉल स्क्रीन दिखाने के लिए</string>
+    <string name="titleNotification">कॉल स्क्रीन में कॉल का उत्तर देने और फ़ोन नंबर दिखाने के लिए</string>
+    <string name="prompt_permission_draw_window_msg">स्क्रीन अनुमति</string>
+    <string name="prompt_permission_notification_msg">अधिसूचना पहुंच</string>
+    <string name="rateApp">एप्प का मूल्यांकन</string>
+    <string name="allow_permission">कॉल कलर फ्लैश के लिए अनुमति दें</string>
+    <string name="go_to_setting">सेटिंग पर जाएं</string>
+    <string name="rateInGGPlay">Google Play . में समीक्षाएं</string>
+    <string name="ask_user_feedback">आप क्या सुधार करना चाहते हैं?</string>
+    <string name="moreVideo">ज्यादा वीडियो</string>
+    <string name="moreImage">ज़्यादा तस्वीरें</string>
+    <string name="leastAds">कम विज्ञापन</string>
+    <string name="moreAudio">अधिक रिंगटोन</string>
+    <string name="another">एक अन्य विचार</string>
+    <string name="feedBackForDeveloper">डेवलपर को प्रतिक्रिया</string>
+    <string name="giveStar">कृपया हमारे द्वारा दिए गए सितारों की संख्या पर क्लिक करें</string>
+    <string name="very_bad">बहुत बुरा</string>
+    <string name="bad">खराब</string>
+    <string name="normal">साधारण</string>
+    <string name="good">अच्छा</string>
+    <string name="very_good">बहुत अच्छा</string>
+    <string name="notNow">अभी नहीं</string>
 </resources>

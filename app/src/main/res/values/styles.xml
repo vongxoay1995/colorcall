@@ -21,6 +21,10 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="DialogAnimationInOut">
+        <item name="android:windowEnterAnimation">@anim/in_animation</item>
+        <!--        <item name="android:windowExitAnimation">@anim/out_animation</item>-->
+    </style>
     <style name="AppTheme.AdAttribution">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

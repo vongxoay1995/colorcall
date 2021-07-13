@@ -56,6 +56,25 @@
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">Đặt chủ đề thành công</string>
     <string name="titleDrawrOver">Để hiển thị màn hình cuộc gọi</string>
-    <string name="rateApp">Rate app</string>
+    <string name="rateApp">Đánh giá</string>
     <string name="allow_permission">Cấp quyền cho Call color flash</string>
+    <string name="titleNotification">Để cho phép nhận cuộc gọi đến và hiển thị số điện thoại</string>
+    <string name="prompt_permission_draw_window_msg">Quyền màn hình</string>
+    <string name="prompt_permission_notification_msg">Quyền thông báo</string>
+    <string name="go_to_setting">Vào cài đặt</string>
+    <string name="rateInGGPlay">Đánh giá trên Google Play</string>
+    <string name="ask_user_feedback">Bạn muốn cải thiện điều gì? </string>
+    <string name="moreVideo">Thêm nhiều video</string>
+    <string name="moreImage">Thêm nhiều hình ảnh</string>
+    <string name="leastAds">Bớt quảng cáo</string>
+    <string name="moreAudio">Thêm nhạc chuông</string>
+    <string name="another">Ý kiến khác</string>
+    <string name="feedBackForDeveloper">Phản hồi với nhà phát triển</string>
+    <string name="giveStar">Hãy bấm vào các ngôi sao để đánh giá</string>
+    <string name="very_bad">Rất tệ</string>
+    <string name="bad">Tệ</string>
+    <string name="normal">Bình thường</string>
+    <string name="good">Tốt</string>
+    <string name="very_good">Rất tốt</string>
+    <string name="notNow">Không phải bây giờ</string>
 </resources>

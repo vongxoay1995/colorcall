@@ -33,11 +33,12 @@ import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.contact.SelectContactActivity;
-import com.colorcall.callerscreen.custom.FullScreenVideoView;
+import com.colorcall.callerscreen.custom.TextureVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.model.SignApplyImage;
+import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -66,7 +67,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     @BindView(R.id.img_background_call)
     ImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
-    FullScreenVideoView vdoBackgroundCall;
+    TextureVideoView vdoBackgroundCall;
     @BindView(R.id.imgDelete)
     ImageView imgDelete;
     @BindView(R.id.layoutApply)
@@ -306,7 +307,10 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private void playVideo() {
         imgBackgroundCall.setVisibility(View.GONE);
         vdoBackgroundCall.setVisibility(View.VISIBLE);
-        vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> mediaPlayer.setLooping(true));
+        vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> {
+            mediaPlayer.setLooping(true);
+            mediaPlayer.setVolume(0.0f, 0.0f);
+        });
         vdoBackgroundCall.setOnErrorListener((mp, what, extra) -> {
             analystic.trackEvent(ManagerEvent.applyVideoViewError(what, extra));
             return false;
@@ -372,6 +376,9 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     }
 
     public void applyTheme() {
+        int countRate = HawkHelper.getCoutShowRate();
+        countRate++;
+        HawkHelper.setCountRate(countRate);
         HawkHelper.setBackgroundSelect(background);
         HawkHelper.setStateColorCall(true);
         Toast.makeText(getBaseContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
@@ -390,6 +397,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         Bundle bundle = new Bundle();
         bundle.putString("name", background.getName());
         bundle.putInt("position", position);
+        EventBus.getDefault().postSticky(new SignApplyMain());
         analystic.trackEvent(new Event("APPLY_ITEM_INFOR", bundle));
         switch (fromScreen) {
             case Constant.VIDEO_FRAG_MENT:

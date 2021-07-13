@@ -1,12 +1,8 @@
 package com.colorcall.callerscreen.custom;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.widget.VideoView;
-
-import com.colorcall.callerscreen.R;
 
 public class FullScreenVideoView extends VideoView {
 
@@ -16,7 +12,7 @@ public class FullScreenVideoView extends VideoView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+       // super.onMeasure(widthMeasureSpec, heightMeasureSpec);
        // setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(VideoView.getDefaultSize(0, widthMeasureSpec), VideoView.getDefaultSize(0, heightMeasureSpec));
     }

@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.custom.FullScreenVideoView;
+import com.colorcall.callerscreen.custom.TextureVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
@@ -53,6 +53,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+
     private void resizeItem(Context context, RelativeLayout layout_item) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -68,12 +69,6 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         distributeData(HawkHelper.getListBackground());
     }
 
-    public void setResumeVideo(int pos) {
-        isResume = true;
-        poss = pos;
-    }
-    boolean isResume;
-    int poss=-1;
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.img_item_thumb_theme)
         ImageView imgThumb;
@@ -92,7 +87,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.layoutBorderItemSelect)
         RelativeLayout layoutBorderItemSelect;
         @BindView(R.id.vdo_background_call)
-        FullScreenVideoView vdo_background_call;
+        TextureVideoView vdo_background_call;
         private Background backgroundSelected;
         private int position;
         private int posRandom;
@@ -100,38 +95,14 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            resizeItem(context, layout_item);
         }
 
         public void onBind(int i) {
-            resizeItem(context, layout_item);
             position = i;
             initInfor();
             backgroundSelected = HawkHelper.getBackgroundSelect();
             Background background = listBg.get(i);
-            Log.e("TAN", "onBind: "+position);
-
-            vdo_background_call.setAlpha(0.0f);
-            vdo_background_call.stopPlayback();
-            vdo_background_call.setVisibility(View.GONE);
-
-
-            if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
-                layoutSelected.setVisibility(View.VISIBLE);
-                layoutBorderItemSelect.setVisibility(View.VISIBLE);
-                imgThumb.setVisibility(View.GONE);
-                vdo_background_call.setVisibility(View.VISIBLE);
-                Log.e("TAN", "onBind:2 ");
-                processVideo(background);
-                startAnimation();
-                if (listener != null) {
-                    listener.onItemThemeSelected(background, position,posRandom);
-                }
-            } else {
-                vdo_background_call.setVisibility(View.GONE);
-                imgThumb.setVisibility(View.VISIBLE);
-                layoutSelected.setVisibility(View.GONE);
-                layoutBorderItemSelect.setVisibility(View.GONE);
-            }
             String pathFile;
             if (!background.getPathThumb().equals("")) {
                 if (background.getPathItem().contains("default")) {
@@ -145,6 +116,24 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         .thumbnail(0.1f)
                         .into(imgThumb);
             }
+
+            if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
+                layoutSelected.setVisibility(View.VISIBLE);
+                layoutBorderItemSelect.setVisibility(View.VISIBLE);
+                imgThumb.setVisibility(View.GONE);
+                vdo_background_call.setVisibility(View.VISIBLE);
+                processVideo(background);
+                startAnimation();
+                if (listener != null) {
+                    listener.onItemThemeSelected(position);
+                }
+            } else {
+                vdo_background_call.setVisibility(View.GONE);
+                imgThumb.setVisibility(View.VISIBLE);
+                layoutSelected.setVisibility(View.GONE);
+                layoutBorderItemSelect.setVisibility(View.GONE);
+                btnAccept.clearAnimation();
+            }
             listener();
         }
         public void startAnimation() {
@@ -153,11 +142,6 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         private void initInfor() {
             posRandom = position%10;
-            Log.e("TAN", "initInfor: "+posRandom);
-          /*  if(poss!=-1){
-                posRandom=poss;
-                poss=-1;
-            }*/
             String pathAvatar = Constant.avatarRandom[posRandom];
             String name = Constant.nameRandom[posRandom];
             String phone = Constant.phoneRandom[posRandom];
@@ -171,13 +155,11 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         private void listener() {
             this.imgThumb.setOnClickListener(v -> {
-                Log.e("TAN", "listener: click");
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
             });
             this.vdo_background_call.setOnClickListener(v -> {
-                Log.e("TAN", "listener: click");
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
@@ -185,52 +167,38 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         private void processVideo(Background background) {
             String sPath;
-            String sPathThumb;
             String uriPath = "android.resource://" + context.getPackageName() + background.getPathItem();
-            if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
-                sPathThumb = "file:///android_asset/" + background.getPathThumb();
-            } else {
-                sPathThumb = background.getPathThumb();
-            }
-            Glide.with(context.getApplicationContext())
-                    .load(sPathThumb)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .thumbnail(0.1f)
-                    .into(imgThumb);
-            Log.e("TAN", "onBind:3 ");
             if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
                 sPath = background.getPathItem();
-                Log.e("TAN", "onBind:4 ");
                 if (!sPath.startsWith("http")) {
                     vdo_background_call.setVideoURI(Uri.parse(sPath));
-                    playVideo(uriPath);
+                    playVideo();
                 }
             } else {
-                Log.e("TAN", "onBind:5 ");
                 vdo_background_call.setVideoURI(Uri.parse(uriPath));
-                playVideo(uriPath);
+                playVideo();
             }
         }
-        private void playVideo(String path) {
-          /*  vdo_background_call.setOnPreparedListener(mediaPlayer -> mediaPlayer.setLooping(true));
-            vdo_background_call.setOnErrorListener((mp, what, extra) -> false);*/
-//            vdo_background_call.a(path, new FullScreenVideoView.d() {
-//
-//            });
-            vdo_background_call.setOnPreparedListener(mediaPlayer -> mediaPlayer.setLooping(true));
-            vdo_background_call.setOnErrorListener((mp, what, extra) -> false);
-            vdo_background_call.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-                @Override
-                public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                    if (what != 3) {
-                        return false;
-                    }
-                    vdo_background_call.setAlpha(1.0f);
-                    return true;
-
-                }
+        private void playVideo() {
+            vdo_background_call.setOnPreparedListener(mediaPlayer -> {
+                mediaPlayer.setLooping(true);
+                vdo_background_call.start();
             });
-            vdo_background_call.start();
+            vdo_background_call.setOnErrorListener((mp, what, extra) -> false);
+            vdo_background_call.setOnInfoListener((mp, what, extra) -> {
+                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            vdo_background_call.setAlpha(1.0f);
+                            imgThumb.setVisibility(View.INVISIBLE);
+                        }
+                    }, 100);
+                    return true;
+                }
+                return false;
+            });
+
         }
     }
 
@@ -238,7 +206,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public interface Listener {
         void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom);
-        void onItemThemeSelected(Background background, int position,int posRandom);
+        void onItemThemeSelected( int position);
     }
 
     @NonNull
@@ -249,12 +217,6 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ((ViewHolder) holder).onBind(position);
-    }
-    public void reload() {
-        notifyItemRangeChanged(0, getItemCount(), 2);
-    }
-    public void reload3() {
-        notifyItemRangeChanged(0, getItemCount(), 3);
     }
 
     @Override

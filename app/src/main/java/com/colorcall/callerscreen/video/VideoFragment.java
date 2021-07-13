@@ -3,20 +3,17 @@ package com.colorcall.callerscreen.video;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.apply.ApplyActivity;
@@ -26,10 +23,10 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyVideo;
+import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.google.gson.Gson;
 
@@ -58,9 +55,7 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     private MainActivity mainActivity;
     private NetworkChangeReceiver networkChangeReceiver;
     private ArrayList<Background> listBg;
-    private Background itemThemeSelected;
     private int positionItemThemeSelected = -1;
-    private int posRandom = -1;
     public VideoFragment(MainActivity activity) {
         this.mainActivity = activity;
     }
@@ -110,7 +105,6 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
                 }
             }
         });
-      //  rcvBgVideo.post(() -> adapter.reload3());
     }
 
     private void onRefreshLayout() {
@@ -144,10 +138,8 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     }
 
     @Override
-    public void onItemThemeSelected(Background background, int position,int posRandom) {
-        itemThemeSelected = background;
+    public void onItemThemeSelected(int position) {
         positionItemThemeSelected = position;
-        this.posRandom = posRandom;
     }
 
     private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
@@ -237,18 +229,6 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     @Override
     public void onResume() {
         super.onResume();
-       /* Log.e("TAN", "onResume:tt "+itemThemeSelected+"--"+positionItemThemeSelected+"--"+HawkHelper.getBackgroundSelect().getPathItem());
-            if (itemThemeSelected != null
-                    && positionItemThemeSelected != -1
-                    & !HawkHelper.getBackgroundSelect().getPathItem().equals(itemThemeSelected.getPathItem())
-                    && adapter != null) {
-                Log.e("TAN", "onResume: video");
-                //adapter.setResumeVideo(posRandom);
-                adapter.notifyItemChanged(positionItemThemeSelected);
-
-                positionItemThemeSelected=-1;
-                itemThemeSelected=null;
-            }*/
         if(adapter!=null){
             adapter.notifyItemChanged(positionItemThemeSelected);
         }

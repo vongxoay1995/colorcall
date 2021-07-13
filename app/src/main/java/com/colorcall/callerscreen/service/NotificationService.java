@@ -1,14 +1,14 @@
 package com.colorcall.callerscreen.service;
+
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.telecom.TelecomManager;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.utils.PhoneUtils;
 
 import java.lang.ref.WeakReference;
@@ -40,20 +40,19 @@ public class NotificationService extends NotificationListenerService {
         super.onCreate();
         serviceWeakReference = new WeakReference<>(this);
     }
+
     @Override
     public void onNotificationPosted(final StatusBarNotification statusBarNotification) {
         super.onNotificationPosted(statusBarNotification);
-        Log.e("TAN",statusBarNotification.getPackageName()+"---");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Log.e("TAN","0" );
-            if (!statusBarNotification.getPackageName().contains("incallui")&&!statusBarNotification.getPackageName().contains("dialer"))return;
+            if (!statusBarNotification.getPackageName().contains("incallui") && !statusBarNotification.getPackageName().contains("dialer"))
+                return;
             String str = "";
             TelecomManager telecomManager = getApplicationContext().getSystemService(TelecomManager.class);
             if (telecomManager != null) {
                 str = telecomManager.getDefaultDialerPackage() + "";
             }
             if (!statusBarNotification.getPackageName().contains("incallui") && !statusBarNotification.getPackageName().equals(str)) {
-                Log.e("TAN","1" );
                 return;
             }
             if (this.isListen) {
@@ -70,7 +69,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
     public void stopListenColorCall() {
-        stopSelf();
+        getApplicationContext().stopService(new Intent(getApplicationContext(), NotificationService.class));
         this.isListen = false;
     }
 

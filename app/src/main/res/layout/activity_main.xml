@@ -141,7 +141,6 @@
         android:layout_marginTop="2dp">
 
     </androidx.viewpager.widget.ViewPager>
-   <!-- -->
     <RelativeLayout
         android:id="@+id/layout_ads"
         android:layout_width="match_parent"
