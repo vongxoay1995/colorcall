@@ -16,7 +16,7 @@
             android:id="@+id/layout_item"
             android:layout_width="@dimen/_87sdp"
             android:layout_height="@dimen/_120sdp">
-            <com.colorcall.callerscreen.custom.TextureVideoView
+            <com.colorcall.callerscreen.custom.TextureViewHandleClick
                 android:id="@+id/vdo_background_call"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

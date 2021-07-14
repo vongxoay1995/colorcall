@@ -30,8 +30,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-public class TextureVideoView  extends TextureView
-        implements MediaController.MediaPlayerControl {
+public class TextureViewHandleClick extends TextureView implements MediaController.MediaPlayerControl {
     private static final String TAG = "TextureVideoView";
 
     // all possible internal states
@@ -73,15 +72,15 @@ public class TextureVideoView  extends TextureView
     private boolean mCanSeekForward;
     private boolean mShouldRequestAudioFocus = true;
 
-    public TextureVideoView(Context context) {
+    public TextureViewHandleClick(Context context) {
         this(context, null);
     }
 
-    public TextureVideoView(Context context, AttributeSet attrs) {
+    public TextureViewHandleClick(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TextureVideoView(Context context, AttributeSet attrs, int defStyle) {
+    public TextureViewHandleClick(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         mVideoWidth = 0;
@@ -584,14 +583,6 @@ public class TextureVideoView  extends TextureView
                 am.abandonAudioFocus(null);
             }
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (isInPlaybackState() && mMediaController != null) {
-            toggleMediaControlsVisiblity();
-        }
-        return false;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.colorcall.callerscreen.mytheme;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -26,7 +27,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.custom.TextureVideoView;
+import com.colorcall.callerscreen.custom.TextureViewHandleClick;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -86,7 +87,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         @BindView(R.id.layoutBorderItemSelect)
         RelativeLayout layoutBorderItemSelect;
         @BindView(R.id.vdo_background_call)
-        TextureVideoView vdo_background_call;
+        TextureViewHandleClick vdo_background_call;
         @BindView(R.id.btnAccept)
         ImageView btnAccept;
         private Background backgroundSelected;
@@ -96,6 +97,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
             ButterKnife.bind(this, itemView);
             resizeItem(context, layout_item);
+            listener();
         }
 
         public void onBind(int i) {
@@ -131,7 +133,6 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 layoutBorderItemSelect.setVisibility(View.GONE);
                 btnAccept.clearAnimation();
             }
-            listener();
         }
         private void initInfor() {
             posRandom = position%10;
@@ -146,15 +147,17 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             txtName.setText(name);
             txtPhone.setText(phone);
         }
+        @SuppressLint("ClickableViewAccessibility")
         private void listener() {
             this.imgThumb.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(),posRandom);
                 }
             });
-            this.vdo_background_call.setOnClickListener(v -> {
+
+            vdo_background_call.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
+                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(),posRandom);
                 }
             });
         }
@@ -215,9 +218,6 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public AddHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-        }
-
-        public void onBind() {
             resizeItemAdd(context, layoutAdd);
             this.layoutAdd.setOnClickListener(v -> {
                 if (listener != null) {
@@ -249,9 +249,6 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case 0:
-                ((AddHolder) holder).onBind();
-                return;
             case 1:
                 ((ViewHolder) holder).onBind(position);
                 return;

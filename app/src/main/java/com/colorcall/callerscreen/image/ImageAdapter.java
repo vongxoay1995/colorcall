@@ -3,7 +3,6 @@ package com.colorcall.callerscreen.image;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,6 +85,8 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            resizeItem(context, layout_item);
+            listener();
         }
 
         public void onBind(int i) {
@@ -106,7 +106,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 layoutBorderItemSelect.setVisibility(View.GONE);
                 btnAccept.clearAnimation();
             }
-            resizeItem(context, layout_item);
+
             String pathFile;
             if (!background.getPathThumb().equals("")) {
                 if (background.getPathItem().contains("default")) {
@@ -120,7 +120,6 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                         .thumbnail(0.1f)
                         .into(imgThumb);
             }
-            listener();
         }
         private void initInfor() {
             posRandom = position%10;

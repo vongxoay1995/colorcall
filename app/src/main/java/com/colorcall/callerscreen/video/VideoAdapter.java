@@ -1,5 +1,6 @@
 package com.colorcall.callerscreen.video;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -24,7 +25,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.custom.TextureVideoView;
+import com.colorcall.callerscreen.custom.TextureViewHandleClick;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
@@ -87,7 +88,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.layoutBorderItemSelect)
         RelativeLayout layoutBorderItemSelect;
         @BindView(R.id.vdo_background_call)
-        TextureVideoView vdo_background_call;
+        TextureViewHandleClick vdo_background_call;
         private Background backgroundSelected;
         private int position;
         private int posRandom;
@@ -96,6 +97,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             super(itemView);
             ButterKnife.bind(this, itemView);
             resizeItem(context, layout_item);
+            listener();
         }
 
         public void onBind(int i) {
@@ -134,14 +136,15 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 layoutBorderItemSelect.setVisibility(View.GONE);
                 btnAccept.clearAnimation();
             }
-            listener();
         }
+
         public void startAnimation() {
             Animation anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call);
             btnAccept.startAnimation(anim8);
         }
+
         private void initInfor() {
-            posRandom = position%10;
+            posRandom = position % 10;
             String pathAvatar = Constant.avatarRandom[posRandom];
             String name = Constant.nameRandom[posRandom];
             String phone = Constant.phoneRandom[posRandom];
@@ -153,6 +156,8 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             txtName.setText(name);
             txtPhone.setText(phone);
         }
+
+        @SuppressLint("ClickableViewAccessibility")
         private void listener() {
             this.imgThumb.setOnClickListener(v -> {
                 if (listener != null) {
@@ -160,11 +165,13 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
             this.vdo_background_call.setOnClickListener(v -> {
+
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
             });
         }
+
         private void processVideo(Background background) {
             String sPath;
             String uriPath = "android.resource://" + context.getPackageName() + background.getPathItem();
@@ -179,6 +186,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 playVideo();
             }
         }
+
         private void playVideo() {
             vdo_background_call.setOnPreparedListener(mediaPlayer -> {
                 mediaPlayer.setLooping(true);
@@ -205,8 +213,9 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     Listener listener;
 
     public interface Listener {
-        void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom);
-        void onItemThemeSelected( int position);
+        void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom);
+
+        void onItemThemeSelected(int position);
     }
 
     @NonNull
