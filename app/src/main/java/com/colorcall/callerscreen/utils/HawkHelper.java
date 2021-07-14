@@ -16,6 +16,8 @@ public class HawkHelper {
     private static String LIST_BACKGROUND = "LIST_BACKGROUND";
     private static String TIME_STAMP = "TIME_STAMP";
     private static String LAST_TIME_SHOW_INTER = "LAST_TIME_SHOW_INTER";
+    private static String COUNT_FOR_DIALOG_RATE = "CountShowRate";
+    private static String CAN_SHOW_DIALOG_RATE = "CAN_SHOW_DIALOG_RATE";
     public static boolean isLoadDataFirst() {
         return Hawk.get(LOAD_DATA_FIRST_FIRST, false);
     }
@@ -66,5 +68,18 @@ public class HawkHelper {
     }
     public static void setLastTimeShowInter(long timeStamp) {
         Hawk.put(LAST_TIME_SHOW_INTER, timeStamp);
+    }
+    public static int getCoutShowRate() {
+        return Hawk.get(COUNT_FOR_DIALOG_RATE, 0);
+    }
+    public static void setCountRate(int value){
+        Hawk.put(COUNT_FOR_DIALOG_RATE, value);
+    }
+    public static boolean isCanShowDiaLogRate() {
+        return Hawk.get(CAN_SHOW_DIALOG_RATE, true);
+    }
+
+    public static void setDialogShowRate(boolean value) {
+        Hawk.put(CAN_SHOW_DIALOG_RATE, value);
     }
 }

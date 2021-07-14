@@ -42,11 +42,11 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.contact.ContactInfor;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.model.ContactRetrieve;
+import com.colorcall.callerscreen.promt.PermissionOverLayActivity;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
@@ -56,8 +56,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
 import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
 public class AppUtils {
@@ -120,8 +118,9 @@ public class AppUtils {
                     Intent intent = null;
                     if (Build.VERSION.SDK_INT >= 23) {
                         intent = new Intent("android.settings.action.MANAGE_OVERLAY_PERMISSION", Uri.parse("package:" + context.getPackageName()));
+                        ((Activity) context).startActivityForResult(intent, Constant.REQUEST_OVERLAY);
+                        PermissionOverLayActivity.open((Activity) context,0);
                     }
-                    ((Activity) context).startActivityForResult(intent, Constant.REQUEST_OVERLAY);
                     dialog.dismiss();
                 });
         alertDialog.show();
@@ -147,6 +146,7 @@ public class AppUtils {
                 .setNegativeButton(R.string.ok, (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                     ((Activity) context).startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS), Constant.REQUEST_NOTIFICATION_ACCESS);
+                    PermissionOverLayActivity.open((Activity) context,1);
                 });
         builder.setCancelable(false);
         AlertDialog getNotifiAcessDialog = builder.create();
@@ -399,7 +399,7 @@ public class AppUtils {
             return null;
         }
         String contactName = "";
-        Log.e("TAN", "getContactNameaaaaa: "+phoneNumber+"--"+cursor.getCount());
+        Log.e("TAN", "getContactNameaaaaa: " + phoneNumber + "--" + cursor.getCount());
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 contactName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
@@ -410,7 +410,7 @@ public class AppUtils {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
             contactId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
         }*/
-        Log.e("TAN", "getContactName: "+contactName+"--"+contactId);
+        Log.e("TAN", "getContactName: " + contactName + "--" + contactId);
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
@@ -508,6 +508,14 @@ public class AppUtils {
         InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputMethodManager != null) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+    public static void hideSoftKeyBoard(Activity activity) {
+        if (activity != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            // verify if the soft keyboard is open
+            if (inputMethodManager.isAcceptingText())
+                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
     }
 }

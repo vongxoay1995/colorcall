@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.service.NotificationService;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
@@ -33,15 +32,16 @@ public class PhoneUtils {
     private static PhoneUtils phoneUtils;
     public Map<String, String> contacts = new HashMap();
     public PhoneListener listener;
-
+    public static Context context;
     public interface PhoneListener {
         void getNumPhone(String str);
     }
 
-    public static PhoneUtils get() {
+    public static PhoneUtils get(Context context) {
         if (phoneUtils == null) {
             phoneUtils = new PhoneUtils();
         }
+        PhoneUtils.context = context;
         return phoneUtils;
     }
 
@@ -53,7 +53,6 @@ public class PhoneUtils {
                 super.run();
                 getListNameContact();
                 NotificationService notificationReceiverService = NotificationService.get();
-                Log.e("TAN", "notificationReceiverService run: "+notificationReceiverService);
                 if (notificationReceiverService != null) {
                     StatusBarNotification inCallNotification = notificationReceiverService.getInCallNotification();
                     if (inCallNotification != null) {
@@ -81,7 +80,7 @@ public class PhoneUtils {
     public void getListNameContact() {
         this.contacts.clear();
         try {
-            Cursor query = ColorCallApplication.get().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, "upper(display_name) ASC");
+            Cursor query = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, "upper(display_name) ASC");
             if (query != null && query.moveToFirst()) {
                 do {
                     if (!query.getString(query.getColumnIndex(ContactsContract.PhoneLookup.CONTACT_ID)).equals("-1")) {
@@ -114,7 +113,7 @@ public class PhoneUtils {
                 return string2;
             }
         }
-        Context createContext = createContext(ColorCallApplication.get(), statusBarNotification);
+        Context createContext = createContext(context, statusBarNotification);
         if (createContext == null) {
             return null;
         }

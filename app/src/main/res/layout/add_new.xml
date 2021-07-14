@@ -12,11 +12,11 @@
         android:id="@+id/img_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_gradient_blue"
+        android:background="@drawable/bg_my_theme"
         android:padding="5dp"
         android:scaleType="centerCrop"
         app:riv_border_color="#333333"
-        app:riv_corner_radius="@dimen/_5sdp"
+        app:riv_corner_radius="@dimen/_3sdp"
         app:riv_mutate_background="true"
         app:riv_tile_mode="repeat"
         />

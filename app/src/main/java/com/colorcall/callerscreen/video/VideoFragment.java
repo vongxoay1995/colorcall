@@ -3,18 +3,17 @@ package com.colorcall.callerscreen.video;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.apply.ApplyActivity;
@@ -24,10 +23,10 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyVideo;
+import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.google.gson.Gson;
 
@@ -56,7 +55,6 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     private MainActivity mainActivity;
     private NetworkChangeReceiver networkChangeReceiver;
     private ArrayList<Background> listBg;
-    private Background itemThemeSelected;
     private int positionItemThemeSelected = -1;
     public VideoFragment(MainActivity activity) {
         this.mainActivity = activity;
@@ -88,6 +86,10 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         rcvBgVideo.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
         adapter = new VideoAdapter(getContext(), listBg);
         adapter.setListener(this);
+        RecyclerView.ItemAnimator animator = rcvBgVideo.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator) {
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
         rcvBgVideo.setAdapter(adapter);
         rcvBgVideo.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -97,6 +99,9 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
                     if (!AppUtils.isNetworkConnected(getContext())) {
                         Boast.makeText(getContext(), getString(R.string.err_network)).show();
                     }
+                }
+                if(newState==0){
+                    adapter.reload();
                 }
             }
         });
@@ -118,27 +123,26 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     }
 
     @Override
-    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete) {
+    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
         InterstitialUtil.getInstance().showInterstitialAds(new InterstitialUtil.AdCloseListener() {
             @Override
             public void onAdClose() {
-                moveApplyTheme(backgrounds, position, delete);
+                moveApplyTheme(backgrounds, position, delete,posRandom);
             }
 
             @Override
             public void onMove() {
-                moveApplyTheme(backgrounds, position, delete);
+                moveApplyTheme(backgrounds, position, delete,posRandom);
             }
         });
     }
 
     @Override
-    public void onItemThemeSelected(Background background, int position) {
-        itemThemeSelected = background;
+    public void onItemThemeSelected(int position) {
         positionItemThemeSelected = position;
     }
 
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete) {
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
         Background background = backgrounds.get(position);
         if (!background.getPathItem().contains("/data/data")) {
             positionDownload = position;
@@ -146,6 +150,7 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         Intent intent = new Intent(getActivity(), ApplyActivity.class);
         intent.putExtra(Constant.FROM_SCREEN, Constant.VIDEO_FRAG_MENT);
         intent.putExtra(Constant.ITEM_POSITION, position);
+        intent.putExtra(Constant.POS_RANDOM, posRandom);
         if (delete) {
             intent.putExtra(SHOW_IMG_DELETE, true);
         }
@@ -224,13 +229,8 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     @Override
     public void onResume() {
         super.onResume();
-            if (itemThemeSelected != null
-                    && positionItemThemeSelected != -1
-                    & !HawkHelper.getBackgroundSelect().getPathItem().equals(itemThemeSelected.getPathItem())
-                    && adapter != null) {
-                adapter.notifyItemChanged(positionItemThemeSelected);
-                positionItemThemeSelected=-1;
-                itemThemeSelected=null;
-            }
+        if(adapter!=null){
+            adapter.notifyItemChanged(positionItemThemeSelected);
+        }
     }
 }

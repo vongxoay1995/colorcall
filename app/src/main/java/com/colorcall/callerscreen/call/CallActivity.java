@@ -6,22 +6,17 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
-import android.telephony.gsm.GsmCellLocation;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -32,13 +27,11 @@ import android.widget.TextView;
 import com.android.internal.telephony.ITelephony;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.signature.ObjectKey;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.custom.CustomVideoView;
+import com.colorcall.callerscreen.custom.FullScreenVideoView;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
@@ -50,8 +43,6 @@ import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -73,7 +64,7 @@ public class CallActivity extends AppCompatActivity {
     @BindView(R.id.btnReject)
     ImageView imgReject;
     @BindView(R.id.vdo_background_call)
-    CustomVideoView vdoBgCall;
+    FullScreenVideoView vdoBgCall;
     private String phoneNumber = "";
     public boolean isDisable;
     private Bitmap bmpAvatar;

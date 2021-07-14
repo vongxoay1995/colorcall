@@ -58,4 +58,26 @@
     <string name="search">Search ...</string>
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">Set theme successfully</string>
+    <string name="titleDrawrOver">To show call screen</string>
+    <string name="titleNotification">To answer the call in call screen and show phone number</string>
+    <string name="prompt_permission_draw_window_msg">Screen Permission</string>
+    <string name="prompt_permission_notification_msg">Notification Access</string>
+    <string name="rateApp">Rate app</string>
+    <string name="allow_permission">Grant permission for Call color flash</string>
+    <string name="go_to_setting">Go setting</string>
+    <string name="rateInGGPlay">Reviews on Google Play</string>
+    <string name="ask_user_feedback">What do you want to improve?</string>
+    <string name="moreVideo">More videos</string>
+    <string name="moreImage">More pictures</string>
+    <string name="leastAds">Less ads</string>
+    <string name="moreAudio">More ringtones</string>
+    <string name="another">Another idea</string>
+    <string name="feedBackForDeveloper">Feedback to the developer</string>
+    <string name="giveStar">Please click the number of stars you give us</string>
+    <string name="very_bad">Very bad</string>
+    <string name="bad">Bad</string>
+    <string name="normal">Normal</string>
+    <string name="good">Good</string>
+    <string name="very_good">Very good</string>
+    <string name="notNow">Not now</string>
 </resources>

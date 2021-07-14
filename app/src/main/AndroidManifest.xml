@@ -47,13 +47,17 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
-        <activity android:name=".contact.SelectContactActivity"
+        <activity
+            android:name=".promt.PermissionOverLayActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleInstance"
+            android:theme="@style/PromptActivityTheme" />
+
+        <activity
+            android:name=".contact.SelectContactActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
-
-        </activity>
-
+            android:windowSoftInputMode="adjustResize" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -114,7 +118,8 @@
 
         <activity
             android:name=".main.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
+
         </activity>
         <activity
             android:name=".setting.SettingActivity"

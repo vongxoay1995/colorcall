@@ -58,4 +58,26 @@
     <string name="search">Rechercher ...</string>
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">Définir le thème avec succès</string>
+    <string name="titleDrawrOver">Pour afficher l\'écran d\'appel</string>
+    <string name="titleNotification">Pour répondre à l\'appel dans l\'écran d\'appel et afficher le numéro de téléphone</string>
+    <string name="prompt_permission_draw_window_msg">Autorisation d\'écran</string>
+    <string name="prompt_permission_notification_msg">Accès aux notifications</string>
+    <string name="rateApp">Application de taux</string>
+    <string name="allow_permission">Accorder l\'autorisation pour le flash couleur d\'appel</string>
+    <string name="go_to_setting">Aller au réglage</string>
+    <string name="rateInGGPlay">Avis sur Google Play</string>
+    <string name="ask_user_feedback">Que voulez-vous améliorer ?</string>
+    <string name="moreVideo">Plus de vidéos</string>
+    <string name="moreImage">Plus d\'images</string>
+    <string name="leastAds">Moins d\'annonces</string>
+    <string name="moreAudio">Plus de sonneries</string>
+    <string name="another">Une autre idée</string>
+    <string name="feedBackForDeveloper">Retour au développeur</string>
+    <string name="giveStar">Veuillez cliquer sur le nombre d\'étoiles que vous nous donnez</string>
+    <string name="very_bad">Très mauvais</string>
+    <string name="bad">Mal</string>
+    <string name="normal">Normale</string>
+    <string name="good">Bien</string>
+    <string name="very_good">Très bon</string>
+    <string name="notNow">Pas maintenant</string>
 </resources>

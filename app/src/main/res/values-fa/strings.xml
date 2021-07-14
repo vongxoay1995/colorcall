@@ -56,4 +56,26 @@
     <string name="search">جستجو کردن...</string>
     <string name="selectAll">Select all</string>
     <string name="set_theme_success">طرح زمینه با موفقیت</string>
+    <string name="titleDrawrOver">برای نمایش صفحه تماس</string>
+    <string name="titleNotification">برای پاسخگویی به تماس در صفحه تماس و نشان دادن شماره تلفن</string>
+    <string name="prompt_permission_draw_window_msg">مجوز صفحه</string>
+    <string name="prompt_permission_notification_msg">دسترسی به اعلان</string>
+    <string name="rateApp">برنامه رتبه بندی</string>
+    <string name="allow_permission">اجازه تماس فلاش رنگی را بدهید</string>
+    <string name="go_to_setting">برو تنظیم</string>
+    <string name="rateInGGPlay">نظرات در Google Play</string>
+    <string name="ask_user_feedback">می خواهید چه چیزی را بهبود ببخشید؟</string>
+    <string name="moreVideo">فیلم های بیشتر</string>
+    <string name="moreImage">عکس های بیشتر</string>
+    <string name="leastAds">تبلیغات کمتر</string>
+    <string name="moreAudio">آهنگ های زنگ بیشتر</string>
+    <string name="another">ایده دیگری</string>
+    <string name="feedBackForDeveloper">بازخورد به توسعه دهنده</string>
+    <string name="giveStar">لطفاً روی تعداد ستاره هایی که به ما می دهید کلیک کنید</string>
+    <string name="very_bad">خیلی بد</string>
+    <string name="bad">بد</string>
+    <string name="normal">طبیعی</string>
+    <string name="good">خوب</string>
+    <string name="very_good">خیلی خوب</string>
+    <string name="notNow">الان نه</string>
 </resources>

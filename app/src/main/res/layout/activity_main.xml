@@ -91,16 +91,56 @@
         app:tabSelectedTextColor="#2196F3"
         app:tabTextColor="@color/colorTextApp"
         android:layout_below="@id/layout_head"/>
+    <RelativeLayout
+        android:id="@+id/laypoutPermission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        android:background="@drawable/bg_radius_blue"
+        android:layout_below="@id/tab_layout"
+        android:padding="@dimen/_7sdp"
+        android:visibility="gone"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@mipmap/ic_launcher"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/allow_permission"
+            android:textColor="@color/white"
+            android:layout_toEndOf="@id/imgIcon"
+            android:ellipsize="end"
+            android:paddingStart="@dimen/_3sdp"
+            android:paddingEnd="@dimen/_3sdp"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:layout_toStartOf="@id/goto_setting"/>
+        <TextView
+            android:id="@+id/goto_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/go_to_setting"
+            android:textColor="@color/black"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bg_radius_white"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:paddingTop="@dimen/_2sdp"
+            android:paddingBottom="@dimen/_2sdp"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pageBgColor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tab_layout"
+        android:layout_below="@id/laypoutPermission"
         android:layout_above="@id/layout_ads"
         android:layout_marginTop="2dp">
 
     </androidx.viewpager.widget.ViewPager>
-   <!-- -->
     <RelativeLayout
         android:id="@+id/layout_ads"
         android:layout_width="match_parent"
