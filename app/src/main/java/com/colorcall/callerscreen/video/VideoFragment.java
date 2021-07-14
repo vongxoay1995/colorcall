@@ -100,8 +100,8 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
                         Boast.makeText(getContext(), getString(R.string.err_network)).show();
                     }
                 }
-                if(newState==0&&positionItemThemeSelected!=-1){
-                    adapter.notifyItemChanged(positionItemThemeSelected);
+                if(newState==0){
+                    adapter.reload();
                 }
             }
         });

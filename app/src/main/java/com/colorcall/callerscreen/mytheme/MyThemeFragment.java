@@ -31,7 +31,6 @@ import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.utils.AppUtils;
-import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.FileUtils;
 import com.google.gson.Gson;
 
@@ -89,13 +88,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!AppUtils.isNetworkConnected(getContext())) {
-                        Boast.makeText(getContext(), getString(R.string.err_network)).show();
-                    }
-                }
-                if(newState==0&&positionItemThemeSelected!=-1){
-                    adapter.notifyItemChanged(positionItemThemeSelected);
+                if(newState==0){
+                    adapter.reload();
                 }
             }
         });

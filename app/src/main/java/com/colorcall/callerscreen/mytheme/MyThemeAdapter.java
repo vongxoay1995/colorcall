@@ -127,6 +127,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     listener.onItemThemeSelected(position);
                 }
             } else {
+                vdo_background_call.stopPlayback();
                 vdo_background_call.setVisibility(View.GONE);
                 imgThumb.setVisibility(View.VISIBLE);
                 layoutSelected.setVisibility(View.GONE);
@@ -193,7 +194,10 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 mediaPlayer.setLooping(true);
                 mediaPlayer.setVolume(0.0f, 0.0f);
             });
-            vdo_background_call.setOnErrorListener((mp, what, extra) -> false);
+            vdo_background_call.setOnErrorListener((mp, what, extra) -> {
+                vdo_background_call.stopPlayback();
+                return false;
+            });
             vdo_background_call.setOnInfoListener((mp, what, extra) -> {
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                     new Handler().postDelayed(() -> {
@@ -272,5 +276,9 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public void setListener(Listener listener2) {
         this.listener = listener2;
+    }
+
+    public void reload(){
+        notifyItemRangeChanged(0, getItemCount(), 4);
     }
 }

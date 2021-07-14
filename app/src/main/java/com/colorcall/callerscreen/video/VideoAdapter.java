@@ -130,6 +130,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     listener.onItemThemeSelected(position);
                 }
             } else {
+                vdo_background_call.stopPlayback();
                 vdo_background_call.setVisibility(View.GONE);
                 imgThumb.setVisibility(View.VISIBLE);
                 layoutSelected.setVisibility(View.GONE);
@@ -192,7 +193,10 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 mediaPlayer.setLooping(true);
                 vdo_background_call.start();
             });
-            vdo_background_call.setOnErrorListener((mp, what, extra) -> false);
+            vdo_background_call.setOnErrorListener((mp, what, extra) -> {
+                vdo_background_call.stopPlayback();
+                return false;
+            });
             vdo_background_call.setOnInfoListener((mp, what, extra) -> {
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                     new Handler().postDelayed(new Runnable() {
@@ -235,6 +239,10 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void setListener(Listener listener) {
         this.listener = listener;
+    }
+
+    public void reload(){
+        notifyItemRangeChanged(0, getItemCount(), 4);
     }
 
 }
