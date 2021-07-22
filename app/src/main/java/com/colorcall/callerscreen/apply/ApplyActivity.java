@@ -149,6 +149,22 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         downloadTask.execute(url, newPathItem);
     }
 
+    public boolean checkShowInter() {
+        if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean disableShowRate() {
+        int count = HawkHelper.getCoutShowRate();
+        if (count <= 30) {
+            return count != 2 && count != 7 && count != 12;
+        } else {
+            return (count - 30) % 30 != 0;
+        }
+    }
+
     private void loadAds() {
         mInterstitialAd = new PublisherInterstitialAd(this);
         String ID_ADS = "ca-app-pub-3222539657172474/5724276494";
@@ -369,16 +385,20 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     ProgressDialog mProgressDialog;
 
     private void applyBgCall() {
-        mProgressDialog = ProgressDialog.show(this, "",
-                getString(R.string.applying), true);
-        mProgressDialog.show();
-        loadAds();
-    }
-
-    public void applyTheme() {
         int countRate = HawkHelper.getCoutShowRate();
         countRate++;
         HawkHelper.setCountRate(countRate);
+        if (checkShowInter()) {
+            mProgressDialog = ProgressDialog.show(this, "",
+                    getString(R.string.applying), true);
+            mProgressDialog.show();
+            loadAds();
+        } else {
+            applyTheme();
+        }
+    }
+
+    public void applyTheme() {
         HawkHelper.setBackgroundSelect(background);
         HawkHelper.setStateColorCall(true);
         Toast.makeText(getBaseContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();

@@ -266,16 +266,18 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     public void showDialogRate() {
         DialogRate dialogRate = new DialogRate(this, this);
         dialogRate.show();
+        analystic.trackEvent(ManagerEvent.rateShow());
     }
 
     @Override
-    public void onRate() {
+    public void onRate(int rate) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ReviewManager reviewManager = ReviewManagerFactory.create(this);
             Task<ReviewInfo> request = reviewManager.requestReviewFlow();
             request.addOnSuccessListener(result -> {
                 Task<Void> flow = reviewManager.launchReviewFlow(this, result);
                 flow.addOnSuccessListener(result1 -> {
+                    analystic.trackEvent(ManagerEvent.rateReview(rate));
                     HawkHelper.setDialogShowRate(false);
                 }).addOnFailureListener(e -> {
                 });
@@ -287,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Override
     public void onFeedBack(String content, int rate) {
+        analystic.trackEvent(ManagerEvent.rateFeedBack());
         HawkHelper.setDialogShowRate(false);
         Intent intent = new Intent(Intent.ACTION_SENDTO)
                 .setData(new Uri.Builder().scheme("mailto").build())

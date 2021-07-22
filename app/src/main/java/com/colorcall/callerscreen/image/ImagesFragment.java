@@ -3,18 +3,16 @@ package com.colorcall.callerscreen.image;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.apply.ApplyActivity;
@@ -24,9 +22,7 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyImage;
-import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.model.SignMainImage;
-import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -73,6 +69,9 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constant.ACTION_LOAD_COMPLETE_THEME);
         mIntentFilter.addAction(Constant.INTENT_APPLY_THEME);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         return view;
     }
 
@@ -147,6 +146,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
 
     @Override
     public void onDestroy() {
+        EventBus.getDefault().unregister(this);
         if (networkChangeReceiver != null) {
             networkChangeReceiver.unregisterReceiver(getContext());
         }
@@ -167,7 +167,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     }
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onSignMainApply(SignMainImage signMainImage) {
-        if (signMainImage.isRefresh()) {
+        if (signMainImage.isSwiped()) {
             init();
         } else {
             swRefresh.setRefreshing(false);
@@ -189,18 +189,6 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
                 break;
         }
         EventBus.getDefault().removeStickyEvent(signApplyImage);
-    }
-
-    @Override
-    public void onStart() {
-        EventBus.getDefault().register(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
     }
 
     @Override

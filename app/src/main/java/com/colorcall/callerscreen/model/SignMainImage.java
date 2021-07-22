@@ -1,27 +1,27 @@
 package com.colorcall.callerscreen.model;
 
 public class SignMainImage {
-    private boolean isloadComplete;
-    private boolean isRefresh;
+    private boolean isCompleted;
+    private boolean isSwiped;
 
-    public SignMainImage(boolean isloadComplete, boolean isRefresh) {
-        this.isloadComplete = isloadComplete;
-        this.isRefresh = isRefresh;
+    public SignMainImage(boolean isCompleted, boolean isRefresh) {
+        this.isCompleted = isCompleted;
+        this.isSwiped = isRefresh;
     }
 
-    public boolean isIsloadComplete() {
-        return isloadComplete;
+    public boolean isCompleted() {
+        return isCompleted;
     }
 
-    public void setIsloadComplete(boolean isloadComplete) {
-        this.isloadComplete = isloadComplete;
+    public void setCompleted(boolean completed) {
+        this.isCompleted = completed;
     }
 
-    public boolean isRefresh() {
-        return isRefresh;
+    public boolean isSwiped() {
+        return isSwiped;
     }
 
-    public void setRefresh(boolean refresh) {
-        isRefresh = refresh;
+    public void setSwiped(boolean swiped) {
+        isSwiped = swiped;
     }
 }

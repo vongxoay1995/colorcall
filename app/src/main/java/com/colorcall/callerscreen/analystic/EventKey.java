@@ -49,4 +49,9 @@ public interface EventKey {
     String CALL_ANDROID_SMALL_P = "CALL_ANDROID_SMALL_P";
     String CALL_ANDROID_BIGGER_P = "CALL_ANDROID_BIGGER_P";
     String APPLY_ITEM = "APPLY_ITEM";
+
+    String RATE_SHOW = "RATE_SHOW";
+    String RATE_NOT_NOW = "RATE_NOT_NOW";
+    String RATE_FEED_BACK = "RATE_FEED_BACK";
+    String RATE_REVIEW = "RATE_REVIEW";
 }

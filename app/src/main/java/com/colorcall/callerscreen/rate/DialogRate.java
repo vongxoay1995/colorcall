@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.colorcall.callerscreen.R;
+import com.colorcall.callerscreen.analystic.Analystic;
+import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.custom.RatingBar;
 import com.colorcall.callerscreen.utils.AppUtils;
 
@@ -54,9 +56,11 @@ public class DialogRate extends Dialog {
     private String content = "FeedBack Call Color ";
     private RelativeLayout.LayoutParams layoutParams;
     private Activity activity;
+    private Analystic analystic;
     public DialogRate(Activity context, DialogRateListener dialogRateListener) {
         super(context);
         activity = context;
+        analystic= Analystic.getInstance(activity);
         this.dialogRateListener = dialogRateListener;
         init(context);
     }
@@ -134,9 +138,10 @@ public class DialogRate extends Dialog {
             case R.id.txtRate:
                 dismiss();
                 AppUtils.hideKeyboard(edtAnotherFeedback);
-                dialogRateListener.onRate();
+                dialogRateListener.onRate(rate);
                 break;
             case R.id.btnNotNow:
+                analystic.trackEvent(ManagerEvent.rateNotNow());
                 AppUtils.hideKeyboard(edtAnotherFeedback);
                 dismiss();
                 break;
@@ -222,7 +227,7 @@ public class DialogRate extends Dialog {
     }
 
     public interface DialogRateListener {
-        void onRate();
+        void onRate(int rate);
         void onFeedBack(String content, int rate);
     }
 }

@@ -1,16 +1,10 @@
 package com.colorcall.callerscreen.contact;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
@@ -18,33 +12,32 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
 import com.colorcall.callerscreen.database.DataManager;
-import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppUtils;
-import com.colorcall.callerscreen.utils.BannerAdsUtils;
-import com.google.common.collect.Table;
+import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.PermistionCallListener;
+import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.gson.Gson;
 
 import org.greenrobot.greendao.query.DeleteQuery;
-import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -55,9 +48,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.unity3d.services.core.properties.ClientProperties.getActivity;
-
-public class SelectContactActivity extends AppCompatActivity{
+public class SelectContactActivity extends AppCompatActivity implements PermistionCallListener {
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
     @BindView(R.id.btnBack)
@@ -79,6 +70,11 @@ public class SelectContactActivity extends AppCompatActivity{
     private boolean isSearchShow;
     private ContactAdapter adapter;
     private Background background;
+
+    @Override
+    public void onHasCallPermistion() {
+        setTheme();
+    }
 
 
     public class EditTextListener implements TextWatcher {
@@ -151,7 +147,7 @@ public class SelectContactActivity extends AppCompatActivity{
                 showSearch();
                 break;
             case R.id.layoutSet:
-                setTheme();
+                PermistionUtils.checkPermissionCall(this, this);
                 break;
             case R.id.imgClear:
                 edtSearch.setText("");
@@ -221,6 +217,7 @@ public class SelectContactActivity extends AppCompatActivity{
         rcvContact.setAdapter(adapter);
     }
     public void setTheme() {
+        HawkHelper.setStateColorCall(true);
         if (adapter != null) {
             List<String> listContactIdSelected = adapter.getContactSelected();
             List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
@@ -254,6 +251,33 @@ public class SelectContactActivity extends AppCompatActivity{
             }
             Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
             finish();
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constant.REQUEST_OVERLAY) {
+            if (AppUtils.canDrawOverlays(this)) {
+                if (!AppUtils.checkNotificationAccessSettings(this)) {
+                    AppUtils.showNotificationAccess(this);
+                }
+            }
+        } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
+            if (AppUtils.checkNotificationAccessSettings(this)) {
+                setTheme();
+            }
+        }
+    }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
+            if (AppUtils.canDrawOverlays(this)) {
+                if (!AppUtils.checkNotificationAccessSettings(this)) {
+                    AppUtils.showNotificationAccess(this);
+                }
+            } else {
+                AppUtils.checkDrawOverlayApp(this);
+            }
         }
     }
 }

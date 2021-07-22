@@ -3,7 +3,6 @@ package com.colorcall.callerscreen.mytheme;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
@@ -196,6 +195,8 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             });
             vdo_background_call.setOnErrorListener((mp, what, extra) -> {
                 vdo_background_call.stopPlayback();
+                vdo_background_call.setVisibility(View.GONE);
+                imgThumb.setVisibility(View.VISIBLE);
                 return false;
             });
             vdo_background_call.setOnInfoListener((mp, what, extra) -> {
@@ -206,7 +207,6 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     }, 100);
                     return true;
                 }
-               vdo_background_call.setBackground(new ColorDrawable(0));
                 return false;
             });
             vdo_background_call.start();
