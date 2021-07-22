@@ -166,7 +166,6 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
             this.vdo_background_call.setOnClickListener(v -> {
-
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
@@ -195,6 +194,8 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             });
             vdo_background_call.setOnErrorListener((mp, what, extra) -> {
                 vdo_background_call.stopPlayback();
+                vdo_background_call.setVisibility(View.GONE);
+                imgThumb.setVisibility(View.VISIBLE);
                 return false;
             });
             vdo_background_call.setOnInfoListener((mp, what, extra) -> {
@@ -243,6 +244,9 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void reload(){
         notifyItemRangeChanged(0, getItemCount(), 4);
+    }
+    public void reloadAll(){
+        notifyItemRangeChanged(0, getItemCount(), 2);
     }
 
 }

@@ -135,6 +135,21 @@ public class ManagerEvent {
     public static Event settingShareAppClick(){
         return new Event(EventKey.SETTING_SHAREAPP_CLICKED,new Bundle());
     }
+    //rate
+    public static Event rateShow(){
+        return new Event(EventKey.RATE_SHOW,new Bundle());
+    }
+    public static Event rateFeedBack(){
+        return new Event(EventKey.RATE_FEED_BACK,new Bundle());
+    }
+    public static Event rateNotNow(){
+        return new Event(EventKey.RATE_NOT_NOW,new Bundle());
+    }
+    public static Event rateReview(int value){
+        Bundle bundle = new Bundle();
+        bundle.putInt("rate",value);
+        return new Event(EventKey.RATE_REVIEW,bundle);
+    }
 
     //call screen show
     public static Event callshow(){

@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.video;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,9 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         mIntentFilter.addAction(Constant.ACTION_LOAD_COMPLETE_THEME);
         mIntentFilter.addAction(Constant.INTENT_DOWNLOAD_COMPLETE_THEME);
         mIntentFilter.addAction(Constant.INTENT_APPLY_THEME);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         return view;
     }
 
@@ -161,6 +165,7 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
 
     @Override
     public void onDestroy() {
+        EventBus.getDefault().unregister(this);
         if (networkChangeReceiver != null) {
             networkChangeReceiver.unregisterReceiver(getContext());
         }
@@ -214,23 +219,12 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         }
         EventBus.getDefault().removeStickyEvent(signApplyVideo);
     }
-    @Override
-    public void onStart() {
-        EventBus.getDefault().register(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
 
     @Override
     public void onResume() {
         super.onResume();
         if(adapter!=null){
-            adapter.notifyItemChanged(positionItemThemeSelected);
+            adapter.reloadAll();
         }
     }
 }

@@ -68,6 +68,9 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
           pathUriImage   = savedInstanceState.getString(Constant.CAPTURE_IMAGE_PATH);
         }
         init();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         return view;
     }
 
@@ -246,6 +249,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
     @Override
     public void onDestroy() {
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -261,18 +265,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 break;
         }
         EventBus.getDefault().removeStickyEvent(signApplyMyTheme);
-    }
-
-    @Override
-    public void onStart() {
-        EventBus.getDefault().register(this);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
     }
 
     @Override

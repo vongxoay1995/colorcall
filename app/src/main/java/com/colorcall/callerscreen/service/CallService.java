@@ -34,6 +34,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.TextureVideoView;
 import com.colorcall.callerscreen.database.Background;
@@ -56,12 +57,12 @@ public class CallService extends Service {
     private String phoneNumber = "";
     private View viewCall;
     private TextureVideoView vdoBgCall;
-    private ImageView  imgAccept, imgReject,imgExit;
+    private ImageView imgAccept, imgReject, imgExit;
     private CircleImageView imgAvatar;
     private DynamicImageView imgBgCall;
     private TextView txtName, txtPhoneNumber;
     private int typeBgCall;
-    private Background backgroundSelect,back_ground_contact;
+    private Background backgroundSelect, back_ground_contact;
     private TelephonyManager telephonyManager;
     private ITelephony telephonyService;
     private static final int ID_NOTIFICATION = 1;
@@ -72,7 +73,7 @@ public class CallService extends Service {
     private LocalBroadcastManager mLocalBroadcastManager;
     private String name;
     public WindowManager.LayoutParams mLayoutParams;
-    private String contactId="";
+    private String contactId = "";
     private Contact mContact;
     private LayoutInflater inflater;
 
@@ -86,8 +87,7 @@ public class CallService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(ID_NOTIFICATION, NotificationUtil.initNotificationAndroidQ(this));
-        }else
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForeground(ID_NOTIFICATION, NotificationUtil.initNotificationAndroidO(this));
         }
         try {
@@ -105,11 +105,14 @@ public class CallService extends Service {
                 phoneNumber = " ";
             }
             phoneNumber = phoneNumber.replaceAll(" ", "").replaceAll("-", "");
-            showViewCallColor();
-//            Intent intent2 = new Intent(getApplicationContext(), CallActivity.class);
-//            intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
-//            startActivity(intent2);
+            if (HawkHelper.isScreenCall() == 1) {
+                showViewCallColor();
+            } else {
+                Intent intent2 = new Intent(getApplicationContext(), CallActivity.class);
+                intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
+                startActivity(intent2);
+            }
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -134,7 +137,7 @@ public class CallService extends Service {
 
     public void showViewCallColor() {
         backgroundSelect = HawkHelper.getBackgroundSelect();
-        try{
+        try {
             if (backgroundSelect != null) {
                 initLayoutColor();
                 if (inflater != null) {
@@ -148,7 +151,7 @@ public class CallService extends Service {
                 imgExit = viewCall.findViewById(R.id.imgExit);
                 Glide.with(this).load(R.drawable.ic_exit).into(imgExit);
                 imgExit.setOnClickListener(v -> {
-                    if (viewCall != null){
+                    if (viewCall != null) {
                         viewCall.setVisibility(View.GONE);
                     }
                     removeUI();
@@ -184,11 +187,11 @@ public class CallService extends Service {
                 List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
                         .where(ContactDao.Properties.Contact_id.eq(contactId))
                         .list();
-                if(listQueryContactID.size()>0){
+                if (listQueryContactID.size() > 0) {
                     mContact = listQueryContactID.get(0);
-                    back_ground_contact = new Gson().fromJson(mContact.getBackground(),Background.class);
+                    back_ground_contact = new Gson().fromJson(mContact.getBackground(), Background.class);
                 }
-                if(back_ground_contact!=null){
+                if (back_ground_contact != null) {
                     backgroundSelect = back_ground_contact;
                     typeBgCall = back_ground_contact.getType();
                 }
@@ -201,6 +204,7 @@ public class CallService extends Service {
             stopCallService();
         }
     }
+
     private void initLayoutColor() {
         int LAYOUT_TYPE;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -209,7 +213,7 @@ public class CallService extends Service {
             LAYOUT_TYPE = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
         }
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        mLayoutParams =  new WindowManager.LayoutParams();
+        mLayoutParams = new WindowManager.LayoutParams();
 //            final WindowManager.LayoutParams mLayoutParams = new WindowManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 //                    ViewGroup.LayoutParams.MATCH_PARENT, LAYOUT_TYPE, 40371457,
 //                    /*WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -219,7 +223,7 @@ public class CallService extends Service {
 //                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD,*/
 //                    PixelFormat.TRANSLUCENT);
         mLayoutParams.type = LAYOUT_TYPE;
-        mLayoutParams.format=-2;
+        mLayoutParams.format = -2;
         mLayoutParams.flags = 524584;
         mLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         mLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -246,6 +250,7 @@ public class CallService extends Service {
             }
         }
     };
+
     private void checkTypeCall(int typeBgCall) {
         switch (typeBgCall) {
             case Constant.TYPE_VIDEO:
@@ -356,7 +361,8 @@ public class CallService extends Service {
                 .into(imgBgCall);
         vdoBgCall.setVisibility(View.GONE);
     }
-    public void stopCallService(){
-            getApplicationContext().stopService(new Intent(getApplicationContext(), CallService.class));
+
+    public void stopCallService() {
+        getApplicationContext().stopService(new Intent(getApplicationContext(), CallService.class));
     }
 }

@@ -1,9 +1,5 @@
 package com.colorcall.callerscreen.call;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,6 +19,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.internal.telephony.ITelephony;
 import com.bumptech.glide.Glide;
@@ -252,6 +252,7 @@ public class CallActivity extends AppCompatActivity {
         });
         vdoBgCall.setOnPreparedListener(mp -> {
             mp.setLooping(true);
+            mp.setVolume(0.0f, 0.0f);
             vdoBgCall.start();
         });
     }
