@@ -18,6 +18,8 @@ public class HawkHelper {
     private static String LAST_TIME_SHOW_INTER = "LAST_TIME_SHOW_INTER";
     private static String COUNT_FOR_DIALOG_RATE = "CountShowRate";
     private static String CAN_SHOW_DIALOG_RATE = "CAN_SHOW_DIALOG_RATE";
+    private static String COUNT_FOR_DIALOG_UPDATE = "COUNT_FOR_DIALOG_UPDATE";
+    private static String CAN_SHOW_DIALOG_UPDATE = "CAN_SHOW_DIALOG_UPDATE";
     private static String IS_SCREEN_CALL = "IS_SCREEN_CALL";
     private static String IS_AB = "IS_AB";
     public static boolean isLoadDataFirst() {
@@ -99,5 +101,19 @@ public class HawkHelper {
 
     public static boolean isFirstAB() {
         return Hawk.get(IS_AB, false);
+    }
+
+    public static int getCountShowDialogUpdate() {
+        return Hawk.get(COUNT_FOR_DIALOG_UPDATE, 0);
+    }
+    public static void setCountShowDialogUpdate(int value){
+        Hawk.put(COUNT_FOR_DIALOG_UPDATE, value);
+    }
+    public static boolean isCanShowDiaLogUpdate() {
+        return Hawk.get(CAN_SHOW_DIALOG_UPDATE, true);
+    }
+
+    public static void setDialogShowUpdate(boolean value) {
+        Hawk.put(CAN_SHOW_DIALOG_UPDATE, value);
     }
 }

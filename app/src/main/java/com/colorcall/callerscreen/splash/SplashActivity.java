@@ -20,6 +20,7 @@ import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.main.MainActivity;
+import com.colorcall.callerscreen.update.UpdateManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -27,6 +28,7 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.play.core.install.model.AppUpdateType;
 
 import java.util.concurrent.TimeUnit;
 
@@ -54,6 +56,9 @@ public class SplashActivity extends AppCompatActivity {
     private boolean fullAdsLoaded = false;
     private boolean endTimeTick;
     private String idInter;
+    private UpdateManager mUpdateManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +73,29 @@ public class SplashActivity extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .thumbnail(0.1f)
                 .into(imgBgSplash);
+        mUpdateManager = UpdateManager.Builder(this);
         analystic = Analystic.getInstance(this);
+        //int countUpdate = HawkHelper.getCountShowDialogUpdate();
+       // countUpdate++;
+       // HawkHelper.setCountRate(countUpdate);
+       /* if (countUpdate == 1 || countUpdate == 3 || countUpdate == 55) {
+            callFlexibleUpdate();
+        } else {
+            checkShowAds();
+        }*/
+       /* mUpdateManager.addFlexibleUpdateDownloadListener(new UpdateManager.FlexibleUpdateDownloadListener() {
+            @Override
+            public void onDownloadProgress(final long bytesDownloaded, final long totalBytes) {
+                Log.e("TAN", "onDownloadProgress: "+ bytesDownloaded + " / " + totalBytes);
+            }
+        });*/
+        checkShowAds();
+    }
+    public void callFlexibleUpdate() {
+        // Start a Flexible Update
+        mUpdateManager.mode(AppUpdateType.FLEXIBLE).start();
+    }
+    public void checkShowAds() {
         if (AppUtils.isNetworkConnected(this)) {
             loadAds();
             startTimeLeft();
@@ -78,24 +105,24 @@ public class SplashActivity extends AppCompatActivity {
                 public void run() {
                     skip();
                 }
-            },3000);
+            }, 3000);
         }
     }
 
     public void loadAds() {
         if (BuildConfig.DEBUG) {
-           idInter = Constant.ID_INTER_TEST;
+            idInter = Constant.ID_INTER_TEST;
         } else {
             idInter = ID_ADS;
         }
         AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(this,idInter, adRequest,
+        InterstitialAd.load(this, idInter, adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         fullAdsLoaded = true;
                         mInterstitialAd = interstitialAd;
-                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {
                                 skip();
@@ -132,7 +159,7 @@ public class SplashActivity extends AppCompatActivity {
     private boolean allowAdsShow;
 
     private void showAds() {
-        if (mInterstitialAd != null&& allowAdsShow) {
+        if (mInterstitialAd != null && allowAdsShow) {
             mInterstitialAd.show(this);
         }
     }
@@ -217,4 +244,5 @@ public class SplashActivity extends AppCompatActivity {
         }
         super.onBackPressed();
     }
+
 }
