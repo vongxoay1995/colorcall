@@ -4,13 +4,11 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,12 +25,13 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionFlashListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.formats.NativeAdOptions;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,7 +66,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     SwitchCompat swFlash;
     @BindView(R.id.layoutFlash)
     RelativeLayout layoutFlash;
-    private UnifiedNativeAd nativeAd;
+    private NativeAd nativeAd;
     private Analystic analystic;
     private boolean isFlashState, isCallState;
     private boolean isResultDenyPermission, isResultDenyCallPermission;
@@ -92,37 +91,28 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         } else {
             idGG = ID_ADS_GG;
         }
-        AdLoader adLoader = new AdLoader.Builder(this, idGG)
-                .forUnifiedNativeAd(unifiedNativeAd -> {
-                    if (nativeAd != null) {
+        AdLoader.Builder builder = new AdLoader.Builder(this, idGG)
+                .forNativeAd(nativeAd -> {
+                    boolean isDestroyed = isDestroyed();
+                    if (isDestroyed || isFinishing() || isChangingConfigurations()) {
                         nativeAd.destroy();
+                        return;
                     }
-                    nativeAd = unifiedNativeAd;
-                    FrameLayout frameLayout =
-                            findViewById(R.id.fl_adplaceholder);
-                    UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater()
-                            .inflate(R.layout.ad_unified, null);
-                    AppUtils.populateUnifiedNativeAdView(unifiedNativeAd, adView);
+                    // otherwise you will have a memory leak.
+                    if (SettingActivity.this.nativeAd != null) {
+                        SettingActivity.this.nativeAd.destroy();
+                    }
+                    SettingActivity.this.nativeAd = nativeAd;
+                    FrameLayout frameLayout = findViewById(R.id.fl_adplaceholder);
+                    NativeAdView adView =
+                            (NativeAdView) getLayoutInflater().inflate(R.layout.ad_unified, null);
+                    AppUtils.populateNativeAdView(nativeAd, adView);
                     frameLayout.removeAllViews();
                     frameLayout.addView(adView);
-                })
-                .withAdListener(new AdListener() {
-                    @Override
-                    public void onAdFailedToLoad(int errorCode) {
-                        // Handle the failure by logging, altering the UI, and so on.
-                    }
-                })
-                .withNativeAdOptions(new NativeAdOptions.Builder()
-                        // Methods in the NativeAdOptions.Builder class can be
-                        // used here to specify individual options settings.
-                        .build())
-                .build();
-        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
-        String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
-        for (String testDevice : ggTestDevices) {
-            adRequestBuilder.addTestDevice(testDevice);
-        }
-        adLoader.loadAd(adRequestBuilder.build());
+                });
+        new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("A2287B6C4425EEEAD0688598D4825BAE"));
+        AdLoader adLoader = builder.build();
+        adLoader.loadAd(new AdRequest.Builder().build());
     }
 
     @Override
@@ -153,7 +143,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         });
     }
 
-    @OnClick({R.id.btnBack, R.id.layoutShareApp, R.id.layoutPolicy, R.id.layoutCheckUpdate, R.id.layoutRateApp,R.id.btnAds})
+    @OnClick({R.id.btnBack, R.id.layoutShareApp, R.id.layoutPolicy, R.id.layoutCheckUpdate, R.id.layoutRateApp, R.id.btnAds})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnBack:
@@ -194,6 +184,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 return;
         }
     }
+
     private void rateApp() {
         final String appPackageName = getPackageName();
         try {
@@ -208,8 +199,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
             Intent intentUpdate = new Intent(Intent.ACTION_VIEW);
             intentUpdate.setData(Uri.parse(url));
             startActivity(intentUpdate);
-        }
-        catch (ActivityNotFoundException anfe) {
+        } catch (ActivityNotFoundException anfe) {
             anfe.printStackTrace();
         }
     }

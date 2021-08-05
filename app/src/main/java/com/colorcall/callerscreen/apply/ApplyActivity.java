@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -47,10 +48,12 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
-import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
-import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -95,7 +98,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     TextView txtPercentDownloading;
     private String folderApp;
     private Background background;
-    private PublisherInterstitialAd mInterstitialAd;
+    private InterstitialAd mInterstitialAd;
     private Analystic analystic;
     private boolean allowAdsShow;
     private String newPathItem;
@@ -105,6 +108,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private Dialog dialog;
     private BannerAdsUtils bannerAdsUtils;
     private int posRandom;
+    private String idInter;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,55 +170,52 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     }
 
     private void loadAds() {
-        mInterstitialAd = new PublisherInterstitialAd(this);
         String ID_ADS = "ca-app-pub-3222539657172474/5724276494";
         if (BuildConfig.DEBUG) {
-            mInterstitialAd.setAdUnitId(Constant.ID_INTER_TEST);
+            idInter = Constant.ID_INTER_TEST;
         } else {
-            mInterstitialAd.setAdUnitId(ID_ADS);
+            idInter = ID_ADS;
         }
-        PublisherAdRequest.Builder adRequestBuilder = new PublisherAdRequest.Builder();
-        String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
-        for (String testDevice : ggTestDevices) {
-            adRequestBuilder.addTestDevice(testDevice);
-        }
-        mInterstitialAd.loadAd(adRequestBuilder.build());
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                if (allowAdsShow) {
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this, idInter, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                applyTheme();
+                                Log.e("TAG", "The ad was dismissed.");
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when fullscreen content failed to show.
+                                Log.d("TAG", "The ad failed to show.");
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                mInterstitialAd = null;
+                                Log.e("TAG", "The ad was shown.");
+                            }
+                        });
+                        if (allowAdsShow) {
+                            mInterstitialAd.show(ApplyActivity.this);
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
-                applyTheme();
-                super.onAdFailedToLoad(loadAdError);
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-
-            }
-
-            @Override
-            public void onAdClosed() {
-                applyTheme();
-            }
-        });
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        mInterstitialAd = null;
+                        applyTheme();
+                    }
+                });
     }
 
     private void initInfor() {
@@ -439,8 +440,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     }
 
     public void showAds() {
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(ApplyActivity.this);
         }
     }
 
@@ -505,9 +506,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     @Override
     public void onBackPressed() {
-        if (mInterstitialAd == null || !mInterstitialAd.isLoading()) {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     @Override

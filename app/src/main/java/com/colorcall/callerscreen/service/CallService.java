@@ -184,6 +184,7 @@ public class CallService extends Service {
                                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                 mWindowManager.addView(viewCall, mLayoutParams);
+                analystic.trackEvent(ManagerEvent.callshow());
                 List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
                         .where(ContactDao.Properties.Contact_id.eq(contactId))
                         .list();

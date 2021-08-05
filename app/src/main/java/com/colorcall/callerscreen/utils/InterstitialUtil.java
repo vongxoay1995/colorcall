@@ -1,21 +1,19 @@
 package com.colorcall.callerscreen.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.colorcall.callerscreen.BuildConfig;
-import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
-import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class InterstitialUtil {
@@ -26,6 +24,7 @@ public class InterstitialUtil {
     private boolean isReload;
     private long limitTime = 30;
     private Context mContext;
+    private String idInter;
 
     public interface AdCloseListener {
         void onAdClose();
@@ -42,46 +41,21 @@ public class InterstitialUtil {
 
     public void init(Context context) {
         mContext = context;
-        interstitialAd = new InterstitialAd(context);
         getLimitTime();
         if (BuildConfig.DEBUG) {
-            interstitialAd.setAdUnitId(Constant.ID_INTER_TEST);
+            idInter = Constant.ID_INTER_TEST;
         } else {
-            interstitialAd.setAdUnitId(id_ads);
+            idInter = id_ads;
         }
-        interstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-            }
-
-            @Override
-            public void onAdClosed() {
-                super.onAdClosed();
-                if (adCloseListener != null) {
-                    adCloseListener.onAdClose();
-                }
-                loadInterstitial(mContext);
-            }
-
-            @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-                if (!isReload) {
-                    isReload = true;
-                    loadInterstitial(mContext);
-                }
-            }
-        });
         loadInterstitial(mContext);
     }
 
-    public void showInterstitialAds(AdCloseListener adCloseListener) {
+    public void showInterstitialAds(Activity activity,AdCloseListener adCloseListener) {
         if (canShowInterstitial()) {
             this.adCloseListener = adCloseListener;
             if (System.currentTimeMillis() - HawkHelper.getLastTimeShowInter() > limitTime * 1000) {
                 isReload = false;
-                interstitialAd.show();
+                interstitialAd.show(activity);
                 HawkHelper.setLastTimeShowInter(System.currentTimeMillis());
             } else {
                 adCloseListener.onMove();
@@ -103,17 +77,53 @@ public class InterstitialUtil {
     }
 
     private void loadInterstitial(Context context) {
-        if (interstitialAd != null && !interstitialAd.isLoading() && !interstitialAd.isLoaded()) {
-            AdRequest.Builder adRequest = new AdRequest.Builder();
-            String[] ggTestDevices = context.getResources().getStringArray(R.array.google_test_device);
-            for (String testDevice : ggTestDevices) {
-                adRequest.addTestDevice(testDevice);
-            }
-            interstitialAd.loadAd(adRequest.build());
-        }
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(context, idInter, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        InterstitialUtil.this.interstitialAd = interstitialAd;
+                        InterstitialUtil.this.interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                if (adCloseListener != null) {
+                                    adCloseListener.onAdClose();
+                                }
+                                loadInterstitial(mContext);
+                                // Called when fullscreen content is dismissed.
+                                Log.e("TAG", "The ad was dismissed.");
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when fullscreen content failed to show.
+                                Log.d("TAG", "The ad failed to show.");
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                InterstitialUtil.this.interstitialAd = null;
+                                Log.e("TAG", "The ad was shown.");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        interstitialAd = null;
+                        // Handle the error
+                        if (!isReload) {
+                            isReload = true;
+                            loadInterstitial(mContext);
+                        }
+                    }
+                });
     }
 
     public boolean canShowInterstitial() {
-        return interstitialAd != null && interstitialAd.isLoaded();
+        return interstitialAd != null;
     }
 }

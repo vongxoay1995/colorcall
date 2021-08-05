@@ -103,7 +103,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
 
     @Override
     public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
-        InterstitialUtil.getInstance().showInterstitialAds(new InterstitialUtil.AdCloseListener() {
+        InterstitialUtil.getInstance().showInterstitialAds(getActivity(),new InterstitialUtil.AdCloseListener() {
             @Override
             public void onAdClose() {
                 moveApplyTheme(backgrounds, position, delete,posRandom);

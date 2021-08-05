@@ -3,11 +3,13 @@ package com.colorcall.callerscreen.splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -19,10 +21,12 @@ import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.utils.AppUtils;
-import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +53,7 @@ public class SplashActivity extends AppCompatActivity {
     private Disposable disposable;
     private boolean fullAdsLoaded = false;
     private boolean endTimeTick;
-
+    private String idInter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,58 +83,57 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public void loadAds() {
-        mInterstitialAd = new InterstitialAd(this);
         if (BuildConfig.DEBUG) {
-            mInterstitialAd.setAdUnitId(Constant.ID_INTER_TEST);
+           idInter = Constant.ID_INTER_TEST;
         } else {
-            mInterstitialAd.setAdUnitId(ID_ADS);
+            idInter = ID_ADS;
         }
-        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
-        String[] ggTestDevices = getResources().getStringArray(R.array.google_test_device);
-        for (String testDevice : ggTestDevices) {
-            adRequestBuilder.addTestDevice(testDevice);
-        }
-        mInterstitialAd.loadAd(adRequestBuilder.build());
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                fullAdsLoaded = true;
-            }
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this,idInter, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        fullAdsLoaded = true;
+                        mInterstitialAd = interstitialAd;
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                skip();
+                                // Called when fullscreen content is dismissed.
+                                Log.e("TAG", "The ad was dismissed.");
+                            }
 
-            @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
-                fullAdsLoaded = false;
-                super.onAdFailedToLoad(loadAdError);
-            }
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when fullscreen content failed to show.
+                                Log.d("TAG", "The ad failed to show.");
+                            }
 
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                mInterstitialAd = null;
+                                Log.e("TAG", "The ad was shown.");
+                            }
+                        });
+                    }
 
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-
-            }
-
-            @Override
-            public void onAdClosed() {
-                skip();
-            }
-        });
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        fullAdsLoaded = false;
+                        mInterstitialAd = null;
+                    }
+                });
     }
 
     private boolean allowAdsShow;
 
     private void showAds() {
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded() && allowAdsShow) {
-            mInterstitialAd.show();
+        if (mInterstitialAd != null&& allowAdsShow) {
+            mInterstitialAd.show(this);
         }
     }
 

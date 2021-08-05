@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.application;
 
 import android.annotation.SuppressLint;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
@@ -10,7 +9,6 @@ import androidx.multidex.MultiDexApplication;
 import com.applovin.sdk.AppLovinPrivacySettings;
 import com.applovin.sdk.AppLovinSdk;
 import com.colorcall.callerscreen.BuildConfig;
-import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -18,22 +16,15 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.orhanobut.hawk.Hawk;
-
-import org.greenrobot.greendao.annotation.NotNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 public class ColorCallApplication extends MultiDexApplication {
-    private FirebaseRemoteConfig firebaseRemoteConfig;
+    //private FirebaseRemoteConfig firebaseRemoteConfig;
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
@@ -49,9 +40,9 @@ public class ColorCallApplication extends MultiDexApplication {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
         }
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        if(!HawkHelper.isFirstAB()){
+       /* if(!HawkHelper.isFirstAB()){
             configFirebaseRemote();
-        }
+        }*/
     }
     @SuppressLint("StaticFieldLeak")
     private void loadData() {
@@ -63,7 +54,7 @@ public class ColorCallApplication extends MultiDexApplication {
             });
         }
     }
-    private void configFirebaseRemote() {
+    /*private void configFirebaseRemote() {
         long cacheExpiration;
         if (BuildConfig.DEBUG) {
             cacheExpiration = 0;
@@ -75,8 +66,8 @@ public class ColorCallApplication extends MultiDexApplication {
         firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         firebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
         fetchDataFromFirebase();
-    }
-    private void fetchDataFromFirebase() {
+    }*/
+   /* private void fetchDataFromFirebase() {
         firebaseRemoteConfig.fetch().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -122,5 +113,5 @@ public class ColorCallApplication extends MultiDexApplication {
             HawkHelper.setScreenCall(valueNewUx);
             HawkHelper.setIsFirstAB(true);
         }
-    }
+    }*/
 }

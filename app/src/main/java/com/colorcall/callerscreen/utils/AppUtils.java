@@ -47,9 +47,9 @@ import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.colorcall.callerscreen.promt.PermissionOverLayActivity;
-import com.google.android.gms.ads.formats.MediaView;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.nativead.MediaView;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 
 import java.io.File;
 import java.io.IOException;
@@ -258,7 +258,7 @@ public class AppUtils {
         return Build.VERSION.SDK_INT < 23 || AppUtils.canDrawOverlays(context);
     }
 
-    public static void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
+    public static void populateNativeAdView(NativeAd nativeAd, NativeAdView adView) {
         // Set the media view.
         adView.setMediaView((MediaView) adView.findViewById(R.id.ad_media));
 
@@ -272,11 +272,11 @@ public class AppUtils {
         adView.setStoreView(adView.findViewById(R.id.ad_store));
         adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
 
-        // The headline and mediaContent are guaranteed to be in every UnifiedNativeAd.
+        // The headline and mediaContent are guaranteed to be in every NativeAd.
         ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
         adView.getMediaView().setMediaContent(nativeAd.getMediaContent());
 
-        // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
+        // These assets aren't guaranteed to be in every NativeAd, so it's important to
         // check before trying to display them.
         if (nativeAd.getBody() == null) {
             adView.getBodyView().setVisibility(View.INVISIBLE);
@@ -328,15 +328,10 @@ public class AppUtils {
             ((TextView) adView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
             adView.getAdvertiserView().setVisibility(View.VISIBLE);
         }
-
         // This method tells the Google Mobile Ads SDK that you have finished populating your
         // native ad view with this native ad.
         adView.setNativeAd(nativeAd);
-
-        // Get the video controller for the ad. One will always be provided, even if the ad doesn't
-        // have a video asset.
     }
-
     public static Bitmap getContactPhoto(Context context, String number) {
         Bitmap photo = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.user);

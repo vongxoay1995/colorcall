@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private boolean showLayoutAds;
     private Fragment imageFrag, videoFrag, mythemeFrag;
     ViewPagerMainAdapter mAdapter;
-    private ReviewManager reviewManager;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
