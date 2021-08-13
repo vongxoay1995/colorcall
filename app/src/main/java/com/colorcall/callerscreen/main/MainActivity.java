@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         }
         disableToolTipTextTab();
         KeyboardVisibilityEvent.setEventListener(this, this);
+        //MediationTestSuite.launch(MainActivity.this);
     }
 
     private void moveStore() {

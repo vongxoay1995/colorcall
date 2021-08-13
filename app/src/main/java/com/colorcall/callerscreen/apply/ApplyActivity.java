@@ -1,5 +1,6 @@
 package com.colorcall.callerscreen.apply;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -399,6 +400,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void applyTheme() {
         HawkHelper.setBackgroundSelect(background);
         HawkHelper.setStateColorCall(true);

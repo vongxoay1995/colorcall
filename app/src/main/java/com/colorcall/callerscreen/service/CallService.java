@@ -117,10 +117,10 @@ public class CallService extends Service {
         }
         return super.onStartCommand(intent, flags, startId);
     }
-
     private void checkDevice() {
         if (Build.MANUFACTURER != null&&(Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")
-                || Build.MANUFACTURER.equalsIgnoreCase("realme"))) {
+                || Build.MANUFACTURER.equalsIgnoreCase("realme"))
+                ||Build.MANUFACTURER.contains("INFINIX")) {
             showViewCallColor();
         }else{
             Intent intent2 = new Intent(getApplicationContext(), CallActivity.class);

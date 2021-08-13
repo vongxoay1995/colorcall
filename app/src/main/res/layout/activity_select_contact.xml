@@ -5,20 +5,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".contact.SelectContactActivity">
-        <ImageView
-            android:id="@+id/imgBG"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <RelativeLayout
+            android:id="@+id/layout_ads"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:background="@drawable/border_ads"
+            android:gravity="center"
+            android:padding="1dp"
+            android:visibility="visible">
+
+        </RelativeLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layoutHeader">
+        <ScrollView
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/imgBG"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                />
+        </ScrollView>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#b3000000" />
+            android:background="#b3000000"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="false">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcvContact"
                 android:layout_width="match_parent"
@@ -80,7 +108,8 @@
                     android:layout_marginEnd="8dp"
                     android:layout_toEndOf="@id/btnBack"
                     android:background="@drawable/bg_edit_search_contact"
-                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_alignParentBottom="true"
                     android:visibility="gone">
 
                     <EditText
@@ -126,7 +155,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="#1E1E1E"
                 android:orientation="horizontal"
                 android:padding="@dimen/_10sdp">
 
@@ -153,4 +181,5 @@
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

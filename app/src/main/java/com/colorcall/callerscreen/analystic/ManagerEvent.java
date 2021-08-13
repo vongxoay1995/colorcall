@@ -151,6 +151,17 @@ public class ManagerEvent {
         return new Event(EventKey.RATE_REVIEW,bundle);
     }
 
+    //contact
+    public static Event contactOpen(){
+        return new Event(EventKey.SELECT_CONTACT_OPEN,new Bundle());
+    }
+    public static Event contactSet(){
+        return new Event(EventKey.SELECT_CONTACT_SET,new Bundle());
+    }
+    public static Event contactSearch(){
+        return new Event(EventKey.SELECT_CONTACT_SEARCH,new Bundle());
+    }
+
     //call screen show
     public static Event callshow(){
         return new Event(EventKey.CALL_SHOW,new Bundle());
