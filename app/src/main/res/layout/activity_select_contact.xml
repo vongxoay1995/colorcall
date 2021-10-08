@@ -5,28 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".contact.SelectContactActivity">
-    <LinearLayout
-        android:id="@+id/layoutHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:id="@+id/layout_ads"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:background="@drawable/border_ads"
-            android:gravity="center"
-            android:padding="1dp"
-            android:visibility="visible">
-
-        </RelativeLayout>
-    </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/layoutHeader">
+        android:layout_height="match_parent">
         <ScrollView
             android:id="@+id/scroll"
             android:layout_width="match_parent"
@@ -156,7 +137,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:orientation="horizontal"
-                android:padding="@dimen/_10sdp">
+                android:padding="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_15sdp">
 
                 <RelativeLayout
                     android:id="@+id/layoutSet"

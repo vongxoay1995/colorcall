@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         super.onResume();
     }
 
-    @OnClick({R.id.btnMenu})
+    @OnClick({R.id.btnSetting})
     public void onViewClicked() {
         analystic.trackEvent(ManagerEvent.mainSlideClick());
         startActivity(new Intent(this, SettingActivity.class));
@@ -164,13 +163,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
-        String idGG;
-        if (BuildConfig.DEBUG) {
-            idGG = Constant.ID_TEST_BANNER_ADMOD;
-        } else {
-            idGG = ID_ADS_GG;
-        }
-        bannerAdsUtils.setIdAds(idGG);
+        bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.showMediationBannerAds();
     }
@@ -312,9 +305,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onSignShowRate(SignApplyMain signApplyMain) {
-        if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
+     /*   if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
            showDialogRate();
-        }
+        }*/
         EventBus.getDefault().removeStickyEvent(signApplyMain);
     }
 

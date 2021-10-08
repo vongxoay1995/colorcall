@@ -55,6 +55,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     private ArrayList<Background> listBg;
     private Background itemThemeSelected;
     private int positionItemThemeSelected = -1;
+    private int countAds;
     public ImagesFragment(MainActivity activity) {
         this.mainActivity = activity;
     }
@@ -103,20 +104,21 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
 
     @Override
     public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
-        InterstitialUtil.getInstance().showInterstitialAds(getActivity(),new InterstitialUtil.AdCloseListener() {
-            @Override
-            public void onAdClose() {
-                moveApplyTheme(backgrounds, position, delete,posRandom);
-            }
-
-            @Override
-            public void onMove() {
-                moveApplyTheme(backgrounds, position, delete,posRandom);
-            }
-        });
+        if (!AppUtils.allowViewClick())
+            return;
+        if(countAds%3!=0){
+            this.countAds++;
+            moveApplyTheme(backgrounds, position, delete,posRandom,true);
+        }else {
+            this.countAds++;
+            InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
+                this.countAds = 1;
+                moveApplyTheme(backgrounds, position, delete,posRandom,false);
+            });
+        }
     }
 
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom,boolean isAllowShowAds) {
         Background background = backgrounds.get(position);
         Intent intent = new Intent(getActivity(), ApplyActivity.class);
         if (delete) {
@@ -124,6 +126,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
         }
         intent.putExtra(Constant.FROM_SCREEN, Constant.IMAGES_FRAG_MENT);
         intent.putExtra(Constant.POS_RANDOM,posRandom);
+        intent.putExtra(Constant.IS_ALLOW_SHOW_ADS, isAllowShowAds);
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
         getActivity().startActivity(intent);

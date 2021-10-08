@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.widget.RelativeLayout;
 
 import com.applovin.mediation.AppLovinExtras;
 import com.applovin.mediation.ApplovinAdapter;
+import com.colorcall.callerscreen.BuildConfig;
+import com.colorcall.callerscreen.constan.Constant;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
@@ -24,6 +27,11 @@ public class BannerAdsUtils {
         this.layoutBannerAds = viewContainer;
     }
     public void setIdAds(String idGG) {
+        if (BuildConfig.DEBUG) {
+            this.idGG = Constant.ID_TEST_BANNER_ADMOD;
+        } else {
+            this.idGG = idGG;
+        }
         this.idGG = idGG;
     }
     public void setAdListener(AdListener adListener){
@@ -45,6 +53,7 @@ public class BannerAdsUtils {
         adviewGoogle.setAdListener(new com.google.android.gms.ads.AdListener() {
             @Override
             public void onAdFailedToLoad(LoadAdError loadAdError) {
+                Log.e("TAN", "onAdFailedToLoad: "+loadAdError.getMessage());
                 if(adListener!=null){
                     adListener.onAdFailed();
                 }

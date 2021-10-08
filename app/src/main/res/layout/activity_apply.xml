@@ -5,29 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/layoutHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:id="@+id/layout_ads"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:background="@drawable/border_ads"
-            android:gravity="center"
-            android:padding="1dp"
-            android:visibility="visible">
-
-        </RelativeLayout>
-    </LinearLayout>
     <RelativeLayout
         android:id="@+id/layoutContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layoutHeader">
+        android:layout_above="@id/layoutHeader">
         <ImageView
             android:id="@+id/img_background_call"
             android:layout_width="match_parent"
@@ -166,7 +148,8 @@
                     android:paddingLeft="@dimen/_15sdp"
                     android:paddingTop="@dimen/_25sdp"
                     android:paddingRight="@dimen/_15sdp"
-                    android:paddingBottom="@dimen/_15sdp">
+                    android:paddingBottom="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_15sdp">
 
                     <RelativeLayout
                         android:id="@+id/layoutApply"
@@ -211,4 +194,19 @@
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <RelativeLayout
+            android:id="@+id/layout_ads"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:background="@drawable/border_ads"
+            android:gravity="center"
+            android:padding="1dp"
+            android:visibility="visible" />
+    </LinearLayout>
 </RelativeLayout>

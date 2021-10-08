@@ -55,7 +55,7 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     private MainActivity mainActivity;
     private NetworkChangeReceiver networkChangeReceiver;
     private ArrayList<Background> listBg;
-    private int positionItemThemeSelected = -1;
+    private int countAds;
     public VideoFragment(MainActivity activity) {
         this.mainActivity = activity;
     }
@@ -127,25 +127,25 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
 
     @Override
     public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
-        InterstitialUtil.getInstance().showInterstitialAds(getActivity(),new InterstitialUtil.AdCloseListener() {
-            @Override
-            public void onAdClose() {
-                moveApplyTheme(backgrounds, position, delete,posRandom);
-            }
-
-            @Override
-            public void onMove() {
-                moveApplyTheme(backgrounds, position, delete,posRandom);
-            }
-        });
+        if (!AppUtils.allowViewClick())
+            return;
+        if(countAds%3!=0){
+            this.countAds++;
+            moveApplyTheme(backgrounds, position, delete,posRandom,true);
+        }else {
+            this.countAds++;
+            InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
+                this.countAds = 1;
+                moveApplyTheme(backgrounds, position, delete,posRandom,false);
+            });
+        }
     }
 
     @Override
     public void onItemThemeSelected(int position) {
-        positionItemThemeSelected = position;
     }
 
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom,boolean isAllowShowAds) {
         Background background = backgrounds.get(position);
         if (!background.getPathItem().contains("/data/data")) {
             positionDownload = position;
@@ -154,6 +154,7 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         intent.putExtra(Constant.FROM_SCREEN, Constant.VIDEO_FRAG_MENT);
         intent.putExtra(Constant.ITEM_POSITION, position);
         intent.putExtra(Constant.POS_RANDOM, posRandom);
+        intent.putExtra(Constant.IS_ALLOW_SHOW_ADS, isAllowShowAds);
         if (delete) {
             intent.putExtra(SHOW_IMG_DELETE, true);
         }

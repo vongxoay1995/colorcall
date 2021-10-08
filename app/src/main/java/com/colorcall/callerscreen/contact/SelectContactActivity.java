@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -29,7 +28,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
@@ -39,7 +37,6 @@ import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.AppUtils;
-import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
@@ -56,7 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SelectContactActivity extends AppCompatActivity implements PermistionCallListener, com.colorcall.callerscreen.utils.AdListener {
+public class SelectContactActivity extends AppCompatActivity implements PermistionCallListener {
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
     @BindView(R.id.btnBack)
@@ -78,26 +75,10 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     private boolean isSearchShow;
     private ContactAdapter adapter;
     private Background background;
-    private BannerAdsUtils bannerAdsUtils;
-    @BindView(R.id.layoutHeader)
-    LinearLayout layoutHeader;
-    @BindView(R.id.layout_ads)
-    RelativeLayout layoutAds;
     private Analystic analystic;
     @Override
     public void onHasCallPermistion() {
         setTheme();
-    }
-
-    @Override
-    public void onAdloaded() {
-
-    }
-
-    @Override
-    public void onAdFailed() {
-        layoutHeader.setVisibility(View.GONE);
-        setTranslucent();
     }
 
     public void setTranslucent() {
@@ -134,22 +115,8 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         setContentView(R.layout.activity_select_contact);
         ButterKnife.bind(this);
         init();
+        setTranslucent();
         analystic= Analystic.getInstance(this);
-        bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
-        loadAdsBanner();
-    }
-
-    private void loadAdsBanner() {
-        String ID_ADS_GG = "ca-app-pub-3222539657172474/1724363528";
-        String idGG;
-        if (BuildConfig.DEBUG) {
-            idGG = Constant.ID_TEST_BANNER_ADMOD;
-        } else {
-            idGG = ID_ADS_GG;
-        }
-        bannerAdsUtils.setIdAds(idGG);
-        bannerAdsUtils.setAdListener(this);
-        bannerAdsUtils.showMediationBannerAds();
     }
 
     public void showSearch() {

@@ -14,7 +14,6 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 
 public class InterstitialUtil {
     private String id_ads = "ca-app-pub-3222539657172474/2357386636";
@@ -22,14 +21,11 @@ public class InterstitialUtil {
     private InterstitialAd interstitialAd;
     private AdCloseListener adCloseListener;
     private boolean isReload;
-    private long limitTime = 30;
     private Context mContext;
     private String idInter;
 
     public interface AdCloseListener {
         void onAdClose();
-
-        void onMove();
     }
 
     public static InterstitialUtil getInstance() {
@@ -41,39 +37,23 @@ public class InterstitialUtil {
 
     public void init(Context context) {
         mContext = context;
-        getLimitTime();
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
         } else {
             idInter = id_ads;
-        }
+        } idInter = id_ads;
         loadInterstitial(mContext);
     }
 
     public void showInterstitialAds(Activity activity,AdCloseListener adCloseListener) {
+        this.adCloseListener = adCloseListener;
         if (canShowInterstitial()) {
-            this.adCloseListener = adCloseListener;
-            if (System.currentTimeMillis() - HawkHelper.getLastTimeShowInter() > limitTime * 1000) {
-                isReload = false;
-                interstitialAd.show(activity);
-                HawkHelper.setLastTimeShowInter(System.currentTimeMillis());
-            } else {
-                adCloseListener.onMove();
-            }
+            isReload = false;
+            interstitialAd.show(activity);
         } else {
             loadInterstitial(mContext);
             adCloseListener.onAdClose();
         }
-    }
-
-    private void getLimitTime() {
-        FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
-        config.fetchAndActivate()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        limitTime = FirebaseRemoteConfig.getInstance().getLong("interstitial_interval");
-                    }
-                });
     }
 
     private void loadInterstitial(Context context) {
@@ -96,8 +76,11 @@ public class InterstitialUtil {
 
                             @Override
                             public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                if (adCloseListener != null) {
+                                    adCloseListener.onAdClose();
+                                }
                                 // Called when fullscreen content failed to show.
-                                Log.d("TAG", "The ad failed to show.");
+                                Log.e("TAG", "The ad failed to show.");
                             }
 
                             @Override

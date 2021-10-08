@@ -91,6 +91,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         } else {
             idGG = ID_ADS_GG;
         }
+        idGG = ID_ADS_GG;
         AdLoader.Builder builder = new AdLoader.Builder(this, idGG)
                 .forNativeAd(nativeAd -> {
                     boolean isDestroyed = isDestroyed();

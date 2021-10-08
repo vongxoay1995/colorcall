@@ -46,5 +46,6 @@ public interface Constant {
     String [] avatarRandom = {"avar1.webp","avar2.webp","avar3.webp","avar4.webp","avar5.webp","avar6.webp","avar7.webp","avar8.webp","avar9.webp","avar91.webp"};
     String TYPE_PROMPT = "TYPE_PROMPT";
     String POS_RANDOM = "pos_random";
+    String IS_ALLOW_SHOW_ADS = "IS_ALLOW_SHOW_ADS";
     int UPDATE_REQUEST_CODE = 96 ;
 }

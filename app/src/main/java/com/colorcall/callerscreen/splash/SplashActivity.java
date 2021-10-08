@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -100,12 +99,7 @@ public class SplashActivity extends AppCompatActivity {
             loadAds();
             startTimeLeft();
         } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    skip();
-                }
-            }, 3000);
+            skip();
         }
     }
 
@@ -115,6 +109,7 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             idInter = ID_ADS;
         }
+        idInter = ID_ADS;
         AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd.load(this, idInter, adRequest,
                 new InterstitialAdLoadCallback() {
@@ -133,6 +128,7 @@ public class SplashActivity extends AppCompatActivity {
                             @Override
                             public void onAdFailedToShowFullScreenContent(AdError adError) {
                                 // Called when fullscreen content failed to show.
+                                skip();
                                 Log.d("TAG", "The ad failed to show.");
                             }
 
@@ -216,9 +212,15 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
+        super.onPause();
         allowAdsShow = false;
+    }
+
+    @Override
+    protected void onStop() {
         super.onStop();
+        allowAdsShow = false;
     }
 
     @OnClick(R.id.btnSplash)

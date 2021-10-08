@@ -17,6 +17,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -512,5 +513,14 @@ public class AppUtils {
             if (inputMethodManager.isAcceptingText())
                 inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
+    }
+    private static long mLastClickTime = 0;
+
+    public static boolean allowViewClick(){
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+            return false;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
+        return true;
     }
 }

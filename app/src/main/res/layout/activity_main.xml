@@ -13,27 +13,15 @@
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorHeaderMain"
         android:gravity="center">
-
-        <ImageView
-            android:id="@+id/btnMenu"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/_12sdp"
-            app:srcCompat="@drawable/ic_menu"
-            tools:ignore="VectorDrawableCompat" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/layoutBottom"
-            android:layout_toEndOf="@+id/btnMenu"
             android:text="@string/app_name"
             app:tabBackground="@color/transparent"
             android:textAllCaps="true"
             android:fontFamily="@font/roboto_light"
             android:textColor="@color/white"
+            android:layout_marginStart="@dimen/_17sdp"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold" />
 
@@ -44,38 +32,16 @@
             android:layout_alignParentEnd="true"
             android:orientation="horizontal"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_7sdp"
             android:weightSum="3"
             android:gravity="center">
             <ImageView
-                android:id="@+id/btnVips"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="@dimen/_12sdp"
-                app:srcCompat="@drawable/ic_vip"
-                android:visibility="invisible"
+                android:id="@+id/btnSetting"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_10sdp"
+                app:srcCompat="@drawable/ic_setting"
                 tools:ignore="VectorDrawableCompat" />
-
-
-            <ImageView
-                android:id="@+id/btnGift"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="@dimen/_12sdp"
-                app:srcCompat="@drawable/ic_ad"
-                android:visibility="invisible"
-                tools:ignore="VectorDrawableCompat" />
-
-            <ImageView
-                android:id="@+id/btnCamera"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="@dimen/_12sdp"
-                app:srcCompat="@drawable/ic_cam"
-                tools:ignore="VectorDrawableCompat"
-                android:visibility="gone"/>
         </LinearLayout>
     </RelativeLayout>
     <com.google.android.material.tabs.TabLayout

@@ -16,9 +16,11 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.orhanobut.hawk.Hawk;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,7 +30,11 @@ public class ColorCallApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
-        MobileAds.initialize(this, initializationStatus -> {});
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+        RequestConfiguration configuration =
+                new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("A2287B6C4425EEEAD0688598D4825BAE")).build();
+        MobileAds.setRequestConfiguration(configuration);
         Hawk.init(this).build();
         loadData();
         DataManager.getInstance().init(this);

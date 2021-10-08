@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.apply;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,7 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.Event;
@@ -40,21 +37,16 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.model.SignApplyImage;
-import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -67,7 +59,8 @@ import butterknife.OnClick;
 
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
 
-public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener, DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener {
+public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener,
+        DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener{
     @BindView(R.id.img_background_call)
     ImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
@@ -110,11 +103,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private BannerAdsUtils bannerAdsUtils;
     private int posRandom;
     private String idInter;
-
+    private boolean isAllowAdsShow;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
+        setTranslucent();
         posRandom = getIntent().getIntExtra(Constant.POS_RANDOM, 0);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
@@ -122,18 +116,14 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         folderApp = Constant.LINK_VIDEO_CACHE;
         checkInforTheme();
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
+        isAllowAdsShow = getIntent().getBooleanExtra(Constant.IS_ALLOW_SHOW_ADS, false);
+        InterstitialApply.getInstance().init(this);
         loadAdsBanner();
     }
 
     private void loadAdsBanner() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/9030792883";
-        String idGG;
-        if (BuildConfig.DEBUG) {
-            idGG = Constant.ID_TEST_BANNER_ADMOD;
-        } else {
-            idGG = ID_ADS_GG;
-        }
-        bannerAdsUtils.setIdAds(idGG);
+        bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.showMediationBannerAds();
     }
@@ -168,55 +158,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         } else {
             return (count - 30) % 30 != 0;
         }
-    }
-
-    private void loadAds() {
-        String ID_ADS = "ca-app-pub-3222539657172474/5724276494";
-        if (BuildConfig.DEBUG) {
-            idInter = Constant.ID_INTER_TEST;
-        } else {
-            idInter = ID_ADS;
-        }
-        AdRequest adRequest = new AdRequest.Builder().build();
-        InterstitialAd.load(this, idInter, adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        mInterstitialAd = interstitialAd;
-                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                applyTheme();
-                                Log.e("TAG", "The ad was dismissed.");
-                            }
-
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                // Called when fullscreen content failed to show.
-                                Log.d("TAG", "The ad failed to show.");
-                            }
-
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                // Called when fullscreen content is shown.
-                                // Make sure to set your reference to null so you don't
-                                // show it a second time.
-                                mInterstitialAd = null;
-                                Log.e("TAG", "The ad was shown.");
-                            }
-                        });
-                        if (allowAdsShow) {
-                            mInterstitialAd.show(ApplyActivity.this);
-                        }
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error
-                        mInterstitialAd = null;
-                        applyTheme();
-                    }
-                });
     }
 
     private void initInfor() {
@@ -354,6 +295,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 finish();
                 break;
             case R.id.layoutApply:
+                if (!AppUtils.allowViewClick())
+                    return;
                 analystic.trackEvent(ManagerEvent.applyApplyClick());
                 if (isDownloaded) {
                     startDownloadBg(background.getPathItem(), background.getName());
@@ -384,18 +327,27 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         finish();
     }
 
-    ProgressDialog mProgressDialog;
-
     private void applyBgCall() {
-        int countRate = HawkHelper.getCoutShowRate();
+       /* int countRate = HawkHelper.getCoutShowRate();
         countRate++;
-        HawkHelper.setCountRate(countRate);
-        if (checkShowInter()) {
+        HawkHelper.setCountRate(countRate);*/
+
+       /* if (checkShowInter()) {
             mProgressDialog = ProgressDialog.show(this, "",
                     getString(R.string.applying), true);
             mProgressDialog.show();
             loadAds();
         } else {
+            applyTheme();
+        }*/
+        if(isAllowAdsShow){
+            InterstitialApply.getInstance().showInterstitialAds(this, new InterstitialApply.AdCloseListener() {
+                @Override
+                public void onAdClose() {
+                    applyTheme();
+                }
+            });
+        }else {
             applyTheme();
         }
     }
@@ -420,7 +372,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         Bundle bundle = new Bundle();
         bundle.putString("name", background.getName());
         bundle.putInt("position", position);
-        EventBus.getDefault().postSticky(new SignApplyMain());
+      //  EventBus.getDefault().postSticky(new SignApplyMain());
         analystic.trackEvent(new Event("APPLY_ITEM_INFOR", bundle));
         switch (fromScreen) {
             case Constant.VIDEO_FRAG_MENT:
@@ -434,9 +386,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             case Constant.MYTHEME_FRAG_MENT:
                 EventBus.getDefault().postSticky(signApplyMyTheme);
                 break;
-        }
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
         }
         finish();
     }
@@ -557,7 +506,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     @Override
     public void onAdFailed() {
         layoutHeader.setVisibility(View.GONE);
-        setTranslucent();
     }
 
     public void setTranslucent() {
@@ -575,4 +523,5 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
         startActivity(intent);
     }
+
 }
