@@ -32,7 +32,7 @@ public class BannerAdsUtils {
         } else {
             this.idGG = idGG;
         }
-        this.idGG = idGG;
+        //this.idGG = idGG;
     }
     public void setAdListener(AdListener adListener){
         this.adListener = adListener;

@@ -41,7 +41,8 @@ public class InterstitialUtil {
             idInter = Constant.ID_INTER_TEST;
         } else {
             idInter = id_ads;
-        } idInter = id_ads;
+        }
+        //idInter = id_ads;
         loadInterstitial(mContext);
     }
 

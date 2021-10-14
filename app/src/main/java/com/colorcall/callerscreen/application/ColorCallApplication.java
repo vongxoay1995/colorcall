@@ -14,6 +14,7 @@ import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.facebook.FacebookSdk;
+import com.facebook.ads.AdSettings;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
@@ -44,6 +45,7 @@ public class ColorCallApplication extends MultiDexApplication {
         AppEventsLogger.activateApp(this);
         if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+            AdSettings.addTestDevice("90b91733-6634-4148-8e85-cdcf4b60902f");
         }
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
        /* if(!HawkHelper.isFirstAB()){

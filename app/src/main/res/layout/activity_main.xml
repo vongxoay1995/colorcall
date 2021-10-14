@@ -32,15 +32,16 @@
             android:layout_alignParentEnd="true"
             android:orientation="horizontal"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/_7sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
             android:weightSum="3"
             android:gravity="center">
             <ImageView
                 android:id="@+id/btnSetting"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
-                android:padding="@dimen/_10sdp"
+                android:padding="@dimen/_9sdp"
                 app:srcCompat="@drawable/ic_setting"
+                android:layout_marginBottom="@dimen/_2sdp"
                 tools:ignore="VectorDrawableCompat" />
         </LinearLayout>
     </RelativeLayout>

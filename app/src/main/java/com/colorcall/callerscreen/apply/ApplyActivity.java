@@ -42,7 +42,7 @@ import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.utils.InterstitialApply;
+import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
@@ -117,7 +117,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         checkInforTheme();
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
         isAllowAdsShow = getIntent().getBooleanExtra(Constant.IS_ALLOW_SHOW_ADS, false);
-        InterstitialApply.getInstance().init(this);
+        InterstitialUtil.getInstance().init(this);
         loadAdsBanner();
     }
 
@@ -341,12 +341,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             applyTheme();
         }*/
         if(isAllowAdsShow){
-            InterstitialApply.getInstance().showInterstitialAds(this, new InterstitialApply.AdCloseListener() {
-                @Override
-                public void onAdClose() {
-                    applyTheme();
-                }
-            });
+            InterstitialUtil.getInstance().showInterstitialAds(this, () -> applyTheme());
         }else {
             applyTheme();
         }

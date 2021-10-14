@@ -109,7 +109,7 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             idInter = ID_ADS;
         }
-        idInter = ID_ADS;
+        //idInter = ID_ADS;
         AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd.load(this, idInter, adRequest,
                 new InterstitialAdLoadCallback() {
