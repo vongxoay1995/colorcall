@@ -35,6 +35,7 @@ import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             }
         });
         InterstitialUtil.getInstance().init(this);
+        InterstitialApply.getInstance().init(this);
     }
 
     @Override
@@ -163,7 +165,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
-        bannerAdsUtils.setIdAds(ID_ADS_GG);
+        String ID_ADS_FB = "1205962693239181_1205972196571564";
+        bannerAdsUtils.setIdAds(ID_ADS_GG,ID_ADS_FB);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.showMediationBannerAds();
     }
@@ -182,6 +185,11 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(bannerAdsUtils!=null){
+            bannerAdsUtils.destroyFb();
+        }
+        InterstitialUtil.getInstance().onDestroy();
+        InterstitialApply.getInstance().onDestroy();
     }
 
     public void refreshCalApi() {

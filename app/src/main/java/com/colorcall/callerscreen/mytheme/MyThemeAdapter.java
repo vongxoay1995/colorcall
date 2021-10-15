@@ -44,17 +44,19 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.context = context;
         setNewListBg();
     }
+
     public void setNewListBg() {
         this.listBg = new ArrayList<>();
-        listBg.add(new Background(0,"","",false));
+        listBg.add(new Background(0, "", "", false));
         listBg.addAll(DataManager.query().getBackgroundDao().queryBuilder().list());
     }
+
     private void resizeItem(Context context, RelativeLayout layout_item) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) layout_item.getLayoutParams();
-        layoutParams.width = (int)((float)width / 2.1f);
+        layoutParams.width = (int) ((float) width / 2.1f);
         layoutParams.height = (5 * width) / 6;
         layout_item.setLayoutParams(layoutParams);
     }
@@ -92,6 +94,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private Background backgroundSelected;
         private int position;
         private int posRandom;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -104,11 +107,9 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             initInfor();
             backgroundSelected = HawkHelper.getBackgroundSelect();
             Background background = listBg.get(i);
-            //imgThumb.setVisibility(View.VISIBLE);
-            //vdo_background_call.setVisibility(View.GONE);
             String pathFile;
             if (!background.getPathThumb().equals("")) {
-                pathFile =  background.getPathThumb();
+                pathFile = background.getPathThumb();
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -118,15 +119,22 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
                 layoutSelected.setVisibility(View.VISIBLE);
                 layoutBorderItemSelect.setVisibility(View.VISIBLE);
-                vdo_background_call.setVisibility(View.VISIBLE);
-                imgThumb.setVisibility(View.GONE);
-                processVideo(background);
+                if (!checkIsImage(background.getPathItem())) {
+                    vdo_background_call.setVisibility(View.VISIBLE);
+                    imgThumb.setVisibility(View.GONE);
+                    processVideo(background);
+                }else {
+                    imgThumb.setVisibility(View.VISIBLE);
+                }
+
                 startAnimation();
                 if (listener != null) {
                     listener.onItemThemeSelected(position);
                 }
             } else {
-                vdo_background_call.stopPlayback();
+                if (!checkIsImage(background.getPathItem())) {
+                    vdo_background_call.stopPlayback();
+                }
                 vdo_background_call.setVisibility(View.GONE);
                 imgThumb.setVisibility(View.VISIBLE);
                 layoutSelected.setVisibility(View.GONE);
@@ -134,8 +142,9 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 btnAccept.clearAnimation();
             }
         }
+
         private void initInfor() {
-            posRandom = position%10;
+            posRandom = position % 10;
             String pathAvatar = Constant.avatarRandom[posRandom];
             String name = Constant.nameRandom[posRandom];
             String phone = Constant.phoneRandom[posRandom];
@@ -147,30 +156,45 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             txtName.setText(name);
             txtPhone.setText(phone);
         }
+
+        public boolean checkIsImage(String path) {
+            if (path.contains(".jpg")
+                    || path.contains(".webp")
+                    || path.contains(".jpeg")
+                    || path.contains(".gif")
+                    || path.contains(".tiff")
+                    || path.contains(".png")) {
+                return true;
+            }
+            return false;
+        }
+
         @SuppressLint("ClickableViewAccessibility")
         private void listener() {
             this.imgThumb.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(),posRandom);
+                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
             });
 
             vdo_background_call.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(),posRandom);
+                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
             });
         }
+
         public void startAnimation() {
             Animation anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call);
             btnAccept.startAnimation(anim8);
         }
+
         private void processVideo(Background background) {
             String sPath;
             String sPathThumb;
             String uriPath = "android.resource://" + context.getPackageName() + background.getPathItem();
             if (!background.getPathThumb().equals("")) {
-                sPathThumb =  background.getPathThumb();
+                sPathThumb = background.getPathThumb();
                 Glide.with(context.getApplicationContext())
                         .load(sPathThumb)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -188,6 +212,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 playVideo();
             }
         }
+
         private void playVideo() {
             vdo_background_call.setOnPreparedListener(mediaPlayer -> {
                 mediaPlayer.setLooping(true);
@@ -234,8 +259,10 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface Listener {
         void onAdd();
+
         void onItemThemeSelected(int position);
-        void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom);
+
+        void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom);
     }
 
     @NonNull
@@ -278,7 +305,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.listener = listener2;
     }
 
-    public void reload(){
+    public void reload() {
         notifyItemRangeChanged(0, getItemCount(), 4);
     }
 }

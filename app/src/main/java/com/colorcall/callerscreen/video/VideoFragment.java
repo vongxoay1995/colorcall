@@ -154,7 +154,6 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         intent.putExtra(Constant.FROM_SCREEN, Constant.VIDEO_FRAG_MENT);
         intent.putExtra(Constant.ITEM_POSITION, position);
         intent.putExtra(Constant.POS_RANDOM, posRandom);
-        intent.putExtra(Constant.IS_ALLOW_SHOW_ADS, isAllowShowAds);
         if (delete) {
             intent.putExtra(SHOW_IMG_DELETE, true);
         }

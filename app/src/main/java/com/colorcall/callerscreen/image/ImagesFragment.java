@@ -126,7 +126,6 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
         }
         intent.putExtra(Constant.FROM_SCREEN, Constant.IMAGES_FRAG_MENT);
         intent.putExtra(Constant.POS_RANDOM,posRandom);
-        intent.putExtra(Constant.IS_ALLOW_SHOW_ADS, isAllowShowAds);
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
         getActivity().startActivity(intent);

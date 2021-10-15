@@ -42,7 +42,7 @@ import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.utils.InterstitialUtil;
+import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
@@ -102,8 +102,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private Dialog dialog;
     private BannerAdsUtils bannerAdsUtils;
     private int posRandom;
-    private String idInter;
-    private boolean isAllowAdsShow;
+    private String id_ads = "ca-app-pub-3222539657172474/5724276494";
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
@@ -116,14 +115,13 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         folderApp = Constant.LINK_VIDEO_CACHE;
         checkInforTheme();
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
-        isAllowAdsShow = getIntent().getBooleanExtra(Constant.IS_ALLOW_SHOW_ADS, false);
-        InterstitialUtil.getInstance().init(this);
         loadAdsBanner();
     }
 
     private void loadAdsBanner() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/9030792883";
-        bannerAdsUtils.setIdAds(ID_ADS_GG);
+        String ID_ADS_FB = "1205962693239181_1205995093235941";
+        bannerAdsUtils.setIdAds(ID_ADS_GG,ID_ADS_FB);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.showMediationBannerAds();
     }
@@ -327,6 +325,14 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(bannerAdsUtils!=null){
+            bannerAdsUtils.destroyFb();
+        }
+    }
+
     private void applyBgCall() {
        /* int countRate = HawkHelper.getCoutShowRate();
         countRate++;
@@ -340,11 +346,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         } else {
             applyTheme();
         }*/
-        if(isAllowAdsShow){
-            InterstitialUtil.getInstance().showInterstitialAds(this, () -> applyTheme());
-        }else {
-            applyTheme();
-        }
+
+        InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
