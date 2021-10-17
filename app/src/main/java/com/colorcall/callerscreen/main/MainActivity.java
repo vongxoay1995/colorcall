@@ -35,7 +35,6 @@ import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -143,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             }
         });
         InterstitialUtil.getInstance().init(this);
-        InterstitialApply.getInstance().init(this);
     }
 
     @Override
@@ -189,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             bannerAdsUtils.destroyFb();
         }
         InterstitialUtil.getInstance().onDestroy();
-        InterstitialApply.getInstance().onDestroy();
     }
 
     public void refreshCalApi() {
@@ -313,9 +310,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onSignShowRate(SignApplyMain signApplyMain) {
-     /*   if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
+        if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
            showDialogRate();
-        }*/
+        }
         EventBus.getDefault().removeStickyEvent(signApplyMain);
     }
 
@@ -323,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         int count = HawkHelper.getCoutShowRate();
         //if count =2, thi return false
         if (count <= 30) {
-            return count != 2 && count != 7 && count != 12;
+            return count != 3 && count != 7 && count != 12;
         } else {
             return (count - 30) % 30 != 0;
         }

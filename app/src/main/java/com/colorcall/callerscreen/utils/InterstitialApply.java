@@ -50,7 +50,7 @@ public class InterstitialApply {
         } else {
             idInter = id_ads;
         }
-        loadInterstitial(mContext);
+        loadInterstitial(mContext,1);
     }
 
     public void showInterstitialAds(Activity activity, AdCloseListener adCloseListener) {
@@ -62,15 +62,16 @@ public class InterstitialApply {
             isReload = false;
             interstitialAdFb.show();
         } else {
-            loadInterstitial(mContext);
+            loadInterstitial(mContext,2);
             adCloseListener.onAdClose();
         }
     }
 
-    private void loadInterstitial(Context context) {
+    private void loadInterstitial(Context context,int index) {
         if (isAdAvailable()) {
             return;
         }
+        Log.e("TAN", "apply inter load: "+index);
         AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd.load(context, idInter, adRequest,
                 new InterstitialAdLoadCallback() {
@@ -84,7 +85,7 @@ public class InterstitialApply {
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
-                                loadInterstitial(mContext);
+                                loadInterstitial(mContext,3);
                                 // Called when fullscreen content is dismissed.
                                 Log.e("TAG", "The ad was dismissed.");
                             }
@@ -115,12 +116,10 @@ public class InterstitialApply {
                         // Handle the error
                         if (!isReload) {
                             isReload = true;
-                            loadInterstitial(mContext);
+                            loadInterstitial(mContext,4);
                             return;
                         }
                         loadInterFacebook(context);
-
-
                     }
                 });
     }
@@ -128,6 +127,7 @@ public class InterstitialApply {
         if (isAdAvailableFb()) {
             return;
         }
+        Log.e("TAN", "apply inter FB load ");
         AdSettings.addTestDevice("4fd58321-b588-47ab-b550-193c09d6e75d");
         interstitialAdFb = new com.facebook.ads.InterstitialAd(context, id_fb);
         // Create listeners for the Interstitial Ad

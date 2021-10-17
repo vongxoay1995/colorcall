@@ -37,16 +37,16 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.model.SignApplyImage;
+import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.utils.InterstitialApply;
+import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -92,9 +92,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     TextView txtPercentDownloading;
     private String folderApp;
     private Background background;
-    private InterstitialAd mInterstitialAd;
     private Analystic analystic;
-    private boolean allowAdsShow;
     private String newPathItem;
     private boolean isDownloaded = false;
     private int position;
@@ -280,8 +278,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         analystic.trackEvent(ManagerEvent.applyOpen());
         vdoBackgroundCall.start();
         startAnimation();
-        allowAdsShow = true;
-        showAds();
         super.onResume();
     }
 
@@ -334,27 +330,22 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     }
 
     private void applyBgCall() {
-       /* int countRate = HawkHelper.getCoutShowRate();
+        int countRate = HawkHelper.getCoutShowRate();
         countRate++;
-        HawkHelper.setCountRate(countRate);*/
+        HawkHelper.setCountRate(countRate);
 
-       /* if (checkShowInter()) {
-            mProgressDialog = ProgressDialog.show(this, "",
-                    getString(R.string.applying), true);
-            mProgressDialog.show();
-            loadAds();
+        if (checkShowInter()) {
+            InterstitialUtil.getInstance().showInterstitialAdsApply(this, this::applyTheme);
         } else {
             applyTheme();
-        }*/
-
-        InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     public void applyTheme() {
         HawkHelper.setBackgroundSelect(background);
         HawkHelper.setStateColorCall(true);
-        Toast.makeText(getBaseContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
         layoutApply.setEnabled(false);
         layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
         txtApply.setText(getString(R.string.applied));
@@ -370,7 +361,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         Bundle bundle = new Bundle();
         bundle.putString("name", background.getName());
         bundle.putInt("position", position);
-      //  EventBus.getDefault().postSticky(new SignApplyMain());
+        EventBus.getDefault().postSticky(new SignApplyMain());
         analystic.trackEvent(new Event("APPLY_ITEM_INFOR", bundle));
         switch (fromScreen) {
             case Constant.VIDEO_FRAG_MENT:
@@ -386,12 +377,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 break;
         }
         finish();
-    }
-
-    public void showAds() {
-        if (mInterstitialAd != null) {
-            mInterstitialAd.show(ApplyActivity.this);
-        }
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -434,18 +419,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     public void startAnimation() {
         Animation anim8 = AnimationUtils.loadAnimation(this, R.anim.anm_accept_call);
         btnAccept.startAnimation(anim8);
-    }
-
-    @Override
-    protected void onStop() {
-        allowAdsShow = false;
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        allowAdsShow = true;
     }
 
     @Override

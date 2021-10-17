@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static android.util.Log.i;
-
 public class FileUtils {
     public static void saveBitmap(String path, Bitmap bitmap) {
         FileOutputStream out = null;
@@ -99,14 +97,15 @@ public class FileUtils {
     }
 
     private static String getFilePathForN(Context context, Uri uri) {
-        Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
+        File file;
+        Cursor returnCursor = null;
+        try {
+            returnCursor = context.getContentResolver().query(uri, null, null, null, null);
         /*
          * Get the column indexes of the data in the Cursor,
          *     * move to the first row in the Cursor, get the data,
          *     * and display it.
          * */
-        File file=null;
-        try {
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             returnCursor.moveToFirst();
             String name = (returnCursor.getString(nameIndex));
@@ -126,6 +125,7 @@ public class FileUtils {
             }
             inputStream.close();
             outputStream.close();
+
         } catch (Exception e) {
             Log.e("Exception", e.getMessage());
         } finally {
@@ -133,11 +133,7 @@ public class FileUtils {
                 returnCursor.close();
             }
         }
-        if(file!=null){
-            return file.getPath();
-        }else {
-            return "";
-        }
+        return "";
     }
 
     public static File createImageFile(Context context) throws IOException {

@@ -2,6 +2,7 @@ package com.colorcall.callerscreen.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -50,7 +51,7 @@ public class InterstitialUtil {
         } else {
             idInter = id_ads;
         }
-        loadInterstitial(mContext);
+        loadInterstitial(mContext,1);
     }
 
     public void showInterstitialAds(Activity activity, AdCloseListener adCloseListener) {
@@ -62,15 +63,27 @@ public class InterstitialUtil {
             isReload = false;
             interstitialAdFb.show();
         } else {
-            loadInterstitial(mContext);
+            loadInterstitial(mContext,2);
             adCloseListener.onAdClose();
         }
     }
-
-    private void loadInterstitial(Context context) {
+    public void showInterstitialAdsApply(Activity activity, AdCloseListener adCloseListener) {
+        this.adCloseListener = adCloseListener;
+        if (canShowInterstitial()) {
+            isReload = false;
+            interstitialAd.show(activity);
+        } else if (canShowInterFb()) {
+            isReload = false;
+            interstitialAdFb.show();
+        }else {
+            adCloseListener.onAdClose();
+        }
+    }
+    private void loadInterstitial(Context context,int index) {
         if (isAdAvailable()) {
             return;
         }
+        Log.e("TAN", "main item inter load"+index);
         AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd.load(context, idInter, adRequest,
                 new InterstitialAdLoadCallback() {
@@ -84,7 +97,7 @@ public class InterstitialUtil {
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
-                                loadInterstitial(mContext);
+                                loadInterstitial(mContext,3);
                             }
 
                             @Override
@@ -111,7 +124,7 @@ public class InterstitialUtil {
                         // Handle the error
                         if (!isReload) {
                             isReload = true;
-                            loadInterstitial(mContext);
+                            loadInterstitial(mContext,4);
                             return;
                         }
                         loadInterFacebook(context);
@@ -123,6 +136,7 @@ public class InterstitialUtil {
         if (isAdAvailableFb()) {
             return;
         }
+        Log.e("TAN", "main item inter FB load ");
         AdSettings.addTestDevice("6828bd47-b305-4dae-9d34-a2b6f5733a1a");
         interstitialAdFb = new com.facebook.ads.InterstitialAd(context, id_fb);
         // Create listeners for the Interstitial Ad
@@ -142,11 +156,13 @@ public class InterstitialUtil {
 
             @Override
             public void onError(Ad ad, com.facebook.ads.AdError adError) {
+                Log.e("TAN", "onErrorFB: "+adError.getErrorMessage());
                 InterstitialUtil.this.interstitialAdFb = null;
             }
 
             @Override
             public void onAdLoaded(Ad ad) {
+                Log.e("TAN", "FB onAdLoaded: ");
                 InterstitialUtil.this.loadTimeFb = (new Date()).getTime();
                 // Interstitial ad is loaded and ready to be displayed
                 // Show the ad
