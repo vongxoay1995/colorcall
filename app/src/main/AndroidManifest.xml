@@ -111,9 +111,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3222539657172474~4208737311" />
-        <meta-data
-            android:name="applovin.sdk.key"
-            android:value="iT-bWFdu_TKodLOWDrdzNEgfIVurwv5-_tJXSq6xGTc5TKFvFp_ItTX4c5nGISAmFHaOg_R71OkT3Oum_szQrz" />
 
         <activity
             android:name=".main.MainActivity"

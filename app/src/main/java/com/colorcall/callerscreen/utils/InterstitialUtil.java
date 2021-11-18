@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class InterstitialUtil {
     private String id_ads = "ca-app-pub-3222539657172474/2357386636";
-    private String id_fb = "1205962693239181_1205994856569298";
+    private String id_fb = "1205962693239181_1206008499901267";
     private static InterstitialUtil sInterstitial;
     private InterstitialAd interstitialAd;
     private com.facebook.ads.InterstitialAd interstitialAdFb;
@@ -59,9 +59,6 @@ public class InterstitialUtil {
         if (canShowInterstitial()) {
             isReload = false;
             interstitialAd.show(activity);
-        } else if (canShowInterFb()) {
-            isReload = false;
-            interstitialAdFb.show();
         } else {
             loadInterstitial(mContext,2);
             adCloseListener.onAdClose();
@@ -73,7 +70,6 @@ public class InterstitialUtil {
             isReload = false;
             interstitialAd.show(activity);
         } else if (canShowInterFb()) {
-            isReload = false;
             interstitialAdFb.show();
         }else {
             adCloseListener.onAdClose();
@@ -133,6 +129,7 @@ public class InterstitialUtil {
     }
 
     private void loadInterFacebook(Context context) {
+        Log.e("TAN", "loadInterFacebook "+"---"+interstitialAdFb+"--"+wasLoadTimeLessThanNHoursAgoFb(4));
         if (isAdAvailableFb()) {
             return;
         }

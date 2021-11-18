@@ -80,9 +80,14 @@ public class CallActivity extends AppCompatActivity {
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("com.colorcall.endCall")) {
-                finish();
-            }
+            Thread t = new Thread(){
+                public void run(){
+                    if (intent.getAction().equals("com.colorcall.endCall")) {
+                        finish();
+                    }
+                }
+            };
+            t.start();
         }
     };
 
@@ -123,7 +128,7 @@ public class CallActivity extends AppCompatActivity {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
-
+    // crash fire base if not permission contact
     private void showViewCall() {
         phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
         backgroundSelect = HawkHelper.getBackgroundSelect();

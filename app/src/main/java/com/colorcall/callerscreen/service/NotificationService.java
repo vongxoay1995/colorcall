@@ -44,28 +44,33 @@ public class NotificationService extends NotificationListenerService {
     @Override
     public void onNotificationPosted(final StatusBarNotification statusBarNotification) {
         super.onNotificationPosted(statusBarNotification);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (!statusBarNotification.getPackageName().contains("incallui") && !statusBarNotification.getPackageName().contains("dialer"))
-                return;
-            String str = "";
-            TelecomManager telecomManager = getApplicationContext().getSystemService(TelecomManager.class);
-            if (telecomManager != null) {
-                str = telecomManager.getDefaultDialerPackage() + "";
-            }
-            if (!statusBarNotification.getPackageName().contains("incallui") && !statusBarNotification.getPackageName().equals(str)) {
-                return;
-            }
-            if (this.isListen) {
-                new Thread() {
-                    public void run() {
-                        super.run();
-                        PhoneUtils.get(getApplicationContext()).getPhoneFromNotificationListen(statusBarNotification);
+        new Thread() {
+            public void run() {
+                super.run();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    if (!statusBarNotification.getPackageName().contains("incallui") && !statusBarNotification.getPackageName().contains("dialer"))
+                        return;
+                    String str = "";
+                    TelecomManager telecomManager = getApplicationContext().getSystemService(TelecomManager.class);
+                    if (telecomManager != null) {
+                        str = telecomManager.getDefaultDialerPackage() + "";
                     }
-                }.start();
-                return;
+                    if (!statusBarNotification.getPackageName().contains("incallui") && !statusBarNotification.getPackageName().equals(str)) {
+                        return;
+                    }
+                    if (NotificationService.this.isListen) {
+                        new Thread() {
+                            public void run() {
+                                super.run();
+                                PhoneUtils.get(getApplicationContext()).getPhoneFromNotificationListen(statusBarNotification);
+                            }
+                        }.start();
+                        return;
+                    }
+                    NotificationService.this.inCallNotification = statusBarNotification;
+                }
             }
-            this.inCallNotification = statusBarNotification;
-        }
+        }.start();
     }
 
     public void stopListenColorCall() {

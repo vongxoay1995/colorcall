@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.service.CallService;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -31,24 +29,29 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     public boolean isFirstRun;
     @Override
     public void onReceive(Context context, Intent intent) {
-        this.context = context;
-        if (intent.getExtras() != null) {
-            String state = intent.getExtras().getString("state");
-            phoneNumber = intent.getExtras().getString("incoming_number");
-            if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                isBiggerAndroidP = true;
-                PhoneUtils.get(context).getNumberPhoneWhenNull(CallReceiver.this);
-            }
+        Thread t = new Thread(){
+            public void run(){
+                CallReceiver.this.context = context;
+                if (intent.getExtras() != null) {
+                    String state = intent.getExtras().getString("state");
+                    phoneNumber = intent.getExtras().getString("incoming_number");
+                    if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        isBiggerAndroidP = true;
+                        PhoneUtils.get(context).getNumberPhoneWhenNull(CallReceiver.this);
+                    }
 
-            if (state != null && state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                stateType = TYPE_END_CALL;
-            } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                stateType = TYPE_IN_CALL;
-            } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                stateType = TYPE_RINGGING_CALL;
+                    if (state != null && state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                        stateType = TYPE_END_CALL;
+                    } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                        stateType = TYPE_IN_CALL;
+                    } else if (state != null && state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                        stateType = TYPE_RINGGING_CALL;
+                    }
+                    onCallStateChanged(context, stateType);
+                }
             }
-                onCallStateChanged(context, stateType);
-        }
+        };
+        t.start();
     }
 
     private void onCallStateChanged(Context context, int state) {

@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
-import com.applovin.sdk.AppLovinPrivacySettings;
-import com.applovin.sdk.AppLovinSdk;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.DataManager;
@@ -40,8 +38,6 @@ public class ColorCallApplication extends MultiDexApplication {
         Hawk.init(this).build();
         loadData();
         DataManager.getInstance().init(this);
-        AppLovinPrivacySettings.setHasUserConsent(true, this);
-        AppLovinSdk.getInstance(this).initializeSdk();
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         if (BuildConfig.DEBUG) {
