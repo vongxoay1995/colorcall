@@ -161,13 +161,30 @@ public class ManagerEvent {
     public static Event contactSearch(){
         return new Event(EventKey.SELECT_CONTACT_SEARCH,new Bundle());
     }
-
+    public static Event callServiceOncreate(){
+        return new Event(EventKey.CALL_SERVICE_ONCREATE,new Bundle());
+    }
+    public static Event callServiceDestroy(){
+        return new Event(EventKey.CALL_SERVICE_DESTROY,new Bundle());
+    }
     //call screen show
     public static Event callshow(){
         return new Event(EventKey.CALL_SHOW,new Bundle());
     }
+    public static Event callWinDowShow(){
+        return new Event(EventKey.CALL_WINDOW_SHOW,new Bundle());
+    }
     public static Event callAcceptCall(){
         return new Event(EventKey.CALL_ACCETP_CALL,new Bundle());
+    }
+    public static Event callWinDowAcceptCall(){
+        return new Event(EventKey.CALL_WINDOW_ACCETP_CALL,new Bundle());
+    }
+    public static Event callWinDowRejectCall(){
+        return new Event(EventKey.CALL_WINDOW_REJECT_CALL,new Bundle());
+    }
+    public static Event callWinDowExit(){
+        return new Event(EventKey.CALL_WINDOW_EXIT,new Bundle());
     }
     public static Event callRejectCall(){
         return new Event(EventKey.CALL_REJECT_CALL,new Bundle());

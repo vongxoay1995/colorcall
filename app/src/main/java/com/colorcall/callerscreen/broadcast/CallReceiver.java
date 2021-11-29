@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -29,8 +30,10 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     public boolean isFirstRun;
     @Override
     public void onReceive(Context context, Intent intent) {
+
         Thread t = new Thread(){
             public void run(){
+                Log.e("TAN", "CallReceiver: ");
                 CallReceiver.this.context = context;
                 if (intent.getExtras() != null) {
                     String state = intent.getExtras().getString("state");

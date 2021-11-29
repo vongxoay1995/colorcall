@@ -132,7 +132,13 @@ public class CallService extends Service {
 
     @Override
     public void onDestroy() {
-        removeUI();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                removeUI();
+            }
+        },500);
+        analystic.trackEvent(ManagerEvent.callServiceDestroy());
         mLocalBroadcastManager.unregisterReceiver(mBroadcastReceiver);
         NotificationUtil.hideNotification(this);
         super.onDestroy();
@@ -164,6 +170,7 @@ public class CallService extends Service {
                 imgExit = viewCall.findViewById(R.id.imgExit);
                 Glide.with(this).load(R.drawable.ic_exit).into(imgExit);
                 imgExit.setOnClickListener(v -> {
+                    analystic.trackEvent(ManagerEvent.callWinDowExit());
                     if (viewCall != null) {
                         viewCall.setVisibility(View.GONE);
                     }
@@ -197,7 +204,7 @@ public class CallService extends Service {
                                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                 mWindowManager.addView(viewCall, mLayoutParams);
-                analystic.trackEvent(ManagerEvent.callshow());
+                analystic.trackEvent(ManagerEvent.callWinDowShow());
                 List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
                         .where(ContactDao.Properties.Contact_id.eq(contactId))
                         .list();
@@ -249,6 +256,7 @@ public class CallService extends Service {
     @Override
     public void onCreate() {
         analystic = Analystic.getInstance(this);
+        analystic.trackEvent(ManagerEvent.callServiceOncreate());
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction("com.colorcall.endCall");
@@ -304,7 +312,7 @@ public class CallService extends Service {
 
     private void listener() {
         imgAccept.setOnClickListener(v -> {
-            analystic.trackEvent(ManagerEvent.callAcceptCall());
+            analystic.trackEvent(ManagerEvent.callWinDowAcceptCall());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelecomManager tm = (TelecomManager) getSystemService(Context.TELECOM_SERVICE);
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED) {
@@ -324,7 +332,7 @@ public class CallService extends Service {
         });
 
         imgReject.setOnClickListener(v -> {
-            analystic.trackEvent(ManagerEvent.callRejectCall());
+            analystic.trackEvent(ManagerEvent.callWinDowRejectCall());
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
