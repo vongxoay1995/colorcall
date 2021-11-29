@@ -34,6 +34,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.call.CallActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.custom.TextureVideoView;
 import com.colorcall.callerscreen.database.Background;
@@ -89,11 +90,11 @@ public class CallService extends Service {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForeground(ID_NOTIFICATION, NotificationUtil.initNotificationAndroidO(this));
         }
-        /*try {
-            Thread.sleep(500);
+        try {
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
         if (intent != null && intent.getExtras() != null) {
             try {
                 phoneNumber = intent.getStringExtra(Constant.PHONE_NUMBER);
@@ -117,7 +118,7 @@ public class CallService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
     private void checkDevice() {
-        /*if (Build.MANUFACTURER != null&&(Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")
+        if (Build.MANUFACTURER != null&&(Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")
                 || Build.MANUFACTURER.equalsIgnoreCase("realme"))
                 ||Build.MANUFACTURER.contains("INFINIX")) {
             showViewCallColor();
@@ -126,8 +127,8 @@ public class CallService extends Service {
             intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
             startActivity(intent2);
-        }*/
-        showViewCallColor();
+        }
+       // showViewCallColor();
     }
 
     @Override
