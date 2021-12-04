@@ -78,4 +78,5 @@
     <string name="good">Bien</string>
     <string name="very_good">Très bon</string>
     <string name="notNow">Pas maintenant</string>
+    <string name="skip_ads" >Sauter</string>
 </resources>

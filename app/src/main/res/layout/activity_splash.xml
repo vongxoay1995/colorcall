@@ -1,81 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/splash_activity"
     tools:context="com.colorcall.callerscreen.splash.SplashActivity">
+
     <ImageView
         android:id="@+id/imgBgSplash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        />
-    <TextView
-        android:id="@+id/txtAppname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_30sdp"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="@dimen/_16sdp"
-        android:textColor="@color/white"
-        android:layout_below="@id/txtAppname"
-        android:text="@string/contentSplash"
-        />
-    <TextView
-        android:id="@+id/btnSplash"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:id="@+id/layout_skip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start"
-        android:fontFamily="@font/roboto_medium"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/_70sdp"
-        android:textColor="@color/colorHeaderMain"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:paddingLeft="@dimen/_50sdp"
-        android:paddingRight="@dimen/_50sdp"
-        android:visibility="gone"
-        android:background="@drawable/bg_white_radius"
-        />
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:background="@drawable/bg_skip"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingTop="@dimen/_6sdp"
+        android:paddingRight="@dimen/_16sdp"
+        android:paddingBottom="@dimen/_6sdp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txt_skip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/skip_ads"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12sdp" />
+
+        <ImageView
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_2sdp"
+            app:srcCompat="@drawable/ic_skip" />
+
+    </LinearLayout>
+
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/layout_skip"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/_25sdp">
+
+        <TextView
+            android:id="@+id/txtAppname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_30sdp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/contentSplash"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16sdp" />
+    </LinearLayout>
+    <com.facebook.ads.NativeAdLayout
+        android:id="@+id/native_ad_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical" />
+    <RelativeLayout
         android:id="@+id/layout_loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center|bottom"
-        android:visibility="visible"
         android:layout_marginBottom="@dimen/_30sdp"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/layoutSeekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center|bottom"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_18sdp" />
+
+            <SeekBar
+                android:id="@+id/seekbar"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:max="100"
+                android:progressDrawable="@drawable/bg_seek_bar"
+                android:thumb="@null" />
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/btnStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_18sdp" />
-
-        <SeekBar
-            android:id="@+id/seekbar"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:max="100"
-            android:thumb="@null"
-            android:progressDrawable="@drawable/bg_seek_bar"
-            />
-
-    </LinearLayout>
-</RelativeLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_white_radius"
+            android:fontFamily="@font/roboto_medium"
+            android:paddingLeft="@dimen/_50sdp"
+            android:paddingTop="@dimen/_10sdp"
+            android:paddingRight="@dimen/_50sdp"
+            android:paddingBottom="@dimen/_10sdp"
+            android:text="@string/start"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/colorHeaderMain"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

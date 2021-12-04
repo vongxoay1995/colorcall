@@ -35,6 +35,7 @@ import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             }
         });
         InterstitialUtil.getInstance().init(this);
+        InterstitialApply.getInstance().init(this);
     }
 
     @Override

@@ -22,13 +22,12 @@ import java.util.Date;
 
 public class InterstitialUtil {
     private String id_ads = "ca-app-pub-3222539657172474/2357386636";
-    private String id_fb = "1205962693239181_1206008499901267";
+    private String id_fb_item = "1205962693239181_1205994856569298";
     private static InterstitialUtil sInterstitial;
     private InterstitialAd interstitialAd;
     private com.facebook.ads.InterstitialAd interstitialAdFb;
 
     private AdCloseListener adCloseListener;
-    private boolean isReload;
     private Context mContext;
     private String idInter;
     private long loadTime = 0;
@@ -57,9 +56,10 @@ public class InterstitialUtil {
     public void showInterstitialAds(Activity activity, AdCloseListener adCloseListener) {
         this.adCloseListener = adCloseListener;
         if (canShowInterstitial()) {
-            isReload = false;
             interstitialAd.show(activity);
-        } else {
+        } else if (canShowInterFb()) {
+            interstitialAdFb.show();
+        }else {
             loadInterstitial(mContext,2);
             adCloseListener.onAdClose();
         }
@@ -67,7 +67,6 @@ public class InterstitialUtil {
     public void showInterstitialAdsApply(Activity activity, AdCloseListener adCloseListener) {
         this.adCloseListener = adCloseListener;
         if (canShowInterstitial()) {
-            isReload = false;
             interstitialAd.show(activity);
         } else if (canShowInterFb()) {
             interstitialAdFb.show();
@@ -90,6 +89,7 @@ public class InterstitialUtil {
                         InterstitialUtil.this.interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {
+                                InterstitialUtil.this.interstitialAd = null;
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
@@ -109,20 +109,14 @@ public class InterstitialUtil {
                                 // Called when fullscreen content is shown.
                                 // Make sure to set your reference to null so you don't
                                 // show it a second time.
-                                InterstitialUtil.this.interstitialAd = null;
+
                             }
                         });
                     }
 
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        interstitialAd = null;
                         // Handle the error
-                        if (!isReload) {
-                            isReload = true;
-                            loadInterstitial(mContext,4);
-                            return;
-                        }
                         loadInterFacebook(context);
                     }
                 });
@@ -135,16 +129,16 @@ public class InterstitialUtil {
         }
         Log.e("TAN", "main item inter FB load ");
         AdSettings.addTestDevice("6828bd47-b305-4dae-9d34-a2b6f5733a1a");
-        interstitialAdFb = new com.facebook.ads.InterstitialAd(context, id_fb);
+        interstitialAdFb = new com.facebook.ads.InterstitialAd(context, id_fb_item);
         // Create listeners for the Interstitial Ad
         InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
             @Override
             public void onInterstitialDisplayed(Ad ad) {
-                InterstitialUtil.this.interstitialAdFb = null;
             }
 
             @Override
             public void onInterstitialDismissed(Ad ad) {
+                InterstitialUtil.this.interstitialAdFb = null;
                 if (adCloseListener != null) {
                     adCloseListener.onAdClose();
                 }
@@ -154,7 +148,6 @@ public class InterstitialUtil {
             @Override
             public void onError(Ad ad, com.facebook.ads.AdError adError) {
                 Log.e("TAN", "onErrorFB: "+adError.getErrorMessage());
-                InterstitialUtil.this.interstitialAdFb = null;
             }
 
             @Override

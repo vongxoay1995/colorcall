@@ -78,4 +78,5 @@
     <string name="good">حسن</string>
     <string name="very_good">جيد جدا</string>
     <string name="notNow">ليس الان</string>
+    <string name="skip_ads" >يتخطى</string>
 </resources>

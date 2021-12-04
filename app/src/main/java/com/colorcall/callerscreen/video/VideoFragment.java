@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.video;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,12 +130,15 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
         if (!AppUtils.allowViewClick())
             return;
+        Log.e("TAN", "countAds: "+countAds);
         if(countAds%3!=0){
+            Log.e("TAN", "onItemClick: 1");
             this.countAds++;
             moveApplyTheme(backgrounds, position, delete,posRandom,true);
         }else {
             this.countAds++;
             InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
+                Log.e("TAN", "onItemClick: 2");
                 this.countAds = 1;
                 moveApplyTheme(backgrounds, position, delete,posRandom,false);
             });

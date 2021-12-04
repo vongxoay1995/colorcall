@@ -21,6 +21,7 @@ public class HawkHelper {
     private static String COUNT_FOR_DIALOG_UPDATE = "COUNT_FOR_DIALOG_UPDATE";
     private static String CAN_SHOW_DIALOG_UPDATE = "CAN_SHOW_DIALOG_UPDATE";
     private static String IS_SCREEN_CALL = "IS_SCREEN_CALL";
+    private static String PRIORITY_ADS = "PRIORITY_ADS";
     private static String IS_AB = "IS_AB";
     public static boolean isLoadDataFirst() {
         return Hawk.get(LOAD_DATA_FIRST_FIRST, false);
@@ -93,6 +94,14 @@ public class HawkHelper {
 
     public static long isScreenCall() {
         return Long.parseLong(Hawk.get(IS_SCREEN_CALL, 0)+"");
+    }
+
+    public static void setPriorityAds(long value) {
+        Hawk.put(PRIORITY_ADS, value);
+    }
+
+    public static long getPriorityAds() {
+        return Long.parseLong(Hawk.get(PRIORITY_ADS, 0)+"");
     }
 
     public static void setIsFirstAB(boolean value) {

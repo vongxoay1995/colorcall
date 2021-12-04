@@ -43,7 +43,7 @@ import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.utils.InterstitialUtil;
+import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
@@ -335,7 +335,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         HawkHelper.setCountRate(countRate);
 
         if (checkShowInter()) {
-            InterstitialUtil.getInstance().showInterstitialAdsApply(this, this::applyTheme);
+            InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
         } else {
             applyTheme();
         }

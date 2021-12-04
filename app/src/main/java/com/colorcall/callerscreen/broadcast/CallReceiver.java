@@ -30,7 +30,6 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     public boolean isFirstRun;
     @Override
     public void onReceive(Context context, Intent intent) {
-
         Thread t = new Thread(){
             public void run(){
                 Log.e("TAN", "CallReceiver: ");

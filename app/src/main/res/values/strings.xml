@@ -80,4 +80,5 @@
     <string name="good">Good</string>
     <string name="very_good">Very good</string>
     <string name="notNow">Not now</string>
+    <string name="skip_ads" >Skip</string>
 </resources>

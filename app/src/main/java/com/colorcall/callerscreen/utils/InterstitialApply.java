@@ -26,7 +26,6 @@ public class InterstitialApply {
     private static InterstitialApply sInterstitial;
     private InterstitialAd interstitialAd;
     private AdCloseListener adCloseListener;
-    private boolean isReload;
     private Context mContext;
     private String idInter;
     private long loadTime = 0;
@@ -56,18 +55,15 @@ public class InterstitialApply {
     public void showInterstitialAds(Activity activity, AdCloseListener adCloseListener) {
         this.adCloseListener = adCloseListener;
         if (canShowInterstitial()) {
-            isReload = false;
             interstitialAd.show(activity);
         }else if (canShowInterFb()) {
-            isReload = false;
             interstitialAdFb.show();
         } else {
             loadInterstitial(mContext,2);
             adCloseListener.onAdClose();
         }
     }
-
-    private void loadInterstitial(Context context,int index) {
+    public void loadInterstitial(Context context,int index) {
         if (isAdAvailable()) {
             return;
         }
@@ -82,6 +78,7 @@ public class InterstitialApply {
                         InterstitialApply.this.interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
                             @Override
                             public void onAdDismissedFullScreenContent() {
+                                InterstitialApply.this.interstitialAd = null;
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
@@ -104,7 +101,7 @@ public class InterstitialApply {
                                 // Called when fullscreen content is shown.
                                 // Make sure to set your reference to null so you don't
                                 // show it a second time.
-                                InterstitialApply.this.interstitialAd = null;
+
                                 Log.e("TAG", "The ad was shown.");
                             }
                         });
@@ -112,13 +109,7 @@ public class InterstitialApply {
 
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        interstitialAd = null;
                         // Handle the error
-                        if (!isReload) {
-                            isReload = true;
-                            loadInterstitial(mContext,4);
-                            return;
-                        }
                         loadInterFacebook(context);
                     }
                 });
@@ -134,11 +125,12 @@ public class InterstitialApply {
         InterstitialAdListener interstitialAdListener = new InterstitialAdListener() {
             @Override
             public void onInterstitialDisplayed(Ad ad) {
-                InterstitialApply.this.interstitialAdFb = null;
+
             }
 
             @Override
             public void onInterstitialDismissed(Ad ad) {
+                InterstitialApply.this.interstitialAdFb = null;
                 if (adCloseListener != null) {
                     adCloseListener.onAdClose();
                 }
@@ -147,7 +139,6 @@ public class InterstitialApply {
 
             @Override
             public void onError(Ad ad, com.facebook.ads.AdError adError) {
-                InterstitialApply.this.interstitialAdFb = null;
             }
 
             @Override
