@@ -59,7 +59,7 @@ public class InterstitialApply {
         }else if (canShowInterFb()) {
             interstitialAdFb.show();
         } else {
-            loadInterstitial(mContext,2);
+            loadInterstitial(activity,2);
             adCloseListener.onAdClose();
         }
     }
