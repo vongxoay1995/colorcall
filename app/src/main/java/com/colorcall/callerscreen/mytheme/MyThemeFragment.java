@@ -1,6 +1,8 @@
 package com.colorcall.callerscreen.mytheme;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
@@ -8,7 +10,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +43,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -180,24 +188,96 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constant.REQUEST_VIDEO) {
+                Log.e("TAN", "onActivityResult: video");
                 Uri uriData = data.getData();
-                String path = FileUtils.getRealPathFromUri(getContext(), uriData);
-                resetListDataVideo(path);
-                adapter.setNewListBg();
-                adapter.notifyDataSetChanged();
-            } else if (requestCode == Constant.REQUEST_CODE_IMAGES) {
-                String path;
-                if (data != null && data.getData() != null) {
-                    path = FileUtils.getRealPathFromUri(getContext(), data.getData());
-                } else {
-                    path = pathUriImage;
-                }
-                resetListDataImage(path);
-                adapter.setNewListBg();
-                adapter.notifyDataSetChanged();
+                final String[] mPath = new String[1];
+                if (uriData != null) {
+                    mPath[0] = FileUtils.getRealPathFromUri(getContext(), uriData);
+                    Log.e("TAN", "mPath[0]: "+mPath[0]);
+                    if(mPath[0].equals("")){
+                        createVideoInputPath(requireActivity(), uriData, false,videoInputPath -> {
+                            Log.e("TAN", "createVideoInputPath: "+videoInputPath);
+                            mPath[0] = videoInputPath;
+                            resetListDataVideo(mPath[0]);
+                            adapter.setNewListBg();
+                            adapter.notifyDataSetChanged();
+                        });
+                    }else{
+                        resetListDataVideo(mPath[0]);
+                        adapter.setNewListBg();
+                        adapter.notifyDataSetChanged();
+                    }
 
+                } else {
+                    Toast.makeText(requireActivity(), "Error! Please try input other video!", Toast.LENGTH_LONG).show();
+                }
+            } else if (requestCode == Constant.REQUEST_CODE_IMAGES) {
+                final String[] path = new String[1];
+                if (data != null && data.getData() != null) {
+                    path[0] = FileUtils.getRealPathFromUri(getContext(), data.getData());
+                    if(path[0].equals("")){
+                        FileUtils.createImagefromPath(requireActivity(),data.getData(),Constant.IMAGE_INPUT_NAME, new FileUtils.CreateImageInputInterface(){
+
+                            @Override
+                            public void onImageCreateSuccess(String imagePath) {
+                                path[0] = imagePath;
+                                resetListDataImage(path[0]);
+                                adapter.setNewListBg();
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onImageCreateFailed() {
+
+                            }
+                        });
+                    }else{
+                        resetListDataVideo(path[0]);
+                        adapter.setNewListBg();
+                        adapter.notifyDataSetChanged();
+                    }
+                } else {
+                    path[0] = pathUriImage;
+                    resetListDataImage(path[0]);
+                    adapter.setNewListBg();
+                    adapter.notifyDataSetChanged();
+                }
             }
         }
+    }
+    public static void createVideoInputPath(Context context, Uri videoUri, boolean isShowDialog, VideoInputListener listener) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage(context.getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        if (isShowDialog)
+            progressDialog.show();
+        Handler handler = new Handler();
+        Thread thread = new Thread(() -> {
+            File inputFile = new File(FileUtils.getInternalFileDir(context), Constant.VIDEO_INPUT_NAME);
+            try {
+                InputStream inputStream = context.getContentResolver().openInputStream(videoUri);
+                OutputStream outputStream = new FileOutputStream(inputFile);
+                byte[] buf = new byte[2048];
+                int length;
+                while ((length = inputStream.read(buf)) > 0) {
+                    outputStream.write(buf, 0, length);
+                }
+                outputStream.close();
+                inputStream.close();
+                handler.post(() -> {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    listener.onVideoCreateSuccess(inputFile.getAbsolutePath());
+                });
+            } catch (IOException e) {
+                handler.post(() -> {
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    listener.onVideoCreateSuccess("");
+                });
+            }
+        });
+        thread.start();
     }
 
     private void resetListDataVideo(String path) {
@@ -232,6 +312,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         if (path != null) {
             File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     + Constant.PATH_THUMB_COLOR_CALL_IMAGES);
+            Log.e("TAN", "resetListDataImage: "+path);
             if (!folder.exists())
                 folder.mkdirs();
 
@@ -266,7 +347,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         }
         EventBus.getDefault().removeStickyEvent(signApplyMyTheme);
     }
-
     @Override
     public void onItemThemeSelected(int position) {
         positionItemThemeSelected = position;

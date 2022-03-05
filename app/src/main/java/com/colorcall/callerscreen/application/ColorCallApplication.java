@@ -30,6 +30,7 @@ import com.orhanobut.hawk.Hawk;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -42,9 +43,6 @@ public class ColorCallApplication extends MultiDexApplication {
         MultiDex.install(this);
         MobileAds.initialize(this, initializationStatus -> {
         });
-        RequestConfiguration configuration =
-                new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("A2287B6C4425EEEAD0688598D4825BAE")).build();
-        MobileAds.setRequestConfiguration(configuration);
         Hawk.init(this).build();
         loadData();
         DataManager.getInstance().init(this);
@@ -52,6 +50,9 @@ public class ColorCallApplication extends MultiDexApplication {
         AppEventsLogger.activateApp(this);
         if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+            List<String> testDeviceIds = Arrays.asList("C672C9D51F65E8B9B0345F9F8E4F7CC1");
+            RequestConfiguration configuration = new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
+            MobileAds.setRequestConfiguration(configuration);
             AdSettings.addTestDevice("90b91733-6634-4148-8e85-cdcf4b60902f");
         }
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);

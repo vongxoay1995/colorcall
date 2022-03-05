@@ -56,9 +56,9 @@ public class InterstitialApply {
         this.adCloseListener = adCloseListener;
         if (canShowInterstitial()) {
             interstitialAd.show(activity);
-        }else if (canShowInterFb()) {
+        }/*else if (canShowInterFb()) {
             interstitialAdFb.show();
-        } else {
+        }*/ else {
             loadInterstitial(activity,2);
             adCloseListener.onAdClose();
         }

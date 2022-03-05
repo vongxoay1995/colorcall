@@ -38,12 +38,10 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -136,7 +134,6 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                         loadNativeAdFb();
                     }
                 });
-        new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("A2287B6C4425EEEAD0688598D4825BAE"));
         AdLoader adLoader = builder.build();
         adLoader.loadAd(new AdRequest.Builder().build());
     }

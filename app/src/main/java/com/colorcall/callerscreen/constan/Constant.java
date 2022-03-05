@@ -48,4 +48,7 @@ public interface Constant {
     String POS_RANDOM = "pos_random";
     String IS_ALLOW_SHOW_ADS = "IS_ALLOW_SHOW_ADS";
     int UPDATE_REQUEST_CODE = 96 ;
+    String VIDEO_INPUT_NAME = "input_video.mp4";
+    String IMAGE_INPUT_NAME = "input_image.jpg";
+    String TEMP_DIR = "temp";
 }

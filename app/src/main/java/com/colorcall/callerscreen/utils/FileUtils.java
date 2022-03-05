@@ -95,7 +95,13 @@ public class FileUtils {
         } else
             return "";
     }
-
+    public static File getInternalFileDirMyImage(Context context) {
+        File file = new File(context.getFilesDir(), Constant.TEMP_DIR);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        return file;
+    }
     private static String getFilePathForN(Context context, Uri uri) {
         File file;
         Cursor returnCursor = null;

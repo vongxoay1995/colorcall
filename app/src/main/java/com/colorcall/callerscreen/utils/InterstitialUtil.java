@@ -57,8 +57,6 @@ public class InterstitialUtil {
         this.adCloseListener = adCloseListener;
         if (canShowInterstitial()) {
             interstitialAd.show(activity);
-        } else if (canShowInterFb()) {
-            interstitialAdFb.show();
         }else {
             loadInterstitial(activity,2);
             adCloseListener.onAdClose();
@@ -117,7 +115,7 @@ public class InterstitialUtil {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error
-                        loadInterFacebook(context);
+                        //loadInterFacebook(context);
                     }
                 });
     }
