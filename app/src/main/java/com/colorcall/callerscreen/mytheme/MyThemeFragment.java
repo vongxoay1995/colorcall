@@ -1,5 +1,10 @@
 package com.colorcall.callerscreen.mytheme;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -48,14 +53,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
 public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener, DialogGalleryListener {
     @BindView(R.id.rcvBgYourTheme)
@@ -130,7 +131,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
         intent.putExtra(Constant.POS_RANDOM, posRandom);
-        getActivity().startActivity(intent);
+        Objects.requireNonNull(getActivity()).startActivity(intent);
     }
 
     public void checkPermissionActionCamera() {

@@ -105,14 +105,6 @@ public class CallService extends Service {
                 phoneNumber = " ";
             }
             phoneNumber = phoneNumber.replaceAll(" ", "").replaceAll("-", "");
-           /* if (HawkHelper.isScreenCall() == 1) {
-                showViewCallColor();
-            } else {
-                Intent intent2 = new Intent(getApplicationContext(), CallActivity.class);
-                intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
-                startActivity(intent2);
-            }*/
             checkDevice();
         }
         return super.onStartCommand(intent, flags, startId);

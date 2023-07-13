@@ -1,5 +1,6 @@
 package com.colorcall.callerscreen.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -30,7 +31,7 @@ import java.util.regex.Pattern;
 
 public class PhoneUtils {
     private static PhoneUtils phoneUtils;
-    public Map<String, String> contacts = new HashMap();
+    public Map<String, String> contacts = new HashMap<>();
     public PhoneListener listener;
     public static Context context;
     public interface PhoneListener {
@@ -77,6 +78,7 @@ public class PhoneUtils {
         }.start();
     }
 
+    @SuppressLint("Range")
     public void getListNameContact() {
         this.contacts.clear();
         try {

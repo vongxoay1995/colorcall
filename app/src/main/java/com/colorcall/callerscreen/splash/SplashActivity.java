@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +22,6 @@ import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.update.UpdateManager;
 import com.colorcall.callerscreen.utils.AppUtils;
-import com.facebook.ads.NativeAdLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -36,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -53,25 +50,16 @@ public class SplashActivity extends AppCompatActivity {
     LinearLayout layoutSeekbar;
     @BindView(R.id.layout_skip)
     LinearLayout layoutSkip;
-    @BindView(R.id.btnStart)
-    TextView btnStart;
     private int progress;
     private String ID_ADS = "ca-app-pub-3222539657172474/5177481580";
-    private String ID_FB = "1205962693239181_1286419175193532";
-    private String ID_FB_TEST = "YOUR_PLACEMENT_ID";
     private InterstitialAd mInterstitialAd;
     private Analystic analystic;
     private Disposable disposable;
     private boolean fullAdsLoaded = false;
     private boolean loadFailed = false;
-    private boolean loadFailedFB = false;
     private boolean endTimeTick;
     private String idInter;
     private UpdateManager mUpdateManager;
-    @BindView(R.id.native_ad_container)
-    NativeAdLayout nativeAdLayout;
-    private com.facebook.ads.NativeAd nativeAdFB;
-    private LinearLayout adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,11 +171,6 @@ public class SplashActivity extends AppCompatActivity {
         progress = 100;
     }
 
-    public void hideLoadingSeekbar() {
-        layoutLoading.setVisibility(View.VISIBLE);
-        layoutSeekbar.setVisibility(View.INVISIBLE);
-    }
-
     private void countTimer() {
         Log.e("TAN", "countTimer: " + seekbar.getProgress());
         if (seekbar.getProgress() < 100) {
@@ -197,24 +180,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (disposable != null) {
                     disposable.dispose();
                 }
-            } /*else if (loadFailed) {
-                if (loadFailedFB) {
-                    hideLoading();
-                    endTimeTick = true;
-                    if (disposable != null) {
-                        disposable.dispose();
-                    }
-                    if (allowAdsShow) {
-                        skip();
-                    }
-                } else if (nativeAdFB.isAdLoaded()) {
-                    inflateAd(nativeAdFB);
-                    hideLoadingSeekbar();
-                    if (disposable != null) {
-                        disposable.dispose();
-                    }
-                }
-            }*/
+            }
         } else {
             hideLoading();
             endTimeTick = true;
@@ -262,18 +228,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         allowAdsShow = false;
-    }
-
-    @OnClick({R.id.btnStart, R.id.layout_skip})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btnStart:
-            case R.id.layout_skip:
-                skip();
-                break;
-        }
-        analystic.trackEvent(ManagerEvent.splashStart());
-
     }
 
     public void skip() {

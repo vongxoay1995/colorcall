@@ -1,11 +1,9 @@
 package com.colorcall.callerscreen.application;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.multidex.MultiDex;
-import androidx.multidex.MultiDexApplication;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
@@ -16,7 +14,6 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.facebook.FacebookSdk;
 import com.facebook.ads.AdSettings;
 import com.facebook.ads.AudienceNetworkAds;
-import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.tasks.OnCanceledListener;
@@ -35,19 +32,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class ColorCallApplication extends MultiDexApplication {
+public class ColorCallApplication extends Application {
     private FirebaseRemoteConfig firebaseRemoteConfig;
 
     public void onCreate() {
         super.onCreate();
-        MultiDex.install(this);
-        MobileAds.initialize(this, initializationStatus -> {
-        });
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MobileAds.initialize(ColorCallApplication.this, initializationStatus -> {
+                });
+            }
+        }).start();
         Hawk.init(this).build();
         loadData();
         DataManager.getInstance().init(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
         if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
             List<String> testDeviceIds = Arrays.asList("C672C9D51F65E8B9B0345F9F8E4F7CC1");
@@ -55,12 +55,8 @@ public class ColorCallApplication extends MultiDexApplication {
             MobileAds.setRequestConfiguration(configuration);
             AdSettings.addTestDevice("90b91733-6634-4148-8e85-cdcf4b60902f");
         }
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         AudienceNetworkAds.initialize(this);
-        configFirebaseRemote();
-       /* if(!HawkHelper.isFirstAB()){
-            configFirebaseRemote();
-        }*/
+       // configFirebaseRemote();
     }
     @SuppressLint("StaticFieldLeak")
     private void loadData() {

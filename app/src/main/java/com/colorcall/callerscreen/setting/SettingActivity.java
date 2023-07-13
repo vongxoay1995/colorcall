@@ -4,14 +4,11 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,21 +25,12 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionFlashListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdOptionsView;
-import com.facebook.ads.MediaView;
-import com.facebook.ads.NativeAdLayout;
-import com.facebook.ads.NativeAdListener;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,8 +65,6 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     SwitchCompat swFlash;
     @BindView(R.id.layoutFlash)
     RelativeLayout layoutFlash;
-    @BindView(R.id.native_ad_container)
-    NativeAdLayout nativeAdLayout;
     @BindView(R.id.fl_adplaceholder)
     FrameLayout frameLayout;
     private LinearLayout adView;
@@ -86,7 +72,6 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private Analystic analystic;
     private boolean isFlashState, isCallState;
     private boolean isResultDenyPermission, isResultDenyCallPermission;
-    private com.facebook.ads.NativeAd nativeAdFB;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
@@ -107,7 +92,6 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         } else {
             idGG = ID_ADS_GG;
         }
-        //idGG = ID_ADS_GG;
         AdLoader.Builder builder = new AdLoader.Builder(this, idGG)
                 .forNativeAd(nativeAd -> {
                     boolean isDestroyed = isDestroyed();
@@ -131,95 +115,17 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         super.onAdFailedToLoad(loadAdError);
                         frameLayout.setVisibility(View.GONE);
-                        loadNativeAdFb();
                     }
                 });
         AdLoader adLoader = builder.build();
         adLoader.loadAd(new AdRequest.Builder().build());
     }
-    private void loadNativeAdFb() {
-        nativeAdFB = new com.facebook.ads.NativeAd(this, "1205962693239181_1205974269904690");
-        NativeAdListener nativeAdListener = new NativeAdListener() {
-            @Override
-            public void onMediaDownloaded(Ad ad) {
-            }
 
-            @Override
-            public void onError(Ad ad, AdError adError) {
-            }
-
-            @Override
-            public void onAdLoaded(Ad ad) {
-                if (nativeAdFB == null || nativeAdFB != ad) {
-                    return;
-                }
-                // Inflate Native Ad into Container
-                inflateAd(nativeAdFB);
-            }
-
-            @Override
-            public void onAdClicked(Ad ad) {
-            }
-
-            @Override
-            public void onLoggingImpression(Ad ad) {
-
-            }
-        };
-
-        // Request an ad
-        nativeAdFB.loadAd(
-                nativeAdFB.buildLoadAdConfig()
-                        .withAdListener(nativeAdListener)
-                        .build());
-    }
-
-    private void inflateAd(com.facebook.ads.NativeAd nativeAdFB) {
-        nativeAdFB.unregisterView();
-        LayoutInflater inflater = LayoutInflater.from(this);
-        adView = (LinearLayout) inflater.inflate(R.layout.native_ad_layout, nativeAdLayout, false);
-        nativeAdLayout.addView(adView);
-
-        // Add the AdOptionsView
-        LinearLayout adChoicesContainer = findViewById(R.id.ad_choices_container);
-        AdOptionsView adOptionsView = new AdOptionsView(this, nativeAdFB, nativeAdLayout);
-        adChoicesContainer.removeAllViews();
-        adChoicesContainer.addView(adOptionsView, 0);
-
-        // Create native UI using the ad metadata.
-        MediaView nativeAdIcon = adView.findViewById(R.id.native_ad_icon);
-        TextView nativeAdTitle = adView.findViewById(R.id.native_ad_title);
-        MediaView nativeAdMedia = adView.findViewById(R.id.native_ad_media);
-        TextView nativeAdSocialContext = adView.findViewById(R.id.native_ad_social_context);
-        TextView nativeAdBody = adView.findViewById(R.id.native_ad_body);
-        TextView sponsoredLabel = adView.findViewById(R.id.native_ad_sponsored_label);
-        Button nativeAdCallToAction = adView.findViewById(R.id.native_ad_call_to_action);
-
-        // Set the Text.
-        nativeAdTitle.setText(nativeAdFB.getAdvertiserName());
-        nativeAdBody.setText(nativeAdFB.getAdBodyText());
-        nativeAdSocialContext.setText(nativeAdFB.getAdSocialContext());
-        nativeAdCallToAction.setVisibility(nativeAdFB.hasCallToAction() ? View.VISIBLE : View.INVISIBLE);
-        nativeAdCallToAction.setText(nativeAdFB.getAdCallToAction());
-        sponsoredLabel.setText(nativeAdFB.getSponsoredTranslation());
-
-        // Create a list of clickable views
-        List<View> clickableViews = new ArrayList<>();
-        clickableViews.add(nativeAdTitle);
-        clickableViews.add(nativeAdCallToAction);
-
-        // Register the Title and CTA button to listen for clicks.
-        nativeAdFB.registerViewForInteraction(
-                adView, nativeAdMedia, nativeAdIcon, clickableViews);
-    }
 
     @Override
     protected void onDestroy() {
         if (nativeAd != null) {
             nativeAd.destroy();
-        }
-        if (nativeAdFB != null) {
-            nativeAdFB.destroy();
         }
         super.onDestroy();
     }
@@ -282,7 +188,6 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 analystic.trackEvent(ManagerEvent.settingAdsClick());
                 return;
             default:
-                return;
         }
     }
 

@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.apply;
 
+import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
@@ -57,8 +59,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
-
 public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener,
         DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener{
     @BindView(R.id.img_background_call)
@@ -100,12 +100,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private Dialog dialog;
     private BannerAdsUtils bannerAdsUtils;
     private int posRandom;
-    private String id_ads = "ca-app-pub-3222539657172474/5724276494";
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
-        setTranslucent();
+        //setTranslucent();
+        AppUtils.changeStatusBarColor(this,R.color.blackAlpha30);
         posRandom = getIntent().getIntExtra(Constant.POS_RANDOM, 0);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
@@ -118,10 +118,9 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     private void loadAdsBanner() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/9030792883";
-        String ID_ADS_FB = "1205962693239181_1205995093235941";
-        bannerAdsUtils.setIdAds(ID_ADS_GG,ID_ADS_FB);
+        bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
-        bannerAdsUtils.showMediationBannerAds();
+        bannerAdsUtils.loadAds();
     }
 
 
@@ -141,9 +140,9 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     }
 
     public boolean checkShowInter() {
-        if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
+       /* if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
             return false;
-        }
+        }*/
         return true;
     }
 
@@ -321,14 +320,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         finish();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(bannerAdsUtils!=null){
-            bannerAdsUtils.destroyFb();
-        }
-    }
-
     private void applyBgCall() {
         int countRate = HawkHelper.getCoutShowRate();
         countRate++;
@@ -481,7 +472,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     public void setTranslucent() {
         Window w = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             AppUtils.showFullHeader(this, layoutHead);
         }
@@ -494,5 +485,4 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
         startActivity(intent);
     }
-
 }

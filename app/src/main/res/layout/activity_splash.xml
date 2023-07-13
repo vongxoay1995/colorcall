@@ -74,16 +74,6 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_16sdp" />
     </LinearLayout>
-    <com.facebook.ads.NativeAdLayout
-        android:id="@+id/native_ad_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="@dimen/_10sdp"
-        android:orientation="vertical" />
     <RelativeLayout
         android:id="@+id/layout_loading"
         android:layout_width="match_parent"
@@ -119,22 +109,5 @@
                 android:progressDrawable="@drawable/bg_seek_bar"
                 android:thumb="@null" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/btnStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:background="@drawable/bg_white_radius"
-            android:fontFamily="@font/roboto_medium"
-            android:paddingLeft="@dimen/_50sdp"
-            android:paddingTop="@dimen/_10sdp"
-            android:paddingRight="@dimen/_50sdp"
-            android:paddingBottom="@dimen/_10sdp"
-            android:text="@string/start"
-            android:textSize="@dimen/_14sdp"
-            android:textColor="@color/colorHeaderMain"
-            android:visibility="invisible" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

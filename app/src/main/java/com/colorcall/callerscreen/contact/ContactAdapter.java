@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.contact;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,11 +67,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public List<String> getContactSelected() {
         ArrayList arrayList = new ArrayList();
-        /*for (ContactInfor contactInfor : this.listContact) {
-            if (contactInfor.isChecked()) {
-                Log.e("TAN", "check1: "+contactInfor.getDisplayName());
-            }
-        }*/
         for (ContactInfor contactInfor : this.listTemp) {
             if (contactInfor.isChecked()) {
                 arrayList.add(contactInfor.getContactId());
@@ -121,7 +115,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     contactInfor.setChecked(imgSelectContact.isChecked());
                     return;
                 default:
-                    return;
             }
         }
     }

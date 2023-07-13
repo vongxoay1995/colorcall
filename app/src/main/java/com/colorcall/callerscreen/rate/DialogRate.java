@@ -50,17 +50,15 @@ public class DialogRate extends Dialog {
     @BindView(R.id.txtAnotherFeedback)
     EditText edtAnotherFeedback;
     private int rate;
-    private StringBuilder sb = new StringBuilder();
+    private final StringBuilder sb = new StringBuilder();
     private boolean isClickMoreVideo, isClickMoreImage, isClickMoreAudio, isClickLeastAds;
-    private DialogRateListener dialogRateListener;
+    private final DialogRateListener dialogRateListener;
     private String content = "FeedBack Call Color ";
     private RelativeLayout.LayoutParams layoutParams;
-    private Activity activity;
-    private Analystic analystic;
+    private final Analystic analystic;
     public DialogRate(Activity context, DialogRateListener dialogRateListener) {
         super(context);
-        activity = context;
-        analystic= Analystic.getInstance(activity);
+        analystic= Analystic.getInstance(context);
         this.dialogRateListener = dialogRateListener;
         init(context);
     }

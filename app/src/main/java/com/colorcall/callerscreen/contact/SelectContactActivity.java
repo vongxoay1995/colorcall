@@ -1,5 +1,6 @@
 package com.colorcall.callerscreen.contact;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -83,7 +84,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
 
     public void setTranslucent() {
         Window w = getWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             AppUtils.showFullHeader(this, layoutHead);
         }
@@ -114,8 +115,9 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contact);
         ButterKnife.bind(this);
+        AppUtils.changeStatusBarColor(this,R.color.color_1E1E1E);
         init();
-        setTranslucent();
+        //setTranslucent();
         analystic= Analystic.getInstance(this);
     }
 
@@ -198,10 +200,10 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             Cursor query = contentResolver.query(uri, infors, null, null, "sort_key");
             if (query != null) {
                 while (query.moveToNext()) {
-                    String contact_id = query.getString(query.getColumnIndex(infors[0]));
-                    String display_name = query.getString(query.getColumnIndex(infors[1]));
-                    String data1 = query.getString(query.getColumnIndex(infors[2]));
-                    String photo_uri = query.getString(query.getColumnIndex(infors[3]));
+                    @SuppressLint("Range") String contact_id = query.getString(query.getColumnIndex(infors[0]));
+                    @SuppressLint("Range") String display_name = query.getString(query.getColumnIndex(infors[1]));
+                    @SuppressLint("Range") String data1 = query.getString(query.getColumnIndex(infors[2]));
+                    @SuppressLint("Range") String photo_uri = query.getString(query.getColumnIndex(infors[3]));
                     if (!linkedHashSet.contains(new ContactInfor(contact_id, display_name, data1, photo_uri))) {
                         linkedHashSet.add(new ContactInfor(contact_id, display_name, data1, photo_uri));
                     }

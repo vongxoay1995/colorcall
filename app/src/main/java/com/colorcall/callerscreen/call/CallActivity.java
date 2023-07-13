@@ -65,17 +65,11 @@ public class CallActivity extends AppCompatActivity {
     ImageView imgReject;
     @BindView(R.id.vdo_background_call)
     FullScreenVideoView vdoBgCall;
-    private String phoneNumber = "";
     public boolean isDisable;
-    private Bitmap bmpAvatar;
-    private String name;
-    private int typeBgCall;
     private String contactId="";
     private Background backgroundSelect,back_ground_contact;
-    private TelephonyManager telephonyManager;
     private ITelephony telephonyService;
     private Analystic analystic;
-    private Contact mContact;
     LocalBroadcastManager mLocalBroadcastManager;
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -130,13 +124,13 @@ public class CallActivity extends AppCompatActivity {
     }
     // crash fire base if not permission contact
     private void showViewCall() {
-        phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
+        String phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
         backgroundSelect = HawkHelper.getBackgroundSelect();
         if (backgroundSelect != null) {
-            typeBgCall = backgroundSelect.getType();
+            int typeBgCall = backgroundSelect.getType();
             try {
                 ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
-                name = contactRetrieve.getName();
+                String name = contactRetrieve.getName();
                 contactId = contactRetrieve.getContact_id();
                 txtName.setText(name);
                 if (name.equals("")) {
@@ -145,7 +139,7 @@ public class CallActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
+            Bitmap bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
             imgAvatar.setImageBitmap(bmpAvatar);
             txtPhoneNumber.setText(String.valueOf(phoneNumber));
             vdoBgCall.setVisibility(View.VISIBLE);
@@ -153,7 +147,7 @@ public class CallActivity extends AppCompatActivity {
                     .where(ContactDao.Properties.Contact_id.eq(contactId))
                     .list();
             if(listQueryContactID.size()>0){
-                mContact = listQueryContactID.get(0);
+                Contact mContact = listQueryContactID.get(0);
                 back_ground_contact = new Gson().fromJson(mContact.getBackground(),Background.class);
             }
             if(back_ground_contact!=null){
@@ -184,7 +178,7 @@ public class CallActivity extends AppCompatActivity {
     }
 
     private void handlingCallState() {
-        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         Class clazz;
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -246,8 +240,7 @@ public class CallActivity extends AppCompatActivity {
         if (backgroundSelect.getPathItem().contains("storage") || backgroundSelect.getPathItem().contains("/data/data") || backgroundSelect.getPathItem().contains("data/user/")) {
             sPath = backgroundSelect.getPathItem();
         } else {
-            String uriPath = "android.resource://" + getPackageName() + backgroundSelect.getPathItem();
-            sPath = uriPath;
+            sPath = "android.resource://" + getPackageName() + backgroundSelect.getPathItem();
         }
         vdoBgCall.setVideoURI(Uri.parse(sPath));
         vdoBgCall.setOnErrorListener((mp, what, extra) -> {

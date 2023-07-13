@@ -12,7 +12,6 @@ public class HawkHelper {
     private static String BACKGROUND_SELECT = "BACKGROUND_SELECT";
     private static String ENABLE_FLASH = "ENABLE_FLASH";
 
-    private static String LIST_CATEGORY = "LIST_CATEGORY";
     private static String LIST_BACKGROUND = "LIST_BACKGROUND";
     private static String TIME_STAMP = "TIME_STAMP";
     private static String LAST_TIME_SHOW_INTER = "LAST_TIME_SHOW_INTER";

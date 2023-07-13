@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.utils;
 
+import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -37,6 +39,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.colorcall.callerscreen.R;
@@ -56,8 +59,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
-import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
 public class AppUtils {
     public static boolean checkPermission(Context context, String[] permission) {
@@ -436,6 +437,12 @@ public class AppUtils {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+    public static void changeStatusBarColor(Activity activity, int color) {
+        Window window = activity.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ResourcesCompat.getColor(activity.getResources(),color,null));
     }
 
     public static String openCameraIntent(Fragment fragment, Activity activity, int requestCode) {

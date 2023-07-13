@@ -320,11 +320,6 @@
                     android:id="@+id/fl_adplaceholder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-                <com.facebook.ads.NativeAdLayout
-                    android:id="@+id/native_ad_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
             </RelativeLayout>
 
         </LinearLayout>

@@ -284,7 +284,6 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ((ViewHolder) holder).onBind(position);
                 return;
             default:
-                return;
         }
     }
 

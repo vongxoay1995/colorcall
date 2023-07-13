@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -79,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        AppUtils.showFullHeader(this, layout_head);
+        AppUtils.changeStatusBarColor(this,R.color.colorHeaderMain);
+        //AppUtils.showFullHeader(this, layout_head);
         loadDataApi(true);
         analystic = Analystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         }
         disableToolTipTextTab();
         KeyboardVisibilityEvent.setEventListener(this, this);
-        //MediationTestSuite.launch(MainActivity.this);
     }
 
     private void moveStore() {
@@ -165,11 +164,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
-        //String ID_ADS_FB = "1205962693239181_1205972196571564";
-        String ID_ADS_FB = "YOUR_PLACEMENT_ID";
-        bannerAdsUtils.setIdAds(ID_ADS_GG,ID_ADS_FB);
+        bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
-        bannerAdsUtils.showMediationBannerAds();
+        bannerAdsUtils.loadAds();
     }
 
     @Override
@@ -183,14 +180,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         layoutAds.setVisibility(View.GONE);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(bannerAdsUtils!=null){
-            bannerAdsUtils.destroyFb();
-        }
-        InterstitialUtil.getInstance().onDestroy();
-    }
 
     public void refreshCalApi() {
         loadDataApi(false);
@@ -272,20 +261,16 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Override
     public void onRate(int rate) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ReviewManager reviewManager = ReviewManagerFactory.create(this);
-            Task<ReviewInfo> request = reviewManager.requestReviewFlow();
-            request.addOnSuccessListener(result -> {
-                Task<Void> flow = reviewManager.launchReviewFlow(this, result);
-                flow.addOnSuccessListener(result1 -> {
-                    analystic.trackEvent(ManagerEvent.rateReview(rate));
-                    HawkHelper.setDialogShowRate(false);
-                }).addOnFailureListener(e -> {
-                });
-            }).addOnFailureListener(e -> moveStore());
-        } else {
-            moveStore();
-        }
+        ReviewManager reviewManager = ReviewManagerFactory.create(this);
+        Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+        request.addOnSuccessListener(result -> {
+            Task<Void> flow = reviewManager.launchReviewFlow(this, result);
+            flow.addOnSuccessListener(result1 -> {
+                analystic.trackEvent(ManagerEvent.rateReview(rate));
+                HawkHelper.setDialogShowRate(false);
+            }).addOnFailureListener(e -> {
+            });
+        }).addOnFailureListener(e -> moveStore());
     }
 
     @Override

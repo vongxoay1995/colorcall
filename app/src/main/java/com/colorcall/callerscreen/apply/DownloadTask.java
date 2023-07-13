@@ -3,7 +3,6 @@ package com.colorcall.callerscreen.apply;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
-import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -81,7 +80,7 @@ public class DownloadTask  extends AsyncTask<String, Integer, String> {
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 getClass().getName());
-        mWakeLock.acquire();
+        mWakeLock.acquire(10*60*1000L );
         if (listener!=null){
             listener.onPreExecute();
         }
