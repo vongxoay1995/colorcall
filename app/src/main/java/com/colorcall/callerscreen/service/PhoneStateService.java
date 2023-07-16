@@ -28,7 +28,7 @@ import com.colorcall.callerscreen.utils.PhoneUtils;
 public class PhoneStateService extends Service {
     public TelephonyManager telephony;
     public PhoneStateListener phoneStateListener;
-    public String number;
+    public static String number;
 
     public static void startService(Context context) {
         ContextCompat.startForegroundService(context, new Intent(context, PhoneStateService.class));
@@ -37,7 +37,9 @@ public class PhoneStateService extends Service {
     public static void stopService(Context context) {
         context.stopService(new Intent(context, PhoneStateService.class));
     }
-
+    public static void setNumberPhone(String numberPhone) {
+        number = numberPhone;
+    }
     @Nullable
     public IBinder onBind(Intent intent) {
         return null;

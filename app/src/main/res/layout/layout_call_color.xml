@@ -2,7 +2,6 @@
 <com.colorcall.callerscreen.custom.IncomingCallView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#ED1515"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.colorcall.callerscreen.utils.DynamicImageView
@@ -19,13 +18,13 @@
         />
     <ImageView
         android:id="@+id/imgExit"
-        android:layout_width="@dimen/_45sdp"
-        android:layout_height="@dimen/_45sdp"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
         android:layout_alignParentEnd="true"
         android:padding="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_35sdp"
-        app:srcCompat="@drawable/ic_exit"/>
+        android:layout_marginTop="@dimen/_25sdp"
+        app:srcCompat="@drawable/ic_close_round"/>
     <LinearLayout
         android:id="@+id/layout_content"
         android:layout_width="match_parent"

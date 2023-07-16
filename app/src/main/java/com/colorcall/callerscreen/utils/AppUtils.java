@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.utils;
 import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
 import android.app.Activity;
+import android.app.AppOpsManager;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -18,6 +19,7 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
@@ -58,6 +60,7 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class AppUtils {
@@ -91,10 +94,12 @@ public class AppUtils {
         else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             return Settings.canDrawOverlays(context);
         } else {
+            Log.e("TAN", "canDrawOverlays: 1");
             if (Settings.canDrawOverlays(context)) return true;
             try {
                 WindowManager mgr = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
                 if (mgr == null) return false; //getSystemService might return null
+                Log.e("TAN", "canDrawOverlays: 2");
                 View viewToAdd = new View(context);
                 WindowManager.LayoutParams params = new WindowManager.LayoutParams(0, 0, android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ?
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
@@ -102,27 +107,91 @@ public class AppUtils {
                 viewToAdd.setLayoutParams(params);
                 mgr.addView(viewToAdd, params);
                 mgr.removeView(viewToAdd);
+                Log.e("TAN", "canDrawOverlays: 3");
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            Log.e("TAN", "canDrawOverlays: 4");
+            return false;
+        }
+    }
+
+    public static boolean canDrawOverlayViews(Context context) {
+        if (Build.VERSION.SDK_INT < 21) {
+            return true;
+        }
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return Settings.canDrawOverlays(context);
+            }else return true;
+        } catch (NoSuchMethodError e) {
+            return canDrawOverlaysUsingReflection(context);
+        }
+    }
+
+    public static boolean canDrawOverlaysUsingReflection(Context context) {
+
+        try {
+
+            AppOpsManager manager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            Class clazz = AppOpsManager.class;
+            Method dispatchMethod = clazz.getMethod("checkOp", new Class[]{int.class, int.class, String.class});
+            //AppOpsManager.OP_SYSTEM_ALERT_WINDOW = 24
+            int mode = (Integer) dispatchMethod.invoke(manager, new Object[]{24, Binder.getCallingUid(), context.getApplicationContext().getPackageName()});
+
+            return AppOpsManager.MODE_ALLOWED == mode;
+
+        } catch (Exception e) {
             return false;
         }
     }
 
     public static void showDrawOverlayPermissionDialog(Context context) {
+
+        Log.e("TAN", "showDrawOverlayPermissionDialog: ");
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         alertDialog.setTitle(context.getString(R.string.overlay_permision));
         alertDialog.setMessage(context.getString(R.string.overlay_permision_content));
         alertDialog.setCancelable(false);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.ok),
                 (dialog, which) -> {
-                    Intent intent = null;
-                    if (Build.VERSION.SDK_INT >= 23) {
-                        intent = new Intent("android.settings.action.MANAGE_OVERLAY_PERMISSION", Uri.parse("package:" + context.getPackageName()));
-                        ((Activity) context).startActivityForResult(intent, Constant.REQUEST_OVERLAY);
-                        PermissionOverLayActivity.open((Activity) context,0);
+                    Intent intent2 = null;
+                    Log.e("TAN", "showDrawOverlayPermissionDialog: "+OpenDrawSettings.manufacturer +"#"+context+"##"+context.getPackageName());
+                    if (OpenDrawSettings.manufacturer.contains("xiaomi")) {
+                        Log.e("TAN", "showDrawOverlayPermissionDialog: 11111");
+                        // Context b2 = OpenDrawSettings.a.b();
+                        Intent intent = new Intent("miui.intent.action.APP_PERM_EDITOR");
+                        intent.putExtra("extra_pkgname", context.getPackageName());
+                        if (!OpenDrawSettings.queryIntentActivity(context, intent)) {
+                            Log.e("TAN", "showDrawOverlayPermissionDialog: aaaaa");
+                            intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
+                            if (!OpenDrawSettings.queryIntentActivity(context, intent)) {
+                                Log.e("TAN", "showDrawOverlayPermissionDialog: bbbbb");
+                                intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.PermissionsEditorActivity");
+                                if (!OpenDrawSettings.queryIntentActivity(context, intent)) {
+                                    Log.e("TAN", "showDrawOverlayPermissionDialog: ccccc");
+                                    intent2 = OpenDrawSettings.getIntentDefault(context);
+                                }
+                            }
+                        }
+                        Log.e("TAN", "showDrawOverlayPermissionDialog: 2222 "+intent2);
+                        if (intent2 != null) {
+                            Log.e("TAN", "showDrawOverlayPermissionDialog: 33333");
+                            ((Activity) context).startActivityForResult(intent2, Constant.REQUEST_OVERLAY);
+                            PermissionOverLayActivity.open(context, 0);
+                        }
+                    } else {
+
+                        Intent intent = null;
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            intent = new Intent("android.settings.action.MANAGE_OVERLAY_PERMISSION", Uri.parse("package:" + context.getPackageName()));
+                            ((Activity) context).startActivityForResult(intent, Constant.REQUEST_OVERLAY);
+                            PermissionOverLayActivity.open(context, 0);
+                        }
                     }
+
+
                     dialog.dismiss();
                 });
         alertDialog.show();
@@ -148,7 +217,7 @@ public class AppUtils {
                 .setNegativeButton(R.string.ok, (dialogInterface, i) -> {
                     dialogInterface.dismiss();
                     ((Activity) context).startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS), Constant.REQUEST_NOTIFICATION_ACCESS);
-                    PermissionOverLayActivity.open((Activity) context,1);
+                    PermissionOverLayActivity.open((Activity) context, 1);
                 });
         builder.setCancelable(false);
         AlertDialog getNotifiAcessDialog = builder.create();
@@ -255,8 +324,13 @@ public class AppUtils {
             AppUtils.showDrawOverlayPermissionDialog(context);
         }
     }
-
+    public static void checkDrawOverlayApp2(Context context) {
+        if (Build.VERSION.SDK_INT >= 23 && !AppUtils.canDrawOverlayViews(context)) {
+            AppUtils.showDrawOverlayPermissionDialog(context);
+        }
+    }
     public static boolean checkDrawOverlay(Context context) {
+        Log.e("TAN", "checkDrawOverlay: " + AppUtils.canDrawOverlays(context));
         return Build.VERSION.SDK_INT < 23 || AppUtils.canDrawOverlays(context);
     }
 
@@ -334,6 +408,7 @@ public class AppUtils {
         // native ad view with this native ad.
         adView.setNativeAd(nativeAd);
     }
+
     public static Bitmap getContactPhoto(Context context, String number) {
         Bitmap photo = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.user);
@@ -438,11 +513,12 @@ public class AppUtils {
         }
         return result;
     }
+
     public static void changeStatusBarColor(Activity activity, int color) {
         Window window = activity.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ResourcesCompat.getColor(activity.getResources(),color,null));
+        window.setStatusBarColor(ResourcesCompat.getColor(activity.getResources(), color, null));
     }
 
     public static String openCameraIntent(Fragment fragment, Activity activity, int requestCode) {
@@ -513,6 +589,7 @@ public class AppUtils {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
     public static void hideSoftKeyBoard(Activity activity) {
         if (activity != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -521,9 +598,10 @@ public class AppUtils {
                 inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
     }
+
     private static long mLastClickTime = 0;
 
-    public static boolean allowViewClick(){
+    public static boolean allowViewClick() {
         if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
             return false;
         }

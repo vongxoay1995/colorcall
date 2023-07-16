@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -37,16 +38,14 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
 import com.colorcall.callerscreen.database.DataManager;
-import com.colorcall.callerscreen.main.PhoneNumber;
 import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.colorcall.callerscreen.service.AcceptCallActivity;
+import com.colorcall.callerscreen.service.PhoneState;
 import com.colorcall.callerscreen.service.PhoneStateService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.gson.Gson;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -56,12 +55,12 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class IncomingCallView extends RelativeLayout {
-   // private LayoutCallColorBinding binding;
+    // private LayoutCallColorBinding binding;
     private Context context;
     public WindowManager windowManager;
     public String numberPhone = "";
     public WindowManager.LayoutParams windowParams;
-    Background backgroundSelect,back_ground_contact;
+    Background backgroundSelect, back_ground_contact;
     private int typeBgCall;
     private String name;
     private String contactId = "";
@@ -76,6 +75,8 @@ public class IncomingCallView extends RelativeLayout {
     public TextView txtPhone;
     @BindView(R.id.profile_image)
     public CircleImageView profile_image;
+    @BindView(R.id.imgExit)
+    public ImageView imgExit;
     @BindView(R.id.vdo_background_call)
     public TextureVideoView vdo_background_call;
     @BindView(R.id.img_background_call)
@@ -84,6 +85,8 @@ public class IncomingCallView extends RelativeLayout {
     public ImageView btnAccept;
     @BindView(R.id.btnReject)
     public ImageView btnReject;
+    public PhoneState phoneState;
+
     public IncomingCallView(@NonNull Context context) {
         super(context);
         this.context = context;
@@ -142,28 +145,24 @@ public class IncomingCallView extends RelativeLayout {
         WindowManager windowManager = (WindowManager) getContext().getSystemService("window");
         this.windowManager = windowManager;
         windowManager.addView(this, this.windowParams);
-        ButterKnife.bind(this,this);
-        Log.e("TAN", "onFinishInflate: "+windowManager.getDefaultDisplay().getHeight());
-       // initData();
+        ButterKnife.bind(this, this);
+        Log.e("TAN", "onFinishInflate: " + windowManager.getDefaultDisplay().getHeight());
     }
 
     @Override
     protected void onAttachedToWindow() {
         Log.e("TAN", "onAttachedToWindow: ");
-       // register();
         super.onAttachedToWindow();
     }
-    public void onEvent(PhoneNumber eventBusMessage) {
-        Log.i("TAN", "sodt "+eventBusMessage.getPhone());
-    }
+
     @Override
     protected void onDetachedFromWindow() {
         Log.e("TAN", "onDetachedFromWindow: ");
-       // hide();
         super.onDetachedFromWindow();
     }
-    public void setInforContact(){
-        if (numberPhone!=null&&!numberPhone.equals("")){
+
+    public void setInforContact() {
+        if (numberPhone != null && !numberPhone.equals("")) {
             try {
                 Log.e("TAN", "initData: 1");
                 ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(numberPhone));
@@ -179,14 +178,15 @@ public class IncomingCallView extends RelativeLayout {
             txtPhone.setText(String.valueOf(numberPhone));
         }
     }
+
     public void initData() {
         backgroundSelect = HawkHelper.getBackgroundSelect();
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
-           // setInforContact();
             bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(numberPhone));
             profile_image.setImageBitmap(bmpAvatar);
             vdo_background_call.setVisibility(View.VISIBLE);
+            Glide.with(this).load(R.drawable.ic_exit).into(imgExit);
             Log.e("TAN", "initData: 2");
             List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
                     .where(ContactDao.Properties.Contact_id.eq(contactId))
@@ -243,16 +243,15 @@ public class IncomingCallView extends RelativeLayout {
                 release();
             }
         });
-    }
-    public void register() {
-        Log.e("TAN", "eventBus register");
-        EventBus.getDefault().register(this);
+        imgExit.setOnClickListener(v -> {
+            analystic.trackEvent(ManagerEvent.callWinDowExit());
+            if (phoneState != null) {
+                phoneState.release();
+            }
+            release();
+        });
     }
 
-    public void hide() {
-        EventBus.getDefault().unregister(this);
-        Log.e("TAN", "eventBus unreg");
-    }
 
     private void handlingCallState() {
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -285,7 +284,7 @@ public class IncomingCallView extends RelativeLayout {
         Log.e("TAN", "handlingBgCallVideo: 5");
         vdo_background_call.setVideoURI(Uri.parse(sPath));
         vdo_background_call.setOnErrorListener((mp, what, extra) -> {
-            Log.e("TAN", "handlingBgCallVideoERR: "+extra);
+            Log.e("TAN", "handlingBgCallVideoERR: " + extra);
             analystic.trackEvent(ManagerEvent.callVideoViewError(what, extra));
             release();
             return true;
@@ -331,6 +330,7 @@ public class IncomingCallView extends RelativeLayout {
         Animation anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call);
         btnAccept.startAnimation(anim8);
     }
+
     public void release() {
         if (this.windowManager != null) {
             /*gx gxVar = this.k;

@@ -14,16 +14,13 @@ import android.view.View;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.custom.IncomingCallView;
-import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.promt.PermissionOverLayActivity;
-import com.colorcall.callerscreen.utils.PhoneUtils;
 
-public class PhoneState extends PhoneStateListener implements PhoneUtils.PhoneListener {
+public class PhoneState extends PhoneStateListener /*implements PhoneUtils.PhoneListener*/ {
     public Context context;
     public Handler handler = new Handler();
-    //public RingIncomingView c;
     public AudioManager audio;
-    public int e = -1;
+    public int ringerMode = -1;
     IncomingCallView incomingCallView;
     public boolean isFirstRun;
 
@@ -39,29 +36,24 @@ public class PhoneState extends PhoneStateListener implements PhoneUtils.PhoneLi
     }
 
 
-    public final void a(int i) {
+    public final void setRinger(int mode) {
         try {
-            this.audio.setRingerMode(i);
+            this.audio.setRingerMode(mode);
         } catch (SecurityException unused) {
             NotificationManager notificationManager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
             if (Build.VERSION.SDK_INT >= 24 && notificationManager != null && !notificationManager.isNotificationPolicyAccessGranted()) {
                 this.context.startActivity(new Intent("android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS"));
-                this.handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        grantPermissionActivity();
-                    }
-                }, 100);
+                this.handler.postDelayed(() -> grantPermissionActivity(), 100);
             }
         }
     }
 
     public void release() {
         if (this.incomingCallView != null) {
-            int i = this.e;
+            int i = this.ringerMode;
             if (i != -1) {
-                a(i);
-                this.e = -1;
+                setRinger(i);
+                this.ringerMode = -1;
             }
             this.incomingCallView.release();
             this.incomingCallView = null;
@@ -69,19 +61,25 @@ public class PhoneState extends PhoneStateListener implements PhoneUtils.PhoneLi
     }
 
     public void onCallStateChanged(int i, String str) {
-        Contact contactBean;
         super.onCallStateChanged(i, str);
         state = i;
         Log.e("TAN", "onCallStateChanged: " + i + "##" + str);
-        showViewCall("094");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            PhoneUtils.get(context).getNumberPhoneWhenNull(PhoneState.this);
+        if (str==null||str.equals("")){
+            Log.e("TAN", "onCallStateChanged: number k co ");
+
+            str = PhoneStateService.number;
+            Log.e("TAN", "onCallStateChanged: number co r "+str);
+
         }
+        showViewCall(str);
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            PhoneUtils.get(context).getNumberPhoneWhenNull(PhoneState.this);
+        }*/
     }
 
     int state = 0;
 
-    @Override
+   /* @Override
     public void getNumPhone(String str) {
         Log.e("TAN", "getNumPhone: "+isFirstRun);
         if(!isFirstRun){
@@ -89,10 +87,8 @@ public class PhoneState extends PhoneStateListener implements PhoneUtils.PhoneLi
             if (incomingCallView!=null){
                 incomingCallView.setNumberPhone(str);
             }
-            Log.e("TAN", "getNumPhone ne: " + str);
-       // EventBus.getDefault().postSticky(new PhoneNumber(str));
         }
-    }
+    }*/
 
     public void showViewCall(String str) {
         //if (PermistionUtils.checkPermissionCall(this).a(this.context)) {
@@ -108,11 +104,12 @@ public class PhoneState extends PhoneStateListener implements PhoneUtils.PhoneLi
 
                 IncomingCallView incomingCallView =  (IncomingCallView) View.inflate(this.context, R.layout.layout_call_color, null);
                 this.incomingCallView = incomingCallView;
-                incomingCallView.initData();
-                incomingCallView.setNumberPhone(str);
-                if (this.e == -1) {
-                    this.e = this.audio.getRingerMode();
-                    a(1);
+                this.incomingCallView.phoneState = this;
+                this.incomingCallView.initData();
+                this.incomingCallView.setNumberPhone(str);
+                if (this.ringerMode == -1) {
+                    this.ringerMode = this.audio.getRingerMode();
+                    setRinger(1);
                     return;
                 }
                 return;

@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        AppUtils.changeStatusBarColor(this,R.color.colorHeaderMain);
-        if (HawkHelper.isEnableColorCall()){
+        AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
+        if (HawkHelper.isEnableColorCall()) {
             //PhoneStateService.startService(this);
         }
         //AppUtils.showFullHeader(this, layout_head);
@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         }
         disableToolTipTextTab();
         KeyboardVisibilityEvent.setEventListener(this, this);
+
+      //  AppUtils.checkDrawOverlayApp2(this);
     }
 
     private void moveStore() {
@@ -284,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
                 .setData(new Uri.Builder().scheme("mailto").build())
                 .putExtra(Intent.EXTRA_EMAIL, new String[]{"Call color <phamthanhtan.dev@gmail.com>"})
                 .putExtra(Intent.EXTRA_SUBJECT, "Feedback for the Call color app")
-                .putExtra(Intent.EXTRA_TEXT, content + " [with rate " + rate+"]");
+                .putExtra(Intent.EXTRA_TEXT, content + " [with rate " + rate + "]");
 
         ComponentName emailApp = intent.resolveActivity(getPackageManager());
         ComponentName unsupportedAction = ComponentName.unflattenFromString("com.android.fallback/.Fallback");
@@ -302,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onSignShowRate(SignApplyMain signApplyMain) {
         if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
-           showDialogRate();
+            showDialogRate();
         }
         EventBus.getDefault().removeStickyEvent(signApplyMain);
     }

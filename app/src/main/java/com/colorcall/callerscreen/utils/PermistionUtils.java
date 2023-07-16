@@ -10,6 +10,7 @@ import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_RE
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -46,7 +47,9 @@ public class PermistionUtils {
             ActivityCompat.requestPermissions(activity, permistion, Constant.PERMISSION_REQUEST_CODE_CALL_PHONE);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Log.e("TAN", "checkPermissionCall: "+AppUtils.canDrawOverlays(activity));
                 if (!AppUtils.canDrawOverlays(activity)) {
+                    Log.e("TAN", "checkPermissionCall: 111");
                     AppUtils.showDrawOverlayPermissionDialog(activity);
                 } else if (!AppUtils.checkNotificationAccessSettings(activity)) {
                     AppUtils.showNotificationAccess(activity);
