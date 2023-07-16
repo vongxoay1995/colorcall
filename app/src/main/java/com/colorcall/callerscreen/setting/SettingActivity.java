@@ -274,6 +274,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
 
     @Override
     public void onHasCallPermistion() {
+        if (isCallState){
+            //PhoneStateService.startService(this);
+        }else {
+            //PhoneStateService.stopService(this);
+        }
         HawkHelper.setStateColorCall(isCallState);
     }
 }

@@ -1,21 +1,20 @@
 package com.colorcall.callerscreen.utils;
 
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.util.Log;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import com.colorcall.callerscreen.constan.Constant;
-
 import static android.Manifest.permission.ANSWER_PHONE_CALLS;
 import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
+
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.colorcall.callerscreen.constan.Constant;
 
 public class PermistionUtils {
 

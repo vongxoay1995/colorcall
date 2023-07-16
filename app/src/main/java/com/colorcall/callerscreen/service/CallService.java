@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,9 +73,11 @@ public class CallService extends Service {
     private Analystic analystic;
     private LocalBroadcastManager mLocalBroadcastManager;
     private String name;
-    public WindowManager.LayoutParams mLayoutParams;
     private String contactId = "";
     private Contact mContact;
+    public WindowManager.LayoutParams mLayoutParams;
+
+
     private LayoutInflater inflater;
 
     @Nullable
@@ -85,6 +88,7 @@ public class CallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e("TAN", "onStartCommand: call service");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(ID_NOTIFICATION, NotificationUtil.initNotificationAndroidQ(this));
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -110,7 +114,7 @@ public class CallService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
     private void checkDevice() {
-        if (Build.MANUFACTURER != null&&(Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")
+      /*  if (Build.MANUFACTURER != null&&(Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")
                 || Build.MANUFACTURER.equalsIgnoreCase("realme"))
                 ||Build.MANUFACTURER.contains("INFINIX")) {
             showViewCallColor();
@@ -119,8 +123,8 @@ public class CallService extends Service {
             intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent2.putExtra(Constant.PHONE_NUMBER, phoneNumber);
             startActivity(intent2);
-        }
-       // showViewCallColor();
+        }*/
+        //showViewCallColor();
     }
 
     @Override

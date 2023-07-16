@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         AppUtils.changeStatusBarColor(this,R.color.colorHeaderMain);
+        if (HawkHelper.isEnableColorCall()){
+            //PhoneStateService.startService(this);
+        }
         //AppUtils.showFullHeader(this, layout_head);
         loadDataApi(true);
         analystic = Analystic.getInstance(this);

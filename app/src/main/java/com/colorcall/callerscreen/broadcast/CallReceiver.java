@@ -9,8 +9,7 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.service.CallService;
+import com.colorcall.callerscreen.service.PhoneStateService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.FlashUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -57,6 +56,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     }
 
     private void onCallStateChanged(Context context, int state) {
+        Log.e("TAN", "onCallStateChanged call receiver: "+state);
             switch (state) {
                 case TYPE_RINGGING_CALL:
                     if(phoneNumber!=null){
@@ -79,13 +79,14 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
 
     private void onIncommingCall(Context context, String number) {
         if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
-            intentCallService = new Intent(context, CallService.class);
+            /*intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(intentCallService);
             } else {
                 context.startService(intentCallService);
-            }
+            }*/
+            PhoneStateService.startService(context);
         }
     }
 
@@ -98,6 +99,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     @Override
     public void getNumPhone(String phoneNumb) {
         if(!isFirstRun){
+            Log.e("TAN", "getNumPhone: "+phoneNumb);
             phoneNumber = phoneNumb;
             isFirstRun = true;
             isBiggerAndroidP = false;

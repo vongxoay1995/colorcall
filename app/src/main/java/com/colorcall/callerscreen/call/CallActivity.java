@@ -179,6 +179,7 @@ public class CallActivity extends AppCompatActivity {
 
     private void handlingCallState() {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
         Class clazz;
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
