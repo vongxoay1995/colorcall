@@ -373,7 +373,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
-            if (AppUtils.canDrawOverlays(this)) {
+           // if (AppUtils.canDrawOverlays(this)) {
+            if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 }

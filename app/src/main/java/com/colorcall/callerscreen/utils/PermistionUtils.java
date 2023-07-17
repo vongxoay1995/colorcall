@@ -65,6 +65,10 @@ public class PermistionUtils {
             }
         }
     }
+
+
+
+
     public static void checkPermissionFlash(Activity activity, PermistionFlashListener listener) {
         String[] permistion = {
                 READ_PHONE_STATE,

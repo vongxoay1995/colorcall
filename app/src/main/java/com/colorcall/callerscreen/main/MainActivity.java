@@ -94,8 +94,11 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         }
         disableToolTipTextTab();
         KeyboardVisibilityEvent.setEventListener(this, this);
-
-      //  AppUtils.checkDrawOverlayApp2(this);
+      /*  if (!AppUtils.checkDrawOverlayApp2(this)) {
+            Log.e("TAN", "onCreate: ");
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 1);
+        }*/
     }
 
     private void moveStore() {
