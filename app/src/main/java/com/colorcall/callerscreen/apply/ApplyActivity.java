@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -375,10 +376,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
            // if (AppUtils.canDrawOverlays(this)) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
+                Log.e("TAN", "onRequestPermissionsResult: 11");
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 }
             } else {
+                Log.e("TAN", "onRequestPermissionsResult: 2222");
                 AppUtils.checkDrawOverlayApp(this);
             }
         } else if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
