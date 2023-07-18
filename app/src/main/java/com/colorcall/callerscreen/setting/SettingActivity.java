@@ -20,6 +20,7 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.service.PhoneStateService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
@@ -275,9 +276,9 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     @Override
     public void onHasCallPermistion() {
         if (isCallState){
-            //PhoneStateService.startService(this);
+            PhoneStateService.startService(this);
         }else {
-            //PhoneStateService.stopService(this);
+            PhoneStateService.stopService(this);
         }
         HawkHelper.setStateColorCall(isCallState);
     }

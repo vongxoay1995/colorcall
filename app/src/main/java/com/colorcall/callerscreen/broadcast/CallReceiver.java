@@ -87,8 +87,8 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
             } else {
                 context.startService(intentCallService);
             }*/
-            PhoneStateService.startService(context);
-            PhoneStateService.setNumberPhone(number);
+            //PhoneStateService.startService(context);
+           // PhoneStateService.setNumberPhone(number);
         }
     }
 

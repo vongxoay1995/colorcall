@@ -40,6 +40,7 @@ import com.colorcall.callerscreen.database.ContactDao;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.colorcall.callerscreen.service.AcceptCallActivity;
+import com.colorcall.callerscreen.service.CallState;
 import com.colorcall.callerscreen.service.PhoneState;
 import com.colorcall.callerscreen.service.PhoneStateService;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -86,6 +87,7 @@ public class IncomingCallView extends RelativeLayout {
     @BindView(R.id.btnReject)
     public ImageView btnReject;
     public PhoneState phoneState;
+    public CallState callState;
 
     public IncomingCallView(@NonNull Context context) {
         super(context);
@@ -248,6 +250,9 @@ public class IncomingCallView extends RelativeLayout {
             if (phoneState != null) {
                 phoneState.release();
             }
+            if (callState != null) {
+                callState.release();
+            }
             release();
         });
     }
@@ -342,7 +347,7 @@ public class IncomingCallView extends RelativeLayout {
             clearView();
             this.windowManager.removeViewImmediate(this);
             this.windowManager = null;
-            PhoneStateService.stopService(context);
+           // PhoneStateService.stopService(context);
         }
     }
 

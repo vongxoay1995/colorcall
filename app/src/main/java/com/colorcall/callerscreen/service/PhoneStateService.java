@@ -28,6 +28,7 @@ import com.colorcall.callerscreen.utils.PhoneUtils;
 public class PhoneStateService extends Service {
     public TelephonyManager telephony;
     public PhoneStateListener phoneStateListener;
+    public TelephonyCallback callStateListener;
     public static String number;
 
     public static void startService(Context context) {
@@ -70,6 +71,7 @@ public class PhoneStateService extends Service {
                 Log.e("TAN", "registerCallStateListener: 0");
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                     Log.e("TAN", "registerCallStateListener: 1");
+                    this.callStateListener = new CallState(this);
                     telephonyManager.registerTelephonyCallback(getMainExecutor(), callStateListener);
                     callStateListenerRegistered = true;
                 }
@@ -82,14 +84,14 @@ public class PhoneStateService extends Service {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
+    /*@RequiresApi(api = Build.VERSION_CODES.S)
     private static abstract class CallStateListener extends TelephonyCallback implements TelephonyCallback.CallStateListener {
         @Override
         abstract public void onCallStateChanged(int state);
-    }
+    }*/
 
     private boolean callStateListenerRegistered = false;
-    private CallStateListener callStateListener = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) ?
+  /*  private CallStateListener callStateListener = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) ?
             new CallStateListener() {
                 @Override
                 public void onCallStateChanged(int state) {
@@ -97,7 +99,7 @@ public class PhoneStateService extends Service {
                     // Handle call state change
                 }
             }
-            : null;
+            : null;*/
     public void onDestroy() {
         super.onDestroy();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

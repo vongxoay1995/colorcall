@@ -29,6 +29,7 @@ import com.colorcall.callerscreen.rate.DialogRate;
 import com.colorcall.callerscreen.response.AppClient;
 import com.colorcall.callerscreen.response.AppData;
 import com.colorcall.callerscreen.response.AppService;
+import com.colorcall.callerscreen.service.PhoneStateService;
 import com.colorcall.callerscreen.setting.SettingActivity;
 import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         ButterKnife.bind(this);
         AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
         if (HawkHelper.isEnableColorCall()) {
-            //PhoneStateService.startService(this);
+            PhoneStateService.startService(this);
         }
         //AppUtils.showFullHeader(this, layout_head);
         loadDataApi(true);
