@@ -79,4 +79,5 @@
     <string name="very_good">Très bon</string>
     <string name="notNow">Pas maintenant</string>
     <string name="skip_ads" >Sauter</string>
+    <string name="notify_msg_foreground">L\'écran d\'appel est en cours d\'exécution</string>
 </resources>

@@ -12,7 +12,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction()) && HawkHelper.isEnableColorCall()) {
             Log.e("TAN", "onReceive: boot");
-            PhoneStateService.startService(context);
+            PhoneService.startService(context);
         }
     }
 }

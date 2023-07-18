@@ -37,6 +37,7 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
 import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
@@ -237,6 +238,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     }
 
     public void setTheme() {
+        PhoneService.startService(this);
         HawkHelper.setStateColorCall(true);
         if (adapter != null) {
             List<String> listContactIdSelected = adapter.getContactSelected();
@@ -278,7 +280,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constant.REQUEST_OVERLAY) {
-            if (AppUtils.canDrawOverlays(this)) {
+            if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 }
@@ -293,12 +295,12 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
-            if (AppUtils.canDrawOverlays(this)) {
+            if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 }
             } else {
-                AppUtils.checkDrawOverlayApp(this);
+                AppUtils.showDrawOverlayApp(this);
             }
         }
     }

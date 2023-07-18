@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.telephony.TelephonyCallback;
 import android.util.Log;
 import android.view.View;
@@ -17,33 +18,36 @@ import androidx.annotation.RequiresApi;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.custom.IncomingCallView;
 import com.colorcall.callerscreen.promt.PermissionOverLayActivity;
+import com.colorcall.callerscreen.utils.PhoneUtils;
 
 @RequiresApi(api = Build.VERSION_CODES.S)
-public class CallState extends TelephonyCallback implements TelephonyCallback.CallStateListener {
+public class CallState extends TelephonyCallback implements TelephonyCallback.CallStateListener, PhoneUtils.PhoneListener {
     public Context context;
     public Handler handler = new Handler();
     public AudioManager audio;
     public int ringerMode = -1;
     IncomingCallView incomingCallView;
     int state = 0;
+    public boolean isFirstRun;
 
     public CallState(Context context) {
         this.context = context;
         this.audio = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
+
     @Override
     public void onCallStateChanged(int i) {
+
         state = i;
-        /*Log.e("TAN", "onCallStateChanged: " + i + "##" + str);
-        if (str==null||str.equals("")){
-            Log.e("TAN", "onCallStateChanged: number k co ");
+        showViewCall(PhoneService.number);
+        isFirstRun = false;
 
-            str = PhoneStateService.number;
-            Log.e("TAN", "onCallStateChanged: number co r "+str);
-
-        }*/
-        showViewCall();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Log.e("TAN", "onCallStateChanged: getNumberPhoneWhenNull");
+            PhoneUtils.get(context).getNumberPhoneWhenNull(CallState.this);
+        }
     }
+
     public void grantPermissionActivity() {
         Intent intent = new Intent(this.context, PermissionOverLayActivity.class);
         intent.putExtra(TYPE_PROMPT, 1);
@@ -74,23 +78,14 @@ public class CallState extends TelephonyCallback implements TelephonyCallback.Ca
             this.incomingCallView = null;
         }
     }
-    public void showViewCall() {
-        //if (PermistionUtils.checkPermissionCall(this).a(this.context)) {
-        Log.e("TAN", "showViewCall: "+state);
+
+    public void showViewCall(String str) {
         if (state != 0) {
             if (state == 1) {
-                   /* Context context = this.context;
-
-                    RingIncomingView ringIncomingView = (RingIncomingView) View.inflate(this.context, R.layout.layout_ring_incoming, null);
-                    this.c = ringIncomingView;
-                    ringIncomingView.j = this;
-                    ringIncomingView.a(contactBean, chosenTheme);*/
-
-                IncomingCallView incomingCallView =  (IncomingCallView) View.inflate(this.context, R.layout.layout_call_color, null);
-                this.incomingCallView = incomingCallView;
+                this.incomingCallView = (IncomingCallView) View.inflate(this.context, R.layout.layout_call_color, null);
                 this.incomingCallView.callState = this;
                 this.incomingCallView.initData();
-                this.incomingCallView.setNumberPhone("094");
+                this.incomingCallView.setNumberPhone(str);
                 if (this.ringerMode == -1) {
                     this.ringerMode = this.audio.getRingerMode();
                     setRinger(1);
@@ -103,5 +98,17 @@ public class CallState extends TelephonyCallback implements TelephonyCallback.Ca
         }
         release();
         // }
+    }
+
+    @Override
+    public void getNumPhone(String str) {
+        if(!isFirstRun){
+            isFirstRun = true;
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (incomingCallView!=null){
+                    incomingCallView.setNumberPhone(str);
+                }
+            });
+        }
     }
 }

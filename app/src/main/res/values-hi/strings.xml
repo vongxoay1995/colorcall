@@ -80,4 +80,5 @@
     <string name="very_good">बहुत अच्छा</string>
     <string name="notNow">अभी नहीं</string>
     <string name="skip_ads" >छोड़ें</string>
+    <string name="notify_msg_foreground">कॉल स्क्रीन चल रही है</string>
 </resources>

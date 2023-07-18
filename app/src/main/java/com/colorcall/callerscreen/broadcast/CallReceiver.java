@@ -9,7 +9,6 @@ import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.colorcall.callerscreen.service.PhoneStateService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.FlashUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -38,7 +37,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
                     phoneNumber = intent.getExtras().getString("incoming_number");
                     if (phoneNumber == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         isBiggerAndroidP = true;
-                        PhoneUtils.get(context).getNumberPhoneWhenNull(CallReceiver.this);
+                       // PhoneUtils.get(context).getNumberPhoneWhenNull(CallReceiver.this);
                     }
 
                     if (state != null && state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
@@ -78,7 +77,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
     }
 
     private void onIncommingCall(Context context, String number) {
-        if (AppUtils.checkDrawOverlay(context) && HawkHelper.isEnableColorCall()) {
+        if (AppUtils.checkDrawOverlayApp2(context) && HawkHelper.isEnableColorCall()) {
             Log.e("TAN", "onIncommingCall: aaaa");
             /*intentCallService = new Intent(context, CallService.class);
             intentCallService.putExtra(Constant.PHONE_NUMBER, number);
@@ -88,7 +87,7 @@ public class CallReceiver extends BroadcastReceiver implements PhoneUtils.PhoneL
                 context.startService(intentCallService);
             }*/
             //PhoneStateService.startService(context);
-           // PhoneStateService.setNumberPhone(number);
+           // PhoneService.setNumberPhone(number);
         }
     }
 

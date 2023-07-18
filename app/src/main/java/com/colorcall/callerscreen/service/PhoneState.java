@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +16,9 @@ import android.view.View;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.custom.IncomingCallView;
 import com.colorcall.callerscreen.promt.PermissionOverLayActivity;
+import com.colorcall.callerscreen.utils.PhoneUtils;
 
-public class PhoneState extends PhoneStateListener /*implements PhoneUtils.PhoneListener*/ {
+public class PhoneState extends PhoneStateListener implements PhoneUtils.PhoneListener {
     public Context context;
     public Handler handler = new Handler();
     public AudioManager audio;
@@ -63,47 +65,33 @@ public class PhoneState extends PhoneStateListener /*implements PhoneUtils.Phone
     public void onCallStateChanged(int i, String str) {
         super.onCallStateChanged(i, str);
         state = i;
-        Log.e("TAN", "onCallStateChanged: " + i + "##" + str);
-        if (str==null||str.equals("")){
-            Log.e("TAN", "onCallStateChanged: number k co ");
-
-            str = PhoneStateService.number;
-            Log.e("TAN", "onCallStateChanged: number co r "+str);
-
-        }
         showViewCall(str);
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        isFirstRun = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Log.e("TAN", "onCallStateChanged: getNumberPhoneWhenNull");
             PhoneUtils.get(context).getNumberPhoneWhenNull(PhoneState.this);
-        }*/
+        }
     }
 
     int state = 0;
 
-   /* @Override
+    @Override
     public void getNumPhone(String str) {
-        Log.e("TAN", "getNumPhone: "+isFirstRun);
         if(!isFirstRun){
             isFirstRun = true;
-            if (incomingCallView!=null){
-                incomingCallView.setNumberPhone(str);
-            }
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (incomingCallView!=null){
+                    incomingCallView.setNumberPhone(str);
+                }
+            });
         }
-    }*/
+    }
 
     public void showViewCall(String str) {
-        //if (PermistionUtils.checkPermissionCall(this).a(this.context)) {
-        Log.e("TAN", "showViewCall: "+state);
+        Log.e("TAN", "showViewCall: " + state);
         if (state != 0) {
             if (state == 1) {
-                   /* Context context = this.context;
-
-                    RingIncomingView ringIncomingView = (RingIncomingView) View.inflate(this.context, R.layout.layout_ring_incoming, null);
-                    this.c = ringIncomingView;
-                    ringIncomingView.j = this;
-                    ringIncomingView.a(contactBean, chosenTheme);*/
-
-                IncomingCallView incomingCallView =  (IncomingCallView) View.inflate(this.context, R.layout.layout_call_color, null);
-                this.incomingCallView = incomingCallView;
+                this.incomingCallView = (IncomingCallView) View.inflate(this.context, R.layout.layout_call_color, null);
                 this.incomingCallView.phoneState = this;
                 this.incomingCallView.initData();
                 this.incomingCallView.setNumberPhone(str);

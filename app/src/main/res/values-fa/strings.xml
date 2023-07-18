@@ -79,4 +79,5 @@
     <string name="very_good">خیلی خوب</string>
     <string name="notNow">الان نه</string>
     <string name="skip_ads" >پرش کنید</string>
+    <string name="notify_msg_foreground">Call Screen در حال اجرا است</string>
 </resources>

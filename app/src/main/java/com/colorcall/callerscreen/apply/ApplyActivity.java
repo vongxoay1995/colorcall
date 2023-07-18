@@ -43,6 +43,7 @@ import com.colorcall.callerscreen.model.SignApplyImage;
 import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
+import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -336,6 +337,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     @SuppressLint("UseCompatLoadingForDrawables")
     public void applyTheme() {
         HawkHelper.setBackgroundSelect(background);
+        PhoneService.startService(this);
         HawkHelper.setStateColorCall(true);
         Toast.makeText(getApplicationContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
         layoutApply.setEnabled(false);
@@ -382,7 +384,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 }
             } else {
                 Log.e("TAN", "onRequestPermissionsResult: 2222");
-                AppUtils.checkDrawOverlayApp(this);
+                AppUtils.showDrawOverlayApp(this);
             }
         } else if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0
@@ -399,7 +401,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constant.REQUEST_OVERLAY) {
-            if (AppUtils.canDrawOverlays(this)) {
+            if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                 }

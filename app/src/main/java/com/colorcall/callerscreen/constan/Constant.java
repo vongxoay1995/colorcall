@@ -6,7 +6,7 @@ public interface Constant {
     String DATA_TYPE = "text/plain";
     String THUMB_DEFAULT = "thumbDefault";
     String PLAY_STORE_LINK = "https://play.google.com/store/apps/details?id=";
-    String POLICY_URL = "https://bluewavevn.wordpress.com/2019/12/20/phone-caller-screen-color-call-app-privacy-policy/";
+    String POLICY_URL = "https://sites.google.com/view/privacypolicyforcolorcallflash";
     int REQUEST_VIDEO = 1;
     int REQUEST_OVERLAY = 0 ;
     int REQUEST_NOTIFICATION_ACCESS =3 ;

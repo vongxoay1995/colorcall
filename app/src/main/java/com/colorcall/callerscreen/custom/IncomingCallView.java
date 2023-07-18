@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -42,7 +41,6 @@ import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.colorcall.callerscreen.service.AcceptCallActivity;
 import com.colorcall.callerscreen.service.CallState;
 import com.colorcall.callerscreen.service.PhoneState;
-import com.colorcall.callerscreen.service.PhoneStateService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -93,7 +91,6 @@ public class IncomingCallView extends RelativeLayout {
         super(context);
         this.context = context;
         analystic = Analystic.getInstance(context);
-        Log.e("TAN", "IncomingCallView: ");
         //binding = LayoutCallColorBinding.inflate(LayoutInflater.from(context), this, true);
     }
 
@@ -101,14 +98,12 @@ public class IncomingCallView extends RelativeLayout {
         super(context, attributeSet);
         this.context = context;
         analystic = Analystic.getInstance(context);
-        Log.e("TAN", "IncomingCallView: 2");
     }
 
     public IncomingCallView(@NonNull Context context, @Nullable AttributeSet attributeSet, int i2) {
         super(context, attributeSet, i2);
         this.context = context;
         analystic = Analystic.getInstance(context);
-        Log.e("TAN", "IncomingCallView: 3");
     }
 
     public void setNumberPhone(String numberPhone) {
@@ -148,25 +143,21 @@ public class IncomingCallView extends RelativeLayout {
         this.windowManager = windowManager;
         windowManager.addView(this, this.windowParams);
         ButterKnife.bind(this, this);
-        Log.e("TAN", "onFinishInflate: " + windowManager.getDefaultDisplay().getHeight());
     }
 
     @Override
     protected void onAttachedToWindow() {
-        Log.e("TAN", "onAttachedToWindow: ");
         super.onAttachedToWindow();
     }
 
     @Override
     protected void onDetachedFromWindow() {
-        Log.e("TAN", "onDetachedFromWindow: ");
         super.onDetachedFromWindow();
     }
 
     public void setInforContact() {
         if (numberPhone != null && !numberPhone.equals("")) {
             try {
-                Log.e("TAN", "initData: 1");
                 ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(numberPhone));
                 name = contactRetrieve.getName();
                 contactId = contactRetrieve.getContact_id();
@@ -178,6 +169,10 @@ public class IncomingCallView extends RelativeLayout {
                 e.printStackTrace();
             }
             txtPhone.setText(String.valueOf(numberPhone));
+            txtPhone.setVisibility(VISIBLE);
+        }else {
+            txtName.setText(context.getString(R.string.unknowContact));
+            txtPhone.setVisibility(INVISIBLE);
         }
     }
 
@@ -189,7 +184,6 @@ public class IncomingCallView extends RelativeLayout {
             profile_image.setImageBitmap(bmpAvatar);
             vdo_background_call.setVisibility(View.VISIBLE);
             Glide.with(this).load(R.drawable.ic_exit).into(imgExit);
-            Log.e("TAN", "initData: 2");
             List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
                     .where(ContactDao.Properties.Contact_id.eq(contactId))
                     .list();
@@ -201,7 +195,6 @@ public class IncomingCallView extends RelativeLayout {
                 backgroundSelect = back_ground_contact;
                 typeBgCall = back_ground_contact.getType();
             }
-            Log.e("TAN", "initData: 3");
             checkTypeCall(typeBgCall);
             new Handler().postDelayed(this::startAnimation, 400);
             handlingCallState();
@@ -251,7 +244,9 @@ public class IncomingCallView extends RelativeLayout {
                 phoneState.release();
             }
             if (callState != null) {
-                callState.release();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    callState.release();
+                }
             }
             release();
         });
@@ -275,7 +270,6 @@ public class IncomingCallView extends RelativeLayout {
     }
 
     private void handlingBgCallVideo() {
-        Log.e("TAN", "handlingBgCallVideo: 4");
         String sPath;
         img_background_call.setVisibility(View.GONE);
         vdo_background_call.setVisibility(View.VISIBLE);
@@ -286,21 +280,17 @@ public class IncomingCallView extends RelativeLayout {
 
             sPath = uriPath;
         }
-        Log.e("TAN", "handlingBgCallVideo: 5");
         vdo_background_call.setVideoURI(Uri.parse(sPath));
         vdo_background_call.setOnErrorListener((mp, what, extra) -> {
-            Log.e("TAN", "handlingBgCallVideoERR: " + extra);
             analystic.trackEvent(ManagerEvent.callVideoViewError(what, extra));
             release();
             return true;
         });
         vdo_background_call.setOnPreparedListener(mp -> {
-            Log.e("TAN", "handlingBgCallVideo: start");
             mp.setLooping(true);
             mp.setVolume(0.0f, 0.0f);
             vdo_background_call.start();
         });
-        Log.e("TAN", "handlingBgCallVideo: 6");
     }
 
     private void handlingBgCallImage() {
@@ -338,16 +328,9 @@ public class IncomingCallView extends RelativeLayout {
 
     public void release() {
         if (this.windowManager != null) {
-            /*gx gxVar = this.k;
-            if (gxVar.d) {
-                gxVar.d = false;
-                gxVar.f.cancel();
-                gxVar.a();
-            }*/
             clearView();
             this.windowManager.removeViewImmediate(this);
             this.windowManager = null;
-           // PhoneStateService.stopService(context);
         }
     }
 

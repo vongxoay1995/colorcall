@@ -60,7 +60,6 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class AppUtils {
@@ -89,8 +88,8 @@ public class AppUtils {
         return passed;
     }
 
-    public static boolean canDrawOverlays(Context context) {
-      /*  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+    /* public static boolean canDrawOverlays(Context context) {
+     *//*  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
         else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             return Settings.canDrawOverlays(context);
         } else {
@@ -114,30 +113,29 @@ public class AppUtils {
             }
             Log.e("TAN", "canDrawOverlays: 4");
             return false;
-        }*/
+        }*//*
         Log.e("TAN", "canDrawOverlays: "+checkDrawOverlayApp2(context));
         return checkDrawOverlayApp2(context);
-    }
+    }*/
 
     public static boolean canDrawOverlayViews(Context context) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) return true;
-        AppOpsManager manager = (AppOpsManager)context.getSystemService(Context.APP_OPS_SERVICE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && Settings.canDrawOverlays(context))
+            return true;
+        AppOpsManager manager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
         try {
-            int result = 0;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                result = manager.checkOp(
-                        AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW,
-                        Binder.getCallingUid(),
-                        context.getPackageName()
-                );
-            }
+            int result;
+            result = manager.checkOp(
+                    AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW,
+                    Binder.getCallingUid(),
+                    context.getPackageName()
+            );
             return result == AppOpsManager.MODE_ALLOWED;
         } catch (Exception e) {
         }
         try {
             WindowManager mgr = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             if (mgr == null) return false; //getSystemService might return null
-            Log.e("TAN", "canDrawOverlays: 2");
             View viewToAdd = new View(context);
             WindowManager.LayoutParams params = new WindowManager.LayoutParams(0, 0, android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O ?
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
@@ -145,74 +143,19 @@ public class AppUtils {
             viewToAdd.setLayoutParams(params);
             mgr.addView(viewToAdd, params);
             mgr.removeView(viewToAdd);
-            Log.e("TAN", "canDrawOverlays: 3");
             return true;
         } catch (Exception e) {
         }
         return false;
     }
 
-    public static boolean canDrawOverlaysUsingReflection(Context context) {
-
-        try {
-
-            AppOpsManager manager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-            Class clazz = AppOpsManager.class;
-            Method dispatchMethod = clazz.getMethod("checkOp", new Class[]{int.class, int.class, String.class});
-            //AppOpsManager.OP_SYSTEM_ALERT_WINDOW = 24
-            int mode = (Integer) dispatchMethod.invoke(manager, new Object[]{24, Binder.getCallingUid(), context.getApplicationContext().getPackageName()});
-
-            return AppOpsManager.MODE_ALLOWED == mode;
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public static void showDrawOverlayPermissionDialog(Context context) {
-
-        Log.e("TAN", "showDrawOverlayPermissionDialog: ");
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         alertDialog.setTitle(context.getString(R.string.overlay_permision));
         alertDialog.setMessage(context.getString(R.string.overlay_permision_content));
         alertDialog.setCancelable(false);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.ok),
                 (dialog, which) -> {
-                    Intent intent2 = null;
-                    Log.e("TAN", "showDrawOverlayPermissionDialog: "+OpenDrawSettings.manufacturer +"#"+context+"##"+context.getPackageName());
-                    /*if (OpenDrawSettings.manufacturer.contains("xiaomi")) {
-                        Log.e("TAN", "showDrawOverlayPermissionDialog: 11111");
-                        // Context b2 = OpenDrawSettings.a.b();
-                        Intent intent = new Intent("miui.intent.action.APP_PERM_EDITOR");
-                        intent.putExtra("extra_pkgname", context.getPackageName());
-                        if (!OpenDrawSettings.queryIntentActivity(context, intent)) {
-                            Log.e("TAN", "showDrawOverlayPermissionDialog: aaaaa");
-                            intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
-                            if (!OpenDrawSettings.queryIntentActivity(context, intent)) {
-                                Log.e("TAN", "showDrawOverlayPermissionDialog: bbbbb");
-                                intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.PermissionsEditorActivity");
-                                if (!OpenDrawSettings.queryIntentActivity(context, intent)) {
-                                    Log.e("TAN", "showDrawOverlayPermissionDialog: ccccc");
-                                    intent2 = OpenDrawSettings.getIntentDefault(context);
-                                }
-                            }
-                        }
-                        Log.e("TAN", "showDrawOverlayPermissionDialog: 2222 "+intent2);
-                        if (intent2 != null) {
-                            Log.e("TAN", "showDrawOverlayPermissionDialog: 33333");
-                            ((Activity) context).startActivityForResult(intent2, Constant.REQUEST_OVERLAY);
-                            PermissionOverLayActivity.open(context, 0);
-                        }
-                    } else {
-
-                        Intent intent = null;
-                        if (Build.VERSION.SDK_INT >= 23) {
-                            intent = new Intent("android.settings.action.MANAGE_OVERLAY_PERMISSION", Uri.parse("package:" + context.getPackageName()));
-                            ((Activity) context).startActivityForResult(intent, Constant.REQUEST_OVERLAY);
-                            PermissionOverLayActivity.open(context, 0);
-                        }
-                    }*/
-
                     Intent intent;
                     if (Build.VERSION.SDK_INT >= 23) {
                         intent = new Intent("android.settings.action.MANAGE_OVERLAY_PERMISSION", Uri.parse("package:" + context.getPackageName()));
@@ -346,22 +289,22 @@ public class AppUtils {
         });
     }
 
-    public static void checkDrawOverlayApp(Context context) {
-        Log.e("TAN", "checkDrawOverlayApp: aaaaaa");
-        if (Build.VERSION.SDK_INT >= 23 && !AppUtils.canDrawOverlays(context)) {
+    public static void showDrawOverlayApp(Context context) {
+        if (Build.VERSION.SDK_INT >= 23 && !AppUtils.checkDrawOverlayApp2(context)) {
             AppUtils.showDrawOverlayPermissionDialog(context);
         }
     }
+
     public static boolean checkDrawOverlayApp2(Context context) {
         if (context == null) {
             return false;
         }
         return canDrawOverlayViews(context);
     }
-    public static boolean checkDrawOverlay(Context context) {
+   /* public static boolean checkDrawOverlay(Context context) {
         Log.e("TAN", "checkDrawOverlay: " + AppUtils.canDrawOverlays(context));
         return Build.VERSION.SDK_INT < 23 || AppUtils.canDrawOverlays(context);
-    }
+    }*/
 
     public static void populateNativeAdView(NativeAd nativeAd, NativeAdView adView) {
         // Set the media view.

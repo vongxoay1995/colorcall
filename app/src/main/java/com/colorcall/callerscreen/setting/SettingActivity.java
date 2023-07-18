@@ -20,7 +20,7 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.service.PhoneStateService;
+import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
@@ -77,7 +77,9 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
-        AppUtils.showFullHeader(this, layoutHead);
+        AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
+
+        //AppUtils.showFullHeader(this, layoutHead);
         analystic = Analystic.getInstance(this);
         swStateApp.setChecked(HawkHelper.isEnableColorCall());
         swFlash.setChecked(HawkHelper.isEnableFlash());
@@ -228,14 +230,14 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
             }
         } else if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE) {
             if (grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
-                if (AppUtils.canDrawOverlays(this)) {
+                if (AppUtils.checkDrawOverlayApp2(this)) {
                     if (!AppUtils.checkNotificationAccessSettings(this)) {
                         resetStateCall();
                         AppUtils.showNotificationAccess(this);
                     }
                 } else {
                     resetStateCall();
-                    AppUtils.checkDrawOverlayApp(this);
+                    AppUtils.showDrawOverlayApp(this);
                 }
             } else {
                 resetStateCall();
@@ -252,7 +254,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constant.REQUEST_OVERLAY) {
-            if (AppUtils.canDrawOverlays(this)) {
+            if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     isCallState = true;
                     resetStateCall();
@@ -276,9 +278,9 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     @Override
     public void onHasCallPermistion() {
         if (isCallState){
-            PhoneStateService.startService(this);
+            PhoneService.startService(this);
         }else {
-            PhoneStateService.stopService(this);
+            PhoneService.stopService(this);
         }
         HawkHelper.setStateColorCall(isCallState);
     }

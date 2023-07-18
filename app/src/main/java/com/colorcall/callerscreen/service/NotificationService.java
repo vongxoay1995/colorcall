@@ -6,6 +6,7 @@ import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.telecom.TelecomManager;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -44,6 +45,7 @@ public class NotificationService extends NotificationListenerService {
     @Override
     public void onNotificationPosted(final StatusBarNotification statusBarNotification) {
         super.onNotificationPosted(statusBarNotification);
+        Log.e("TAN", "onNotificationPosted: "+statusBarNotification);
         new Thread() {
             public void run() {
                 super.run();

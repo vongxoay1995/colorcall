@@ -78,4 +78,5 @@
     <string name="very_good">Rất tốt</string>
     <string name="notNow">Không phải bây giờ</string>
     <string name="skip_ads" >Bỏ qua </string>
+    <string name="notify_msg_foreground">Màn hình cuộc gọi đang chạy</string>
 </resources>
