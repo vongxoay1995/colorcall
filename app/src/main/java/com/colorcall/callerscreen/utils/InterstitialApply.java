@@ -25,6 +25,8 @@ public class InterstitialApply {
     private Context mContext;
     private String idInter;
     private long loadTime = 0;
+    private boolean isLoading;
+    private boolean isShowAds;
     public interface AdCloseListener {
         void onAdClose();
     }
@@ -75,6 +77,7 @@ public class InterstitialApply {
                                     adCloseListener.onAdClose();
                                 }
                                 loadInterstitial(mContext,3);
+                                isShowAds = false;
                                 // Called when fullscreen content is dismissed.
                                 Log.e("TAG", "The ad was dismissed.");
                             }
@@ -84,6 +87,7 @@ public class InterstitialApply {
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
+                                isShowAds = false;
                                 // Called when fullscreen content failed to show.
                                 Log.e("TAG", "The ad failed to show.");
                             }
@@ -93,7 +97,7 @@ public class InterstitialApply {
                                 // Called when fullscreen content is shown.
                                 // Make sure to set your reference to null so you don't
                                 // show it a second time.
-
+                                isShowAds = true;
                                 Log.e("TAG", "The ad was shown.");
                             }
                         });
@@ -114,7 +118,9 @@ public class InterstitialApply {
         return interstitialAd != null && wasLoadTimeLessThanNHoursAgo(4);
     }
 
-
+    public boolean isShowAdsInter(){
+        return isShowAds;
+    }
     public boolean canShowInterstitial() {
         return interstitialAd != null;
     }

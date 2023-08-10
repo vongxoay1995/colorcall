@@ -18,6 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.image.ImagesFragment;
@@ -32,12 +33,14 @@ import com.colorcall.callerscreen.response.AppService;
 import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.setting.SettingActivity;
 import com.colorcall.callerscreen.utils.AdListener;
+import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.video.VideoFragment;
+import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
@@ -60,7 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements AdListener, DialogRate.DialogRateListener, KeyboardVisibilityEventListener {
+public class MainActivity extends AppCompatActivity implements AdListener, DialogRate.DialogRateListener, KeyboardVisibilityEventListener,  AppOpenManager.AppOpenManagerObserver {
     @BindView(R.id.tab_layout)
     TabLayout tab_layout;
     @BindView(R.id.pageBgColor)
@@ -74,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private boolean showLayoutAds;
     private Fragment imageFrag, videoFrag, mythemeFrag;
     ViewPagerMainAdapter mAdapter;
+    private AppOpenManager appOpenManager;
+    private InterstitialUtil interstitialUtil;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             PhoneService.startService(this);
         }
         //AppUtils.showFullHeader(this, layout_head);
+        appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
+
+
         loadDataApi(true);
         analystic = Analystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
@@ -94,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             layoutAds.setVisibility(View.GONE);
         }
         disableToolTipTextTab();
+        analystic.trackEvent(ManagerEvent.mainOpen());
         KeyboardVisibilityEvent.setEventListener(this, this);
       /*  if (!AppUtils.checkDrawOverlayApp2(this)) {
             Log.e("TAN", "onCreate: ");
@@ -150,13 +159,17 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
             }
         });
-        InterstitialUtil.getInstance().init(this);
+        preLoadInter();
+    }
+
+    private void preLoadInter() {
+        interstitialUtil =InterstitialUtil.getInstance();
+        interstitialUtil.init(this);
         InterstitialApply.getInstance().init(this);
     }
 
     @Override
     protected void onResume() {
-        analystic.trackEvent(ManagerEvent.mainOpen());
         super.onResume();
     }
 
@@ -326,6 +339,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     protected void onStart() {
         EventBus.getDefault().register(this);
+        appOpenManager.registerObserver(this);
         super.onStart();
     }
 
@@ -345,4 +359,33 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             }
         }
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        appOpenManager.unregisterObserver();
+    }
+    @Override
+    public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
+        if (hasActive() && !interstitialUtil.isShowAdsInter()) {
+            appOpenManager.setShowingAd(true);
+            appOpenAd.show(this);
+        }
+    }
+
+    @Override
+    public void lifecycleShowAd() {
+
+    }
+
+    @Override
+    public void lifecycleStop() {
+
+    }
+    private boolean hasActive() {
+        return !isFinishing() && !isDestroyed();
+    }
+
+
 }

@@ -26,6 +26,8 @@ public class InterstitialUtil {
     private Context mContext;
     private String idInter;
     private long loadTime = 0;
+    private boolean isLoading;
+    private boolean isShowAds;
     public interface AdCloseListener {
         void onAdClose();
     }
@@ -82,6 +84,7 @@ public class InterstitialUtil {
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
+                                isShowAds = false;
                                 loadInterstitial(mContext,3);
                             }
 
@@ -90,11 +93,14 @@ public class InterstitialUtil {
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
+                                isShowAds = false;
                                 // Called when fullscreen content failed to show.
                             }
 
                             @Override
                             public void onAdShowedFullScreenContent() {
+                                isShowAds = true;
+
                                 // Called when fullscreen content is shown.
                                 // Make sure to set your reference to null so you don't
                                 // show it a second time.
@@ -120,6 +126,10 @@ public class InterstitialUtil {
     public boolean isAdAvailable() {
         return interstitialAd != null && wasLoadTimeLessThanNHoursAgo(4);
     }
+    public boolean isShowAdsInter(){
+        return isShowAds;
+    }
+
     public boolean canShowInterstitial() {
         return interstitialAd != null;
     }

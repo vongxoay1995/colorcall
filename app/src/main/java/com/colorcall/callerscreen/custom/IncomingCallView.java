@@ -200,6 +200,7 @@ public class IncomingCallView extends RelativeLayout {
             handlingCallState();
             listener();
         }
+        analystic.trackEvent(ManagerEvent.callshow());
     }
 
     private void listener() {

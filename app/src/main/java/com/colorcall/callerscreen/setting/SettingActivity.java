@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,8 +20,10 @@ import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.service.PhoneService;
+import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
@@ -30,6 +33,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 
@@ -37,7 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SettingActivity extends AppCompatActivity implements PermistionFlashListener, PermistionCallListener {
+public class SettingActivity extends AppCompatActivity implements PermistionFlashListener, PermistionCallListener , AppOpenManager.AppOpenManagerObserver {
     @BindView(R.id.btnBack)
     ImageView btnBack;
     @BindView(R.id.btnCheckUpdate)
@@ -73,6 +77,8 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private Analystic analystic;
     private boolean isFlashState, isCallState;
     private boolean isResultDenyPermission, isResultDenyCallPermission;
+    private AppOpenManager appOpenManager;
+    private boolean isShowAdsOpen = true;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
@@ -85,6 +91,8 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         swFlash.setChecked(HawkHelper.isEnableFlash());
         loadAds();
         listener();
+        analystic.trackEvent(ManagerEvent.settingOpen());
+        appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
     }
 
     public void loadAds() {
@@ -122,15 +130,6 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 });
         AdLoader adLoader = builder.build();
         adLoader.loadAd(new AdRequest.Builder().build());
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        if (nativeAd != null) {
-            nativeAd.destroy();
-        }
-        super.onDestroy();
     }
 
     private void listener() {
@@ -213,11 +212,6 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         }
     }
 
-    @Override
-    protected void onResume() {
-        analystic.trackEvent(ManagerEvent.settingOpen());
-        super.onResume();
-    }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -257,15 +251,23 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     isCallState = true;
+                    isShowAdsOpen = false;
                     resetStateCall();
                     AppUtils.showNotificationAccess(this);
                 }
+            }else {
+                isShowAdsOpen = false;
+                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 isCallState = true;
                 swStateApp.setChecked(true);
+                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
                 onHasCallPermistion();
+            }else {
+                isShowAdsOpen = false;
+                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
             }
         }
     }
@@ -283,5 +285,37 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
             PhoneService.stopService(this);
         }
         HawkHelper.setStateColorCall(isCallState);
+    }
+    @Override
+    protected void onStart() {
+        appOpenManager.registerObserver(this);
+        super.onStart();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (nativeAd != null) {
+            nativeAd.destroy();
+        }
+        appOpenManager.unregisterObserver();
+    }
+    @Override
+    public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
+        if (hasActive() && isShowAdsOpen) {
+            appOpenAd.show(this);
+        }
+    }
+
+    @Override
+    public void lifecycleShowAd() {
+
+    }
+
+    @Override
+    public void lifecycleStop() {
+
+    }
+    private boolean hasActive() {
+        return !isFinishing() && !isDestroyed();
     }
 }

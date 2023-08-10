@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -33,6 +34,7 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.contact.SelectContactActivity;
 import com.colorcall.callerscreen.custom.TextureVideoView;
@@ -44,6 +46,7 @@ import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.service.PhoneService;
+import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -51,6 +54,7 @@ import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
+import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,7 +66,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener,
-        DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener{
+        DialogDeleteListener, PermistionCallListener, DownloadTask.Listener, PermissionContactListener, AppOpenManager.AppOpenManagerObserver {
     @BindView(R.id.img_background_call)
     ImageView imgBackgroundCall;
     @BindView(R.id.vdo_background_call)
@@ -102,11 +106,17 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private Dialog dialog;
     private BannerAdsUtils bannerAdsUtils;
     private int posRandom;
+    private AppOpenManager appOpenManager;
+    private InterstitialApply interstitialApply;
+    private boolean isShowAdsOpen = true;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
         ButterKnife.bind(this);
         //setTranslucent();
+        appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
+        interstitialApply = InterstitialApply.getInstance();
         AppUtils.changeStatusBarColor(this,R.color.blackAlpha30);
         posRandom = getIntent().getIntExtra(Constant.POS_RANDOM, 0);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
@@ -116,6 +126,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         checkInforTheme();
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
         loadAdsBanner();
+        analystic.trackEvent(ManagerEvent.applyOpen());
     }
 
     private void loadAdsBanner() {
@@ -276,7 +287,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     @Override
     protected void onResume() {
-        analystic.trackEvent(ManagerEvent.applyOpen());
         vdoBackgroundCall.start();
         startAnimation();
         super.onResume();
@@ -403,13 +413,24 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         if (requestCode == Constant.REQUEST_OVERLAY) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
+                    isShowAdsOpen = false;
                     AppUtils.showNotificationAccess(this);
                 }
+            }else {
+                isShowAdsOpen = false;
+               new Handler().postDelayed(() -> isShowAdsOpen = true,500);
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
+                new Handler().postDelayed(() -> isShowAdsOpen = true,500);
                 applyBgCall();
+            }else {
+                isShowAdsOpen = false;
+                new Handler().postDelayed(() -> isShowAdsOpen = true,500);
             }
+        }else if (requestCode == 95 && resultCode == RESULT_OK) {
+            isShowAdsOpen = false;
+            new Handler().postDelayed(() -> isShowAdsOpen = true,500);
         }
     }
 
@@ -489,6 +510,36 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         Intent intent = new Intent(this, SelectContactActivity.class);
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
-        startActivity(intent);
+        startActivityForResult(intent, 95);
     }
+
+    @Override
+    protected void onStart() {
+        appOpenManager.registerObserver(this);
+        super.onStart();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        appOpenManager.unregisterObserver();
+    }
+    @Override
+    public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
+        if (hasActive() && !interstitialApply.isShowAdsInter() && isShowAdsOpen) {
+            appOpenAd.show(this);
+        }
+    }
+
+    @Override
+    public void lifecycleShowAd() {
+    }
+
+    @Override
+    public void lifecycleStop() {
+
+    }
+    private boolean hasActive() {
+        return !isFinishing() && !isDestroyed();
+    }
+
 }

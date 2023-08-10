@@ -9,6 +9,7 @@ import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.facebook.FacebookSdk;
@@ -34,17 +35,14 @@ import java.util.concurrent.Executors;
 
 public class ColorCallApplication extends Application {
     private FirebaseRemoteConfig firebaseRemoteConfig;
-
+    private AppOpenManager appOpenManager;
     public void onCreate() {
         super.onCreate();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                MobileAds.initialize(ColorCallApplication.this, initializationStatus -> {
-                });
-            }
-        }).start();
+        MobileAds.initialize(ColorCallApplication.this, initializationStatus -> {
+        });
         Hawk.init(this).build();
+        appOpenManager = new AppOpenManager(this);
+        appOpenManager.fetchAd();
         loadData();
         DataManager.getInstance().init(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -58,6 +56,13 @@ public class ColorCallApplication extends Application {
         AudienceNetworkAds.initialize(this);
        // configFirebaseRemote();
     }
+
+
+    public AppOpenManager getAppOpenManager() {
+        return appOpenManager;
+    }
+
+
     @SuppressLint("StaticFieldLeak")
     private void loadData() {
         if (!HawkHelper.isLoadDataFirst()) {

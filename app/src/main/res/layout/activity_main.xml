@@ -19,6 +19,7 @@
             android:text="@string/app_name"
             app:tabBackground="@color/transparent"
             android:textAllCaps="true"
+            android:layout_centerVertical="true"
             android:fontFamily="@font/roboto_light"
             android:textColor="@color/white"
             android:layout_marginStart="@dimen/_17sdp"

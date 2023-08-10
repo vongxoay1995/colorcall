@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -32,16 +33,19 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.ContactDao;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.service.PhoneService;
+import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
+import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.gson.Gson;
 
 import org.greenrobot.greendao.query.DeleteQuery;
@@ -55,7 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SelectContactActivity extends AppCompatActivity implements PermistionCallListener {
+public class SelectContactActivity extends AppCompatActivity implements PermistionCallListener, AppOpenManager.AppOpenManagerObserver {
     @BindView(R.id.layout_head)
     RelativeLayout layoutHead;
     @BindView(R.id.btnBack)
@@ -78,6 +82,9 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     private ContactAdapter adapter;
     private Background background;
     private Analystic analystic;
+    private AppOpenManager appOpenManager;
+    private boolean isShowAdsOpen = true;
+
     @Override
     public void onHasCallPermistion() {
         setTheme();
@@ -116,10 +123,13 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_contact);
         ButterKnife.bind(this);
-        AppUtils.changeStatusBarColor(this,R.color.color_1E1E1E);
+        AppUtils.changeStatusBarColor(this, R.color.color_1E1E1E);
         init();
         //setTranslucent();
-        analystic= Analystic.getInstance(this);
+        analystic = Analystic.getInstance(this);
+        analystic.trackEvent(ManagerEvent.contactOpen());
+        appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
+
     }
 
     public void showSearch() {
@@ -272,6 +282,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
                 }
             }
             Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
             finish();
         }
     }
@@ -283,11 +294,19 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
+                    isShowAdsOpen = false;
                 }
+            } else {
+                isShowAdsOpen = false;
+                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
+                isShowAdsOpen = false;
                 setTheme();
+            } else {
+                isShowAdsOpen = false;
+                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
             }
         }
     }
@@ -308,6 +327,38 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     @Override
     protected void onResume() {
         super.onResume();
-        analystic.trackEvent(ManagerEvent.contactOpen());
+    }
+
+    @Override
+    protected void onStart() {
+        appOpenManager.registerObserver(this);
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        appOpenManager.unregisterObserver();
+    }
+
+    @Override
+    public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
+        if (hasActive() && isShowAdsOpen) {
+            appOpenAd.show(this);
+        }
+    }
+
+    @Override
+    public void lifecycleShowAd() {
+
+    }
+
+    @Override
+    public void lifecycleStop() {
+
+    }
+
+    private boolean hasActive() {
+        return !isFinishing() && !isDestroyed();
     }
 }
