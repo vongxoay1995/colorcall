@@ -18,15 +18,16 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import java.util.Date;
 
 public class InterstitialApply {
-    private String id_ads = "ca-app-pub-3222539657172474/5724276494";
+    private String id_ads = "ca-app-pub-3222539657172474/9287614570";
     private static InterstitialApply sInterstitial;
     private InterstitialAd interstitialAd;
     private AdCloseListener adCloseListener;
     private Context mContext;
-    private String idInter;
+    private String idInter = id_ads;
     private long loadTime = 0;
     private boolean isLoading;
     private boolean isShowAds;
+
     public interface AdCloseListener {
         void onAdClose();
     }
@@ -45,23 +46,24 @@ public class InterstitialApply {
         } else {
             idInter = id_ads;
         }
-        loadInterstitial(mContext,1);
+        loadInterstitial(mContext, 1);
     }
 
     public void showInterstitialAds(Activity activity, AdCloseListener adCloseListener) {
         this.adCloseListener = adCloseListener;
         if (canShowInterstitial()) {
             interstitialAd.show(activity);
-        }else {
-            loadInterstitial(activity,2);
+        } else {
+            loadInterstitial(activity, 2);
             adCloseListener.onAdClose();
         }
     }
-    public void loadInterstitial(Context context,int index) {
+
+    public void loadInterstitial(Context context, int index) {
         if (isAdAvailable()) {
             return;
         }
-        Log.e("TAN", "apply inter load: "+index);
+        Log.e("TAN", "apply inter load: " + index);
         AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd.load(context, idInter, adRequest,
                 new InterstitialAdLoadCallback() {
@@ -69,14 +71,14 @@ public class InterstitialApply {
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         InterstitialApply.this.interstitialAd = interstitialAd;
                         InterstitialApply.this.loadTime = (new Date()).getTime();
-                        InterstitialApply.this.interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                        InterstitialApply.this.interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {
                                 InterstitialApply.this.interstitialAd = null;
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
-                                loadInterstitial(mContext,3);
+                                loadInterstitial(mContext, 3);
                                 isShowAds = false;
                                 // Called when fullscreen content is dismissed.
                                 Log.e("TAG", "The ad was dismissed.");
@@ -108,6 +110,7 @@ public class InterstitialApply {
                     }
                 });
     }
+
     private boolean wasLoadTimeLessThanNHoursAgo(long numHours) {
         long dateDifference = (new Date()).getTime() - this.loadTime;
         long numMilliSecondsPerHour = 3600000;
@@ -118,9 +121,10 @@ public class InterstitialApply {
         return interstitialAd != null && wasLoadTimeLessThanNHoursAgo(4);
     }
 
-    public boolean isShowAdsInter(){
+    public boolean isShowAdsInter() {
         return isShowAds;
     }
+
     public boolean canShowInterstitial() {
         return interstitialAd != null;
     }

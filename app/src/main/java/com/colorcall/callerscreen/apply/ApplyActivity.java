@@ -130,7 +130,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     }
 
     private void loadAdsBanner() {
-        String ID_ADS_GG = "ca-app-pub-3222539657172474/9030792883";
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/8401908310";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();

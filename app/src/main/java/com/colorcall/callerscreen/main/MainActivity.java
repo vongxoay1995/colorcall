@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -63,7 +64,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements AdListener, DialogRate.DialogRateListener, KeyboardVisibilityEventListener,  AppOpenManager.AppOpenManagerObserver {
+public class MainActivity extends AppCompatActivity implements AdListener, DialogRate.DialogRateListener, KeyboardVisibilityEventListener, AppOpenManager.AppOpenManagerObserver {
     @BindView(R.id.tab_layout)
     TabLayout tab_layout;
     @BindView(R.id.pageBgColor)
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         }
         //AppUtils.showFullHeader(this, layout_head);
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
-
+        appOpenManager.fetchAd();
 
         loadDataApi(true);
         analystic = Analystic.getInstance(this);
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void preLoadInter() {
-        interstitialUtil =InterstitialUtil.getInstance();
+        interstitialUtil = InterstitialUtil.getInstance();
         interstitialUtil.init(this);
         InterstitialApply.getInstance().init(this);
     }
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void loadAds() {
-        String ID_ADS_GG = "ca-app-pub-3222539657172474/8137142250";
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/4654234996";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();
@@ -338,9 +339,10 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Override
     protected void onStart() {
+        Log.e("TAN", "onStart: main");
         EventBus.getDefault().register(this);
-        appOpenManager.registerObserver(this);
         super.onStart();
+        appOpenManager.registerObserver(this);
     }
 
     @Override
@@ -366,6 +368,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         super.onDestroy();
         appOpenManager.unregisterObserver();
     }
+
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
         if (hasActive() && !interstitialUtil.isShowAdsInter()) {
@@ -383,6 +386,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     public void lifecycleStop() {
 
     }
+
     private boolean hasActive() {
         return !isFinishing() && !isDestroyed();
     }

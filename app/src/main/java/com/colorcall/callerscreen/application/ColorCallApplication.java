@@ -2,6 +2,7 @@ package com.colorcall.callerscreen.application;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -36,13 +37,14 @@ import java.util.concurrent.Executors;
 public class ColorCallApplication extends Application {
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private AppOpenManager appOpenManager;
+
     public void onCreate() {
         super.onCreate();
         MobileAds.initialize(ColorCallApplication.this, initializationStatus -> {
         });
         Hawk.init(this).build();
         appOpenManager = new AppOpenManager(this);
-        appOpenManager.fetchAd();
+
         loadData();
         DataManager.getInstance().init(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -54,7 +56,7 @@ public class ColorCallApplication extends Application {
             AdSettings.addTestDevice("90b91733-6634-4148-8e85-cdcf4b60902f");
         }
         AudienceNetworkAds.initialize(this);
-       // configFirebaseRemote();
+        // configFirebaseRemote();
     }
 
 
@@ -73,6 +75,7 @@ public class ColorCallApplication extends Application {
             });
         }
     }
+
     private void configFirebaseRemote() {
         long cacheExpiration;
         if (BuildConfig.DEBUG) {
@@ -86,6 +89,7 @@ public class ColorCallApplication extends Application {
         firebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
         fetchDataFromFirebase();
     }
+
     private void fetchDataFromFirebase() {
         firebaseRemoteConfig.fetch().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -126,9 +130,9 @@ public class ColorCallApplication extends Application {
         });
     }
 
-    private void createAndPostFirebaseEvent(){
-        long priority_ads =  firebaseRemoteConfig.getLong("priority_ads");
-        if(priority_ads!=-1){
+    private void createAndPostFirebaseEvent() {
+        long priority_ads = firebaseRemoteConfig.getLong("priority_ads");
+        if (priority_ads != -1) {
             HawkHelper.setPriorityAds(priority_ads);
         }
     }

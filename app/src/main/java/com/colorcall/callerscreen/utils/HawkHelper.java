@@ -22,6 +22,7 @@ public class HawkHelper {
     private static String IS_SCREEN_CALL = "IS_SCREEN_CALL";
     private static String PRIORITY_ADS = "PRIORITY_ADS";
     private static String IS_AB = "IS_AB";
+
     public static boolean isLoadDataFirst() {
         return Hawk.get(LOAD_DATA_FIRST_FIRST, false);
     }
@@ -29,6 +30,7 @@ public class HawkHelper {
     public static void setLoadDataFirst(boolean value) {
         Hawk.put(LOAD_DATA_FIRST_FIRST, value);
     }
+
     public static ArrayList<Background> getListBackground() {
         return Hawk.get(LIST_BACKGROUND, new ArrayList<>());
     }
@@ -36,6 +38,7 @@ public class HawkHelper {
     public static void setListBackground(ArrayList<Background> listBackground) {
         Hawk.put(LIST_BACKGROUND, listBackground);
     }
+
     public static boolean isEnableColorCall() {
         return Hawk.get(ENABLE_COLOR, false);
     }
@@ -45,7 +48,7 @@ public class HawkHelper {
     }
 
     public static long getTimeStamp() {
-        return Hawk.get(TIME_STAMP,(long)0);
+        return Hawk.get(TIME_STAMP, (long) 0);
     }
 
     public static void setTimeStamp(long timeStamp) {
@@ -60,25 +63,31 @@ public class HawkHelper {
         Hawk.put(ENABLE_FLASH, value);
     }
 
-    public static void setBackgroundSelect(Background backgroundSelect){
-        Hawk.put(BACKGROUND_SELECT,backgroundSelect);
+    public static void setBackgroundSelect(Background backgroundSelect) {
+        Hawk.put(BACKGROUND_SELECT, backgroundSelect);
     }
-    public static Background getBackgroundSelect(){
-        Background background = new Background(null,0, "thumbDefault/default1.webp","/raw/default1",false,"default1");
-       return Hawk.get(BACKGROUND_SELECT,background);
+
+    public static Background getBackgroundSelect() {
+        Background background = new Background(null, 0, "thumbDefault/default1.webp", "/raw/default1", false, "default1");
+        return Hawk.get(BACKGROUND_SELECT, background);
     }
+
     public static long getLastTimeShowInter() {
-        return Hawk.get(LAST_TIME_SHOW_INTER, (long)0);
+        return Hawk.get(LAST_TIME_SHOW_INTER, (long) 0);
     }
+
     public static void setLastTimeShowInter(long timeStamp) {
         Hawk.put(LAST_TIME_SHOW_INTER, timeStamp);
     }
+
     public static int getCoutShowRate() {
         return Hawk.get(COUNT_FOR_DIALOG_RATE, 0);
     }
-    public static void setCountRate(int value){
+
+    public static void setCountRate(int value) {
         Hawk.put(COUNT_FOR_DIALOG_RATE, value);
     }
+
     public static boolean isCanShowDiaLogRate() {
         return Hawk.get(CAN_SHOW_DIALOG_RATE, true);
     }
@@ -92,7 +101,7 @@ public class HawkHelper {
     }
 
     public static long isScreenCall() {
-        return Long.parseLong(Hawk.get(IS_SCREEN_CALL, 0)+"");
+        return Long.parseLong(Hawk.get(IS_SCREEN_CALL, 0) + "");
     }
 
     public static void setPriorityAds(long value) {
@@ -100,7 +109,7 @@ public class HawkHelper {
     }
 
     public static long getPriorityAds() {
-        return Long.parseLong(Hawk.get(PRIORITY_ADS, 0)+"");
+        return Long.parseLong(Hawk.get(PRIORITY_ADS, 0) + "");
     }
 
     public static void setIsFirstAB(boolean value) {
@@ -114,9 +123,11 @@ public class HawkHelper {
     public static int getCountShowDialogUpdate() {
         return Hawk.get(COUNT_FOR_DIALOG_UPDATE, 0);
     }
-    public static void setCountShowDialogUpdate(int value){
+
+    public static void setCountShowDialogUpdate(int value) {
         Hawk.put(COUNT_FOR_DIALOG_UPDATE, value);
     }
+
     public static boolean isCanShowDiaLogUpdate() {
         return Hawk.get(CAN_SHOW_DIALOG_UPDATE, true);
     }
@@ -124,4 +135,5 @@ public class HawkHelper {
     public static void setDialogShowUpdate(boolean value) {
         Hawk.put(CAN_SHOW_DIALOG_UPDATE, value);
     }
+
 }

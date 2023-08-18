@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-
 import androidx.lifecycle.ProcessLifecycleOwner
+
 import com.colorcall.callerscreen.BuildConfig
 import com.colorcall.callerscreen.application.ColorCallApplication
 import com.colorcall.callerscreen.splash.SplashActivity
@@ -30,6 +30,7 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
+        Log.e("TAN", "onStart: "+currentActivity )
         //if (!PreferencesUtils.getBoolean(AppConstant.IS_PURCHASED, false)) {
         if (currentActivity !is SplashActivity && currentActivity !is AdActivity) {
             showAdIfAvailable()
@@ -40,6 +41,7 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
     fun showAdIfAvailable() {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
+        Log.e("TAN", "showAdIfAvailable: "+isShowingAd+"##"+isAdAvailable )
         if (!isShowingAd && isAdAvailable) {
             Log.e(
                 "TAN",
@@ -95,6 +97,7 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
             }
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                Log.e("TAN", "onAdFailedToLoad: ,"+loadAdError.message )
             }
         }
         val request = adRequest

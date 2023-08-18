@@ -29,11 +29,19 @@ public class PhoneService extends Service {
     public static String number;
 
     public static void startService(Context context) {
-        ContextCompat.startForegroundService(context, new Intent(context, PhoneService.class));
+        try{
+            ContextCompat.startForegroundService(context, new Intent(context, PhoneService.class));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static void stopService(Context context) {
-        context.stopService(new Intent(context, PhoneService.class));
+        try{
+            context.stopService(new Intent(context, PhoneService.class));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static void setNumberPhone(String numberPhone) {
@@ -86,10 +94,12 @@ public class PhoneService extends Service {
 
     public void onDestroy() {
         super.onDestroy();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            this.telephony.unregisterTelephonyCallback(callStateListener);
-        } else {
-            this.telephony.listen(this.phoneStateListener, 0);
+        if (this.telephony!=null){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                this.telephony.unregisterTelephonyCallback(callStateListener);
+            } else {
+                this.telephony.listen(this.phoneStateListener, 0);
+            }
         }
         this.telephony = null;
         this.phoneStateListener = null;

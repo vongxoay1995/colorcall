@@ -153,5 +153,7 @@
   *** rewind();
 }
 -keep class com.bytedance.sdk.** { *; }
+-keep class com.google.android.gms.internal.** { *; }
+-keep class com.google.android.gms.** { *; }
 # Uncomment for DexGuard only
 #-keepresourcexmlelements manifest/application/meta-data@value=GlideModule

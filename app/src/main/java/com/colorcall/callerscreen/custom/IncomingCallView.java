@@ -131,7 +131,12 @@ public class IncomingCallView extends RelativeLayout {
 
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         this.windowParams = layoutParams;
-        layoutParams.type = Build.VERSION.SDK_INT >= 26 ? 2038 : 2010;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        }
+        //layoutParams.type = Build.VERSION.SDK_INT >= 26 ? 2038 : 2010;
         WindowManager.LayoutParams layoutParams2 = this.windowParams;
         layoutParams2.format = -2;
         layoutParams2.flags = 524584;
@@ -139,7 +144,7 @@ public class IncomingCallView extends RelativeLayout {
         layoutParams2.height = -1;
         layoutParams2.screenOrientation = 1;
         layoutParams2.windowAnimations = 16973826;
-        WindowManager windowManager = (WindowManager) getContext().getSystemService("window");
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         this.windowManager = windowManager;
         windowManager.addView(this, this.windowParams);
         ButterKnife.bind(this, this);
@@ -170,7 +175,7 @@ public class IncomingCallView extends RelativeLayout {
             }
             txtPhone.setText(String.valueOf(numberPhone));
             txtPhone.setVisibility(VISIBLE);
-        }else {
+        } else {
             txtName.setText(context.getString(R.string.unknowContact));
             txtPhone.setVisibility(INVISIBLE);
         }
