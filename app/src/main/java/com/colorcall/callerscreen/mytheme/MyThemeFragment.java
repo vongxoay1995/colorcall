@@ -65,6 +65,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     private Analystic analystic;
     private String pathUriImage;
     private int positionItemThemeSelected = -1;
+    private boolean isResultVideo;
     public MyThemeFragment() {
     }
 
@@ -193,6 +194,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 Uri uriData = data.getData();
                 final String[] mPath = new String[1];
                 if (uriData != null) {
+                    isResultVideo = true;
+                    new Handler().postDelayed(() -> isResultVideo = false,500);
                     mPath[0] = FileUtils.getRealPathFromUri(getContext(), uriData);
                     Log.e("TAN", "mPath[0]: "+mPath[0]);
                     if(mPath[0].equals("")){
@@ -208,11 +211,12 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                         adapter.setNewListBg();
                         adapter.notifyDataSetChanged();
                     }
-
                 } else {
                     Toast.makeText(requireActivity(), "Error! Please try input other video!", Toast.LENGTH_LONG).show();
                 }
             } else if (requestCode == Constant.REQUEST_CODE_IMAGES) {
+                isResultVideo = true;
+                new Handler().postDelayed(() -> isResultVideo = false,500);
                 final String[] path = new String[1];
                 if (data != null && data.getData() != null) {
                     path[0] = FileUtils.getRealPathFromUri(getContext(), data.getData());
@@ -359,5 +363,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         if(adapter!=null){
             adapter.notifyItemChanged(positionItemThemeSelected);
         }
+    }
+    public boolean getResultVideoImage(){
+        return isResultVideo;
     }
 }
