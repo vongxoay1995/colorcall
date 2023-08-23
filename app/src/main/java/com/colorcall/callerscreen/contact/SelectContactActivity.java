@@ -83,8 +83,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     private Background background;
     private Analystic analystic;
     private AppOpenManager appOpenManager;
-    private boolean isShowAdsOpen = true;
-
+    private boolean isRequestPermission = false;
     @Override
     public void onHasCallPermistion() {
         setTheme();
@@ -294,19 +293,13 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
-                    isShowAdsOpen = false;
+                    isRequestPermission = true;
                 }
-            } else {
-                isShowAdsOpen = false;
-                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
-                isShowAdsOpen = false;
+                isRequestPermission = false;
                 setTheme();
-            } else {
-                isShowAdsOpen = false;
-                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
             }
         }
     }
@@ -316,6 +309,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
+                    isRequestPermission = true;
                     AppUtils.showNotificationAccess(this);
                 }
             } else {
@@ -331,8 +325,8 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
 
     @Override
     protected void onStart() {
-        appOpenManager.registerObserver(this);
         super.onStart();
+        appOpenManager.registerObserver(this);
     }
 
     @Override
@@ -343,7 +337,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
 
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
-        if (hasActive() && isShowAdsOpen) {
+        if (hasActive()  && !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
             appOpenAd.show(this);
         }
     }

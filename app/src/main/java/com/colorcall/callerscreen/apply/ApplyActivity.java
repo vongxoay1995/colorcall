@@ -108,7 +108,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private int posRandom;
     private AppOpenManager appOpenManager;
     private InterstitialApply interstitialApply;
-    private boolean isShowAdsOpen = true;
+    private boolean isRequestPermission = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +117,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         //setTranslucent();
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
         interstitialApply = InterstitialApply.getInstance();
-        AppUtils.changeStatusBarColor(this,R.color.blackAlpha30);
+        AppUtils.changeStatusBarColor(this, R.color.blackAlpha30);
         posRandom = getIntent().getIntExtra(Constant.POS_RANDOM, 0);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
         bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
@@ -386,10 +386,11 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
-           // if (AppUtils.canDrawOverlays(this)) {
+            // if (AppUtils.canDrawOverlays(this)) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 Log.e("TAN", "onRequestPermissionsResult: 11");
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
+                    isRequestPermission = true;
                     AppUtils.showNotificationAccess(this);
                 }
             } else {
@@ -403,7 +404,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             } else {
                 Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
             }
-            return;
         }
     }
 
@@ -411,26 +411,28 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constant.REQUEST_OVERLAY) {
+            Log.e("TAN", "onActivityResult: 1");
             if (AppUtils.checkDrawOverlayApp2(this)) {
+                Log.e("TAN", "onActivityResult: 2");
+
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
-                    isShowAdsOpen = false;
+                    Log.e("TAN", "onActivityResult: 3");
+                    isRequestPermission = true;
                     AppUtils.showNotificationAccess(this);
                 }
-            }else {
-                isShowAdsOpen = false;
-               new Handler().postDelayed(() -> isShowAdsOpen = true,500);
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
+            Log.e("TAN", "onActivityResult: 5");
+
             if (AppUtils.checkNotificationAccessSettings(this)) {
-                new Handler().postDelayed(() -> isShowAdsOpen = true,500);
+                Log.e("TAN", "onActivityResult: 6");
+                isRequestPermission = false;
                 applyBgCall();
-            }else {
-                isShowAdsOpen = false;
-                new Handler().postDelayed(() -> isShowAdsOpen = true,500);
             }
-        }else if (requestCode == 95 && resultCode == RESULT_OK) {
-            isShowAdsOpen = false;
-            new Handler().postDelayed(() -> isShowAdsOpen = true,500);
+        } else if (requestCode == 95 && resultCode == RESULT_OK) {
+            Log.e("TAN", "onActivityResult: 8");
+            isRequestPermission = true;
+            new Handler().postDelayed(() -> isRequestPermission = false, 500);
         }
     }
 
@@ -515,17 +517,19 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     @Override
     protected void onStart() {
-        appOpenManager.registerObserver(this);
         super.onStart();
+        appOpenManager.registerObserver(this);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         appOpenManager.unregisterObserver();
     }
+
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
-        if (hasActive() && !interstitialApply.isShowAdsInter() && isShowAdsOpen) {
+        if (hasActive() && !interstitialApply.isShowAdsInter() && !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
             appOpenAd.show(this);
         }
     }
@@ -538,6 +542,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     public void lifecycleStop() {
 
     }
+
     private boolean hasActive() {
         return !isFinishing() && !isDestroyed();
     }

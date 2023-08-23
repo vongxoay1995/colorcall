@@ -55,6 +55,7 @@
     <style name="AppTheme.NoActionBar2">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>

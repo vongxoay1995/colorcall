@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -78,7 +79,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private boolean isFlashState, isCallState;
     private boolean isResultDenyPermission, isResultDenyCallPermission;
     private AppOpenManager appOpenManager;
-    private boolean isShowAdsOpen = true;
+    private boolean isRequestPermission = false;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
@@ -93,6 +94,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         listener();
         analystic.trackEvent(ManagerEvent.settingOpen());
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
+        ///appOpenManager.registerObserver(this);
     }
 
     public void loadAds() {
@@ -227,10 +229,12 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 if (AppUtils.checkDrawOverlayApp2(this)) {
                     if (!AppUtils.checkNotificationAccessSettings(this)) {
                         resetStateCall();
+                        isRequestPermission = true;
                         AppUtils.showNotificationAccess(this);
                     }
                 } else {
                     resetStateCall();
+                    isRequestPermission = true;
                     AppUtils.showDrawOverlayApp(this);
                 }
             } else {
@@ -251,23 +255,22 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     isCallState = true;
-                    isShowAdsOpen = false;
+                    isRequestPermission = true;
                     resetStateCall();
                     AppUtils.showNotificationAccess(this);
                 }
             }else {
-                isShowAdsOpen = false;
-                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
+                new Handler().postDelayed(() -> isRequestPermission = false, 500);
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 isCallState = true;
                 swStateApp.setChecked(true);
-                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
+                isRequestPermission = false;
                 onHasCallPermistion();
-            }else {
-                isShowAdsOpen = false;
-                new Handler().postDelayed(() -> isShowAdsOpen = true, 500);
+            }
+            else {
+                new Handler().postDelayed(() -> isRequestPermission = false, 500);
             }
         }
     }
@@ -288,8 +291,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     }
     @Override
     protected void onStart() {
-        appOpenManager.registerObserver(this);
         super.onStart();
+        appOpenManager.registerObserver(this);
+        Log.e("TAN", "onStart: setting"+appOpenManager);
+
+
     }
     @Override
     protected void onDestroy() {
@@ -301,7 +307,8 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     }
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
-        if (hasActive() && isShowAdsOpen) {
+        Log.e("TAN", "lifecycleStart:setting "+isRequestPermission);
+        if (hasActive() &&  !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
             appOpenAd.show(this);
         }
     }

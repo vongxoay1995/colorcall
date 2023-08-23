@@ -371,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
+        Log.e("TAN", "lifecycleStart: main"+appOpenManager);
         if (hasActive() && !interstitialUtil.isShowAdsInter()&&mythemeFrag!=null&&!((MyThemeFragment)mythemeFrag).getResultVideoImage()) {
             appOpenManager.setShowingAd(true);
             appOpenAd.show(this);

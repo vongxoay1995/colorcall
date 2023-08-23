@@ -66,7 +66,49 @@ public class PermistionUtils {
         }
     }
 
+    public static boolean checkHasPermissionCall(Activity activity) {
+        String[] permistion;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            permistion = new String[]{
+                    READ_PHONE_STATE,
+                    CALL_PHONE,
+                    READ_CONTACTS
+            };
+        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.P){
+            permistion = new String[]{
+                    ANSWER_PHONE_CALLS,
+                    READ_PHONE_STATE,
+                    CALL_PHONE,
+                    READ_CONTACTS
+            };
+        }else {
+            permistion = new String[]{
+                    ANSWER_PHONE_CALLS,
+                    READ_PHONE_STATE,
+                    CALL_PHONE,
+                    READ_CONTACTS
+            };
+        }
 
+        if (!AppUtils.checkPermission(activity, permistion)) {
+            ActivityCompat.requestPermissions(activity, permistion, Constant.PERMISSION_REQUEST_CODE_CALL_PHONE);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Log.e("TAN", "checkPermissionCall: "+AppUtils.checkDrawOverlayApp2(activity));
+                if (!AppUtils.checkDrawOverlayApp2(activity)) {
+                    Log.e("TAN", "checkPermissionCall: 111");
+                    AppUtils.showDrawOverlayPermissionDialog(activity);
+                } else if (!AppUtils.checkNotificationAccessSettings(activity)) {
+                    AppUtils.showNotificationAccess(activity);
+                } else {
+                   return true;
+                }
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     public static void checkPermissionFlash(Activity activity, PermistionFlashListener listener) {
