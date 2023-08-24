@@ -234,7 +234,6 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                     }
                 } else {
                     resetStateCall();
-                    isRequestPermission = true;
                     AppUtils.showDrawOverlayApp(this);
                 }
             } else {
@@ -259,18 +258,13 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                     resetStateCall();
                     AppUtils.showNotificationAccess(this);
                 }
-            }else {
-                new Handler().postDelayed(() -> isRequestPermission = false, 500);
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 isCallState = true;
                 swStateApp.setChecked(true);
-                isRequestPermission = false;
+                new Handler().postDelayed(() -> isRequestPermission = false,500);
                 onHasCallPermistion();
-            }
-            else {
-                new Handler().postDelayed(() -> isRequestPermission = false, 500);
             }
         }
     }

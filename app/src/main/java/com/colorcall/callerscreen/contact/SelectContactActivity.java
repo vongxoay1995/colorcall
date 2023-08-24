@@ -298,7 +298,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             }
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
-                isRequestPermission = false;
+                new Handler().postDelayed(() -> isRequestPermission = false,500);
                 setTheme();
             }
         }

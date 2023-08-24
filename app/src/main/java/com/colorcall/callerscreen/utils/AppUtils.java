@@ -162,7 +162,7 @@ public class AppUtils {
                         ((Activity) context).startActivityForResult(intent, Constant.REQUEST_OVERLAY);
                         PermissionOverLayActivity.open(context, 0);
                     }
-                    dialog.dismiss();
+                    alertDialog.dismiss();
                 });
         alertDialog.show();
     }

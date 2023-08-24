@@ -414,7 +414,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             Log.e("TAN", "onActivityResult: 1");
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 Log.e("TAN", "onActivityResult: 2");
-
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     Log.e("TAN", "onActivityResult: 3");
                     isRequestPermission = true;
@@ -426,7 +425,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 Log.e("TAN", "onActivityResult: 6");
-                isRequestPermission = false;
+                new Handler().postDelayed(() -> isRequestPermission = false, 500);
                 applyBgCall();
             }
         } else if (requestCode == 95 && resultCode == RESULT_OK) {

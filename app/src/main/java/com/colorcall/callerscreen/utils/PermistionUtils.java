@@ -91,23 +91,14 @@ public class PermistionUtils {
         }
 
         if (!AppUtils.checkPermission(activity, permistion)) {
-            ActivityCompat.requestPermissions(activity, permistion, Constant.PERMISSION_REQUEST_CODE_CALL_PHONE);
+            return false;
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Log.e("TAN", "checkPermissionCall: "+AppUtils.checkDrawOverlayApp2(activity));
-                if (!AppUtils.checkDrawOverlayApp2(activity)) {
-                    Log.e("TAN", "checkPermissionCall: 111");
-                    AppUtils.showDrawOverlayPermissionDialog(activity);
-                } else if (!AppUtils.checkNotificationAccessSettings(activity)) {
-                    AppUtils.showNotificationAccess(activity);
-                } else {
-                   return true;
-                }
+                return AppUtils.checkDrawOverlayApp2(activity)&&AppUtils.checkNotificationAccessSettings(activity);
             } else {
                 return true;
             }
         }
-        return false;
     }
 
 

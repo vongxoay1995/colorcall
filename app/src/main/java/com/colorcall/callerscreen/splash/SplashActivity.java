@@ -22,8 +22,6 @@ import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.update.UpdateManager;
 import com.colorcall.callerscreen.utils.AppUtils;
-import com.colorcall.callerscreen.utils.ConstantAds;
-import com.colorcall.callerscreen.utils.JobScreen;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
