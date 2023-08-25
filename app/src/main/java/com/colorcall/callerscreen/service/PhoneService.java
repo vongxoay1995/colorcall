@@ -62,7 +62,7 @@ public class PhoneService extends Service {
         builder.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), Build.VERSION.SDK_INT >= 31 ? PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT));
         builder.setContentTitle(getString(R.string.app_name));
         builder.setContentText(getString(R.string.notify_msg_foreground));
-        builder.setSmallIcon((int) R.drawable.icon);
+        builder.setSmallIcon(R.drawable.color_phone);
         startForeground(1, builder.build());
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         this.telephony = telephonyManager;

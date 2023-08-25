@@ -1,9 +1,11 @@
 package com.colorcall.callerscreen.main;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,8 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -110,6 +115,16 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, 1);
         }*/
+        requestNotificationPermission();
+
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+                notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
     }
 
     private void moveStore() {
@@ -391,6 +406,18 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private boolean hasActive() {
         return !isFinishing() && !isDestroyed();
     }
+    private final ActivityResultLauncher<String> notificationPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                /*if (!isGranted) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (Build.VERSION.SDK_INT >= 33) {
+                            if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                            } else {
+                            }
+                        }
+                    }
+                }*/
+            });
 
 
 }

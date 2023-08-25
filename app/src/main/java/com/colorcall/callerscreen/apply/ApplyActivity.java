@@ -2,6 +2,7 @@ package com.colorcall.callerscreen.apply;
 
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
@@ -24,9 +25,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -127,7 +131,10 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
         loadAdsBanner();
         analystic.trackEvent(ManagerEvent.applyOpen());
+
     }
+
+
 
     private void loadAdsBanner() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/8401908310";
@@ -545,5 +552,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private boolean hasActive() {
         return !isFinishing() && !isDestroyed();
     }
+
+
 
 }
