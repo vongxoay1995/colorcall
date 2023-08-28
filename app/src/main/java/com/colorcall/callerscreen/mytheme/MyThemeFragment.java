@@ -2,6 +2,8 @@ package com.colorcall.callerscreen.mytheme;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
+import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
@@ -53,7 +55,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +66,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     private Analystic analystic;
     private String pathUriImage;
     private int positionItemThemeSelected = -1;
-    private boolean isResultVideo;
+    public boolean isRequestImageVideo;
     public MyThemeFragment() {
     }
 
@@ -132,7 +133,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
         intent.putExtra(Constant.POS_RANDOM, posRandom);
-        Objects.requireNonNull(getActivity()).startActivity(intent);
+        requireActivity().startActivity(intent);
     }
 
     public void checkPermissionActionCamera() {
@@ -143,7 +144,15 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                     WRITE_EXTERNAL_STORAGE,
                     CAMERA
             };
-        }else {
+        }
+        else if(Build.VERSION.SDK_INT >=Build.VERSION_CODES.TIRAMISU){
+            permistion = new String[]{
+                    READ_MEDIA_VIDEO,
+                    READ_MEDIA_IMAGES,
+                    CAMERA
+            };
+        }
+        else {
             permistion = new String[]{
                     READ_EXTERNAL_STORAGE,
                     CAMERA
@@ -171,6 +180,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
     @Override
     public void onVideoClicked() {
+        isRequestImageVideo = true;
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         photoPickerIntent.setType("video/*");
@@ -183,19 +193,19 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
     @Override
     public void onImagesClicked() {
+        isRequestImageVideo = true;
         pathUriImage = AppUtils.openCameraIntent(this, getActivity(), Constant.REQUEST_CODE_IMAGES);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        isRequestImageVideo=false;
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constant.REQUEST_VIDEO) {
                 Log.e("TAN", "onActivityResult: video");
                 Uri uriData = data.getData();
                 final String[] mPath = new String[1];
                 if (uriData != null) {
-                    isResultVideo = true;
-                    new Handler().postDelayed(() -> isResultVideo = false,500);
                     mPath[0] = FileUtils.getRealPathFromUri(getContext(), uriData);
                     Log.e("TAN", "mPath[0]: "+mPath[0]);
                     if(mPath[0].equals("")){
@@ -215,8 +225,6 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                     Toast.makeText(requireActivity(), "Error! Please try input other video!", Toast.LENGTH_LONG).show();
                 }
             } else if (requestCode == Constant.REQUEST_CODE_IMAGES) {
-                isResultVideo = true;
-                new Handler().postDelayed(() -> isResultVideo = false,500);
                 final String[] path = new String[1];
                 if (data != null && data.getData() != null) {
                     path[0] = FileUtils.getRealPathFromUri(getContext(), data.getData());
@@ -363,8 +371,5 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         if(adapter!=null){
             adapter.notifyItemChanged(positionItemThemeSelected);
         }
-    }
-    public boolean getResultVideoImage(){
-        return isResultVideo;
     }
 }
