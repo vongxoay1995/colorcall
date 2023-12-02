@@ -26,7 +26,6 @@ import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.play.core.install.model.AppUpdateType;
@@ -50,7 +49,7 @@ public class SplashActivity extends AppCompatActivity{
     @BindView(R.id.layoutSeekbar)
     LinearLayout layoutSeekbar;
     private int progress;
-    private String ID_ADS = "ca-app-pub-3222539657172474/3629498756";
+    private String ID_ADS = "ca-app-pub-3134368447261649/9439592540";
     private InterstitialAd mInterstitialAd;
     private Analystic analystic;
     private Disposable disposable;
@@ -119,6 +118,7 @@ public class SplashActivity extends AppCompatActivity{
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        Log.e("TAN", "onAdLoaded: splash");
                         fullAdsLoaded = true;
                         mInterstitialAd = interstitialAd;
                         mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
@@ -149,6 +149,7 @@ public class SplashActivity extends AppCompatActivity{
 
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.e("TAN", "onAdFailedToLoad: "+loadAdError.getMessage());
                         // Handle the error
                         loadFailed = true;
                         fullAdsLoaded = false;
@@ -173,11 +174,19 @@ public class SplashActivity extends AppCompatActivity{
     private void countTimer() {
         Log.e("TAN", "countTimer: " + seekbar.getProgress());
         if (seekbar.getProgress() < 100) {
-            if (fullAdsLoaded) {
-                showAds();
+            if (loadFailed){
                 hideLoading();
                 if (disposable != null) {
                     disposable.dispose();
+                }
+                skip();
+            }else{
+                if (fullAdsLoaded) {
+                    showAds();
+                    hideLoading();
+                    if (disposable != null) {
+                        disposable.dispose();
+                    }
                 }
             }
         } else {

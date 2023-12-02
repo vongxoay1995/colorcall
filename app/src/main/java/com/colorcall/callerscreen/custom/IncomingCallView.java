@@ -1,6 +1,5 @@
 package com.colorcall.callerscreen.custom;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 import android.Manifest;
 import android.content.Context;
@@ -163,7 +162,7 @@ public class IncomingCallView extends RelativeLayout {
     public void setInforContact() {
         if (numberPhone != null && !numberPhone.equals("")) {
             try {
-                ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(numberPhone));
+                ContactRetrieve contactRetrieve = AppUtils.getContactName(context, String.valueOf(numberPhone));
                 name = contactRetrieve.getName();
                 contactId = contactRetrieve.getContact_id();
                 txtName.setText(name);
@@ -185,7 +184,7 @@ public class IncomingCallView extends RelativeLayout {
         backgroundSelect = HawkHelper.getBackgroundSelect();
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
-            bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(numberPhone));
+            bmpAvatar = AppUtils.getContactPhoto(context, String.valueOf(numberPhone));
             profile_image.setImageBitmap(bmpAvatar);
             vdo_background_call.setVisibility(View.VISIBLE);
             Glide.with(this).load(R.drawable.ic_exit).into(imgExit);
@@ -220,10 +219,10 @@ public class IncomingCallView extends RelativeLayout {
                     tm.acceptRingingCall();
                 }
             } else {
-                Intent intent = new Intent(getApplicationContext(), AcceptCallActivity.class);
+                Intent intent = new Intent(context, AcceptCallActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                         | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                getApplicationContext().startActivity(intent);
+                context.startActivity(intent);
             }
             release();
         });
@@ -232,7 +231,7 @@ public class IncomingCallView extends RelativeLayout {
             analystic.trackEvent(ManagerEvent.callWinDowRejectCall());
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
+                    TelecomManager tm = (TelecomManager)context.getSystemService(Context.TELECOM_SERVICE);
                     if (tm != null) {
                         tm.endCall();
                     }
@@ -307,7 +306,7 @@ public class IncomingCallView extends RelativeLayout {
         } else {
             sPathThumb = backgroundSelect.getPathItem();
         }
-        Glide.with(getApplicationContext())
+        Glide.with(context.getApplicationContext())
                 .load(sPathThumb)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .thumbnail(0.1f)

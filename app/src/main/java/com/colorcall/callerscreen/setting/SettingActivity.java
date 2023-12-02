@@ -20,6 +20,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
+import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
@@ -99,7 +100,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
 
     public void loadAds() {
         String idGG;
-        String ID_ADS_GG = "ca-app-pub-3222539657172474/5477219704";
+        String ID_ADS_GG = "ca-app-pub-3134368447261649/5605085477";
         if (BuildConfig.DEBUG) {
             idGG = Constant.ID_NATIVE_TEST;
         } else {
@@ -227,6 +228,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         } else if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE) {
             if (grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
                 if (AppUtils.checkDrawOverlayApp2(this)) {
+                    analystic.trackEvent(new Event("Permission_Dialog_DrawOver_Setting_Granted",new Bundle()));
                     if (!AppUtils.checkNotificationAccessSettings(this)) {
                         resetStateCall();
                         isRequestPermission = true;
@@ -252,6 +254,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constant.REQUEST_OVERLAY) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
+                analystic.trackEvent(new Event("Per_Dlg_DrawOver_Setting_Result_Granted",new Bundle()));
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     isCallState = true;
                     isRequestPermission = true;
@@ -264,6 +267,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 isCallState = true;
                 swStateApp.setChecked(true);
                 new Handler().postDelayed(() -> isRequestPermission = false,500);
+                analystic.trackEvent(new Event("Per_Dlg_Setting_Use_App_Granted",new Bundle()));
                 onHasCallPermistion();
             }
         }
@@ -302,9 +306,9 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
         Log.e("TAN", "lifecycleStart:setting "+isRequestPermission);
-        if (hasActive() &&  !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
+       /* if (hasActive() &&  !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
             appOpenAd.show(this);
-        }
+        }*/
     }
 
     @Override

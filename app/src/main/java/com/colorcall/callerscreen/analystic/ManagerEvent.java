@@ -204,4 +204,13 @@ public class ManagerEvent {
         bundle.putInt("extra",extra);
         return new Event("CallVideoViewError",bundle);
     }
+
+    public static Event grantedPermission(boolean isGrant){
+        Bundle bun = new Bundle();
+        bun.putString("isGrant",isGrant+"");
+        return new Event("Grant_Permission",bun);
+    }
+    public static Event grantedPermissionPhone(){
+        return new Event("Grant_Permission_Phone",new Bundle());
+    }
 }

@@ -32,9 +32,9 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
     fun onStart() {
         Log.e("TAN", "onStart: "+currentActivity )
         //if (!PreferencesUtils.getBoolean(AppConstant.IS_PURCHASED, false)) {
-        if (currentActivity !is SplashActivity && currentActivity !is AdActivity) {
+      /*  if (currentActivity !is SplashActivity && currentActivity !is AdActivity) {
             showAdIfAvailable()
-        }
+        }*/
         // }
     }
 

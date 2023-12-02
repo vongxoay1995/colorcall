@@ -21,6 +21,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -46,6 +47,7 @@ import androidx.fragment.app.Fragment;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
+import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
@@ -150,6 +152,8 @@ public class AppUtils {
     }
 
     public static void showDrawOverlayPermissionDialog(Context context) {
+        Analystic analystic =  Analystic.getInstance(context);
+        analystic.trackEvent(new Event("Permission_Dialog_DrawOver_Show", new Bundle()));
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         alertDialog.setTitle(context.getString(R.string.overlay_permision));
         alertDialog.setMessage(context.getString(R.string.overlay_permision_content));
@@ -182,6 +186,8 @@ public class AppUtils {
     }
 
     public static void showNotificationAccess(Context context) {
+        Analystic analystic =  Analystic.getInstance(context);
+        analystic.trackEvent(new Event("Permission_Dialog_Notification_Show", new Bundle()));
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getString(R.string.turn_on_notifi))
                 .setNegativeButton(R.string.ok, (dialogInterface, i) -> {

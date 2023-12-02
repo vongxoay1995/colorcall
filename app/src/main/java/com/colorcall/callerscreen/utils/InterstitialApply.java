@@ -18,7 +18,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import java.util.Date;
 
 public class InterstitialApply {
-    private String id_ads = "ca-app-pub-3222539657172474/9287614570";
+    private String id_ads = "ca-app-pub-3134368447261649/6383018513";
     private static InterstitialApply sInterstitial;
     private InterstitialAd interstitialAd;
     private AdCloseListener adCloseListener;

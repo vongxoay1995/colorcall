@@ -32,6 +32,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
+import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
@@ -291,6 +292,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constant.REQUEST_OVERLAY) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
+                analystic.trackEvent(new Event("Per_Dlg_DrawOver_Contact_Result_Granted",new Bundle()));
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     AppUtils.showNotificationAccess(this);
                     isRequestPermission = true;
@@ -299,6 +301,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 new Handler().postDelayed(() -> isRequestPermission = false,500);
+                analystic.trackEvent(new Event("Per_Dlg_Contact_Use_App_Granted",new Bundle()));
                 setTheme();
             }
         }
@@ -308,6 +311,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
+                analystic.trackEvent(new Event("Permission_Dialog_DrawOver_Contact_Granted",new Bundle()));
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     isRequestPermission = true;
                     AppUtils.showNotificationAccess(this);
@@ -337,9 +341,9 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
 
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
-        if (hasActive()  && !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
+       /* if (hasActive()  && !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
             appOpenAd.show(this);
-        }
+        }*/
     }
 
     @Override

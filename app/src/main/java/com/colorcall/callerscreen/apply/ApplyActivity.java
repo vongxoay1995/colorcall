@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.apply;
 
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
@@ -25,12 +24,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -46,7 +42,6 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.model.SignApplyImage;
-import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.service.PhoneService;
@@ -137,7 +132,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
 
     private void loadAdsBanner() {
-        String ID_ADS_GG = "ca-app-pub-3222539657172474/8401908310";
+        String ID_ADS_GG = "ca-app-pub-3134368447261649/7123602157";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();
@@ -372,7 +367,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         Bundle bundle = new Bundle();
         bundle.putString("name", background.getName());
         bundle.putInt("position", position);
-        EventBus.getDefault().postSticky(new SignApplyMain());
         analystic.trackEvent(new Event("APPLY_ITEM_INFOR", bundle));
         switch (fromScreen) {
             case Constant.VIDEO_FRAG_MENT:
@@ -395,7 +389,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
             // if (AppUtils.canDrawOverlays(this)) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
-                Log.e("TAN", "onRequestPermissionsResult: 11");
+                analystic.trackEvent(new Event("Permission_Dialog_DrawOver_Apply_Granted",new Bundle()));
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     isRequestPermission = true;
                     AppUtils.showNotificationAccess(this);
@@ -421,6 +415,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             Log.e("TAN", "onActivityResult: 1");
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 Log.e("TAN", "onActivityResult: 2");
+                analystic.trackEvent(new Event("Per_Dlg_DrawOver_Apply_Result_Granted",new Bundle()));
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
                     Log.e("TAN", "onActivityResult: 3");
                     isRequestPermission = true;
@@ -433,6 +428,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 Log.e("TAN", "onActivityResult: 6");
                 new Handler().postDelayed(() -> isRequestPermission = false, 500);
+                analystic.trackEvent(new Event("Per_Dlg_Apply_Use_App_Granted",new Bundle()));
                 applyBgCall();
             }
         } else if (requestCode == 95 && resultCode == RESULT_OK) {
@@ -535,9 +531,9 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
-        if (hasActive() && !interstitialApply.isShowAdsInter() && !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
+      /*  if (hasActive() && !interstitialApply.isShowAdsInter() && !isRequestPermission && PermistionUtils.checkHasPermissionCall(this)) {
             appOpenAd.show(this);
-        }
+        }*/
     }
 
     @Override

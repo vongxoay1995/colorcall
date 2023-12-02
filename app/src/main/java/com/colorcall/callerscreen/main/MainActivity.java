@@ -45,6 +45,7 @@ import com.colorcall.callerscreen.utils.BannerAdsUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
+import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.material.tabs.TabLayout;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         }
         //AppUtils.showFullHeader(this, layout_head);
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
-        appOpenManager.fetchAd();
+        //appOpenManager.fetchAd();
 
         loadDataApi(true);
         analystic = Analystic.getInstance(this);
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         }
         disableToolTipTextTab();
         analystic.trackEvent(ManagerEvent.mainOpen());
+        analystic.trackEvent(ManagerEvent.grantedPermission(PermistionUtils.checkHasPermissionCall(this)));
         KeyboardVisibilityEvent.setEventListener(this, this);
       /*  if (!AppUtils.checkDrawOverlayApp2(this)) {
             Log.e("TAN", "onCreate: ");
@@ -116,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             startActivityForResult(intent, 1);
         }*/
         requestNotificationPermission();
-
     }
 
     private void requestNotificationPermission() {
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void loadAds() {
-        String ID_ADS_GG = "ca-app-pub-3222539657172474/4654234996";
+        String ID_ADS_GG = "ca-app-pub-3134368447261649/3593165656";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();
@@ -387,10 +388,10 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
         Log.e("TAN", "lifecycleStart: main"+appOpenManager);
-        if (hasActive() && !interstitialUtil.isShowAdsInter()&&mythemeFrag!=null&&!((MyThemeFragment)mythemeFrag).isRequestImageVideo) {
+      /*  if (hasActive() && !interstitialUtil.isShowAdsInter()&&mythemeFrag!=null&&!((MyThemeFragment)mythemeFrag).isRequestImageVideo) {
             appOpenManager.setShowingAd(true);
             appOpenAd.show(this);
-        }
+        }*/
     }
 
     @Override

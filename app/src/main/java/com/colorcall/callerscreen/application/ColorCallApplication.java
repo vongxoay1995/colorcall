@@ -2,7 +2,6 @@ package com.colorcall.callerscreen.application;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,9 +12,6 @@ import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.facebook.FacebookSdk;
-import com.facebook.ads.AdSettings;
-import com.facebook.ads.AudienceNetworkAds;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.tasks.OnCanceledListener;
@@ -44,19 +40,16 @@ public class ColorCallApplication extends Application {
         });
         Hawk.init(this).build();
         appOpenManager = new AppOpenManager(this);
-
         loadData();
         DataManager.getInstance().init(this);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        if (BuildConfig.DEBUG) {
+       if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
-            List<String> testDeviceIds = Arrays.asList("C672C9D51F65E8B9B0345F9F8E4F7CC1");
+            //List<String> testDeviceIds = Arrays.asList("C672C9D51F65E8B9B0345F9F8E4F7CC1");
+            List<String> testDeviceIds = Arrays.asList("E0CD7D898DDF7923BC4BA027C02F7876");
             RequestConfiguration configuration = new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
             MobileAds.setRequestConfiguration(configuration);
-            AdSettings.addTestDevice("90b91733-6634-4148-8e85-cdcf4b60902f");
         }
-        AudienceNetworkAds.initialize(this);
-        // configFirebaseRemote();
+       // configFirebaseRemote();
     }
 
 
