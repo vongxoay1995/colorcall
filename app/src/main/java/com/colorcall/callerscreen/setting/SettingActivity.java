@@ -100,7 +100,8 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
 
     public void loadAds() {
         String idGG;
-        String ID_ADS_GG = "ca-app-pub-3134368447261649/5605085477";
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/5477219704";
+        //String ID_ADS_GG = "ca-app-pub-3134368447261649/5605085477";
         if (BuildConfig.DEBUG) {
             idGG = Constant.ID_NATIVE_TEST;
         } else {

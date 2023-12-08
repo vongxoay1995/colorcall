@@ -202,7 +202,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void loadAds() {
-        String ID_ADS_GG = "ca-app-pub-3134368447261649/3593165656";
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/4654234996";
+        //String ID_ADS_GG = "ca-app-pub-3134368447261649/3593165656";
         bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();

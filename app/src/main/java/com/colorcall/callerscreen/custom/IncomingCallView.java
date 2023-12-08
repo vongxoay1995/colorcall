@@ -127,25 +127,26 @@ public class IncomingCallView extends RelativeLayout {
         WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         this.windowManager = windowManager;
         this.windowManager.addView(this, this.windowParams);*/
-
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        this.windowParams = layoutParams;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
-            layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        if (AppUtils.checkDrawOverlayApp2(context)) {
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            this.windowParams = layoutParams;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            } else {
+                layoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+            }
+            //layoutParams.type = Build.VERSION.SDK_INT >= 26 ? 2038 : 2010;
+            WindowManager.LayoutParams layoutParams2 = this.windowParams;
+            layoutParams2.format = -2;
+            layoutParams2.flags = 524584;
+            layoutParams2.width = -1;
+            layoutParams2.height = -1;
+            layoutParams2.screenOrientation = 1;
+            layoutParams2.windowAnimations = 16973826;
+            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            this.windowManager = windowManager;
+            windowManager.addView(this, this.windowParams);
         }
-        //layoutParams.type = Build.VERSION.SDK_INT >= 26 ? 2038 : 2010;
-        WindowManager.LayoutParams layoutParams2 = this.windowParams;
-        layoutParams2.format = -2;
-        layoutParams2.flags = 524584;
-        layoutParams2.width = -1;
-        layoutParams2.height = -1;
-        layoutParams2.screenOrientation = 1;
-        layoutParams2.windowAnimations = 16973826;
-        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        this.windowManager = windowManager;
-        windowManager.addView(this, this.windowParams);
         ButterKnife.bind(this, this);
     }
 
