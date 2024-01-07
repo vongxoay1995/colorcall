@@ -11,6 +11,7 @@ import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
@@ -42,6 +43,7 @@ public class ColorCallApplication extends Application {
         appOpenManager = new AppOpenManager(this);
         loadData();
         DataManager.getInstance().init(this);
+
        if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
             //List<String> testDeviceIds = Arrays.asList("C672C9D51F65E8B9B0345F9F8E4F7CC1");
@@ -49,6 +51,7 @@ public class ColorCallApplication extends Application {
             RequestConfiguration configuration = new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
             MobileAds.setRequestConfiguration(configuration);
         }
+
        // configFirebaseRemote();
     }
 
@@ -56,6 +59,7 @@ public class ColorCallApplication extends Application {
     public AppOpenManager getAppOpenManager() {
         return appOpenManager;
     }
+
 
 
     @SuppressLint("StaticFieldLeak")

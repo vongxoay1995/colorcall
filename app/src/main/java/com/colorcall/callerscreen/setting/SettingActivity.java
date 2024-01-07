@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionFlashListener;
@@ -72,6 +74,8 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     SwitchCompat swFlash;
     @BindView(R.id.layoutFlash)
     RelativeLayout layoutFlash;
+    @BindView(R.id.layoutUMP)
+    RelativeLayout layoutUmp;
     @BindView(R.id.fl_adplaceholder)
     FrameLayout frameLayout;
     private LinearLayout adView;
@@ -81,6 +85,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private boolean isResultDenyPermission, isResultDenyCallPermission;
     private AppOpenManager appOpenManager;
     private boolean isRequestPermission = false;
+    public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
@@ -95,6 +100,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         listener();
         analystic.trackEvent(ManagerEvent.settingOpen());
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
+        googleMobileAdsConsentManager =
+                GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
+        if (googleMobileAdsConsentManager.isPrivacyOptionsRequired()){
+            layoutUmp.setVisibility(View.VISIBLE);
+        }
         ///appOpenManager.registerObserver(this);
     }
 
@@ -152,6 +162,18 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 PermistionUtils.checkPermissionFlash(SettingActivity.this, this);
             } else {
                 isResultDenyPermission = false;
+            }
+        });
+        layoutUmp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                googleMobileAdsConsentManager.showPrivacyOptionsForm(
+                        SettingActivity.this,
+                        formError -> {
+                            if (formError != null) {
+                                Toast.makeText(SettingActivity.this, formError.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         });
     }

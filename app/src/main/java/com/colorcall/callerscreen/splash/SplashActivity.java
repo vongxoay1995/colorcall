@@ -22,6 +22,7 @@ import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.update.UpdateManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.ConstantAds;
+import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
 import com.colorcall.callerscreen.utils.JobScreen;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -29,6 +30,7 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.ump.FormError;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +52,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     public AppOpenAd appOpenAds;
     private boolean isLoadAdError = false;
     private boolean isShowAds = false;
+    public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
 
 
     @Override
@@ -70,7 +73,8 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         mUpdateManager = UpdateManager.Builder(this);
         analystic = Analystic.getInstance(this);
         analystic.trackEvent(ManagerEvent.splashOpen());
-
+        googleMobileAdsConsentManager =
+                GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
         //int countUpdate = HawkHelper.getCountShowDialogUpdate();
         // countUpdate++;
         // HawkHelper.setCountRate(countUpdate);
@@ -85,6 +89,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 Log.e("TAN", "onDownloadProgress: "+ bytesDownloaded + " / " + totalBytes);
             }
         });*/
+        loadConsentForm();
         checkIAP();
     }
 
@@ -170,6 +175,23 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         }
     }
 
+    private void loadConsentForm() {
+        googleMobileAdsConsentManager.gatherConsent(
+                this,
+                new GoogleMobileAdsConsentManager.OnConsentGatheringCompleteListener() {
+                    @Override
+                    public void consentGatheringComplete(FormError error) {
+                    }
+
+                    @Override
+                    public void conSentShow() {
+                    }
+
+                    @Override
+                    public void conSentDismiss() {
+                    }
+                });
+    }
 
     @Override
     protected void onDestroy() {

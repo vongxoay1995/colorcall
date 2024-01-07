@@ -82,5 +82,6 @@
     <string name="notNow">Not now</string>
     <string name="skip_ads" >Skip</string>
     <string name="notify_msg_foreground">Call Screen is running</string>
+    <string name="gdpr_content">Personalise ads using personal data</string>
 
 </resources>

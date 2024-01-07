@@ -312,6 +312,41 @@
                     tools:ignore="VectorDrawableCompat" />
             </RelativeLayout>
             <RelativeLayout
+                android:id="@+id/layoutUMP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/btnump"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_avatar"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btnump"
+                    android:layout_toStartOf="@id/imgArr"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:text="@string/gdpr_content"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+                <ImageView
+                    android:id="@+id/imgArr"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="@dimen/_12sdp"
+                    app:srcCompat="@drawable/ic_ar_right"
+                    tools:ignore="VectorDrawableCompat" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_36sdp"

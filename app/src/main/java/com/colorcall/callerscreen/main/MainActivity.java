@@ -42,6 +42,7 @@ import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
+import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
@@ -53,6 +54,7 @@ import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.android.play.core.tasks.Task;
+import com.google.android.ump.FormError;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
@@ -86,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     ViewPagerMainAdapter mAdapter;
     private AppOpenManager appOpenManager;
     private InterstitialUtil interstitialUtil;
+    public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
+    public boolean isShowConsent = false;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         if (HawkHelper.isEnableColorCall()) {
             PhoneService.startService(this);
         }
+        googleMobileAdsConsentManager =
+                GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
+        showForm();
         //AppUtils.showFullHeader(this, layout_head);
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
         //appOpenManager.fetchAd();
@@ -118,6 +125,31 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             startActivityForResult(intent, 1);
         }*/
         requestNotificationPermission();
+    }
+
+    private void showForm() {
+        googleMobileAdsConsentManager.showForm(this, new GoogleMobileAdsConsentManager.OnConsentGatheringCompleteListener() {
+            @Override
+            public void consentGatheringComplete(FormError error) {
+                Log.e("TAN", "consentGatheringCompletemain: " + error);
+                if (AppUtils.isNetworkConnected(MainActivity.this)) {
+                    loadAds();
+                    preLoadInter();
+                }
+            }
+
+            @Override
+            public void conSentShow() {
+                isShowConsent = true;
+                Log.e("TAN", "conSentShow: ");
+            }
+
+            @Override
+            public void conSentDismiss() {
+                isShowConsent = false;
+                Log.e("TAN", "conSentDismiss: ");
+            }
+        });
     }
 
     private void requestNotificationPermission() {
@@ -388,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Override
     public void lifecycleStart(@NonNull AppOpenAd appOpenAd, @NonNull AppOpenManager appOpenManager) {
-        Log.e("TAN", "lifecycleStart: main"+appOpenManager);
+        Log.e("TAN", "lifecycleStart: main" + appOpenManager);
       /*  if (hasActive() && !interstitialUtil.isShowAdsInter()&&mythemeFrag!=null&&!((MyThemeFragment)mythemeFrag).isRequestImageVideo) {
             appOpenManager.setShowingAd(true);
             appOpenAd.show(this);
@@ -408,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private boolean hasActive() {
         return !isFinishing() && !isDestroyed();
     }
+
     private final ActivityResultLauncher<String> notificationPermission =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 /*if (!isGranted) {
