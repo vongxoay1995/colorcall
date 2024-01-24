@@ -18,7 +18,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import java.util.Date;
 
 public class InterstitialApply {
-    //private String id_ads = "ca-app-pub-3134368447261649/6383018513";
     private String id_ads = "ca-app-pub-3222539657172474/9287614570";
     private static InterstitialApply sInterstitial;
     private InterstitialAd interstitialAd;
@@ -45,7 +44,7 @@ public class InterstitialApply {
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
         } else {
-            idInter = id_ads;
+            idInter = ConstantAds.id_ads_inter_apply_admob2;
         }
         loadInterstitial(mContext, 1);
     }

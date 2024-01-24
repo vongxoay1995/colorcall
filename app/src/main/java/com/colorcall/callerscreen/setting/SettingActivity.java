@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.setting;
 
+import static com.colorcall.callerscreen.utils.ConstantAds.setting_banner_admob2;
+
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -111,11 +113,10 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     public void loadAds() {
         String idGG;
         String ID_ADS_GG = "ca-app-pub-3222539657172474/5477219704";
-        //String ID_ADS_GG = "ca-app-pub-3134368447261649/5605085477";
         if (BuildConfig.DEBUG) {
             idGG = Constant.ID_NATIVE_TEST;
         } else {
-            idGG = ID_ADS_GG;
+            idGG = setting_banner_admob2;
         }
         AdLoader.Builder builder = new AdLoader.Builder(this, idGG)
                 .forNativeAd(nativeAd -> {

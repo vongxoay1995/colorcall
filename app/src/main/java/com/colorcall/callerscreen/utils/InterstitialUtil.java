@@ -19,7 +19,6 @@ import java.util.Date;
 
 public class InterstitialUtil {
     private String id_ads = "ca-app-pub-3222539657172474/1146805647";
-    //private String id_ads = "ca-app-pub-3134368447261649/2906807937";
     @SuppressLint("StaticFieldLeak")
     private static InterstitialUtil sInterstitial;
     private InterstitialAd interstitialAd;
@@ -45,7 +44,7 @@ public class InterstitialUtil {
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
         } else {
-            idInter = id_ads;
+            idInter = ConstantAds.id_ads_inter_item_admob2;
         }
         loadInterstitial(mContext,1);
     }

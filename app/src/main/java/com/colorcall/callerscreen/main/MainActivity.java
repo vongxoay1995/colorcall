@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.main;
 
+import static com.colorcall.callerscreen.utils.ConstantAds.banner_main_admob2;
+
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -235,8 +237,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/4654234996";
-        //String ID_ADS_GG = "ca-app-pub-3134368447261649/3593165656";
-        bannerAdsUtils.setIdAds(ID_ADS_GG);
+
+        bannerAdsUtils.setIdAds(banner_main_admob2);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();
     }

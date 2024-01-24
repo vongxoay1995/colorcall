@@ -1,6 +1,7 @@
 package com.colorcall.callerscreen.apply;
 
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
+import static com.colorcall.callerscreen.utils.ConstantAds.apply_banner_admob2;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -133,7 +134,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     private void loadAdsBanner() {
         String ID_ADS_GG = "ca-app-pub-3134368447261649/7123602157";
-        bannerAdsUtils.setIdAds(ID_ADS_GG);
+        bannerAdsUtils.setIdAds(apply_banner_admob2);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();
     }

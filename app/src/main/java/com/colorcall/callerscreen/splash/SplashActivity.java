@@ -207,7 +207,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             if (BuildConfig.DEBUG) {
                 id_ads = ConstantAds.id_ads_open_test;
             } else {
-                id_ads = ConstantAds.id_splash_open;
+                id_ads = ConstantAds.id_splash_open_admob2;
             }
             AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
             jobScreen.startJob(this);
