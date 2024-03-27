@@ -31,6 +31,9 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.ump.FormError;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.orhanobut.hawk.Hawk;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +68,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         jobScreen = new JobScreen();
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
+        new Thread(this::configFirebaseRemote).start();
         Glide.with(getApplicationContext())
                 .load(R.drawable.ic_bg_splash)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -73,6 +77,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         mUpdateManager = UpdateManager.Builder(this);
         analystic = Analystic.getInstance(this);
         analystic.trackEvent(ManagerEvent.splashOpen());
+        Hawk.put(ConstantAds.BEFORE_TIME, 0L);
         googleMobileAdsConsentManager =
                 GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
         //int countUpdate = HawkHelper.getCountShowDialogUpdate();
@@ -89,8 +94,44 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 Log.e("TAN", "onDownloadProgress: "+ bytesDownloaded + " / " + totalBytes);
             }
         });*/
+
         loadConsentForm();
         checkIAP();
+    }
+
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+
+    private void configFirebaseRemote() {
+        long cacheExpiration;
+        if (BuildConfig.DEBUG) {
+            cacheExpiration = 0;
+        } else {
+            cacheExpiration = 10; // 10 s same as the default value
+        }
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder().setMinimumFetchIntervalInSeconds(
+                cacheExpiration).build();
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+        fetchDataFromFirebase();
+    }
+
+    private void fetchDataFromFirebase() {
+        mFirebaseRemoteConfig.fetch().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                mFirebaseRemoteConfig.activate()
+                        .addOnCompleteListener(task12 -> task12.addOnCompleteListener(task1 -> createAndPostFirebaseEvent())
+                                .addOnCanceledListener(() -> createAndPostFirebaseEvent()))
+                        .addOnCanceledListener(() -> createAndPostFirebaseEvent())
+                        .addOnFailureListener(e -> createAndPostFirebaseEvent());
+            } else {
+                createAndPostFirebaseEvent();
+            }
+        }).addOnCanceledListener(this::createAndPostFirebaseEvent);
+    }
+
+    private void createAndPostFirebaseEvent() {
+        Long time = mFirebaseRemoteConfig.getLong(ConstantAds.TIME_BETWEEN_ADS);
+        Hawk.put(ConstantAds.TIME_BETWEEN_ADS, time);
     }
 
     public void callFlexibleUpdate() {
@@ -122,6 +163,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         public void onAdDismissedFullScreenContent() {
             super.onAdDismissedFullScreenContent();
             isShowAds = false;
+            Hawk.put(ConstantAds.BEFORE_TIME, System.currentTimeMillis());
             skip();
         }
 
@@ -129,7 +171,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
             super.onAdFailedToShowFullScreenContent(adError);
             isShowAds = false;
-            Log.e("TAN", "onAdFailedToShowFullScreenContent: splash app open "+adError.getMessage());
+            Log.e("TAN", "onAdFailedToShowFullScreenContent: splash app open " + adError.getMessage());
             skip();
         }
 
@@ -219,7 +261,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
 
     @Override
     public void onProgress(int count) {
-        Log.e("TAN", "onProgress: count = "+count);
+        Log.e("TAN", "onProgress: count = " + count);
         if (!isActive() || isShowAds) {
             return;
         }

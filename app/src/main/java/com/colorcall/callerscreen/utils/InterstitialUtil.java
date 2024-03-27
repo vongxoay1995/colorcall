@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -14,6 +15,7 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.Date;
 
@@ -29,6 +31,7 @@ public class InterstitialUtil {
     private long loadTime = 0;
     private boolean isLoading;
     private boolean isShowAds;
+
     public interface AdCloseListener {
         void onAdClose();
     }
@@ -47,18 +50,25 @@ public class InterstitialUtil {
         } else {
             idInter = id_ads;
         }
-        loadInterstitial(mContext,1);
+        loadInterstitial(mContext, 1);
     }
 
     public void showInterstitialAds(Activity activity, AdCloseListener adCloseListener) {
         this.adCloseListener = adCloseListener;
-        if (canShowInterstitial()) {
+        Log.e("TAN", "showInterstitialAds: "+(System.currentTimeMillis() - Hawk.get(ConstantAds.BEFORE_TIME, 0L)) );
+
+        if(System.currentTimeMillis() - Hawk.get(ConstantAds.BEFORE_TIME, 0L) < Hawk.get(ConstantAds.TIME_BETWEEN_ADS, 10000L)){
+            adCloseListener.onAdClose();
+        }
+        else if (canShowInterstitial()) {
             interstitialAd.show(activity);
-        }else {
-            loadInterstitial(activity,2);
+        }
+        else {
+            loadInterstitial(activity, 2);
             adCloseListener.onAdClose();
         }
     }
+
     public void showInterstitialAdsApply(Activity activity, AdCloseListener adCloseListener) {
         this.adCloseListener = adCloseListener;
         if (canShowInterstitial()) {
@@ -67,7 +77,8 @@ public class InterstitialUtil {
             adCloseListener.onAdClose();
         }
     }
-    private void loadInterstitial(Context context,int index) {
+
+    private void loadInterstitial(Context context, int index) {
         if (isAdAvailable()) {
             return;
         }
@@ -86,7 +97,8 @@ public class InterstitialUtil {
                                     adCloseListener.onAdClose();
                                 }
                                 isShowAds = false;
-                                loadInterstitial(mContext,3);
+                                Hawk.put(ConstantAds.BEFORE_TIME, System.currentTimeMillis());
+                                loadInterstitial(mContext, 3);
                             }
 
                             @Override
@@ -127,11 +139,12 @@ public class InterstitialUtil {
     public boolean isAdAvailable() {
         return interstitialAd != null && wasLoadTimeLessThanNHoursAgo(4);
     }
-    public boolean isShowAdsInter(){
+
+    public boolean isShowAdsInter() {
         return isShowAds;
     }
 
     public boolean canShowInterstitial() {
-        return interstitialAd != null;
+        return interstitialAd!=null;
     }
 }
