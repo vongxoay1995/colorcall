@@ -340,11 +340,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         countRate++;
         HawkHelper.setCountRate(countRate);
 
-        if (checkShowInter()) {
+       /* if (checkShowInter()) {
             InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
         } else {
             applyTheme();
-        }
+        }*/
+        InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

@@ -14,6 +14,7 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.Date;
 
@@ -51,9 +52,13 @@ public class InterstitialApply {
 
     public void showInterstitialAds(Activity activity, AdCloseListener adCloseListener) {
         this.adCloseListener = adCloseListener;
-        if (canShowInterstitial()) {
+        if(System.currentTimeMillis() - Hawk.get(ConstantAds.BEFORE_TIME, 0L) < Hawk.get(ConstantAds.TIME_BETWEEN_ADS, 10000L)){
+            adCloseListener.onAdClose();
+        }
+        else if (canShowInterstitial()) {
             interstitialAd.show(activity);
-        } else {
+        }
+        else {
             loadInterstitial(activity, 2);
             adCloseListener.onAdClose();
         }
@@ -78,6 +83,7 @@ public class InterstitialApply {
                                 if (adCloseListener != null) {
                                     adCloseListener.onAdClose();
                                 }
+                                Hawk.put(ConstantAds.BEFORE_TIME, System.currentTimeMillis());
                                 loadInterstitial(mContext, 3);
                                 isShowAds = false;
                                 // Called when fullscreen content is dismissed.

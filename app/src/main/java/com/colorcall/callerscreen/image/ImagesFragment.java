@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.image;
 
+import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
+
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -37,8 +39,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
 public class ImagesFragment extends Fragment implements ImageAdapter.Listener, NetworkChangeReceiver.Listener {
     @BindView(R.id.rcvBgImages)
@@ -106,7 +106,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
         if (!AppUtils.allowViewClick())
             return;
-        if(countAds%3!=0){
+      /*  if(countAds%3!=0){
             this.countAds++;
             moveApplyTheme(backgrounds, position, delete,posRandom,true);
         }else {
@@ -115,7 +115,11 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
                 this.countAds = 1;
                 moveApplyTheme(backgrounds, position, delete,posRandom,false);
             });
-        }
+        }*/
+        InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
+            this.countAds = 1;
+            moveApplyTheme(backgrounds, position, delete,posRandom,false);
+        });
     }
 
     private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom,boolean isAllowShowAds) {

@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.video;
 
+import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
+
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -39,8 +41,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
 public class VideoFragment extends Fragment implements VideoAdapter.Listener, NetworkChangeReceiver.Listener {
     @BindView(R.id.rcvBgVideo)
@@ -131,7 +131,7 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         if (!AppUtils.allowViewClick())
             return;
         Log.e("TAN", "countAds: "+countAds);
-        if(countAds%3!=0){
+        /*if(countAds%3!=0){
             Log.e("TAN", "onItemClick: 1");
             this.countAds++;
             moveApplyTheme(backgrounds, position, delete,posRandom,true);
@@ -142,7 +142,11 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
                 this.countAds = 1;
                 moveApplyTheme(backgrounds, position, delete,posRandom,false);
             });
-        }
+        }*/
+        InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
+            this.countAds = 1;
+            moveApplyTheme(backgrounds, position, delete,posRandom,false);
+        });
     }
 
     @Override
