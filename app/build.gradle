@@ -11,13 +11,8 @@ android {
         applicationId "com.colorcall.callerscreen"
         minSdkVersion 21
         targetSdkVersion 33
-<<<<<<< HEAD
-        versionCode 54
-        versionName "1.5.1"
-=======
-        versionCode 56
-        versionName "1.5.3"
->>>>>>> feature/fix-open-ads
+        versionCode 57
+        versionName "1.5.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
