@@ -50,7 +50,12 @@ public class AcceptCallActivity extends Activity {
         callStateReceiver = new CallStateReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-        registerReceiver(callStateReceiver, intentFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            registerReceiver(callStateReceiver, intentFilter,Context.RECEIVER_NOT_EXPORTED);
+        }else {
+            registerReceiver(callStateReceiver, intentFilter);
+        }
+
     }
 
     private void updateWindowFlags() {

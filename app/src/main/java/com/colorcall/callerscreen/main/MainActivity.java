@@ -51,11 +51,11 @@ import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.gms.ads.appopen.AppOpenAd;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.tasks.Task;
 import com.google.android.ump.FormError;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;

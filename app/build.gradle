@@ -66,6 +66,8 @@ dependencies {
     implementation 'com.orhanobut:hawk:2.0.1'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+    implementation 'com.google.android.play:review:2.0.1'
+    implementation 'com.google.android.play:app-update:2.1.0'
 
     //button back ads inter
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.8'

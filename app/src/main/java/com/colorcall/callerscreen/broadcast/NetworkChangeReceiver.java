@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -23,7 +24,11 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         this.listener = listener;
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        context.registerReceiver(this, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            context.registerReceiver(this, filter,Context.RECEIVER_NOT_EXPORTED);
+        }else {
+            context.registerReceiver(this, filter);
+        }
     }
 
     public void unregisterReceiver(Context context) {

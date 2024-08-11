@@ -83,5 +83,6 @@
     <string name="skip_ads" >Skip</string>
     <string name="notify_msg_foreground">Call Screen is running</string>
     <string name="gdpr_content">Personalise ads using personal data</string>
+    <string name="explain_service" translatable="false">The app uses the foreground service to listen for incoming call status, then displays the call color screen, even if the user exits the app. Without using foreground service, the core features of the application cannot work</string>
 
 </resources>
