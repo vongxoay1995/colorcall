@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         if (HawkHelper.isEnableColorCall()) {
             PhoneService.startService(this);
         }
+        AppUtils.launchSetDefaultDialerIntent(this);
         googleMobileAdsConsentManager =
                 GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
         showForm();

@@ -1,10 +1,14 @@
 package com.colorcall.callerscreen.utils;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.app.Dialog;
+import android.app.role.RoleManager;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -26,6 +30,7 @@ import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.telecom.TelecomManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -586,4 +591,23 @@ public class AppUtils {
         mLastClickTime = SystemClock.elapsedRealtime();
         return true;
     }
+    public static void launchSetDefaultDialerIntent(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Log.e("TAN", "launchSetDefaultDialerIntent: a");
+            RoleManager roleManager = activity.getSystemService(RoleManager.class);
+            if (roleManager.isRoleAvailable(RoleManager.ROLE_DIALER) && !roleManager.isRoleHeld(RoleManager.ROLE_DIALER)) {
+                Intent intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER);
+                activity.startActivityForResult(intent, REQUEST_CODE_SET_DEFAULT_DIALER);
+            }
+        } else {
+                try {
+                    Intent intent = new Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER).putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, activity.getPackageName());
+                    activity.startActivityForResult(intent, REQUEST_CODE_SET_DEFAULT_DIALER);
+                } catch (ActivityNotFoundException e) {
+                    //                    toast(R.string.no_app_found)
+                } catch ( Exception e) {
+                    //showErrorToast(e)
+                }
+            }
+        }
 }
