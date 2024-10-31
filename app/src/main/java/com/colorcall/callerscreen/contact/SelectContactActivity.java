@@ -13,20 +13,17 @@ import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -38,8 +35,8 @@ import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
-import com.colorcall.callerscreen.database.ContactDao;
-import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.database.DatabaseViewModel;
+import com.colorcall.callerscreen.databinding.ActivitySelectContactBinding;
 import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -49,42 +46,19 @@ import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.gson.Gson;
 
-import org.greenrobot.greendao.query.DeleteQuery;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class SelectContactActivity extends AppCompatActivity implements PermistionCallListener, AppOpenManager.AppOpenManagerObserver {
-    @BindView(R.id.layout_head)
-    RelativeLayout layoutHead;
-    @BindView(R.id.btnBack)
-    ImageView btnBack;
-    @BindView(R.id.rcvContact)
-    RecyclerView rcvContact;
-    @BindView(R.id.layoutSet)
-    RelativeLayout layoutSet;
-    @BindView(R.id.header_1)
-    RelativeLayout header_1;
-    @BindView(R.id.header_2)
-    RelativeLayout header_2;
-    @BindView(R.id.edtSearch)
-    EditText edtSearch;
-    @BindView(R.id.imgClear)
-    ImageView imgClear;
-    @BindView(R.id.imgBG)
-    ImageView imgBG;
     private boolean isSearchShow;
     private ContactAdapter adapter;
     private Background background;
     private Analystic analystic;
     private AppOpenManager appOpenManager;
     private boolean isRequestPermission = false;
+    private DatabaseViewModel databaseViewModel;
+    private ActivitySelectContactBinding binding;
     @Override
     public void onHasCallPermistion() {
         setTheme();
@@ -94,7 +68,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         Window w = getWindow();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            AppUtils.showFullHeader(this, layoutHead);
+            AppUtils.showFullHeader(this, binding.layoutHead);
         }
     }
 
@@ -110,7 +84,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         }
 
         public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
-            imgClear.setVisibility(TextUtils.isEmpty(charSequence) ? View.GONE : View.VISIBLE);
+            binding.imgClear.setVisibility(TextUtils.isEmpty(charSequence) ? View.GONE : View.VISIBLE);
             if (adapter != null) {
                 adapter.search(charSequence);
             }
@@ -121,10 +95,11 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_contact);
-        ButterKnife.bind(this);
+        binding = ActivitySelectContactBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         AppUtils.changeStatusBarColor(this, R.color.color_1E1E1E);
         init();
+        databaseViewModel = new ViewModelProvider(this).get(DatabaseViewModel.class);
         //setTranslucent();
         analystic = Analystic.getInstance(this);
         analystic.trackEvent(ManagerEvent.contactOpen());
@@ -133,12 +108,12 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     }
 
     public void showSearch() {
-        edtSearch.setFocusable(true);
-        edtSearch.setFocusableInTouchMode(true);
-        edtSearch.requestFocus();
+        binding.edtSearch.setFocusable(true);
+        binding.edtSearch.setFocusableInTouchMode(true);
+        binding.edtSearch.requestFocus();
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputMethodManager.isActive()) {
-            inputMethodManager.showSoftInput(edtSearch, 0);
+            inputMethodManager.showSoftInput(  binding.edtSearch, 0);
         }
     }
 
@@ -156,46 +131,41 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
                     .load(pathFile)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
-                    .into(imgBG);
+                    .into(  binding.imgBG);
         }
         getAllContact();
-        edtSearch.addTextChangedListener(new EditTextListener());
+        binding.edtSearch.addTextChangedListener(new EditTextListener());
     }
 
-    @OnClick({R.id.btnBack, R.id.imgSearch, R.id.imgClear, R.id.layoutSet})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btnBack:
-                onBackPressed();
-                break;
-            case R.id.imgSearch:
-                header_2.setVisibility(View.VISIBLE);
-                header_1.setVisibility(View.GONE);
-                isSearchShow = true;
-                showSearch();
-                analystic.trackEvent(ManagerEvent.contactSearch());
-                break;
-            case R.id.layoutSet:
-                analystic.trackEvent(ManagerEvent.contactSet());
-                PermistionUtils.checkPermissionCall(this, this);
-                break;
-            case R.id.imgClear:
-                edtSearch.setText("");
-                imgClear.setVisibility(View.GONE);
-                break;
-            default:
-                return;
-        }
+    public void listener() {
+        binding.btnBack.setOnClickListener(view -> {
+            onBackPressed();
+        });
+        binding.imgSearch.setOnClickListener(view -> {
+            binding.header1.setVisibility(View.VISIBLE);
+            binding.header2.setVisibility(View.GONE);
+            isSearchShow = true;
+            showSearch();
+            analystic.trackEvent(ManagerEvent.contactSearch());
+        });
+        binding.layoutSet.setOnClickListener(view -> {
+            analystic.trackEvent(ManagerEvent.contactSet());
+            PermistionUtils.checkPermissionCall(this, this);
+        });
+        binding.imgClear.setOnClickListener(view -> {
+            binding.edtSearch.setText("");
+            binding.imgClear.setVisibility(View.GONE);
+        });
     }
 
     @Override
     public void onBackPressed() {
         if (isSearchShow) {
             isSearchShow = false;
-            header_1.setVisibility(View.VISIBLE);
-            header_2.setVisibility(View.GONE);
-            edtSearch.setText("");
-            AppUtils.hideKeyboard(edtSearch);
+            binding.header1.setVisibility(View.VISIBLE);
+            binding.header2.setVisibility(View.GONE);
+            binding.edtSearch.setText("");
+            AppUtils.hideKeyboard(  binding.edtSearch);
         } else {
             super.onBackPressed();
         }
@@ -203,7 +173,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     }
 
     public final void getAllContact() {
-        LinkedHashSet linkedHashSet = new LinkedHashSet();
+     /*   LinkedHashSet linkedHashSet = new LinkedHashSet();
         try {
             ContentResolver contentResolver = getContentResolver();
             Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -225,8 +195,60 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             e.printStackTrace();
         }
 
-        ArrayList arrListContact = new ArrayList(linkedHashSet);
-        List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
+        ArrayList arrListContact = new ArrayList(linkedHashSet);*/
+        LinkedHashSet<ContactInfor> linkedHashSet = new LinkedHashSet<>();
+        try {
+            ContentResolver contentResolver = getContentResolver();
+            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            String[] infors = {"contact_id", "display_name", "data1", "photo_uri"};
+            Cursor query = contentResolver.query(uri, infors, null, null, "sort_key");
+
+            if (query != null) {
+                while (query.moveToNext()) {
+                    @SuppressLint("Range")
+                    String contact_id = query.getString(query.getColumnIndex(infors[0]));
+                    @SuppressLint("Range")
+                    String display_name = query.getString(query.getColumnIndex(infors[1]));
+                    @SuppressLint("Range")
+                    String data1 = query.getString(query.getColumnIndex(infors[2]));
+                    @SuppressLint("Range")
+                    String photo_uri = query.getString(query.getColumnIndex(infors[3]));
+
+                    if (!linkedHashSet.contains(new ContactInfor(contact_id, display_name, data1, photo_uri))) {
+                        linkedHashSet.add(new ContactInfor(contact_id, display_name, data1, photo_uri));
+                    }
+                }
+                query.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<ContactInfor> arrListContact = new ArrayList<>(linkedHashSet);
+        // Sử dụng ViewModel để lấy danh sách Contact từ Room
+        databaseViewModel.getContactsByBackgroundPath(background.getPathItem()).observe(this, new Observer<List<Contact>>() {
+            @Override
+            public void onChanged(List<Contact> listContactDB) {
+                // Xử lý để đánh dấu các contact đã tồn tại trong DB
+                if (listContactDB != null) {
+                    for (Contact contact : listContactDB) {
+                        for (ContactInfor contactInfor : arrListContact) {
+                            if (contactInfor.getContactId().equals(contact.getContactId())) {
+                                contactInfor.setChecked(true);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Khởi tạo Adapter và thiết lập cho RecyclerView
+                adapter = new ContactAdapter(getApplicationContext(), arrListContact);
+                binding.rcvContact.setAdapter(adapter);
+            }
+        });
+
+
+       /* List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
                 .where(ContactDao.Properties.Background_path.eq(background.getPathItem()))
                 .list();
         Log.e("TAN", "getAllContactDatabase: " + DataManager.query().getContactDao().queryBuilder().list());
@@ -244,13 +266,13 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             }
         }
         adapter = new ContactAdapter(this, arrListContact);
-        rcvContact.setAdapter(adapter);
+        rcvContact.setAdapter(adapter);*/
     }
 
     public void setTheme() {
         PhoneService.startService(this);
         HawkHelper.setStateColorCall(true);
-        if (adapter != null) {
+      /*  if (adapter != null) {
             List<String> listContactIdSelected = adapter.getContactSelected();
             List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
                     .where(ContactDao.Properties.Background_path.eq(background.getPathItem()))
@@ -281,6 +303,44 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
                     DataManager.query().getContactDao().insert(contact);
                 }
             }
+            Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
+            finish();
+        }*/
+        if (adapter != null) {
+            List<String> listContactIdSelected = adapter.getContactSelected();
+
+            // Lấy danh sách Contact từ Room
+            List<Contact> listContactDB = databaseViewModel.getContactsByBackgroundPath(background.getPathItem()).getValue();
+
+            // Xóa các Contact không có trong danh sách đã chọn
+            if (listContactDB != null) {
+                for (Contact contact : listContactDB) {
+                    String contactSelect = contact.getContactId();
+                    if (!listContactIdSelected.contains(contactSelect)) {
+                        // Xóa contact khỏi Room
+                        databaseViewModel.deleteContact(contact);
+                    }
+                }
+            }
+
+            // Cập nhật hoặc chèn Contact mới
+            for (String contactID : listContactIdSelected) {
+                // Truy vấn Contact theo contactID
+                Contact existingContact = databaseViewModel.getContactById(contactID);
+                if (existingContact != null) {
+                    // Cập nhật thông tin của Contact
+                    existingContact.setBackgroundPath(background.getPathItem());
+                    existingContact.setBackground(new Gson().toJson(background));
+                    databaseViewModel.updateContact(existingContact);
+                } else {
+                    // Chèn Contact mới vào Room
+
+                    Contact newContact = new Contact(contactID, background.getPathItem(), new Gson().toJson(background));
+                    databaseViewModel.insertContact(newContact);
+                }
+            }
+
             Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();

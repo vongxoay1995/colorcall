@@ -1,12 +1,12 @@
 
 pluginManagement {
-    resolutionStrategy {
+    /*resolutionStrategy {
         eachPlugin {
             if (requested.id.id == 'org.greenrobot.greendao') {
                 useModule('org.greenrobot:greendao-gradle-plugin:3.3.0')
             }
         }
-    }
+    }*/
     repositories {
         google {
             content {
@@ -17,6 +17,10 @@ pluginManagement {
         }
         mavenCentral()
         maven { url "https://jitpack.io" }
+
+        maven { url '(https://repo1.maven.org/maven2/)' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
         gradlePluginPortal()
     }
 }
@@ -26,8 +30,12 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url "https://jitpack.io" }
+
+        maven { url '(https://repo1.maven.org/maven2/)' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
     }
 }
 
 rootProject.name='Color Call'
-include ':app', ':lib'
+include ':app'

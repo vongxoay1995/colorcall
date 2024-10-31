@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,7 +38,8 @@ import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.apply.ApplyActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
-import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.database.DatabaseViewModel;
+import com.colorcall.callerscreen.databinding.FragmentMyThemeBinding;
 import com.colorcall.callerscreen.listener.DialogGalleryListener;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
@@ -56,53 +58,64 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener, DialogGalleryListener {
-    @BindView(R.id.rcvBgYourTheme)
-    RecyclerView rcvBgMyTheme;
     MyThemeAdapter adapter;
     private Analystic analystic;
     private String pathUriImage;
     private int positionItemThemeSelected = -1;
     public boolean isRequestImageVideo;
+    private FragmentMyThemeBinding binding;
+    private DatabaseViewModel databaseViewModel;
+    public ArrayList<Background> listBg;
+
     public MyThemeFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_theme, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentMyThemeBinding.inflate(inflater, container, false);
+        databaseViewModel = new ViewModelProvider(this).get(DatabaseViewModel.class);
+        databaseViewModel.getAllBackgrounds().observe(requireActivity(), backgrounds -> {
+            Log.e("TAN", "setNewListBg0000: " + backgrounds.size());
+            listBg = (ArrayList<Background>) backgrounds;
+            if (adapter==null){
+                adapter = new MyThemeAdapter(getContext(),listBg);
+                adapter.setListener(this);
+                binding.rcvBgYourTheme.setAdapter(adapter);
+            }
+            if(actionResetData){
+                adapter.setNewListBg(listBg);
+                adapter.notifyDataSetChanged();
+                actionResetData = false;
+            }
+        });
         if (savedInstanceState != null) {
-          pathUriImage   = savedInstanceState.getString(Constant.CAPTURE_IMAGE_PATH);
+            pathUriImage = savedInstanceState.getString(Constant.CAPTURE_IMAGE_PATH);
         }
         init();
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        return view;
+        return binding.getRoot();
     }
 
     private void init() {
         analystic = Analystic.getInstance(getContext());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
-        rcvBgMyTheme.setLayoutManager(gridLayoutManager);
-        rcvBgMyTheme.setItemAnimator(new DefaultItemAnimator());
-        rcvBgMyTheme.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
-        RecyclerView.ItemAnimator animator = rcvBgMyTheme.getItemAnimator();
+        binding.rcvBgYourTheme.setLayoutManager(gridLayoutManager);
+        binding.rcvBgYourTheme.setItemAnimator(new DefaultItemAnimator());
+        binding.rcvBgYourTheme.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
+        RecyclerView.ItemAnimator animator = binding.rcvBgYourTheme.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        adapter = new MyThemeAdapter(getContext());
-        adapter.setListener(this);
-        rcvBgMyTheme.setAdapter(adapter);
-        rcvBgMyTheme.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+        binding.rcvBgYourTheme.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState==0){
+                if (newState == 0) {
                     adapter.reload();
                 }
             }
@@ -114,16 +127,19 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         checkPermissionActionCamera();
     }
 
+
     @Override
-    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
-        moveApplyTheme(backgrounds, position, delete,posRandom);
+    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom) {
+        moveApplyTheme(backgrounds, position, delete, posRandom);
     }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(Constant.CAPTURE_IMAGE_PATH, pathUriImage);
     }
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
+
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom) {
         Background background = backgrounds.get(position);
         Intent intent = new Intent(getActivity(), ApplyActivity.class);
         intent.putExtra(Constant.FROM_SCREEN, Constant.MYTHEME_FRAG_MENT);
@@ -138,21 +154,19 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
     public void checkPermissionActionCamera() {
         String[] permistion;
-        if(Build.VERSION.SDK_INT <=28){
+        if (Build.VERSION.SDK_INT <= 28) {
             permistion = new String[]{
                     READ_EXTERNAL_STORAGE,
                     WRITE_EXTERNAL_STORAGE,
                     CAMERA
             };
-        }
-        else if(Build.VERSION.SDK_INT >=Build.VERSION_CODES.TIRAMISU){
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permistion = new String[]{
                     READ_MEDIA_VIDEO,
                     READ_MEDIA_IMAGES,
                     CAMERA
             };
-        }
-        else {
+        } else {
             permistion = new String[]{
                     READ_EXTERNAL_STORAGE,
                     CAMERA
@@ -196,10 +210,10 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         isRequestImageVideo = true;
         pathUriImage = AppUtils.openCameraIntent(this, getActivity(), Constant.REQUEST_CODE_IMAGES);
     }
-
+    boolean actionResetData = false;
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        isRequestImageVideo=false;
+        isRequestImageVideo = false;
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constant.REQUEST_VIDEO) {
                 Log.e("TAN", "onActivityResult: video");
@@ -207,19 +221,19 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 final String[] mPath = new String[1];
                 if (uriData != null) {
                     mPath[0] = FileUtils.getRealPathFromUri(getContext(), uriData);
-                    Log.e("TAN", "mPath[0]: "+mPath[0]);
-                    if(mPath[0].equals("")){
-                        createVideoInputPath(requireActivity(), uriData, false,videoInputPath -> {
-                            Log.e("TAN", "createVideoInputPath: "+videoInputPath);
+                    Log.e("TAN", "mPath[0]: " + mPath[0]);
+                    if (mPath[0].equals("")) {
+                        createVideoInputPath(requireActivity(), uriData, false, videoInputPath -> {
+                            Log.e("TAN", "createVideoInputPath: " + videoInputPath);
                             mPath[0] = videoInputPath;
                             resetListDataVideo(mPath[0]);
-                            adapter.setNewListBg();
-                            adapter.notifyDataSetChanged();
+                            //adapter.setNewListBg();
+                            //adapter.notifyDataSetChanged();
                         });
-                    }else{
+                    } else {
                         resetListDataVideo(mPath[0]);
-                        adapter.setNewListBg();
-                        adapter.notifyDataSetChanged();
+                        //adapter.setNewListBg();
+                        //adapter.notifyDataSetChanged();
                     }
                 } else {
                     Toast.makeText(requireActivity(), "Error! Please try input other video!", Toast.LENGTH_LONG).show();
@@ -228,15 +242,15 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 final String[] path = new String[1];
                 if (data != null && data.getData() != null) {
                     path[0] = FileUtils.getRealPathFromUri(getContext(), data.getData());
-                    if(path[0].equals("")){
-                        FileUtils.createImagefromPath(requireActivity(),data.getData(),Constant.IMAGE_INPUT_NAME, new FileUtils.CreateImageInputInterface(){
+                    if (path[0].equals("")) {
+                        FileUtils.createImagefromPath(requireActivity(), data.getData(), Constant.IMAGE_INPUT_NAME, new FileUtils.CreateImageInputInterface() {
 
                             @Override
                             public void onImageCreateSuccess(String imagePath) {
                                 path[0] = imagePath;
                                 resetListDataImage(path[0]);
-                                adapter.setNewListBg();
-                                adapter.notifyDataSetChanged();
+                               // adapter.setNewListBg();
+                               // adapter.notifyDataSetChanged();
                             }
 
                             @Override
@@ -244,20 +258,21 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
                             }
                         });
-                    }else{
-                        resetListDataVideo(path[0]);
-                        adapter.setNewListBg();
-                        adapter.notifyDataSetChanged();
+                    } else {
+                        resetListDataImage(path[0]);
+                        //adapter.setNewListBg();
+                        //adapter.notifyDataSetChanged();
                     }
                 } else {
                     path[0] = pathUriImage;
                     resetListDataImage(path[0]);
-                    adapter.setNewListBg();
-                    adapter.notifyDataSetChanged();
+                    //adapter.setNewListBg();
+                    //adapter.notifyDataSetChanged();
                 }
             }
         }
     }
+
     public static void createVideoInputPath(Context context, Uri videoUri, boolean isShowDialog, VideoInputListener listener) {
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(context.getString(R.string.loading));
@@ -294,7 +309,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     }
 
     private void resetListDataVideo(String path) {
-        ArrayList<Background> listBgDb = (ArrayList<Background>) DataManager.query().getBackgroundDao().queryBuilder().list();
+
+        //ArrayList<Background> listBgDb = (ArrayList<Background>) DataManager.query().getBackgroundDao().queryBuilder().list();
         if (path != null) {
             Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
             File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -303,25 +319,29 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 folder.mkdirs();
             Background video;
             String imageUrl = "";
-            if (listBgDb != null) {
+            if (listBg != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     imageUrl = getActivity().getFilesDir()
-                            + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBgDb.size();
+                            + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBg.size();
                     video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
                     FileUtils.saveBitmap(getActivity().getFilesDir()
-                            + Constant.PATH_THUMB_COLOR_CALL,"thumb_" + listBgDb.size(), bitmap);
+                            + Constant.PATH_THUMB_COLOR_CALL,"thumb_" + listBg.size(), bitmap);
                 }else {
                     imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                            + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBgDb.size();
+                            + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBg.size();
                     video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
                     FileUtils.saveBitmap(imageUrl, bitmap);
                 }
-                DataManager.query().getBackgroundDao().save(video);
+                databaseViewModel.insertBackground(video);
+                actionResetData = true;
+              //  DataManager.query().getBackgroundDao().save(video);
             }
         }
     }
 
     private void resetListDataImage(String path) {
+        Log.e("TAN", "resetListDataImage: ");
+
         if (path != null) {
             File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                     + Constant.PATH_THUMB_COLOR_CALL_IMAGES);
@@ -334,42 +354,46 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
             if (file.exists()) {
                 Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true,
                         file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1));
-                DataManager.query().getBackgroundDao().save(picture);
+                actionResetData = true;
+                databaseViewModel.insertBackground(picture);
             } else {
                 Toast.makeText(getContext(), getString(R.string.file_not_found), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    @Override
-    public void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
 
-    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onSignApply(SignApplyMyTheme signApplyMyTheme) {
-        switch (signApplyMyTheme.getAction()) {
-            case Constant.INTENT_APPLY_THEME:
-                adapter.notifyDataSetChanged();
-                break;
-            case Constant.INTENT_DELETE_THEME:
-                adapter.setNewListBg();
-                adapter.notifyDataSetChanged();
-                break;
-        }
-        EventBus.getDefault().removeStickyEvent(signApplyMyTheme);
-    }
-    @Override
-    public void onItemThemeSelected(int position) {
-        positionItemThemeSelected = position;
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(adapter!=null){
-            adapter.notifyItemChanged(positionItemThemeSelected);
-        }
+@Override
+public void onDestroy() {
+    EventBus.getDefault().unregister(this);
+    super.onDestroy();
+}
+
+@Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+public void onSignApply(SignApplyMyTheme signApplyMyTheme) {
+    switch (signApplyMyTheme.getAction()) {
+        case Constant.INTENT_APPLY_THEME:
+            adapter.notifyDataSetChanged();
+            break;
+        case Constant.INTENT_DELETE_THEME:
+            //adapter.setNewListBg();
+            adapter.notifyDataSetChanged();
+            break;
     }
+    EventBus.getDefault().removeStickyEvent(signApplyMyTheme);
+}
+
+@Override
+public void onItemThemeSelected(int position) {
+    positionItemThemeSelected = position;
+}
+
+@Override
+public void onResume() {
+    super.onResume();
+    if (adapter != null) {
+        adapter.notifyItemChanged(positionItemThemeSelected);
+    }
+}
 }

@@ -9,16 +9,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
@@ -27,6 +23,7 @@ import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.databinding.ActivitySettingBinding;
 import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -43,43 +40,7 @@ import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class SettingActivity extends AppCompatActivity implements PermistionFlashListener, PermistionCallListener , AppOpenManager.AppOpenManagerObserver {
-    @BindView(R.id.btnBack)
-    ImageView btnBack;
-    @BindView(R.id.btnCheckUpdate)
-    ImageView btnCheckUpdate;
-    @BindView(R.id.btnPolicy)
-    ImageView btnPolicy;
-    @BindView(R.id.btnShareApp)
-    ImageView btnShareApp;
-    @BindView(R.id.btnVip)
-    ImageView btnVip;
-    @BindView(R.id.layoutBottom)
-    LinearLayout layoutBottom;
-    @BindView(R.id.layoutCheckUpdate)
-    RelativeLayout layoutCheckUpdate;
-    @BindView(R.id.layout_head)
-    RelativeLayout layoutHead;
-    @BindView(R.id.layoutPolicy)
-    RelativeLayout layoutPolicy;
-    @BindView(R.id.layoutShareApp)
-    RelativeLayout layoutShareApp;
-    @BindView(R.id.layoutVip)
-    RelativeLayout layoutVip;
-    @BindView(R.id.swStateApp)
-    SwitchCompat swStateApp;
-    @BindView(R.id.swFlash)
-    SwitchCompat swFlash;
-    @BindView(R.id.layoutFlash)
-    RelativeLayout layoutFlash;
-    @BindView(R.id.layoutUMP)
-    RelativeLayout layoutUmp;
-    @BindView(R.id.fl_adplaceholder)
-    FrameLayout frameLayout;
     private LinearLayout adView;
     private NativeAd nativeAd;
     private Analystic analystic;
@@ -88,16 +49,17 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private AppOpenManager appOpenManager;
     private boolean isRequestPermission = false;
     public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
+    private ActivitySettingBinding binding;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
-        ButterKnife.bind(this);
+        binding = ActivitySettingBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
 
         //AppUtils.showFullHeader(this, layoutHead);
         analystic = Analystic.getInstance(this);
-        swStateApp.setChecked(HawkHelper.isEnableColorCall());
-        swFlash.setChecked(HawkHelper.isEnableFlash());
+        binding.swStateApp.setChecked(HawkHelper.isEnableColorCall());
+        binding.swFlash.setChecked(HawkHelper.isEnableFlash());
         loadAds();
         listener();
         analystic.trackEvent(ManagerEvent.settingOpen());
@@ -105,7 +67,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         googleMobileAdsConsentManager =
                 GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
         if (googleMobileAdsConsentManager.isPrivacyOptionsRequired()){
-            layoutUmp.setVisibility(View.VISIBLE);
+            binding.layoutUMP.setVisibility(View.VISIBLE);
         }
         ///appOpenManager.registerObserver(this);
     }
@@ -133,14 +95,14 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                     NativeAdView adView =
                             (NativeAdView) getLayoutInflater().inflate(R.layout.ad_unified, null);
                     AppUtils.populateNativeAdView(nativeAd, adView);
-                    frameLayout.removeAllViews();
-                    frameLayout.addView(adView);
+                    binding.flAdplaceholder.removeAllViews();
+                    binding.flAdplaceholder.addView(adView);
                 })
                 .withAdListener(new AdListener() {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         super.onAdFailedToLoad(loadAdError);
-                        frameLayout.setVisibility(View.GONE);
+                        binding.flAdplaceholder.setVisibility(View.GONE);
                     }
                 });
         AdLoader adLoader = builder.build();
@@ -148,7 +110,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     }
 
     private void listener() {
-        swStateApp.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.swStateApp.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isCallState = isChecked;
             if (!isResultDenyCallPermission) {
                 PermistionUtils.checkPermissionCall(SettingActivity.this, this);
@@ -157,7 +119,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
             }
         });
 
-        swFlash.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.swFlash.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isFlashState = isChecked;
             if (!isResultDenyPermission) {
                 PermistionUtils.checkPermissionFlash(SettingActivity.this, this);
@@ -165,7 +127,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 isResultDenyPermission = false;
             }
         });
-        layoutUmp.setOnClickListener(new View.OnClickListener() {
+        binding.layoutUMP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 googleMobileAdsConsentManager.showPrivacyOptionsForm(
@@ -177,48 +139,39 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                         });
             }
         });
+        binding.btnBack.setOnClickListener(view -> {
+            analystic.trackEvent(ManagerEvent.settingBackClick());
+            finish();
+        });
+        binding.layoutCheckUpdate.setOnClickListener(view -> {
+            analystic.trackEvent(ManagerEvent.settingCheckUpdateClick());
+            Intent intentRate = new Intent("android.intent.action.VIEW");
+            StringBuilder sb = new StringBuilder();
+            sb.append(Constant.PLAY_STORE_LINK);
+            sb.append(getPackageName());
+            intentRate.setData(Uri.parse(sb.toString()));
+            startActivity(intentRate);
+        });
+        binding.layoutPolicy.setOnClickListener(view -> {
+            analystic.trackEvent(ManagerEvent.settingPolicyClick());
+            openWebPage(Constant.POLICY_URL);
+        });
+        binding.layoutRateApp.setOnClickListener(view -> {
+            rateApp();
+        });
+        binding.layoutShareApp.setOnClickListener(view -> {
+            analystic.trackEvent(ManagerEvent.settingShareAppClick());
+            Intent sendIntent = new Intent();
+            sendIntent.setAction("android.intent.action.SEND");
+            StringBuilder sb2 = new StringBuilder();
+            sb2.append(Constant.PLAY_STORE_LINK);
+            sb2.append(getPackageName());
+            sendIntent.putExtra("android.intent.extra.TEXT", sb2.toString());
+            sendIntent.setType(Constant.DATA_TYPE);
+            startActivity(sendIntent);
+        });
     }
 
-    @OnClick({R.id.btnBack, R.id.layoutShareApp, R.id.layoutPolicy, R.id.layoutCheckUpdate, R.id.layoutRateApp, R.id.btnAds})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btnBack:
-                analystic.trackEvent(ManagerEvent.settingBackClick());
-                finish();
-                return;
-            case R.id.layoutCheckUpdate:
-                analystic.trackEvent(ManagerEvent.settingCheckUpdateClick());
-                Intent intentRate = new Intent("android.intent.action.VIEW");
-                StringBuilder sb = new StringBuilder();
-                sb.append(Constant.PLAY_STORE_LINK);
-                sb.append(getPackageName());
-                intentRate.setData(Uri.parse(sb.toString()));
-                startActivity(intentRate);
-                return;
-            case R.id.layoutPolicy:
-                analystic.trackEvent(ManagerEvent.settingPolicyClick());
-                openWebPage(Constant.POLICY_URL);
-                return;
-            case R.id.layoutRateApp:
-                rateApp();
-                return;
-            case R.id.layoutShareApp:
-                analystic.trackEvent(ManagerEvent.settingShareAppClick());
-                Intent sendIntent = new Intent();
-                sendIntent.setAction("android.intent.action.SEND");
-                StringBuilder sb2 = new StringBuilder();
-                sb2.append(Constant.PLAY_STORE_LINK);
-                sb2.append(getPackageName());
-                sendIntent.putExtra("android.intent.extra.TEXT", sb2.toString());
-                sendIntent.setType(Constant.DATA_TYPE);
-                startActivity(sendIntent);
-                return;
-            case R.id.btnAds:
-                analystic.trackEvent(ManagerEvent.settingAdsClick());
-                return;
-            default:
-        }
-    }
 
     private void rateApp() {
         final String appPackageName = getPackageName();
@@ -247,7 +200,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 HawkHelper.setFlash(isFlashState);
             } else {
                 isResultDenyPermission = true;
-                swFlash.setChecked(!isFlashState);
+                binding.swFlash.setChecked(!isFlashState);
             }
         } else if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE) {
             if (grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
@@ -270,7 +223,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
 
     public void resetStateCall() {
         isResultDenyCallPermission = true;
-        swStateApp.setChecked(!isCallState);
+        binding.swStateApp.setChecked(!isCallState);
     }
 
     @Override
@@ -289,7 +242,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         } else if (requestCode == Constant.REQUEST_NOTIFICATION_ACCESS) {
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 isCallState = true;
-                swStateApp.setChecked(true);
+                binding.swStateApp.setChecked(true);
                 new Handler().postDelayed(() -> isRequestPermission = false,500);
                 analystic.trackEvent(new Event("Per_Dlg_Setting_Use_App_Granted",new Bundle()));
                 onHasCallPermistion();

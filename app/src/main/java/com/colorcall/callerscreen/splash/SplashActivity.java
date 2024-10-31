@@ -4,10 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +14,7 @@ import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.databinding.ActivitySplashBinding;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.update.UpdateManager;
 import com.colorcall.callerscreen.utils.AppUtils;
@@ -35,18 +32,8 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.orhanobut.hawk.Hawk;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class SplashActivity extends AppCompatActivity implements JobScreen.JobProgress {
-    @BindView(R.id.imgBgSplash)
-    ImageView imgBgSplash;
-    @BindView(R.id.seekbar)
-    SeekBar seekbar;
-    @BindView(R.id.layout_loading)
-    RelativeLayout layoutLoading;
-    @BindView(R.id.layoutSeekbar)
-    LinearLayout layoutSeekbar;
+    private ActivitySplashBinding binding;
 
     private int progress;
     private Analystic analystic;
@@ -66,14 +53,14 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             return;
         }
         jobScreen = new JobScreen();
-        setContentView(R.layout.activity_splash);
-        ButterKnife.bind(this);
+        binding = ActivitySplashBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         new Thread(this::configFirebaseRemote).start();
         Glide.with(getApplicationContext())
                 .load(R.drawable.ic_bg_splash)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .thumbnail(0.1f)
-                .into(imgBgSplash);
+                .into(binding.imgBgSplash);
         mUpdateManager = UpdateManager.Builder(this);
         analystic = Analystic.getInstance(this);
         analystic.trackEvent(ManagerEvent.splashOpen());
@@ -188,7 +175,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
 
 
     public void hideLoading() {
-        layoutLoading.setVisibility(View.INVISIBLE);
+        binding.layoutLoading.setVisibility(View.INVISIBLE);
         progress = 100;
     }
 
@@ -266,7 +253,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             return;
         }
         progress++;
-        seekbar.setProgress(progress);
+        binding.seekbar.setProgress(progress);
         if (appOpenAds != null) {
             stopJobScreen();
             isShowAds = true;

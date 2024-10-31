@@ -3,25 +3,16 @@ package com.colorcall.callerscreen.contact;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.colorcall.callerscreen.R;
-import com.colorcall.callerscreen.custom.CircleSelectImageView;
+import com.colorcall.callerscreen.databinding.ItemContactBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
@@ -37,7 +28,8 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_contact, parent, false));
+        ItemContactBinding binding = ItemContactBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -66,7 +58,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public List<String> getContactSelected() {
-        ArrayList arrayList = new ArrayList();
+        ArrayList<String> arrayList = new ArrayList<>();
         for (ContactInfor contactInfor : this.listTemp) {
             if (contactInfor.isChecked()) {
                 arrayList.add(contactInfor.getContactId());
@@ -76,20 +68,14 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.imgAvatar)
-        CircleImageView imgAvatar;
-        @BindView(R.id.imgSelectContact)
-        CircleSelectImageView imgSelectContact;
-        @BindView(R.id.txtName)
-        TextView txtName;
-        @BindView(R.id.layoutItem)
-        LinearLayout layoutItem;
+        private final ItemContactBinding binding;
         private ContactInfor contactInfor;
         private String path;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        public ViewHolder(@NonNull ItemContactBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            setListeners();
         }
 
         public void onBind(int position) {
@@ -99,23 +85,17 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             } else {
                 path = contactInfor.getPhoto();
             }
-            Glide.with(context).load(path).into(imgAvatar);
-            txtName.setText(contactInfor.getDisplayName());
-            imgSelectContact.setChecked(contactInfor.isChecked());
+            Glide.with(context).load(path).into(binding.imgAvatar);
+            binding.txtName.setText(contactInfor.getDisplayName());
+            binding.imgSelectContact.setChecked(contactInfor.isChecked());
         }
 
-        @OnClick({R.id.layoutItem, R.id.imgSelectContact})
-        public void onViewClicked(View view) {
-            switch (view.getId()) {
-                case R.id.layoutItem:
-                    imgSelectContact.performClick();
-                    contactInfor.setChecked(imgSelectContact.isChecked());
-                    return;
-                case R.id.imgSelectContact:
-                    contactInfor.setChecked(imgSelectContact.isChecked());
-                    return;
-                default:
-            }
+        private void setListeners() {
+            binding.layoutItem.setOnClickListener(v -> {
+                binding.imgSelectContact.performClick();
+                contactInfor.setChecked(binding.imgSelectContact.isChecked());
+            });
+            binding.imgSelectContact.setOnClickListener(v -> contactInfor.setChecked(binding.imgSelectContact.isChecked()));
         }
     }
 }

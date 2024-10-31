@@ -1,73 +1,48 @@
 package com.colorcall.callerscreen.rate;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
-import com.colorcall.callerscreen.custom.RatingBar;
+import com.colorcall.callerscreen.databinding.DialogRateBinding;
 import com.colorcall.callerscreen.utils.AppUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class DialogRate extends Dialog {
-    @BindView(R.id.ratingbar)
-    RatingBar ratingBar;
-    @BindView(R.id.footer)
-    LinearLayout footer;
-    @BindView(R.id.txtRate)
-    TextView txtRate;
-    @BindView(R.id.imgExit)
-    ImageView imgExit;
-    @BindView(R.id.moreAudio)
-    TextView moreAudio;
-    @BindView(R.id.moreImage)
-    TextView moreImage;
-    @BindView(R.id.moreVideo)
-    TextView moreVideo;
-    @BindView(R.id.feedbackRate)
-    TextView feedbackRate;
-    @BindView(R.id.leastAds)
-    TextView leastAds;
-    @BindView(R.id.txtAnotherFeedback)
-    EditText edtAnotherFeedback;
-    private int rate;
-    private final StringBuilder sb = new StringBuilder();
-    private boolean isClickMoreVideo, isClickMoreImage, isClickMoreAudio, isClickLeastAds;
     private final DialogRateListener dialogRateListener;
-    private String content = "FeedBack Call Color ";
-    private RelativeLayout.LayoutParams layoutParams;
     private final Analystic analystic;
-    public DialogRate(Activity context, DialogRateListener dialogRateListener) {
+    private int rate;
+    private boolean isClickMoreVideo, isClickMoreImage, isClickMoreAudio, isClickLeastAds;
+    private String content = "FeedBack Call Color ";
+    private final StringBuilder sb = new StringBuilder();
+    private DialogRateBinding binding;
+
+    public DialogRate(@NonNull Activity context, DialogRateListener dialogRateListener) {
         super(context);
-        analystic= Analystic.getInstance(context);
+        analystic = Analystic.getInstance(context);
         this.dialogRateListener = dialogRateListener;
-        init(context);
     }
 
-    private void init(Context context) {
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_rate, null);
-        ButterKnife.bind(this, view);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(view);
+        binding = DialogRateBinding.inflate(LayoutInflater.from(getContext()));
+        setContentView(binding.getRoot());
         Window window = getWindow();
         setCancelable(false);
         if (window != null) {
@@ -75,105 +50,88 @@ public class DialogRate extends Dialog {
             window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
             window.getAttributes().windowAnimations = R.style.DialogAnimationInOut;
         }
-        edtAnotherFeedback.setOnEditorActionListener((v, actionId, event) -> {
+        binding.txtAnotherFeedback.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                AppUtils.hideKeyboard(edtAnotherFeedback);
+                AppUtils.hideKeyboard(binding.txtAnotherFeedback);
             }
             return false;
         });
-        layoutParams = (RelativeLayout.LayoutParams) ratingBar.getLayoutParams();
-        ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+        binding.ratingbar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
             rate = (int) rating;
             setTitleFeedBackRate(rate);
             if (rating < 5) {
-                footer.setVisibility(View.VISIBLE);
-                txtRate.setVisibility(View.GONE);
-                layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, context.getResources().getDimensionPixelSize(R.dimen._5sdp));
+                binding.footer.setVisibility(View.VISIBLE);
+                binding.txtRate.setVisibility(View.GONE);
+                binding.ratingbar.setLayoutParams(binding.ratingbar.getLayoutParams());
             } else {
-                footer.setVisibility(View.GONE);
-                txtRate.setVisibility(View.VISIBLE);
-                layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, context.getResources().getDimensionPixelSize(R.dimen._35sdp));
-                AppUtils.hideKeyboard(edtAnotherFeedback);
+                binding.footer.setVisibility(View.GONE);
+                binding.txtRate.setVisibility(View.VISIBLE);
+                binding.ratingbar.setLayoutParams(binding.ratingbar.getLayoutParams());
+                AppUtils.hideKeyboard(binding.txtAnotherFeedback);
             }
         });
+        setListeners();
+    }
+
+    private void setListeners() {
+        binding.btnNotNow.setOnClickListener(v -> {
+            analystic.trackEvent(ManagerEvent.rateNotNow());
+            AppUtils.hideKeyboard(binding.txtAnotherFeedback);
+            dismiss();
+        });
+        binding.txtRate.setOnClickListener(v -> {
+            dismiss();
+            AppUtils.hideKeyboard(binding.txtAnotherFeedback);
+            dialogRateListener.onRate(rate);
+        });
+        binding.btnFeedBack.setOnClickListener(v -> {
+            if (rate < 1) {
+                Toast.makeText(getContext(), getContext().getString(R.string.giveStar), Toast.LENGTH_SHORT).show();
+            } else {
+                dismiss();
+                AppUtils.hideKeyboard(binding.txtAnotherFeedback);
+                addContent();
+                content = content + binding.txtAnotherFeedback.getText().toString() + " and " + sb.toString();
+                dialogRateListener.onFeedBack(content, rate);
+            }
+        });
+        binding.moreVideo.setOnClickListener(v -> checkStateClick(1, isClickMoreVideo, binding.moreVideo));
+        binding.moreImage.setOnClickListener(v -> checkStateClick(2, isClickMoreImage, binding.moreImage));
+        binding.moreAudio.setOnClickListener(v -> checkStateClick(3, isClickMoreAudio, binding.moreAudio));
+        binding.leastAds.setOnClickListener(v -> checkStateClick(4, isClickLeastAds, binding.leastAds));
     }
 
     private void setTitleFeedBackRate(int rate) {
-        switch (rate){
+        switch (rate) {
             case 1:
-                feedbackRate.setText(getContext().getString(R.string.very_bad));
+                binding.feedbackRate.setText(getContext().getString(R.string.very_bad));
                 break;
             case 2:
-                feedbackRate.setText(getContext().getString(R.string.bad));
+                binding.feedbackRate.setText(getContext().getString(R.string.bad));
                 break;
             case 3:
-                feedbackRate.setText(getContext().getString(R.string.normal));
+                binding.feedbackRate.setText(getContext().getString(R.string.normal));
                 break;
             case 4:
-                feedbackRate.setText(getContext().getString(R.string.good));
+                binding.feedbackRate.setText(getContext().getString(R.string.good));
                 break;
             case 5:
-                feedbackRate.setText(getContext().getString(R.string.very_good));
-                break;
-        }
-    }
-
-    @SuppressLint("ResourceType")
-    @OnClick({R.id.btnNotNow,R.id.txtRate, R.id.btnFeedBack, R.id.imgExit, R.id.moreVideo, R.id.moreImage, R.id.moreAudio, R.id.leastAds,R.id.root})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnFeedBack:
-                if (rate < 1) {
-                    Toast.makeText(getContext(), getContext().getString(R.string.giveStar), Toast.LENGTH_SHORT).show();
-                } else {
-                    dismiss();
-                    AppUtils.hideKeyboard(edtAnotherFeedback);
-                    addContent();
-                    content = content + edtAnotherFeedback.getText().toString() + " and " + sb.toString();
-                    dialogRateListener.onFeedBack(content, rate);
-                }
-                break;
-            case R.id.txtRate:
-                dismiss();
-                AppUtils.hideKeyboard(edtAnotherFeedback);
-                dialogRateListener.onRate(rate);
-                break;
-            case R.id.btnNotNow:
-                analystic.trackEvent(ManagerEvent.rateNotNow());
-                AppUtils.hideKeyboard(edtAnotherFeedback);
-                dismiss();
-                break;
-            case R.id.root:
-                AppUtils.hideKeyboard(edtAnotherFeedback);
-                break;
-            case R.id.imgExit:
-                break;
-            case R.id.moreVideo:
-                checkStateClick(1, isClickMoreVideo, moreVideo);
-                break;
-            case R.id.moreImage:
-                checkStateClick(2, isClickMoreImage, moreImage);
-                break;
-            case R.id.moreAudio:
-                checkStateClick(3, isClickMoreAudio, moreAudio);
-                break;
-            case R.id.leastAds:
-                checkStateClick(4, isClickLeastAds, leastAds);
+                binding.feedbackRate.setText(getContext().getString(R.string.very_good));
                 break;
         }
     }
 
     private void addContent() {
-       if(isClickMoreVideo){
-           sb.append("[Add more video] ");
-       }
-        if(isClickMoreImage){
+        if (isClickMoreVideo) {
+            sb.append("[Add more video] ");
+        }
+        if (isClickMoreImage) {
             sb.append("[Add more image] ");
         }
-        if(isClickMoreAudio){
+        if (isClickMoreAudio) {
             sb.append("[Add more audio] ");
         }
-        if(isClickLeastAds){
+        if (isClickLeastAds) {
             sb.append("[Remove ads] ");
         }
     }
@@ -229,3 +187,4 @@ public class DialogRate extends Dialog {
         void onFeedBack(String content, int rate);
     }
 }
+

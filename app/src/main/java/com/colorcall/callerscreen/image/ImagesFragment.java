@@ -8,19 +8,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.apply.ApplyActivity;
 import com.colorcall.callerscreen.broadcast.NetworkChangeReceiver;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
+import com.colorcall.callerscreen.databinding.FragmentImagesBinding;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyImage;
@@ -37,24 +36,15 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ImagesFragment extends Fragment implements ImageAdapter.Listener, NetworkChangeReceiver.Listener {
-    @BindView(R.id.rcvBgImages)
-    RecyclerView rcvBgImages;
-    @BindView(R.id.sw_refesh)
-    SwipeRefreshLayout swRefresh;
-    @BindView(R.id.layoutLoading)
-    LinearLayout layoutLoading;
-    @BindView(R.id.layoutNotNetwork)
-    LinearLayout layoutNotNetwork;
-    ImageAdapter adapter;
     private MainActivity mainActivity;
     private NetworkChangeReceiver networkChangeReceiver;
     private ArrayList<Background> listBg;
     private Background itemThemeSelected;
     private int positionItemThemeSelected = -1;
+    private FragmentImagesBinding binding;
+    ImageAdapter adapter;
+
     private int countAds;
     public ImagesFragment(MainActivity activity) {
         this.mainActivity = activity;
@@ -65,31 +55,32 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_images, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentImagesBinding.inflate(inflater, container, false);
+
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constant.ACTION_LOAD_COMPLETE_THEME);
         mIntentFilter.addAction(Constant.INTENT_APPLY_THEME);
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        return view;
+        return binding.getRoot();
     }
+
 
     private void init() {
         listBg = HawkHelper.getListBackground();
         this.networkChangeReceiver = new NetworkChangeReceiver();
         this.networkChangeReceiver.registerReceiver(this.getContext(), this);
-        this.swRefresh.setRefreshing(false);
-        this.swRefresh.setOnRefreshListener(this::onRefreshLayout);
+        this.binding.swRefesh.setRefreshing(false);
+        this.binding.swRefesh.setOnRefreshListener(this::onRefreshLayout);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
-        rcvBgImages.setLayoutManager(gridLayoutManager);
-        rcvBgImages.setItemAnimator(new DefaultItemAnimator());
-        rcvBgImages.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
+        binding.rcvBgImages.setLayoutManager(gridLayoutManager);
+        binding.rcvBgImages.setItemAnimator(new DefaultItemAnimator());
+        binding.rcvBgImages.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
         adapter = new ImageAdapter(getContext(), listBg);
         adapter.setListener(this);
-        rcvBgImages.setAdapter(adapter);
-        rcvBgImages.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.rcvBgImages.setAdapter(adapter);
+        binding.rcvBgImages.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -103,7 +94,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     }
 
     @Override
-    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
+    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom) {
         if (!AppUtils.allowViewClick())
             return;
       /*  if(countAds%3!=0){
@@ -122,7 +113,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
         });
     }
 
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom,boolean isAllowShowAds) {
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom, boolean isAllowShowAds) {
         Background background = backgrounds.get(position);
         Intent intent = new Intent(getActivity(), ApplyActivity.class);
         if (delete) {
@@ -137,14 +128,10 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
 
     private void onRefreshLayout() {
         if (!AppUtils.isNetworkConnected(this.getContext())) {
-            if (swRefresh != null) {
-                swRefresh.setRefreshing(false);
-            }
+            binding.swRefesh.setRefreshing(false);
             return;
         }
-        if (swRefresh != null) {
-            swRefresh.setRefreshing(true);
-        }
+        binding.swRefesh.setRefreshing(true);
         if (mainActivity != null) {
             mainActivity.refreshCalApi();
         }
@@ -162,11 +149,11 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     @Override
     public void netWorkStateChanged(boolean isNetWork) {
         if (!isNetWork && HawkHelper.getListBackground().size() < 10) {
-            layoutNotNetwork.setVisibility(View.VISIBLE);
+            binding.layoutNotNetwork.setVisibility(View.VISIBLE);
         } else {
-            layoutNotNetwork.setVisibility(View.GONE);
+            binding.layoutNotNetwork.setVisibility(View.GONE);
             if (HawkHelper.getListBackground().size() < 10 && mainActivity != null) {
-                layoutLoading.setVisibility(View.VISIBLE);
+                binding.layoutLoading.setVisibility(View.VISIBLE);
                 mainActivity.refreshCalApi();
             }
         }
@@ -176,10 +163,10 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
         if (signMainImage.isSwiped()) {
             init();
         } else {
-            swRefresh.setRefreshing(false);
+            binding.swRefesh.setRefreshing(false);
             listBg = HawkHelper.getListBackground();
             adapter.setNewListBg();
-            layoutLoading.setVisibility(View.GONE);
+            binding.layoutLoading.setVisibility(View.GONE);
             if (adapter != null && listBg.size() > 5) {
                 adapter.notifyItemRangeChanged(4, listBg.size() - 4);
             }

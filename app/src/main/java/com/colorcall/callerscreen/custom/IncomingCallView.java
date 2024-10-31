@@ -1,6 +1,9 @@
 package com.colorcall.callerscreen.custom;
 
 
+import static android.content.Context.TELEPHONY_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -13,19 +16,20 @@ import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-
-import com.android.internal.telephony.ITelephony;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
@@ -34,26 +38,21 @@ import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
-import com.colorcall.callerscreen.database.ContactDao;
-import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.database.DatabaseViewModel;
+import com.colorcall.callerscreen.databinding.LayoutCallColorBinding;
 import com.colorcall.callerscreen.model.ContactRetrieve;
 import com.colorcall.callerscreen.service.AcceptCallActivity;
 import com.colorcall.callerscreen.service.CallState;
 import com.colorcall.callerscreen.service.PhoneState;
 import com.colorcall.callerscreen.utils.AppUtils;
-import com.colorcall.callerscreen.utils.DynamicImageView;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.gson.Gson;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class IncomingCallView extends RelativeLayout {
-    // private LayoutCallColorBinding binding;
+    private LayoutCallColorBinding binding;
     private Context context;
     public WindowManager windowManager;
     public String numberPhone = "";
@@ -66,43 +65,53 @@ public class IncomingCallView extends RelativeLayout {
     private Bitmap bmpAvatar;
     private Analystic analystic;
     private TelephonyManager telephonyManager;
-    private ITelephony telephonyService;
-    @BindView(R.id.txtName)
-    public TextView txtName;
-    @BindView(R.id.txtPhone)
-    public TextView txtPhone;
-    @BindView(R.id.profile_image)
-    public CircleImageView profile_image;
-    @BindView(R.id.imgExit)
-    public ImageView imgExit;
-    @BindView(R.id.vdo_background_call)
-    public TextureVideoView vdo_background_call;
-    @BindView(R.id.img_background_call)
-    public DynamicImageView img_background_call;
-    @BindView(R.id.btnAccept)
-    public ImageView btnAccept;
-    @BindView(R.id.btnReject)
-    public ImageView btnReject;
+    private Object telephonyService;
     public PhoneState phoneState;
     public CallState callState;
+    private DatabaseViewModel databaseViewModel;
 
     public IncomingCallView(@NonNull Context context) {
         super(context);
-        this.context = context;
-        analystic = Analystic.getInstance(context);
-        //binding = LayoutCallColorBinding.inflate(LayoutInflater.from(context), this, true);
+        init(context);
     }
 
     public IncomingCallView(@NonNull Context context, @Nullable AttributeSet attributeSet) {
         super(context, attributeSet);
-        this.context = context;
-        analystic = Analystic.getInstance(context);
+        init(context);
     }
 
     public IncomingCallView(@NonNull Context context, @Nullable AttributeSet attributeSet, int i2) {
         super(context, attributeSet, i2);
+        init(context);
+    }
+
+    private void init(Context context) {
         this.context = context;
         analystic = Analystic.getInstance(context);
+        binding = LayoutCallColorBinding.inflate(LayoutInflater.from(context), this, true);
+        if (context instanceof ViewModelStoreOwner) {
+            databaseViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(DatabaseViewModel.class);
+        } else {
+            throw new IllegalStateException("Context must implement ViewModelStoreOwner");
+        }
+        if (AppUtils.checkDrawOverlayApp2(context)) {
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            this.windowParams = layoutParams;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            } else {
+                layoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+            }
+            layoutParams.format = -2;
+            layoutParams.flags = 524584;
+            layoutParams.width = -1;
+            layoutParams.height = -1;
+            layoutParams.screenOrientation = 1;
+            layoutParams.windowAnimations = 16973826;
+            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+            this.windowManager = windowManager;
+            windowManager.addView(this, this.windowParams);
+        }
     }
 
     public void setNumberPhone(String numberPhone) {
@@ -114,40 +123,6 @@ public class IncomingCallView extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         Log.e("TAN", "onFinishInflate: ");
-        /*WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        this.windowParams = layoutParams;
-        layoutParams.type = Build.VERSION.SDK_INT >= 26 ? TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-        WindowManager.LayoutParams layoutParams2 = this.windowParams;
-        layoutParams2.format = -2;
-        layoutParams2.flags = 524584;
-        layoutParams2.width = -1;
-        layoutParams2.height = -1;
-        layoutParams2.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        layoutParams2.windowAnimations = 16973826;
-        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        this.windowManager = windowManager;
-        this.windowManager.addView(this, this.windowParams);*/
-        if (AppUtils.checkDrawOverlayApp2(context)) {
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            this.windowParams = layoutParams;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-            } else {
-                layoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
-            }
-            //layoutParams.type = Build.VERSION.SDK_INT >= 26 ? 2038 : 2010;
-            WindowManager.LayoutParams layoutParams2 = this.windowParams;
-            layoutParams2.format = -2;
-            layoutParams2.flags = 524584;
-            layoutParams2.width = -1;
-            layoutParams2.height = -1;
-            layoutParams2.screenOrientation = 1;
-            layoutParams2.windowAnimations = 16973826;
-            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-            this.windowManager = windowManager;
-            windowManager.addView(this, this.windowParams);
-        }
-        ButterKnife.bind(this, this);
     }
 
     @Override
@@ -166,18 +141,18 @@ public class IncomingCallView extends RelativeLayout {
                 ContactRetrieve contactRetrieve = AppUtils.getContactName(context, String.valueOf(numberPhone));
                 name = contactRetrieve.getName();
                 contactId = contactRetrieve.getContact_id();
-                txtName.setText(name);
+                binding.txtName.setText(name);
                 if (name.equals("")) {
-                    txtName.setText(context.getString(R.string.unknowContact));
+                    binding.txtName.setText(context.getString(R.string.unknowContact));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            txtPhone.setText(String.valueOf(numberPhone));
-            txtPhone.setVisibility(VISIBLE);
+            binding.txtPhone.setText(String.valueOf(numberPhone));
+            binding.txtPhone.setVisibility(VISIBLE);
         } else {
-            txtName.setText(context.getString(R.string.unknowContact));
-            txtPhone.setVisibility(INVISIBLE);
+            binding.txtName.setText(context.getString(R.string.unknowContact));
+            binding.txtPhone.setVisibility(INVISIBLE);
         }
     }
 
@@ -186,21 +161,26 @@ public class IncomingCallView extends RelativeLayout {
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
             bmpAvatar = AppUtils.getContactPhoto(context, String.valueOf(numberPhone));
-            profile_image.setImageBitmap(bmpAvatar);
-            vdo_background_call.setVisibility(View.VISIBLE);
-            Glide.with(this).load(R.drawable.ic_exit).into(imgExit);
-            List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
-                    .where(ContactDao.Properties.Contact_id.eq(contactId))
-                    .list();
-            if (listQueryContactID.size() > 0) {
-                mContact = listQueryContactID.get(0);
-                back_ground_contact = new Gson().fromJson(mContact.getBackground(), Background.class);
+            binding.profileImage.setImageBitmap(bmpAvatar);
+            binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
+            if (databaseViewModel != null) {
+                databaseViewModel.getContactsByContactId(contactId).observe((LifecycleOwner) context, new Observer<List<Contact>>() {
+                    @Override
+                    public void onChanged(List<Contact> contacts) {
+                        if (contacts != null && !contacts.isEmpty()) {
+                            Glide.with(IncomingCallView.this).load(R.drawable.ic_exit).into(binding.imgExit);
+                            Contact mContact = contacts.get(0);
+                            back_ground_contact = new Gson().fromJson(mContact.getBackground(), Background.class);
+
+                            if (back_ground_contact != null) {
+                                backgroundSelect = back_ground_contact;
+                                int newTypeBgCall = back_ground_contact.getType();
+                                checkTypeCall(newTypeBgCall);
+                            }
+                        }
+                    }
+                });
             }
-            if (back_ground_contact != null) {
-                backgroundSelect = back_ground_contact;
-                typeBgCall = back_ground_contact.getType();
-            }
-            checkTypeCall(typeBgCall);
             new Handler().postDelayed(this::startAnimation, 400);
             handlingCallState();
             listener();
@@ -209,7 +189,7 @@ public class IncomingCallView extends RelativeLayout {
     }
 
     private void listener() {
-        btnAccept.setOnClickListener(v -> {
+        binding.btnAccept.setOnClickListener(v -> {
             analystic.trackEvent(ManagerEvent.callWinDowAcceptCall());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
@@ -228,23 +208,25 @@ public class IncomingCallView extends RelativeLayout {
             release();
         });
 
-        btnReject.setOnClickListener(v -> {
+        binding.btnReject.setOnClickListener(v -> {
             analystic.trackEvent(ManagerEvent.callWinDowRejectCall());
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    TelecomManager tm = (TelecomManager)context.getSystemService(Context.TELECOM_SERVICE);
+                    TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
                     if (tm != null) {
                         tm.endCall();
                     }
                 } else {
-                    telephonyService.endCall();
+                    Method m3 = telephonyService.getClass().getDeclaredMethod("endCall");
+                    m3.invoke(telephonyService);
+                    //telephonyService.endCall();
                 }
                 release();
             } catch (Exception e) {
                 release();
             }
         });
-        imgExit.setOnClickListener(v -> {
+        binding.imgExit.setOnClickListener(v -> {
             analystic.trackEvent(ManagerEvent.callWinDowExit());
             if (phoneState != null) {
                 phoneState.release();
@@ -257,17 +239,18 @@ public class IncomingCallView extends RelativeLayout {
             release();
         });
     }
-
-
+    Method m1;
     private void handlingCallState() {
-        telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
         Class clazz;
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 clazz = Class.forName(telephonyManager.getClass().getName());
-                Method method = clazz.getDeclaredMethod("getITelephony");
-                method.setAccessible(true);
-                telephonyService = (ITelephony) method.invoke(telephonyManager);
+                m1 = clazz.getDeclaredMethod("getITelephony");
+                m1.setAccessible(true);
+                telephonyService = m1.invoke(telephonyManager);
+
+                //telephonyService = (ITelephony) method.invoke(telephonyManager);
             }
         } catch (Exception e) {
             release();
@@ -277,30 +260,29 @@ public class IncomingCallView extends RelativeLayout {
 
     private void handlingBgCallVideo() {
         String sPath;
-        img_background_call.setVisibility(View.GONE);
-        vdo_background_call.setVisibility(View.VISIBLE);
+        binding.imgBackgroundCall.setVisibility(View.GONE);
+        binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
         if (backgroundSelect.getPathItem().contains("storage") || backgroundSelect.getPathItem().contains("/data/data") || backgroundSelect.getPathItem().contains("data/user/")) {
             sPath = backgroundSelect.getPathItem();
         } else {
             String uriPath = "android.resource://" + context.getPackageName() + backgroundSelect.getPathItem();
-
             sPath = uriPath;
         }
-        vdo_background_call.setVideoURI(Uri.parse(sPath));
-        vdo_background_call.setOnErrorListener((mp, what, extra) -> {
+        binding.vdoBackgroundCall.setVideoURI(Uri.parse(sPath));
+        binding.vdoBackgroundCall.setOnErrorListener((mp, what, extra) -> {
             analystic.trackEvent(ManagerEvent.callVideoViewError(what, extra));
             release();
             return true;
         });
-        vdo_background_call.setOnPreparedListener(mp -> {
+        binding.vdoBackgroundCall.setOnPreparedListener(mp -> {
             mp.setLooping(true);
             mp.setVolume(0.0f, 0.0f);
-            vdo_background_call.start();
+            binding.vdoBackgroundCall.start();
         });
     }
 
     private void handlingBgCallImage() {
-        img_background_call.setVisibility(View.VISIBLE);
+        binding.imgBackgroundCall.setVisibility(View.VISIBLE);
         String sPathThumb;
         if (backgroundSelect.getPathItem().contains("default") && backgroundSelect.getPathItem().contains("thumbDefault")) {
             sPathThumb = "file:///android_asset/" + backgroundSelect.getPathItem();
@@ -311,8 +293,8 @@ public class IncomingCallView extends RelativeLayout {
                 .load(sPathThumb)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .thumbnail(0.1f)
-                .into(img_background_call);
-        vdo_background_call.setVisibility(View.GONE);
+                .into(binding.imgBackgroundCall);
+        binding.vdoBackgroundCall.setVisibility(View.GONE);
     }
 
     private void checkTypeCall(int typeBgCall) {
@@ -326,10 +308,9 @@ public class IncomingCallView extends RelativeLayout {
         }
     }
 
-
     public void startAnimation() {
         Animation anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call);
-        btnAccept.startAnimation(anim8);
+        binding.btnAccept.startAnimation(anim8);
     }
 
     public void release() {
@@ -341,17 +322,15 @@ public class IncomingCallView extends RelativeLayout {
     }
 
     public void clearView() {
-        img_background_call.setImageDrawable(null);
-        img_background_call.setVisibility(View.GONE);
-        vdo_background_call.setAlpha(0.0f);
-        vdo_background_call.stopPlayback();
-        vdo_background_call.setVisibility(View.GONE);
+        binding.imgBackgroundCall.setImageDrawable(null);
+        binding.imgBackgroundCall.setVisibility(View.GONE);
+        binding.vdoBackgroundCall.setAlpha(0.0f);
+        binding.vdoBackgroundCall.stopPlayback();
+        binding.vdoBackgroundCall.setVisibility(View.GONE);
         try {
-            btnAccept.setVisibility(View.VISIBLE);
+            binding.btnAccept.setVisibility(View.VISIBLE);
         } catch (Exception e2) {
             e2.printStackTrace();
         }
     }
-
-
 }

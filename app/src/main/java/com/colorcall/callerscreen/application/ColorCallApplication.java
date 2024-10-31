@@ -5,7 +5,6 @@ import android.app.Application;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.database.DataManager;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -32,7 +31,7 @@ public class ColorCallApplication extends Application {
         Hawk.init(this).build();
         appOpenManager = new AppOpenManager(this);
         loadData();
-        DataManager.getInstance().init(this);
+       // DataManager.getInstance().init(this);
 
        if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);

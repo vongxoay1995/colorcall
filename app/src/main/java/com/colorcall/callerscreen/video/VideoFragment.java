@@ -9,20 +9,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.apply.ApplyActivity;
 import com.colorcall.callerscreen.broadcast.NetworkChangeReceiver;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
+import com.colorcall.callerscreen.databinding.FragmentVideoBinding;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.main.SimpleDividerItemDecoration;
 import com.colorcall.callerscreen.model.SignApplyVideo;
@@ -39,35 +40,28 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class VideoFragment extends Fragment implements VideoAdapter.Listener, NetworkChangeReceiver.Listener {
-    @BindView(R.id.rcvBgVideo)
-    RecyclerView rcvBgVideo;
-    VideoAdapter adapter;
-    @BindView(R.id.layoutLoading)
-    LinearLayout layoutLoading;
-    @BindView(R.id.layoutNotNetwork)
-    LinearLayout layoutNotNetwork;
+    private FragmentVideoBinding binding;
+    private VideoAdapter adapter;
     private int positionDownload = -1;
-    @BindView(R.id.sw_refesh)
-    SwipeRefreshLayout swRefresh;
     private MainActivity mainActivity;
     private NetworkChangeReceiver networkChangeReceiver;
     private ArrayList<Background> listBg;
     private int countAds;
+
     public VideoFragment(MainActivity activity) {
         this.mainActivity = activity;
     }
+
     public VideoFragment() {
         // doesn't do anything special
     }
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video, container, false);
-        ButterKnife.bind(this, view);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentVideoBinding.inflate(inflater, container, false);
         IntentFilter mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(Constant.ACTION_LOAD_COMPLETE_THEME);
         mIntentFilter.addAction(Constant.INTENT_DOWNLOAD_COMPLETE_THEME);
@@ -75,36 +69,37 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
-        return view;
+        init();
+        return binding.getRoot();
     }
 
     private void init() {
         this.networkChangeReceiver = new NetworkChangeReceiver();
         this.networkChangeReceiver.registerReceiver(this.getContext(), this);
-        this.swRefresh.setRefreshing(false);
-        this.swRefresh.setOnRefreshListener(this::onRefreshLayout);
+        binding.swRefesh.setRefreshing(false);
+        binding.swRefesh.setOnRefreshListener(this::onRefreshLayout);
         listBg = HawkHelper.getListBackground();
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
-        rcvBgVideo.setLayoutManager(gridLayoutManager);
-        rcvBgVideo.setItemAnimator(new DefaultItemAnimator());
-        rcvBgVideo.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
+        binding.rcvBgVideo.setLayoutManager(gridLayoutManager);
+        binding.rcvBgVideo.setItemAnimator(new DefaultItemAnimator());
+        binding.rcvBgVideo.addItemDecoration(new SimpleDividerItemDecoration(AppUtils.dpToPx(5)));
         adapter = new VideoAdapter(getContext(), listBg);
         adapter.setListener(this);
-        RecyclerView.ItemAnimator animator = rcvBgVideo.getItemAnimator();
+        RecyclerView.ItemAnimator animator = binding.rcvBgVideo.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        rcvBgVideo.setAdapter(adapter);
-        rcvBgVideo.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.rcvBgVideo.setAdapter(adapter);
+        binding.rcvBgVideo.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (!AppUtils.isNetworkConnected(getContext())) {
                         Boast.makeText(getContext(), getString(R.string.err_network)).show();
                     }
                 }
-                if(newState==0){
+                if (newState == 0) {
                     adapter.reload();
                 }
             }
@@ -113,13 +108,13 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
 
     private void onRefreshLayout() {
         if (!AppUtils.isNetworkConnected(this.getContext())) {
-            if (swRefresh != null) {
-                swRefresh.setRefreshing(false);
+            if (binding.swRefesh != null) {
+                binding.swRefesh.setRefreshing(false);
             }
             return;
         }
-        if (swRefresh != null) {
-            swRefresh.setRefreshing(true);
+        if (binding.swRefesh != null) {
+            binding.swRefesh.setRefreshing(true);
         }
         if (mainActivity != null) {
             mainActivity.refreshCalApi();
@@ -127,25 +122,13 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     }
 
     @Override
-    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom) {
+    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom) {
         if (!AppUtils.allowViewClick())
             return;
-        Log.e("TAN", "countAds: "+countAds);
-        /*if(countAds%3!=0){
-            Log.e("TAN", "onItemClick: 1");
-            this.countAds++;
-            moveApplyTheme(backgrounds, position, delete,posRandom,true);
-        }else {
-            this.countAds++;
-            InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
-                Log.e("TAN", "onItemClick: 2");
-                this.countAds = 1;
-                moveApplyTheme(backgrounds, position, delete,posRandom,false);
-            });
-        }*/
+        Log.e("TAN", "countAds: " + countAds);
         InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
             this.countAds = 1;
-            moveApplyTheme(backgrounds, position, delete,posRandom,false);
+            moveApplyTheme(backgrounds, position, delete, posRandom, false);
         });
     }
 
@@ -153,7 +136,7 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     public void onItemThemeSelected(int position) {
     }
 
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete,int posRandom,boolean isAllowShowAds) {
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom, boolean isAllowShowAds) {
         Background background = backgrounds.get(position);
         if (!background.getPathItem().contains("/data/data")) {
             positionDownload = position;
@@ -182,11 +165,11 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     @Override
     public void netWorkStateChanged(boolean isNetWork) {
         if (!isNetWork && HawkHelper.getListBackground().size() < 10) {
-            layoutNotNetwork.setVisibility(View.VISIBLE);
+            binding.layoutNotNetwork.setVisibility(View.VISIBLE);
         } else {
-            layoutNotNetwork.setVisibility(View.GONE);
+            binding.layoutNotNetwork.setVisibility(View.GONE);
             if (HawkHelper.getListBackground().size() < 10 && mainActivity != null) {
-                layoutLoading.setVisibility(View.VISIBLE);
+                binding.layoutLoading.setVisibility(View.VISIBLE);
                 mainActivity.refreshCalApi();
             }
         }
@@ -197,10 +180,10 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         if (signMainVideo.isRefresh()) {
             init();
         } else {
-            swRefresh.setRefreshing(false);
+            binding.swRefesh.setRefreshing(false);
             listBg = HawkHelper.getListBackground();
             adapter.setNewListBg();
-            layoutLoading.setVisibility(View.GONE);
+            binding.layoutLoading.setVisibility(View.GONE);
             if (adapter != null && listBg.size() > 5) {
                 adapter.notifyItemRangeChanged(4, listBg.size() - 4);
             }
@@ -230,7 +213,7 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     @Override
     public void onResume() {
         super.onResume();
-        if(adapter!=null){
+        if (adapter != null) {
             adapter.reloadAll();
         }
     }

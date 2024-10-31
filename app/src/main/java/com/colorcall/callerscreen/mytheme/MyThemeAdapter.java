@@ -7,18 +7,16 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,29 +24,35 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.custom.TextureViewHandleClick;
 import com.colorcall.callerscreen.database.Background;
-import com.colorcall.callerscreen.database.DataManager;
+import com.colorcall.callerscreen.databinding.AddNewBinding;
+import com.colorcall.callerscreen.databinding.ItemThemeBinding;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     public ArrayList<Background> listBg;
 
-    public MyThemeAdapter(Context context) {
+    public MyThemeAdapter(Context context,ArrayList<Background> backgrounds) {
         this.context = context;
-        setNewListBg();
+        setNewListBg(backgrounds);
     }
 
-    public void setNewListBg() {
+    public void setNewListBg(ArrayList<Background> backgrounds) {
         this.listBg = new ArrayList<>();
         listBg.add(new Background(0, "", "", false));
-        listBg.addAll(DataManager.query().getBackgroundDao().queryBuilder().list());
+        this.listBg.addAll(backgrounds);
+     /*   databaseViewModel.getAllBackgrounds().observe((LifecycleOwner) context, backgrounds -> {
+            Log.e("TAN", "setNewListBg: "+backgrounds.size());
+            if (backgrounds != null) {
+                this.listBg.addAll(backgrounds);
+            }
+            notifyDataSetChanged(); // Cập nhật giao diện khi có dữ liệu mới
+        });*/
+       // listBg.addAll(DataManager.query().getBackgroundDao().queryBuilder().list());
     }
 
     private void resizeItem(Context context, RelativeLayout layout_item) {
@@ -73,32 +77,15 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.img_item_thumb_theme)
-        ImageView imgThumb;
-        @BindView(R.id.layout_item)
-        RelativeLayout layout_item;
-        @BindView(R.id.imgAvatar)
-        ImageView imgAvatar;
-        @BindView(R.id.txtName)
-        TextView txtName;
-        @BindView(R.id.txtPhone)
-        TextView txtPhone;
-        @BindView(R.id.layoutSelected)
-        ConstraintLayout layoutSelected;
-        @BindView(R.id.layoutBorderItemSelect)
-        RelativeLayout layoutBorderItemSelect;
-        @BindView(R.id.vdo_background_call)
-        TextureViewHandleClick vdo_background_call;
-        @BindView(R.id.btnAccept)
-        ImageView btnAccept;
         private Background backgroundSelected;
         private int position;
         private int posRandom;
+        private final ItemThemeBinding binding;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            resizeItem(context, layout_item);
+        public ViewHolder(@NonNull ItemThemeBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            resizeItem(context, binding.layoutItem);
             listener();
         }
 
@@ -110,21 +97,22 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             String pathFile;
             if (!background.getPathThumb().equals("")) {
                 pathFile = background.getPathThumb();
+                Log.e("TAN", "onBind: "+pathFile);
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .thumbnail(0.1f)
-                        .into(imgThumb);
+                        .into(binding.imgItemThumbTheme);
             }
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
-                layoutSelected.setVisibility(View.VISIBLE);
-                layoutBorderItemSelect.setVisibility(View.VISIBLE);
+                binding.layoutSelected.setVisibility(View.VISIBLE);
+                binding.layoutBorderItemSelect.setVisibility(View.VISIBLE);
                 if (!checkIsImage(background.getPathItem())) {
-                    vdo_background_call.setVisibility(View.VISIBLE);
-                    imgThumb.setVisibility(View.GONE);
+                    binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
+                    binding.imgItemThumbTheme.setVisibility(View.GONE);
                     processVideo(background);
                 }else {
-                    imgThumb.setVisibility(View.VISIBLE);
+                    binding.imgItemThumbTheme.setVisibility(View.VISIBLE);
                 }
 
                 startAnimation();
@@ -133,13 +121,13 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             } else {
                 if (!checkIsImage(background.getPathItem())) {
-                    vdo_background_call.stopPlayback();
+                    binding.vdoBackgroundCall.stopPlayback();
                 }
-                vdo_background_call.setVisibility(View.GONE);
-                imgThumb.setVisibility(View.VISIBLE);
-                layoutSelected.setVisibility(View.GONE);
-                layoutBorderItemSelect.setVisibility(View.GONE);
-                btnAccept.clearAnimation();
+                binding.vdoBackgroundCall.setVisibility(View.GONE);
+                binding.imgItemThumbTheme.setVisibility(View.VISIBLE);
+                binding.layoutSelected.setVisibility(View.GONE);
+                binding.layoutBorderItemSelect.setVisibility(View.GONE);
+                binding.btnAccept.clearAnimation();
             }
         }
 
@@ -152,9 +140,9 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     .load("file:///android_asset/avatar/" + pathAvatar)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
-                    .into(imgAvatar);
-            txtName.setText(name);
-            txtPhone.setText(phone);
+                    .into(binding.imgAvatar);
+            binding.txtName.setText(name);
+            binding.txtPhone.setText(phone);
         }
 
         public boolean checkIsImage(String path) {
@@ -171,13 +159,13 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         @SuppressLint("ClickableViewAccessibility")
         private void listener() {
-            this.imgThumb.setOnClickListener(v -> {
+            this.binding.imgItemThumbTheme.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
             });
 
-            vdo_background_call.setOnClickListener(v -> {
+            binding.vdoBackgroundCall.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
@@ -186,7 +174,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         public void startAnimation() {
             Animation anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call);
-            btnAccept.startAnimation(anim8);
+            binding.btnAccept.startAnimation(anim8);
         }
 
         private void processVideo(Background background) {
@@ -199,56 +187,54 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         .load(sPathThumb)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .thumbnail(0.1f)
-                        .into(imgThumb);
+                        .into(binding.imgItemThumbTheme);
             }
             if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
                 sPath = background.getPathItem();
                 if (!sPath.startsWith("http")) {
-                    vdo_background_call.setVideoURI(Uri.parse(sPath));
+                    binding.vdoBackgroundCall.setVideoURI(Uri.parse(sPath));
                     playVideo();
                 }
             } else {
-                vdo_background_call.setVideoURI(Uri.parse(uriPath));
+                binding.vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
                 playVideo();
             }
         }
 
         private void playVideo() {
-            vdo_background_call.setOnPreparedListener(mediaPlayer -> {
+            binding.vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> {
                 mediaPlayer.setLooping(true);
                 mediaPlayer.setVolume(0.0f, 0.0f);
             });
-            vdo_background_call.setOnErrorListener((mp, what, extra) -> {
-                vdo_background_call.stopPlayback();
-                vdo_background_call.setVisibility(View.GONE);
-                imgThumb.setVisibility(View.VISIBLE);
+            binding.vdoBackgroundCall.setOnErrorListener((mp, what, extra) -> {
+                binding.vdoBackgroundCall.stopPlayback();
+                binding.vdoBackgroundCall.setVisibility(View.GONE);
+                binding.imgItemThumbTheme.setVisibility(View.VISIBLE);
                 return false;
             });
-            vdo_background_call.setOnInfoListener((mp, what, extra) -> {
+            binding.vdoBackgroundCall.setOnInfoListener((mp, what, extra) -> {
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                     new Handler().postDelayed(() -> {
-                        vdo_background_call.setAlpha(1.0f);
-                        imgThumb.setVisibility(View.INVISIBLE);
+                        binding.vdoBackgroundCall.setAlpha(1.0f);
+                        binding.imgItemThumbTheme.setVisibility(View.INVISIBLE);
                     }, 100);
                     return true;
                 }
                 return false;
             });
-            vdo_background_call.start();
+            binding.vdoBackgroundCall.start();
         }
     }
 
     Listener listener;
 
     public class AddHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.layoutAdd)
-        RelativeLayout layoutAdd;
-
-        public AddHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            resizeItemAdd(context, layoutAdd);
-            this.layoutAdd.setOnClickListener(v -> {
+        private final AddNewBinding binding;
+        public AddHolder(@NonNull AddNewBinding mbinding) {
+            super(mbinding.getRoot());
+            binding = mbinding;
+            resizeItemAdd(context, binding.layoutAdd);
+            this.binding.layoutAdd.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onAdd();
                 }
@@ -267,14 +253,13 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @NonNull
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        switch (i) {
-            case 0:
-                return new AddHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.add_new, viewGroup, false));
-            case 1:
-                return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_theme, viewGroup, false));
-            default:
-                return null;
-        }
+        ItemThemeBinding binding = ItemThemeBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false);
+        AddNewBinding binding2 = AddNewBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false);
+        return switch (i) {
+            case 0 -> new AddHolder(binding2);
+            case 1 -> new ViewHolder(binding);
+            default -> null;
+        };
     }
 
     @Override

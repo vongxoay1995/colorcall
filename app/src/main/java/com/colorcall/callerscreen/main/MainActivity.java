@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -29,6 +28,7 @@ import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
+import com.colorcall.callerscreen.databinding.ActivityMainBinding;
 import com.colorcall.callerscreen.image.ImagesFragment;
 import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignMainImage;
@@ -52,7 +52,6 @@ import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.tabs.TabLayout;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
@@ -67,22 +66,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements AdListener, DialogRate.DialogRateListener, KeyboardVisibilityEventListener, AppOpenManager.AppOpenManagerObserver {
-    @BindView(R.id.tab_layout)
-    TabLayout tab_layout;
-    @BindView(R.id.pageBgColor)
-    ViewPager pageBgColor;
-    @BindView(R.id.layout_ads)
-    RelativeLayout layoutAds;
-    @BindView(R.id.layout_head)
-    RelativeLayout layout_head;
     private Analystic analystic;
     private BannerAdsUtils bannerAdsUtils;
     private boolean showLayoutAds;
@@ -92,11 +80,13 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private InterstitialUtil interstitialUtil;
     public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
     public boolean isShowConsent = false;
+    private ActivityMainBinding binding;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        binding= ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
         if (HawkHelper.isEnableColorCall()) {
             PhoneService.startService(this);
@@ -111,12 +101,12 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
         loadDataApi(true);
         analystic = Analystic.getInstance(this);
-        bannerAdsUtils = new BannerAdsUtils(this, layoutAds);
+        bannerAdsUtils = new BannerAdsUtils(this, binding.layoutAds);
         initDataPage();
         if (AppUtils.isNetworkConnected(this)) {
             loadAds();
         } else {
-            layoutAds.setVisibility(View.GONE);
+            binding.layoutAds.setVisibility(View.GONE);
         }
         disableToolTipTextTab();
         analystic.trackEvent(ManagerEvent.mainOpen());
@@ -127,6 +117,13 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, 1);
         }*/
+        binding.btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                analystic.trackEvent(ManagerEvent.mainSlideClick());
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            }
+        });
         requestNotificationPermission();
     }
 
@@ -176,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void disableToolTipTextTab() {
-        LinearLayout tabStrip = (LinearLayout) tab_layout.getChildAt(0);
+        LinearLayout tabStrip = (LinearLayout) binding.tabLayout.getChildAt(0);
         for (int i = 0; i < tabStrip.getChildCount(); i++) {
             tabStrip.getChildAt(i).setOnLongClickListener(v -> true);
         }
@@ -190,12 +187,12 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         mAdapter.addFrag(videoFrag, getString(R.string.videos));
         mAdapter.addFrag(imageFrag, getString(R.string.images));
         mAdapter.addFrag(mythemeFrag, getString(R.string.mytheme));
-        pageBgColor.setAdapter(mAdapter);
-        tab_layout.setupWithViewPager(pageBgColor);
-        pageBgColor.setCurrentItem(0);
+        binding.pageBgColor.setAdapter(mAdapter);
+        binding.tabLayout.setupWithViewPager(binding.pageBgColor);
+        binding.pageBgColor.setCurrentItem(0);
         mAdapter.notifyDataSetChanged();
-        pageBgColor.setOffscreenPageLimit(2);
-        pageBgColor.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        binding.pageBgColor.setOffscreenPageLimit(2);
+        binding.pageBgColor.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -225,11 +222,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         super.onResume();
     }
 
-    @OnClick({R.id.btnSetting})
-    public void onViewClicked() {
-        analystic.trackEvent(ManagerEvent.mainSlideClick());
-        startActivity(new Intent(this, SettingActivity.class));
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -247,12 +239,12 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     public void onAdloaded() {
         showLayoutAds = true;
-        layoutAds.setVisibility(View.VISIBLE);
+        binding.layoutAds.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onAdFailed() {
-        layoutAds.setVisibility(View.GONE);
+        binding.layoutAds.setVisibility(View.GONE);
     }
 
 
@@ -292,16 +284,18 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void checkHasNewData(ArrayList<Background> listBg) {
+        Log.e("TAN", "checkHasNewData: "+listBg);
         long lastTimeUpdate = HawkHelper.getTimeStamp();
         boolean isSelected = false;
         int initPosition = HawkHelper.getListBackground().size();
         ArrayList<Background> arr = HawkHelper.getListBackground();
         for (int i = 0; i < listBg.size(); i++) {
-            if (Long.parseLong(listBg.get(i).getTime_update()) > lastTimeUpdate) {
+            Log.e("TAN", "checkHasNewData: "+listBg.get(i));
+            if (Long.parseLong(listBg.get(i).getTimeUpdate()) > lastTimeUpdate) {
                 listBg.get(i).setPosition(initPosition + i);
                 arr.add(listBg.get(i));
                 if (!isSelected) {
-                    HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTime_update()));
+                    HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTimeUpdate()));
                     isSelected = true;
                 }
             }
@@ -406,10 +400,10 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     public void onVisibilityChanged(boolean isOpen) {
         if (isOpen) {
-            layoutAds.setVisibility(View.GONE);
+            binding.layoutAds.setVisibility(View.GONE);
         } else {
             if (showLayoutAds) {
-                layoutAds.setVisibility(View.VISIBLE);
+                binding.layoutAds.setVisibility(View.VISIBLE);
             }
         }
     }

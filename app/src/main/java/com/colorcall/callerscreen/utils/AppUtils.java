@@ -1,6 +1,5 @@
 package com.colorcall.callerscreen.utils;
 
-import static androidx.core.content.ContextCompat.getSystemService;
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 

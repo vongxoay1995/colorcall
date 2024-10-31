@@ -13,26 +13,20 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
-import com.colorcall.callerscreen.custom.TextureViewHandleClick;
 import com.colorcall.callerscreen.database.Background;
+import com.colorcall.callerscreen.databinding.ItemThemeBinding;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
@@ -54,7 +48,6 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-
     private void resizeItem(Context context, RelativeLayout layout_item) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -71,32 +64,15 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.img_item_thumb_theme)
-        ImageView imgThumb;
-        @BindView(R.id.imgAvatar)
-        ImageView imgAvatar;
-        @BindView(R.id.txtName)
-        TextView txtName;
-        @BindView(R.id.txtPhone)
-        TextView txtPhone;
-        @BindView(R.id.btnAccept)
-        ImageView btnAccept;
-        @BindView(R.id.layout_item)
-        RelativeLayout layout_item;
-        @BindView(R.id.layoutSelected)
-        ConstraintLayout layoutSelected;
-        @BindView(R.id.layoutBorderItemSelect)
-        RelativeLayout layoutBorderItemSelect;
-        @BindView(R.id.vdo_background_call)
-        TextureViewHandleClick vdo_background_call;
+        private final ItemThemeBinding binding;
         private Background backgroundSelected;
         private int position;
         private int posRandom;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            resizeItem(context, layout_item);
+        public ViewHolder(@NonNull ItemThemeBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            resizeItem(context, binding.layoutItem);
             listener();
         }
 
@@ -116,32 +92,32 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         .load(pathFile)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .thumbnail(0.1f)
-                        .into(imgThumb);
+                        .into(binding.imgItemThumbTheme);
             }
 
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
-                layoutSelected.setVisibility(View.VISIBLE);
-                layoutBorderItemSelect.setVisibility(View.VISIBLE);
-                imgThumb.setVisibility(View.GONE);
-                vdo_background_call.setVisibility(View.VISIBLE);
+                binding.layoutSelected.setVisibility(View.VISIBLE);
+                binding.layoutBorderItemSelect.setVisibility(View.VISIBLE);
+                binding.imgItemThumbTheme.setVisibility(View.GONE);
+                binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
                 processVideo(background);
                 startAnimation();
                 if (listener != null) {
                     listener.onItemThemeSelected(position);
                 }
             } else {
-                vdo_background_call.stopPlayback();
-                vdo_background_call.setVisibility(View.GONE);
-                imgThumb.setVisibility(View.VISIBLE);
-                layoutSelected.setVisibility(View.GONE);
-                layoutBorderItemSelect.setVisibility(View.GONE);
-                btnAccept.clearAnimation();
+                binding.vdoBackgroundCall.stopPlayback();
+                binding.vdoBackgroundCall.setVisibility(View.GONE);
+                binding.imgItemThumbTheme.setVisibility(View.VISIBLE);
+                binding.layoutSelected.setVisibility(View.GONE);
+                binding.layoutBorderItemSelect.setVisibility(View.GONE);
+                binding.btnAccept.clearAnimation();
             }
         }
 
         public void startAnimation() {
             Animation anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call);
-            btnAccept.startAnimation(anim8);
+            binding.btnAccept.startAnimation(anim8);
         }
 
         private void initInfor() {
@@ -153,19 +129,19 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     .load("file:///android_asset/avatar/" + pathAvatar)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
-                    .into(imgAvatar);
-            txtName.setText(name);
-            txtPhone.setText(phone);
+                    .into(binding.imgAvatar);
+            binding.txtName.setText(name);
+            binding.txtPhone.setText(phone);
         }
 
         @SuppressLint("ClickableViewAccessibility")
         private void listener() {
-            this.imgThumb.setOnClickListener(v -> {
+            this.binding.imgItemThumbTheme.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
             });
-            this.vdo_background_call.setOnClickListener(v -> {
+            this.binding.vdoBackgroundCall.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
                 }
@@ -178,40 +154,36 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
                 sPath = background.getPathItem();
                 if (!sPath.startsWith("http")) {
-                    vdo_background_call.setVideoURI(Uri.parse(sPath));
+                    binding.vdoBackgroundCall.setVideoURI(Uri.parse(sPath));
                     playVideo();
                 }
             } else {
-                vdo_background_call.setVideoURI(Uri.parse(uriPath));
+                binding.vdoBackgroundCall.setVideoURI(Uri.parse(uriPath));
                 playVideo();
             }
         }
 
         private void playVideo() {
-            vdo_background_call.setOnPreparedListener(mediaPlayer -> {
+            binding.vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> {
                 mediaPlayer.setLooping(true);
-                vdo_background_call.start();
+                binding.vdoBackgroundCall.start();
             });
-            vdo_background_call.setOnErrorListener((mp, what, extra) -> {
-                vdo_background_call.stopPlayback();
-                vdo_background_call.setVisibility(View.GONE);
-                imgThumb.setVisibility(View.VISIBLE);
+            binding.vdoBackgroundCall.setOnErrorListener((mp, what, extra) -> {
+                binding.vdoBackgroundCall.stopPlayback();
+                binding.vdoBackgroundCall.setVisibility(View.GONE);
+                binding.imgItemThumbTheme.setVisibility(View.VISIBLE);
                 return false;
             });
-            vdo_background_call.setOnInfoListener((mp, what, extra) -> {
+            binding.vdoBackgroundCall.setOnInfoListener((mp, what, extra) -> {
                 if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            vdo_background_call.setAlpha(1.0f);
-                            imgThumb.setVisibility(View.INVISIBLE);
-                        }
+                    new Handler().postDelayed(() -> {
+                        binding.vdoBackgroundCall.setAlpha(1.0f);
+                        binding.imgItemThumbTheme.setVisibility(View.INVISIBLE);
                     }, 100);
                     return true;
                 }
                 return false;
             });
-
         }
     }
 
@@ -225,7 +197,8 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @NonNull
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_theme, viewGroup, false));
+        ItemThemeBinding binding = ItemThemeBinding.inflate(LayoutInflater.from(viewGroup.getContext()), viewGroup, false);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -242,11 +215,12 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.listener = listener;
     }
 
-    public void reload(){
+    public void reload() {
         notifyItemRangeChanged(0, getItemCount(), 4);
     }
-    public void reloadAll(){
+
+    public void reloadAll() {
         notifyItemRangeChanged(0, getItemCount(), 2);
     }
-
 }
+
