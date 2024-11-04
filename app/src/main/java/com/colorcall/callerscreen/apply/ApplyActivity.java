@@ -188,6 +188,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             } else {
                 sPathThumb = background.getPathItem();
             }
+            Log.e("TAN", "checkInforTheme: "+sPathThumb);
             Glide.with(getApplicationContext())
                     .load(sPathThumb)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -213,6 +214,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 .into(binding.imgBackgroundCall);
         if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
             sPath = background.getPathItem();
+            Log.e("TAN", "processVideo: "+sPath);
+
             if (!sPath.startsWith("http")) {
                 isDownloaded = false;
                 binding.vdoBackgroundCall.setVideoURI(Uri.parse(sPath));

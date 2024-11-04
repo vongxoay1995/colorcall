@@ -9,9 +9,11 @@ import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -52,6 +55,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -307,7 +312,40 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         });
         thread.start();
     }
-
+    public void saveVideoToDownloads(Context context,String thumb, String videoPath, String fileName) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName); // Tên tệp
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4"); // Loại MIME
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_MOVIES+ Constant.PATH_THUMB_COLOR_CALL_VIDEOS); // Thư mục Downloads
+        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)+ Constant.PATH_THUMB_COLOR_CALL_VIDEOS+"/"+fileName;
+        File file =  new File(filePath);
+        Uri uri = context.getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+        if (uri != null) {
+            try {
+                InputStream inputStream = new FileInputStream(new File(videoPath));
+                OutputStream outputStream = context.getContentResolver().openOutputStream(uri);
+                if (outputStream != null) {
+                    byte[] buffer = new byte[4096];
+                    int read;
+                    while ((read = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, read);
+                    }
+                    Background video = new Background(0, thumb, file.getAbsolutePath(), true, file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1));
+                    databaseViewModel.insertBackground(video);
+                    actionResetData = true;
+                    outputStream.flush();
+                    outputStream.close();
+                    inputStream.close();
+                }
+            } catch (FileNotFoundException e) {
+                Toast.makeText(context, "File not exist: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                Toast.makeText(context, "Error when save video: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(context, "Not create Uri", Toast.LENGTH_LONG).show();
+        }
+    }
     private void resetListDataVideo(String path) {
 
         //ArrayList<Background> listBgDb = (ArrayList<Background>) DataManager.query().getBackgroundDao().queryBuilder().list();
@@ -321,24 +359,85 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
             String imageUrl = "";
             if (listBg != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    File folderMovies = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
+                            + Constant.PATH_THUMB_COLOR_CALL_VIDEOS);
+                    if (!folder.exists())
+                        folder.mkdirs();
                     imageUrl = getActivity().getFilesDir()
                             + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBg.size();
                     video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
                     FileUtils.saveBitmap(getActivity().getFilesDir()
                             + Constant.PATH_THUMB_COLOR_CALL,"thumb_" + listBg.size(), bitmap);
+                    String filename =  "my_video_" + listBg.size()+".mp4";
+                    saveVideoToDownloads(requireActivity(),imageUrl,path,filename);
+                    Log.e("TAN", "resetListDataVideo: vvvv"+path);
                 }else {
                     imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                             + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBg.size();
                     video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
                     FileUtils.saveBitmap(imageUrl, bitmap);
+                    databaseViewModel.insertBackground(video);
+                    actionResetData = true;
                 }
-                databaseViewModel.insertBackground(video);
-                actionResetData = true;
+
               //  DataManager.query().getBackgroundDao().save(video);
             }
         }
     }
 
+    public Bitmap getBitmapFromPath(String filePath) {
+        Bitmap bitmap = null;
+        try {
+            File imgFile = new File(filePath);
+            if (imgFile.exists()) {
+                bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            Log.e("Image Loading", "Error in getting image from path: " + e.getMessage());
+        }
+        return bitmap;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void saveBitmapToDownloads(Context context, String filePath, String fileName) {
+        Bitmap bitmap = getBitmapFromPath(filePath);
+        if (bitmap != null) {
+            saveImageToDownloads(context, bitmap, fileName);
+        } else {
+            Toast.makeText(context, "Bitmap is null, cannot save the image.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void saveImageToDownloads(Context context, Bitmap bitmap, String fileName) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName); // Tên tệp
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg"); // Loại MIME
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS+ Constant.PATH_THUMB_COLOR_CALL_IMAGES); // Thư mục Downloads
+        String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+ Constant.PATH_THUMB_COLOR_CALL_IMAGES+"/"+fileName;
+        File file =  new File(filePath);
+        Uri uri = context.getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+        if (uri != null) {
+            try {
+                OutputStream outputStream = context.getContentResolver().openOutputStream(uri);
+                if (outputStream != null) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream); // Ghi Bitmap vào OutputStream
+                    Log.e("TAN", "saveImageToDownloads: "+file.getAbsolutePath());
+                    if (file.exists()){
+                        Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true,
+                                file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1));
+                        actionResetData = true;
+                        databaseViewModel.insertBackground(picture);
+                    }
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                Toast.makeText(context, "Error when save image: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(context, "Error when save image", Toast.LENGTH_LONG).show();
+        }
+    }
     private void resetListDataImage(String path) {
         Log.e("TAN", "resetListDataImage: ");
 
@@ -350,15 +449,20 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                 folder.mkdirs();
 
             File file = new File(path);
-
-            if (file.exists()) {
-                Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true,
-                        file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1));
-                actionResetData = true;
-                databaseViewModel.insertBackground(picture);
-            } else {
-                Toast.makeText(getContext(), getString(R.string.file_not_found), Toast.LENGTH_LONG).show();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                String filename =  "my_image_" + listBg.size()+".jpg";
+                saveBitmapToDownloads(requireActivity(),path, filename);
+            }else {
+                if (file.exists()) {
+                    Background picture = new Background(1, file.getAbsolutePath(), file.getAbsolutePath(), true,
+                            file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1));
+                    actionResetData = true;
+                    databaseViewModel.insertBackground(picture);
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.file_not_found), Toast.LENGTH_LONG).show();
+                }
             }
+
         }
     }
 

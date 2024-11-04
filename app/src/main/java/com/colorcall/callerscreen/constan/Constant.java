@@ -15,6 +15,7 @@ public interface Constant {
     String BACKGROUND = "background";
     int REQUEST_CODE_IMAGES = 2;
     String PATH_THUMB_COLOR_CALL = "/ColorCall/Video/thums/" ;
+    String PATH_THUMB_COLOR_CALL_VIDEOS = "/ColorCall/Video" ;
     String PATH_THUMB_COLOR_CALL_IMAGES = "/ColorCall/Images";
     String PROVIDER = ".provider";
     int PERMISSION_REQUEST_CODE_CAMERA = 99;
