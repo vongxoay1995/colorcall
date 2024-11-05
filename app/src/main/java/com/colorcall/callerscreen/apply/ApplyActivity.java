@@ -5,14 +5,19 @@ import static com.colorcall.callerscreen.utils.ConstantAds.apply_banner_admob2;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -244,11 +250,42 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.APPLY_ITEM_DEFAULT);
             EventBus.getDefault().postSticky(signApplyVideo);
         }
+        Log.e("TAN", "deleteTheme: "+background);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            deleteFilesInColorCallImages(this);
+        }
         databaseViewModel.deleteBackground(background);
 
       //  DataManager.query().getBackgroundDao().delete(background);
     }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void deleteFilesInColorCallImages(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+        Uri collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
 
+        // Truy vấn tất cả các tệp trong thư mục "ColorCall/Images"
+        String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
+        String[] selectionArgs = new String[] { "Download/ColorCall/Images/" };
+
+        try (Cursor cursor = contentResolver.query(collection, null, selection, selectionArgs, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID));
+                    Uri fileUri = ContentUris.withAppendedId(collection, id);
+
+                    // Xóa từng tệp
+                    int rowsDeleted = contentResolver.delete(fileUri, null, null);
+                    if (rowsDeleted > 0) {
+                       Log.e("TAN", "deleteFilesInColorCallImages: "+fileUri);
+                    } else {
+                        Log.e("TAN", "Failed to delete file: " + fileUri);
+                    }
+                } while (cursor.moveToNext());
+            } else {
+                System.out.println("No files found in ColorCall/Images folder");
+            }
+        }
+    }
     private void playVideo() {
         binding.imgBackgroundCall.setVisibility(View.GONE);
         binding.vdoBackgroundCall.setVisibility(View.VISIBLE);

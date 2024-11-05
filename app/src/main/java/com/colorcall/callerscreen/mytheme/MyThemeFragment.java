@@ -481,8 +481,8 @@ public void onSignApply(SignApplyMyTheme signApplyMyTheme) {
             adapter.notifyDataSetChanged();
             break;
         case Constant.INTENT_DELETE_THEME:
-            //adapter.setNewListBg();
-            adapter.notifyDataSetChanged();
+            Log.e("TAN", "onSignApply: delete");
+            actionResetData = true;
             break;
     }
     EventBus.getDefault().removeStickyEvent(signApplyMyTheme);
