@@ -363,12 +363,13 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                             + Constant.PATH_THUMB_COLOR_CALL_VIDEOS);
                     if (!folder.exists())
                         folder.mkdirs();
+                    String fileName = "thumb_" + System.currentTimeMillis();
                     imageUrl = getActivity().getFilesDir()
-                            + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBg.size();
-                    video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
+                            + Constant.PATH_THUMB_COLOR_CALL +fileName;
+                   // video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
                     FileUtils.saveBitmap(getActivity().getFilesDir()
-                            + Constant.PATH_THUMB_COLOR_CALL,"thumb_" + listBg.size(), bitmap);
-                    String filename =  "my_video_" + listBg.size()+".mp4";
+                            + Constant.PATH_THUMB_COLOR_CALL,fileName, bitmap);
+                    String filename =  "my_video_" + System.currentTimeMillis()+".mp4";
                     saveVideoToDownloads(requireActivity(),imageUrl,path,filename);
                     Log.e("TAN", "resetListDataVideo: vvvv"+path);
                 }else {
@@ -450,7 +451,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
 
             File file = new File(path);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-                String filename =  "my_image_" + listBg.size()+".jpg";
+                String filename =  "my_image_" + System.currentTimeMillis()+".jpg";
                 saveBitmapToDownloads(requireActivity(),path, filename);
             }else {
                 if (file.exists()) {

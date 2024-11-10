@@ -63,6 +63,7 @@ import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class ApplyActivity extends AppCompatActivity implements com.colorcall.callerscreen.utils.AdListener,
@@ -250,22 +251,64 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.APPLY_ITEM_DEFAULT);
             EventBus.getDefault().postSticky(signApplyVideo);
         }
-        Log.e("TAN", "deleteTheme: "+background);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            deleteFilesInColorCallImages(this);
+        if (background.getType()==0) {
+            deleteInternalFile(this, background.getPathThumb());
         }
+        deleteFileByPath(this, background.getPathItem());
+        Log.e("TAN", "deleteTheme: "+background.getPathItem()+"##"+background.getPathThumb());
         databaseViewModel.deleteBackground(background);
 
       //  DataManager.query().getBackgroundDao().delete(background);
     }
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void deleteFilesInColorCallImages(Context context) {
+    public void deleteInternalFile(Context context, String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            boolean deleted = file.delete();
+            if (deleted) {
+                Log.e("TAN", "File deleted: " + filePath);
+            } else {
+                Log.e("TAN", "Failed to delete file: " + filePath);
+            }
+        } else {
+            Log.e("TAN", "File not found: " + filePath);
+        }
+    }
+
+    public void deleteFileByPath(Context context, String filePath) {
         ContentResolver contentResolver = context.getContentResolver();
-        Uri collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+        Uri collection = MediaStore.Files.getContentUri("external");
+
+        // Thiết lập điều kiện truy vấn với đường dẫn đầy đủ của tệp
+        String selection = MediaStore.MediaColumns.DATA + "=?";
+        String[] selectionArgs = new String[] { filePath };
+
+        try (Cursor cursor = contentResolver.query(collection, null, selection, selectionArgs, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    long id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID));
+                    Uri fileUri = ContentUris.withAppendedId(collection, id);
+
+                    // Xóa tệp theo đường dẫn
+                    int rowsDeleted = contentResolver.delete(fileUri, null, null);
+                    if (rowsDeleted > 0) {
+                        Log.e("TAN", "File deleted: " + fileUri);
+                    } else {
+                        Log.e("TAN", "Failed to delete file: " + fileUri);
+                    }
+                } while (cursor.moveToNext());
+            } else {
+                Log.e("TAN", "No file found at path: " + filePath);
+            }
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public void deleteFilesInColorCallImages(Context context,Uri collecttion,String path,String fileName) {
+        ContentResolver contentResolver = context.getContentResolver();
+        Uri collection = collecttion;
 
         // Truy vấn tất cả các tệp trong thư mục "ColorCall/Images"
-        String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
-        String[] selectionArgs = new String[] { "Download/ColorCall/Images/" };
+        String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=? AND " + MediaStore.MediaColumns.DISPLAY_NAME + "=?";
+        String[] selectionArgs = new String[] { path, fileName };
 
         try (Cursor cursor = contentResolver.query(collection, null, selection, selectionArgs, null)) {
             if (cursor != null && cursor.moveToFirst()) {

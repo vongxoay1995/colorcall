@@ -13,6 +13,7 @@ import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -61,6 +62,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     private ActivitySelectContactBinding binding;
     @Override
     public void onHasCallPermistion() {
+        Log.e("TAN", "onHasCallPermistion: 111");
         setTheme();
     }
 
@@ -97,9 +99,10 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         super.onCreate(savedInstanceState);
         binding = ActivitySelectContactBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        databaseViewModel = new ViewModelProvider(this).get(DatabaseViewModel.class);
+
         AppUtils.changeStatusBarColor(this, R.color.color_1E1E1E);
         init();
-        databaseViewModel = new ViewModelProvider(this).get(DatabaseViewModel.class);
         //setTranslucent();
         analystic = Analystic.getInstance(this);
         analystic.trackEvent(ManagerEvent.contactOpen());
@@ -135,6 +138,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         }
         getAllContact();
         binding.edtSearch.addTextChangedListener(new EditTextListener());
+        listener();
     }
 
     public void listener() {
@@ -150,6 +154,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         });
         binding.layoutSet.setOnClickListener(view -> {
             analystic.trackEvent(ManagerEvent.contactSet());
+            Log.e("TAN", "listener: click");
             PermistionUtils.checkPermissionCall(this, this);
         });
         binding.imgClear.setOnClickListener(view -> {
@@ -215,6 +220,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
                     String photo_uri = query.getString(query.getColumnIndex(infors[3]));
 
                     if (!linkedHashSet.contains(new ContactInfor(contact_id, display_name, data1, photo_uri))) {
+                        Log.e("TAN", "getAllContact: 111");
                         linkedHashSet.add(new ContactInfor(contact_id, display_name, data1, photo_uri));
                     }
                 }
@@ -223,9 +229,10 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        Log.e("TAN", "getAllContactaaaa: "+linkedHashSet.size());
         ArrayList<ContactInfor> arrListContact = new ArrayList<>(linkedHashSet);
         // Sử dụng ViewModel để lấy danh sách Contact từ Room
+        Log.e("TAN", "getAllContact: "+databaseViewModel+"##"+background);
         databaseViewModel.getContactsByBackgroundPath(background.getPathItem()).observe(this, new Observer<List<Contact>>() {
             @Override
             public void onChanged(List<Contact> listContactDB) {
@@ -309,7 +316,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         }*/
         if (adapter != null) {
             List<String> listContactIdSelected = adapter.getContactSelected();
-
+            Log.e("TAN", "setTheme: 1");
             // Lấy danh sách Contact từ Room
             List<Contact> listContactDB = databaseViewModel.getContactsByBackgroundPath(background.getPathItem()).getValue();
 
@@ -323,24 +330,28 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
                     }
                 }
             }
-
+            Log.e("TAN", "setTheme: 2");
             // Cập nhật hoặc chèn Contact mới
             for (String contactID : listContactIdSelected) {
+                Log.e("TAN", "setTheme: 2.5");
                 // Truy vấn Contact theo contactID
                 Contact existingContact = databaseViewModel.getContactById(contactID);
                 if (existingContact != null) {
+                    Log.e("TAN", "setTheme: 3");
+
                     // Cập nhật thông tin của Contact
                     existingContact.setBackgroundPath(background.getPathItem());
                     existingContact.setBackground(new Gson().toJson(background));
                     databaseViewModel.updateContact(existingContact);
                 } else {
                     // Chèn Contact mới vào Room
+                    Log.e("TAN", "setTheme: 3.5");
 
                     Contact newContact = new Contact(contactID, background.getPathItem(), new Gson().toJson(background));
                     databaseViewModel.insertContact(newContact);
                 }
             }
-
+            Log.e("TAN", "setTheme: 4");
             Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();
@@ -362,6 +373,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             if (AppUtils.checkNotificationAccessSettings(this)) {
                 new Handler().postDelayed(() -> isRequestPermission = false,500);
                 analystic.trackEvent(new Event("Per_Dlg_Contact_Use_App_Granted",new Bundle()));
+                Log.e("TAN", "onActivityResult: 222");
                 setTheme();
             }
         }
