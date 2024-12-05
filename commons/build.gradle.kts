@@ -61,16 +61,6 @@ android {
     namespace = libs.versions.app.version.groupId.get()
 }
 
-publishing.publications {
-    create<MavenPublication>("release") {
-        groupId = libs.versions.app.version.groupId.get()
-        artifactId = name
-        version = libs.versions.app.version.versionName.get()
-        afterEvaluate {
-            from(components["release"])
-        }
-    }
-}
 
 dependencies {
     implementation(libs.kotlinx.serialization.json)

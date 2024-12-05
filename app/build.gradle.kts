@@ -58,6 +58,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation(project(":commons"))
     testImplementation("junit:junit:4.13.2")
     implementation("com.intuit.ssp:ssp-android:1.0.6")
     implementation("org.greenrobot:eventbus:3.3.1")
@@ -97,5 +98,6 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.0")
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
+
 }
 
