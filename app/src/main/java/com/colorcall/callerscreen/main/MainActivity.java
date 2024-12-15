@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         if (HawkHelper.isEnableColorCall()) {
             PhoneService.startService(this);
         }
-        AppUtils.launchSetDefaultDialerIntent(this);
         googleMobileAdsConsentManager =
                 GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
         showForm();
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         analystic.trackEvent(ManagerEvent.mainOpen());
         analystic.trackEvent(ManagerEvent.grantedPermission(PermistionUtils.checkHasPermissionCall(this)));
         KeyboardVisibilityEvent.setEventListener(this, this);
-      /*  if (!AppUtils.checkDrawOverlayApp2(this)) {
+       /*  if (!AppUtils.checkDrawOverlayApp2(this)) {
             Log.e("TAN", "onCreate: ");
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, 1);

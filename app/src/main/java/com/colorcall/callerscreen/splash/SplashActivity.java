@@ -84,6 +84,8 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
 
         loadConsentForm();
         checkIAP();
+        AppUtils.launchSetDefaultDialerIntent(this);
+
     }
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;

@@ -595,11 +595,13 @@ public class AppUtils {
             Log.e("TAN", "launchSetDefaultDialerIntent: a");
             RoleManager roleManager = activity.getSystemService(RoleManager.class);
             if (roleManager.isRoleAvailable(RoleManager.ROLE_DIALER) && !roleManager.isRoleHeld(RoleManager.ROLE_DIALER)) {
+                Log.e("TAN", "launchSetDefaultDialerIntent: 1");
                 Intent intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER);
                 activity.startActivityForResult(intent, REQUEST_CODE_SET_DEFAULT_DIALER);
             }
         } else {
                 try {
+                    Log.e("TAN", "launchSetDefaultDialerIntent: 2");
                     Intent intent = new Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER).putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, activity.getPackageName());
                     activity.startActivityForResult(intent, REQUEST_CODE_SET_DEFAULT_DIALER);
                 } catch (ActivityNotFoundException e) {

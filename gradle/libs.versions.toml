@@ -1,6 +1,6 @@
 [versions]
 #jetbrains
-kotlin = "1.9.0"
+kotlin = "1.9.10"
 ksp = "1.9.10-1.0.13"
 kotlin-immutable-collections = "0.3.6"
 androidx-constraintlayout = "2.1.4"

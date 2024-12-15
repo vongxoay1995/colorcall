@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.colorcall.callerscreen"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 34
         versionCode = 57
         versionName = "1.5.4"
@@ -59,6 +59,8 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation(project(":commons"))
+    implementation(libs.activity)
+    implementation(libs.androidx.constraintlayout)
     testImplementation("junit:junit:4.13.2")
     implementation("com.intuit.ssp:ssp-android:1.0.6")
     implementation("org.greenrobot:eventbus:3.3.1")
@@ -96,6 +98,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.room:room-runtime:2.6.0")
+  //  implementation("com.github.SimpleMobileTools:Simple-Commons:eceb48949e")
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
 
