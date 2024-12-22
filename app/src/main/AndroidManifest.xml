@@ -207,6 +207,15 @@
                 <action android:name="android.telecom.InCallService" />
             </intent-filter>
         </service>
+        <receiver
+            android:name=".dialer.CallActionReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.simplemobiletools.dialer.action.ACCEPT_CALL" />
+                <action android:name="com.simplemobiletools.dialer.action.DECLINE_CALL" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -12,6 +12,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.call.CallActivity
+import com.colorcall.callerscreen.dialer.activity.CallDialerActivity
 import com.simplemobiletools.commons.extensions.notificationManager
 import com.simplemobiletools.commons.extensions.setText
 import com.simplemobiletools.commons.extensions.setVisibleIf
@@ -42,7 +43,7 @@ class CallNotificationManager(private val context: Context) {
                 }
             }
 
-            val openAppIntent = CallActivity.getStartIntent(context)
+            val openAppIntent = CallDialerActivity.getStartIntent(context)
             val openAppPendingIntent = PendingIntent.getActivity(context, 0, openAppIntent, PendingIntent.FLAG_MUTABLE)
 
             val acceptCallIntent = Intent(context, CallActionReceiver::class.java)
