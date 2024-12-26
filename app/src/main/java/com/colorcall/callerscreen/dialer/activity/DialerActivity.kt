@@ -7,6 +7,5 @@ open class DialerActivity : BaseSimpleActivity() {
     override fun getAppIconIDs() = arrayListOf(
         R.mipmap.ic_launcher,
     )
-
     override fun getAppLauncherName() = getString(R.string.app_name)
 }

@@ -98,7 +98,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.room:room-runtime:2.6.0")
-  //  implementation("com.github.SimpleMobileTools:Simple-Commons:eceb48949e")
+    implementation(libs.indicator.fast.scroll)
+
+    //  implementation("com.github.SimpleMobileTools:Simple-Commons:eceb48949e")
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
 
