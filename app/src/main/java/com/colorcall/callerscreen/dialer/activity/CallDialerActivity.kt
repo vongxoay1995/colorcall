@@ -65,11 +65,14 @@ import com.simplemobiletools.commons.helpers.isOreoPlus
 import com.simplemobiletools.commons.models.SimpleListItem
 import com.simplemobiletools.dialer.extensions.addCharacter
 import com.simplemobiletools.dialer.extensions.audioManager
+import com.simplemobiletools.dialer.extensions.config
 import com.simplemobiletools.dialer.extensions.disableKeyboard
 import com.simplemobiletools.dialer.extensions.getCallDuration
 import com.simplemobiletools.dialer.extensions.getStateCompat
 import com.simplemobiletools.dialer.extensions.hasCapability
 import com.simplemobiletools.dialer.extensions.isConference
+import kotlin.math.max
+import kotlin.math.min
 
 class CallDialerActivity : DialerActivity() {
     companion object {

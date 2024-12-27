@@ -17,11 +17,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.databinding.ActivityDialpadBinding
 import com.colorcall.callerscreen.dialer.ToneGeneratorHelper
@@ -43,7 +39,7 @@ import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_DIALER
 import com.simplemobiletools.commons.helpers.isOreoPlus
 import com.simplemobiletools.commons.models.contacts.Contact
 import com.simplemobiletools.dialer.extensions.areMultipleSIMsAvailable
-import com.simplemobiletools.dialer.extensions.boundingBox
+import com.colorcall.callerscreen.dialer.extensions.boundingBox
 import com.simplemobiletools.dialer.extensions.config
 import com.simplemobiletools.dialer.extensions.startCallIntent
 import java.util.ArrayList

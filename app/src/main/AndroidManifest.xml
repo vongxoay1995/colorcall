@@ -68,6 +68,9 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
         <activity
+            android:name=".dialer.activity.ConferenceActivity"
+            android:exported="false" />
+        <activity
             android:name=".dialer.activity.DialpadActivity"
             android:exported="false" />
         <activity
