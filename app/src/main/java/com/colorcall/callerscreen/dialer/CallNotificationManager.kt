@@ -11,13 +11,12 @@ import android.telecom.Call
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.colorcall.callerscreen.R
-import com.colorcall.callerscreen.call.CallActivity
 import com.colorcall.callerscreen.dialer.activity.CallDialerActivity
+import com.colorcall.callerscreen.dialer.extensions.powerManager
 import com.simplemobiletools.commons.extensions.notificationManager
 import com.simplemobiletools.commons.extensions.setText
 import com.simplemobiletools.commons.extensions.setVisibleIf
 import com.simplemobiletools.commons.helpers.isOreoPlus
-import com.simplemobiletools.dialer.extensions.powerManager
 
 class CallNotificationManager(private val context: Context) {
     private val CALL_NOTIFICATION_ID = 42

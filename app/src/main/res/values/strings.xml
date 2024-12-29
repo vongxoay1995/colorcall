@@ -112,5 +112,19 @@
     <string name="call_split">Split call</string>
     <string name="decline">Decline</string>
     <string name="accept">Accept</string>
+    <string name="choose_audio_route">Choose audio route</string>
+    <string name="unset_default_sim">Unset default SIM</string>
+    <string name="create_shortcut">Create shortcut</string>
+    <string name="unblock_contact">Unblock contact</string>
+    <string name="unblock_contact_fail">Contact could not be unblocked</string>
+    <string name="unblock_contact_success">Contact unblocked</string>
+    <string name="block_contact">Block contact</string>
+    <string name="block_contact_fail">Contact could not be blocked</string>
+    <string name="block_contact_success">Contact blocked</string>
+    <string name="block_confirmation">Are you sure you want to block \"%s\"?</string>
+    <string name="deletion_confirmation">Are you sure you want to delete %s?</string>
+    <string name="deletion_confirmation_short">Delete %s?</string>
+    <string name="select_sim">Select SIM</string>
+    <string name="always_use_this_sim">Always use this SIM for this number</string>
 
 </resources>

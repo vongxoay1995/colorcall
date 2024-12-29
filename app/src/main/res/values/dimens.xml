@@ -20,5 +20,6 @@
     <dimen name="dialpad_button_size_small">50dp</dimen>
     <dimen name="incoming_call_button_size">72dp</dimen>
     <dimen name="incoming_call_arrow_size">50dp</dimen>
+    <dimen name="small_text_size">10sp</dimen>
 
 </resources>

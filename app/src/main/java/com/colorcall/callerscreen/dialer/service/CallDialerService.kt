@@ -1,20 +1,19 @@
-/*
-package com.colorcall.callerscreen.service
+package com.colorcall.callerscreen.dialer.service
 
 import android.app.KeyguardManager
 import android.content.Context
 import android.telecom.Call
 import android.telecom.CallAudioState
 import android.telecom.InCallService
-import com.colorcall.callerscreen.call.CallActivity
 import com.colorcall.callerscreen.dialer.CallManager
 import com.colorcall.callerscreen.dialer.CallNotificationManager
 import com.colorcall.callerscreen.dialer.NoCall
-import com.simplemobiletools.commons.compose.extensions.config
-import com.simplemobiletools.dialer.extensions.isOutgoing
+import com.colorcall.callerscreen.dialer.activity.CallDialerActivity
+import com.colorcall.callerscreen.dialer.extensions.config
 import com.colorcall.callerscreen.dialer.extensions.powerManager
+import com.simplemobiletools.dialer.extensions.isOutgoing
 
-class CallService : InCallService() {
+class CallDialerService : InCallService() {
     private val callNotificationManager by lazy { CallNotificationManager(this) }
 
     private val callListener = object : Call.Callback() {
@@ -38,7 +37,7 @@ class CallService : InCallService() {
           if (!powerManager.isInteractive || call.isOutgoing() || isScreenLocked || config.alwaysShowFullscreen) {
               try {
                   callNotificationManager.setupNotification(true)
-                  startActivity(CallActivity.getStartIntent(this))
+                  startActivity(CallDialerActivity.getStartIntent(this))
               } catch (e: Exception) {
                   // seems like startActivity can throw AndroidRuntimeException and ActivityNotFoundException, not yet sure when and why, lets show a notification
                   callNotificationManager.setupNotification()
@@ -59,7 +58,7 @@ class CallService : InCallService() {
          } else {
              callNotificationManager.setupNotification()
              if (wasPrimaryCall) {
-                 startActivity(CallActivity.getStartIntent(this))
+                 startActivity(CallDialerActivity.getStartIntent(this))
              }
          }
     }
@@ -76,4 +75,3 @@ class CallService : InCallService() {
         callNotificationManager.cancelNotification()
     }
 }
-*/

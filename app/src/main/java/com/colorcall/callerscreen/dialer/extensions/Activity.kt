@@ -1,4 +1,4 @@
-package com.simplemobiletools.dialer.extensions
+package com.colorcall.callerscreen.dialer.extensions
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -8,15 +8,23 @@ import android.provider.ContactsContract
 import android.telecom.PhoneAccount
 import android.telecom.PhoneAccountHandle
 import android.telecom.TelecomManager
+import com.colorcall.callerscreen.dialer.activity.DialerActivity
 import com.simplemobiletools.commons.activities.BaseSimpleActivity
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
+import com.simplemobiletools.commons.extensions.isDefaultDialer
+import com.simplemobiletools.commons.extensions.isPackageInstalled
+import com.simplemobiletools.commons.extensions.launchActivityIntent
+import com.simplemobiletools.commons.extensions.launchCallIntent
+import com.simplemobiletools.commons.extensions.launchViewContactIntent
+import com.simplemobiletools.commons.extensions.telecomManager
+import com.simplemobiletools.commons.helpers.CONTACT_ID
+import com.simplemobiletools.commons.helpers.IS_PRIVATE
+import com.simplemobiletools.commons.helpers.PERMISSION_READ_PHONE_STATE
+import com.simplemobiletools.commons.helpers.SimpleContactsHelper
+import com.simplemobiletools.commons.helpers.ensureBackgroundThread
 import com.simplemobiletools.commons.models.contacts.Contact
-import com.simplemobiletools.dialer.activities.DialerActivity
-import com.simplemobiletools.dialer.activities.SimpleActivity
-import com.simplemobiletools.dialer.dialogs.SelectSIMDialog
+import com.colorcall.callerscreen.dialer.dialog.SelectSIMDialog
 
-fun SimpleActivity.startCallIntent(recipient: String) {
+fun DialerActivity.startCallIntent(recipient: String) {
     if (isDefaultDialer()) {
         getHandleToUse(null, recipient) { handle ->
             launchCallIntent(recipient, handle)
@@ -26,7 +34,7 @@ fun SimpleActivity.startCallIntent(recipient: String) {
     }
 }
 
-fun SimpleActivity.launchCreateNewContactIntent() {
+fun DialerActivity.launchCreateNewContactIntent() {
     Intent().apply {
         action = Intent.ACTION_INSERT
         data = ContactsContract.Contacts.CONTENT_URI
@@ -70,7 +78,7 @@ fun Activity.startContactDetailsIntent(contact: Contact) {
 
 // used at devices with multiple SIM cards
 @SuppressLint("MissingPermission")
-fun SimpleActivity.getHandleToUse(intent: Intent?, phoneNumber: String, callback: (handle: PhoneAccountHandle?) -> Unit) {
+fun DialerActivity.getHandleToUse(intent: Intent?, phoneNumber: String, callback: (handle: PhoneAccountHandle?) -> Unit) {
     handlePermission(PERMISSION_READ_PHONE_STATE) {
         if (it) {
             val defaultHandle = telecomManager.getDefaultOutgoingPhoneAccount(PhoneAccount.SCHEME_TEL)

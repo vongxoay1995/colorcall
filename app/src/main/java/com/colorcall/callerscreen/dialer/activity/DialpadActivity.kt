@@ -18,32 +18,49 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.databinding.ActivityDialpadBinding
+import com.colorcall.callerscreen.dialer.DIALPAD_TONE_LENGTH_MS
 import com.colorcall.callerscreen.dialer.ToneGeneratorHelper
+import com.colorcall.callerscreen.dialer.adapter.ContactsAdapter
+import com.colorcall.callerscreen.dialer.extensions.areMultipleSIMsAvailable
+import com.colorcall.callerscreen.dialer.extensions.beVisibleIf
+import com.colorcall.callerscreen.dialer.extensions.boundingBox
+import com.colorcall.callerscreen.dialer.extensions.callContactWithSim
+import com.colorcall.callerscreen.dialer.extensions.config
+import com.colorcall.callerscreen.dialer.extensions.startCallIntent
 import com.colorcall.callerscreen.dialer.models.SpeedDial
+import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.simplemobiletools.commons.dialogs.CallConfirmationDialog
+import com.simplemobiletools.commons.extensions.applyColorFilter
+import com.simplemobiletools.commons.extensions.beVisible
 import com.simplemobiletools.commons.extensions.checkAppSideloading
+import com.simplemobiletools.commons.extensions.getColorStateList
+import com.simplemobiletools.commons.extensions.getColoredDrawableWithColor
 import com.simplemobiletools.commons.extensions.getContrastColor
 import com.simplemobiletools.commons.extensions.getMyContactsCursor
+import com.simplemobiletools.commons.extensions.getProperBackgroundColor
 import com.simplemobiletools.commons.extensions.getProperPrimaryColor
+import com.simplemobiletools.commons.extensions.getProperTextColor
+import com.simplemobiletools.commons.extensions.isDefaultDialer
+import com.simplemobiletools.commons.extensions.launchActivityIntent
 import com.simplemobiletools.commons.extensions.normalizeString
+import com.simplemobiletools.commons.extensions.onTextChangeListener
 import com.simplemobiletools.commons.extensions.performHapticFeedback
+import com.simplemobiletools.commons.extensions.updateTextColors
+import com.simplemobiletools.commons.extensions.value
 import com.simplemobiletools.commons.extensions.viewBinding
 import com.simplemobiletools.commons.helpers.ContactsHelper
 import com.simplemobiletools.commons.helpers.KEY_PHONE
 import com.simplemobiletools.commons.helpers.LOWER_ALPHA_INT
 import com.simplemobiletools.commons.helpers.MyContactsContentProvider
-import com.simplemobiletools.commons.helpers.NavigationIcon
 import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_DIALER
 import com.simplemobiletools.commons.helpers.isOreoPlus
 import com.simplemobiletools.commons.models.contacts.Contact
-import com.simplemobiletools.dialer.extensions.areMultipleSIMsAvailable
-import com.colorcall.callerscreen.dialer.extensions.boundingBox
-import com.simplemobiletools.dialer.extensions.config
-import com.simplemobiletools.dialer.extensions.startCallIntent
-import java.util.ArrayList
-import java.util.HashMap
+import com.simplemobiletools.dialer.extensions.addCharacter
+import com.simplemobiletools.dialer.extensions.disableKeyboard
+import com.simplemobiletools.dialer.extensions.getKeyEvent
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -67,7 +84,7 @@ class DialpadActivity : DialerActivity() {
 
         binding.apply {
             updateMaterialActivityViews(dialpadCoordinator, dialpadHolder, useTransparentNavigation = true, useTopSearchMenu = false)
-            setupMaterialScrollListener(dialpadList, dialpadToolbar)
+        //    setupMaterialScrollListener(dialpadList, dialpadToolbar)
         }
 
         updateNavigationBarColor(getProperBackgroundColor())
@@ -201,17 +218,17 @@ class DialpadActivity : DialerActivity() {
         updateTextColors(binding.dialpadHolder)
         binding.dialpadClearChar.applyColorFilter(getProperTextColor())
         updateNavigationBarColor(getProperBackgroundColor())
-        setupToolbar(binding.dialpadToolbar, NavigationIcon.Arrow)
+        //setupToolbar(binding.dialpadToolbar, NavigationIcon.Arrow)
     }
 
     private fun setupOptionsMenu() {
-        binding.dialpadToolbar.setOnMenuItemClickListener { menuItem ->
+      /*  binding.dialpadToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.add_number_to_contact -> addNumberToContact()
                 else -> return@setOnMenuItemClickListener false
             }
             return@setOnMenuItemClickListener true
-        }
+        }*/
     }
 
     private fun checkDialIntent(): Boolean {

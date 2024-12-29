@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.firebaseCrashlytics)
     alias(libs.plugins.kotlinAndroid)
     id("kotlin-kapt")
+    alias(libs.plugins.kotlinSerialization)
+
 }
 android {
     namespace = "com.colorcall.callerscreen"
@@ -103,6 +105,7 @@ dependencies {
     //  implementation("com.github.SimpleMobileTools:Simple-Commons:eceb48949e")
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
+    implementation(libs.kotlinx.serialization.json)
 
 }
 

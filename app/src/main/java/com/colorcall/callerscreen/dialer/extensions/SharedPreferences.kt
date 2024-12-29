@@ -1,10 +1,10 @@
-package com.simplemobiletools.dialer.extensions
+package com.colorcall.callerscreen.dialer.extensions
 
 import android.content.SharedPreferences
 import android.telecom.PhoneAccountHandle
+import com.colorcall.callerscreen.dialer.models.PhoneAccountHandleModel
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.simplemobiletools.dialer.models.PhoneAccountHandleModel
 
 fun SharedPreferences.Editor.putPhoneAccountHandle(
     key: String,

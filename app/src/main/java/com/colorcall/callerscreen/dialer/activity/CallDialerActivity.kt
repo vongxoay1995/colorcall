@@ -20,15 +20,9 @@ import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.ViewCompat.animate
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import com.colorcall.callerscreen.R
-import com.colorcall.callerscreen.databinding.ActivityCallBinding
 import com.colorcall.callerscreen.databinding.ActivityCallDialerBinding
 import com.colorcall.callerscreen.dialer.CallContactAvatarHelper
 import com.colorcall.callerscreen.dialer.CallManager
@@ -37,6 +31,9 @@ import com.colorcall.callerscreen.dialer.NoCall
 import com.colorcall.callerscreen.dialer.SingleCall
 import com.colorcall.callerscreen.dialer.TwoCalls
 import com.colorcall.callerscreen.dialer.dialog.DynamicBottomSheetChooserDialog
+import com.colorcall.callerscreen.dialer.extensions.audioManager
+import com.colorcall.callerscreen.dialer.extensions.config
+import com.colorcall.callerscreen.dialer.extensions.getHandleToUse
 import com.colorcall.callerscreen.dialer.getCallContact
 import com.colorcall.callerscreen.dialer.models.AudioRoute
 import com.colorcall.callerscreen.dialer.models.CallContact
@@ -53,6 +50,7 @@ import com.simplemobiletools.commons.extensions.getProperTextColor
 import com.simplemobiletools.commons.extensions.isRTLLayout
 import com.simplemobiletools.commons.extensions.isVisible
 import com.simplemobiletools.commons.extensions.onGlobalLayout
+import com.simplemobiletools.commons.extensions.performHapticFeedback
 import com.simplemobiletools.commons.extensions.telecomManager
 import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.commons.extensions.updateTextColors
@@ -64,8 +62,6 @@ import com.simplemobiletools.commons.helpers.isOreoMr1Plus
 import com.simplemobiletools.commons.helpers.isOreoPlus
 import com.simplemobiletools.commons.models.SimpleListItem
 import com.simplemobiletools.dialer.extensions.addCharacter
-import com.simplemobiletools.dialer.extensions.audioManager
-import com.simplemobiletools.dialer.extensions.config
 import com.simplemobiletools.dialer.extensions.disableKeyboard
 import com.simplemobiletools.dialer.extensions.getCallDuration
 import com.simplemobiletools.dialer.extensions.getStateCompat
@@ -593,7 +589,7 @@ class CallDialerActivity : DialerActivity() {
         }
 
         binding.apply {
-            callerNameLabel.text = if (callContact!!.name.isNotEmpty()) callContact!!.name else getString(R.string.unknown_caller)
+            callerNameLabel.text = if (callContact!!.name.isNotEmpty()) callContact!!.name else getString(R.string.unknowContact)
             if (callContact!!.number.isNotEmpty() && callContact!!.number != callContact!!.name) {
                 callerNumber.text = callContact!!.number
 
@@ -615,7 +611,7 @@ class CallDialerActivity : DialerActivity() {
     private fun getContactNameOrNumber(contact: CallContact): String {
         return contact.name.ifEmpty {
             contact.number.ifEmpty {
-                getString(R.string.unknown_caller)
+                getString(R.string.unknowContact)
             }
         }
     }

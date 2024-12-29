@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.colorcall.callerscreen.R
-import com.simplemobiletools.dialer.R
 import com.colorcall.callerscreen.databinding.ItemConferenceCallBinding
 import com.colorcall.callerscreen.dialer.activity.DialerActivity
 import com.colorcall.callerscreen.dialer.getCallContact
@@ -51,12 +50,12 @@ class ConferenceCallsAdapter(
             ItemConferenceCallBinding.bind(itemView).apply {
                 getCallContact(itemView.context, call) { callContact ->
                     root.post {
-                        itemConferenceCallName.text = callContact.name.ifEmpty { itemView.context.getString(R.string.unknown_caller) }
+                        itemConferenceCallName.text = callContact.name.ifEmpty { itemView.context.getString(R.string.unknowContact) }
                         SimpleContactsHelper(activity).loadContactImage(
                             callContact.photoUri,
                             itemConferenceCallImage,
                             callContact.name,
-                            activity.getDrawable(com.simplemobiletools.dialer.R.drawable.ic_person_vector)
+                            activity.getDrawable(R.drawable.ic_avatar)
                         )
                     }
                 }

@@ -21,5 +21,7 @@
     <color name="green">#008560</color>
     <color name="color_1E1E1E">#1E1E1E</color>
     <color name="ripple_foreground">#33FFFFFF</color>
+    <color name="md_red_400">#EF5350</color>
+    <color name="md_green_400">#66BB6A</color>
 
 </resources>

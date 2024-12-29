@@ -5,11 +5,27 @@ import android.content.ContentValues
 import android.content.Context
 import android.provider.CallLog.Calls
 import com.colorcall.callerscreen.R
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
-import com.simplemobiletools.commons.models.contacts.Contact
-import com.simplemobiletools.dialer.extensions.getAvailableSIMCardLabels
+import com.colorcall.callerscreen.dialer.activity.DialerActivity
+import com.colorcall.callerscreen.dialer.extensions.getAvailableSIMCardLabels
 import com.colorcall.callerscreen.dialer.models.RecentCall
+import com.simplemobiletools.commons.extensions.getBlockedNumbers
+import com.simplemobiletools.commons.extensions.getIntValue
+import com.simplemobiletools.commons.extensions.getLongValue
+import com.simplemobiletools.commons.extensions.getMyContactsCursor
+import com.simplemobiletools.commons.extensions.getPhoneNumberTypeText
+import com.simplemobiletools.commons.extensions.getStringValue
+import com.simplemobiletools.commons.extensions.getStringValueOrNull
+import com.simplemobiletools.commons.extensions.hasPermission
+import com.simplemobiletools.commons.extensions.isNumberBlocked
+import com.simplemobiletools.commons.extensions.normalizePhoneNumber
+import com.simplemobiletools.commons.helpers.ContactsHelper
+import com.simplemobiletools.commons.helpers.MyContactsContentProvider
+import com.simplemobiletools.commons.helpers.PERMISSION_READ_CALL_LOG
+import com.simplemobiletools.commons.helpers.PERMISSION_WRITE_CALL_LOG
+import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.simplemobiletools.commons.helpers.getQuestionMarks
+import com.simplemobiletools.commons.helpers.isNougatPlus
+import com.simplemobiletools.commons.models.contacts.Contact
 
 class RecentsHelper(private val context: Context) {
     private val COMPARABLE_PHONE_NUMBER_LENGTH = 9
@@ -210,7 +226,7 @@ class RecentsHelper(private val context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    fun removeAllRecentCalls(activity: SimpleActivity, callback: () -> Unit) {
+    fun removeAllRecentCalls(activity: DialerActivity, callback: () -> Unit) {
         activity.handlePermission(PERMISSION_WRITE_CALL_LOG) {
             if (it) {
                 ensureBackgroundThread {
@@ -221,7 +237,7 @@ class RecentsHelper(private val context: Context) {
         }
     }
 
-    fun restoreRecentCalls(activity: SimpleActivity, objects: List<RecentCall>, callback: () -> Unit) {
+    fun restoreRecentCalls(activity: DialerActivity, objects: List<RecentCall>, callback: () -> Unit) {
         activity.handlePermission(PERMISSION_WRITE_CALL_LOG) {
             if (it) {
                 ensureBackgroundThread {

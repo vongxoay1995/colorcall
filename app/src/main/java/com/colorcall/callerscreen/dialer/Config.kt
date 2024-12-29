@@ -3,12 +3,12 @@ package com.colorcall.callerscreen.dialer
 import android.content.ComponentName
 import android.content.Context
 import android.telecom.PhoneAccountHandle
+import com.colorcall.callerscreen.dialer.extensions.getPhoneAccountHandleModel
+import com.colorcall.callerscreen.dialer.extensions.putPhoneAccountHandle
+import com.colorcall.callerscreen.dialer.models.SpeedDial
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.simplemobiletools.commons.helpers.BaseConfig
-import com.simplemobiletools.dialer.extensions.getPhoneAccountHandleModel
-import com.simplemobiletools.dialer.extensions.putPhoneAccountHandle
-import com.colorcall.callerscreen.dialer.models.SpeedDial
 
 class Config(context: Context) : BaseConfig(context) {
     companion object {

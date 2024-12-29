@@ -114,6 +114,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3134368447261649~8043213417" /> <!-- android:value="ca-app-pub-3222539657172474~4208737311" /> -->
+        <activity
+            android:name=".main.MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
 
@@ -136,14 +145,6 @@
                 <data android:scheme="tel" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3134368447261649~8043213417" /> <!-- android:value="ca-app-pub-3222539657172474~4208737311" /> -->
-        <activity
-            android:name=".main.MainActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".setting.SettingActivity"
             android:screenOrientation="portrait" />
@@ -190,18 +191,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <activity
-            android:name=".service.AcceptCallActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:taskAffinity=""
-            android:theme="@style/AppTheme" />
-
         <service
-            android:name=".service.CallService"
+            android:name=".dialer.service.CallDialerService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_INCALL_SERVICE">
@@ -213,6 +204,28 @@
                 <action android:name="android.telecom.InCallService" />
             </intent-filter>
         </service>
+        <activity
+            android:name=".service.AcceptCallActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:theme="@style/AppTheme" />
+
+       <!-- <service
+            android:name=".service.CallService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_INCALL_SERVICE">
+            <meta-data
+                android:name="android.telecom.IN_CALL_SERVICE_UI"
+                android:value="true" />
+
+            <intent-filter>
+                <action android:name="android.telecom.InCallService" />
+            </intent-filter>
+        </service>-->
 
         <receiver
             android:name=".dialer.CallActionReceiver"

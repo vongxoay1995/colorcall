@@ -63,3 +63,4 @@ fun View.setupViewBackground(context: Context) {
         resources.getDrawable(R.drawable.selector_clickable)
     }
 }
+

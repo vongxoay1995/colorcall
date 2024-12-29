@@ -1,13 +1,13 @@
-package com.simplemobiletools.dialer.extensions
+package com.colorcall.callerscreen.dialer.extensions
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioManager
 import android.net.Uri
 import android.os.PowerManager
+import com.colorcall.callerscreen.dialer.Config
+import com.colorcall.callerscreen.dialer.models.SIMAccount
 import com.simplemobiletools.commons.extensions.telecomManager
-import com.simplemobiletools.dialer.helpers.Config
-import com.simplemobiletools.dialer.models.SIMAccount
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
 
