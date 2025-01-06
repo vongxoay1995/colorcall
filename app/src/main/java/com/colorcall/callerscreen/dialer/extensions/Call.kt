@@ -1,4 +1,4 @@
-package com.simplemobiletools.dialer.extensions
+package com.colorcall.callerscreen.dialer.extensions
 
 import android.telecom.Call
 import android.telecom.Call.STATE_CONNECTING

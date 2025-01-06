@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         });
         requestNotificationPermission();
         AppUtils.launchSetDefaultDialerIntent(this);
-
     }
 
     private void showForm() {

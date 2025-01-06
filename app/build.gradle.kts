@@ -102,7 +102,6 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.0")
     implementation(libs.indicator.fast.scroll)
 
-    //  implementation("com.github.SimpleMobileTools:Simple-Commons:eceb48949e")
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
     implementation(libs.kotlinx.serialization.json)

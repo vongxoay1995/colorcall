@@ -1,25 +1,22 @@
 package com.colorcall.callerscreen.call;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -34,9 +31,10 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.DatabaseViewModel;
 import com.colorcall.callerscreen.databinding.ActivityCallBinding;
-import com.colorcall.callerscreen.model.ContactRetrieve;
-import com.colorcall.callerscreen.service.AcceptCallActivity;
-import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.dialer.CallContactAvatarHelper;
+import com.colorcall.callerscreen.dialer.CallManager;
+import com.colorcall.callerscreen.dialer.activity.CallDialerActivity;
+import com.colorcall.callerscreen.dialer.models.CallContact;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.gson.Gson;
 
@@ -50,11 +48,12 @@ public class CallActivity extends AppCompatActivity {
     private Background backgroundSelect,back_ground_contact;
     private Object telephonyService;
     private Analystic analystic;
+    private CallContact callContact;
     private DatabaseViewModel databaseViewModel;
     private ActivityCallBinding binding;
     private TelephonyManager telephonyManager;
     Method m1;
-
+    CallContactAvatarHelper callContactAvatarHelper;
     LocalBroadcastManager mLocalBroadcastManager;
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -80,6 +79,8 @@ public class CallActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         binding = ActivityCallBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        callContactAvatarHelper = new CallContactAvatarHelper(this);
+        callContact = new Gson().fromJson(getIntent().getStringExtra(Constant.CALL_CONTACT), CallContact.class);
         databaseViewModel = new ViewModelProvider(this).get(DatabaseViewModel.class);
         analystic = Analystic.getInstance(this);
         analystic.trackEvent(ManagerEvent.callshow());
@@ -113,8 +114,8 @@ public class CallActivity extends AppCompatActivity {
         String phoneNumber = getIntent().getStringExtra(Constant.PHONE_NUMBER);
         backgroundSelect = HawkHelper.getBackgroundSelect();
         if (backgroundSelect != null) {
-            int typeBgCall = backgroundSelect.getType();
-            try {
+            final int[] typeBgCall = {backgroundSelect.getType()};
+           /* try {
                 ContactRetrieve contactRetrieve = AppUtils.getContactName(getApplicationContext(), String.valueOf(phoneNumber));
                 String name = contactRetrieve.getName();
                 contactId = contactRetrieve.getContact_id();
@@ -124,9 +125,21 @@ public class CallActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }*/
+            if (callContact!=null){
+                if (!callContact.getName().equals(callContact.getNumber())){
+                    binding.txtName.setText(callContact.getName());
+                }else {
+                    binding.txtName.setText(getString(R.string.unknowContact));
+                }
+                    Bitmap bmpAvatar =callContactAvatarHelper.getCallContactAvatar(callContact);
+                if (bmpAvatar!=null){
+                    binding.profileImage.setImageBitmap(bmpAvatar);
+                }
+                Log.e("TAN", "showViewCall:getContactId "+contactId+"##"+callContact.getContactId());
             }
-            Bitmap bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
-            binding.profileImage.setImageBitmap(bmpAvatar);
+            //Bitmap bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
+           // binding.profileImage.setImageBitmap(bmpAvatar);
             binding.txtPhone.setText(String.valueOf(phoneNumber));
             binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
            /* List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
@@ -143,22 +156,35 @@ public class CallActivity extends AppCompatActivity {
             }
             checkTypeCall(typeBgCall);*/
             // Sử dụng Room và ViewModel để truy vấn danh sách Contact từ DB
-            databaseViewModel.getContactsByContactId(contactId).observe(this, new Observer<List<Contact>>() {
+            Log.e("TAN", "showViewCall:11 ");
+            databaseViewModel.getContactsByContactId(callContact.getContactId()+"").observe(this, new Observer<List<Contact>>() {
                 @Override
                 public void onChanged(List<Contact> contacts) {
+                    Log.e("TAN", "showViewCall:22 ");
+
                     if (contacts != null && !contacts.isEmpty()) {
                         // Xử lý kết quả trả về
+                        Log.e("TAN", "showViewCall:333 ");
+
                         Contact mContact = contacts.get(0);
                         back_ground_contact = new Gson().fromJson(mContact.getBackground(), Background.class);
 
                         if (back_ground_contact != null) {
                             backgroundSelect = back_ground_contact;
-                            int newTypeBgCall = back_ground_contact.getType(); // Tạo biến mới
-                            checkTypeCall(newTypeBgCall); // Sử dụng biến mới
+                            typeBgCall[0] = back_ground_contact.getType(); // Tạo biến mới
+                            Log.e("TAN", "showViewCall:444 ");
+
                         }
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkTypeCall(typeBgCall[0]); // Sử dụng biến mới
+                        }
+                    });
                 }
             });
+           //
             new Handler().postDelayed(this::startAnimation, 400);
             handlingCallState();
             listener();
@@ -200,43 +226,20 @@ public class CallActivity extends AppCompatActivity {
 
     private void listener() {
         binding.btnAccept.setOnClickListener(v -> {
+            Log.e("TAN", "listener: 111");
             analystic.trackEvent(ManagerEvent.callAcceptCall());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                TelecomManager tm = (TelecomManager) getSystemService(Context.TELECOM_SERVICE);
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                if (tm != null) {
-                    tm.acceptRingingCall();
-                }
-            } else {
-                Intent intent = new Intent(getApplicationContext(), AcceptCallActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                getApplicationContext().startActivity(intent);
-            }
+            startActivity(CallDialerActivity.Companion.getStartIntent(this));
+            CallManager.Companion.accept();
             isDisable = true;
             finish();
         });
 
-        binding.btnAccept.setOnClickListener(v -> {
+        binding.btnReject.setOnClickListener(v -> {
+            Log.e("TAN", "listener: 222");
             analystic.trackEvent(ManagerEvent.callRejectCall());
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    TelecomManager tm = (TelecomManager) getApplicationContext().getSystemService(Context.TELECOM_SERVICE);
-                    if (tm != null) {
-                        tm.endCall();
-                    }
-                } else {
-                    Method m3 = telephonyService.getClass().getDeclaredMethod("endCall");
-                    m3.invoke(telephonyService);
-                    //telephonyService.endCall();
-                }
+            CallManager.Companion.reject();
                 isDisable = true;
                 finish();
-            } catch (Exception e) {
-                finish();
-            }
         });
     }
 

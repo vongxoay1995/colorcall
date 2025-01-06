@@ -362,7 +362,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             if (isDownloaded) {
                 startDownloadBg(background.getPathItem(), background.getName());
             } else {
-                PermistionUtils.checkPermissionCall(this, this);
+                applyBgCall();
+              //  PermistionUtils.checkPermissionCall(this, this);
             }
         });
         binding.imgDelete.setOnClickListener(view1 -> {

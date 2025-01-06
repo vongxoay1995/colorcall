@@ -11,7 +11,7 @@ import com.colorcall.callerscreen.dialer.CallManager
 import com.colorcall.callerscreen.dialer.CallNotificationManager
 import com.colorcall.callerscreen.dialer.NoCall
 import com.simplemobiletools.commons.compose.extensions.config
-import com.simplemobiletools.dialer.extensions.isOutgoing
+import com.colorcall.callerscreen.dialer.extensions.isOutgoing
 import com.colorcall.callerscreen.dialer.extensions.powerManager
 
 class CallService : InCallService() {

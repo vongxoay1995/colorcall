@@ -13,7 +13,7 @@ import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.commons.helpers.LOWER_ALPHA
 import com.simplemobiletools.commons.helpers.SimpleContactsHelper
 import com.simplemobiletools.commons.views.MyRecyclerView
-import com.simplemobiletools.dialer.extensions.hasCapability
+import com.colorcall.callerscreen.dialer.extensions.hasCapability
 
 
 class ConferenceCallsAdapter(

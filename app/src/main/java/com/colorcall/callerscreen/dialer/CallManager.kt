@@ -7,9 +7,9 @@ import android.telecom.CallAudioState
 import android.telecom.InCallService
 import android.telecom.VideoProfile
 import com.colorcall.callerscreen.dialer.models.AudioRoute
-import com.simplemobiletools.dialer.extensions.getStateCompat
-import com.simplemobiletools.dialer.extensions.hasCapability
-import com.simplemobiletools.dialer.extensions.isConference
+import com.colorcall.callerscreen.dialer.extensions.getStateCompat
+import com.colorcall.callerscreen.dialer.extensions.hasCapability
+import com.colorcall.callerscreen.dialer.extensions.isConference
 import java.util.concurrent.CopyOnWriteArraySet
 
 // inspired by https://github.com/Chooloo/call_manage

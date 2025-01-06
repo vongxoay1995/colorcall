@@ -1,18 +1,24 @@
 package com.colorcall.callerscreen.dialer
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
 import android.telecom.Call
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.colorcall.callerscreen.R
+import com.colorcall.callerscreen.call.CallActivity
+import com.colorcall.callerscreen.constan.Constant
 import com.colorcall.callerscreen.dialer.activity.CallDialerActivity
 import com.colorcall.callerscreen.dialer.extensions.powerManager
+import com.google.gson.Gson
 import com.simplemobiletools.commons.extensions.notificationManager
 import com.simplemobiletools.commons.extensions.setText
 import com.simplemobiletools.commons.extensions.setVisibleIf
@@ -99,9 +105,32 @@ class CallNotificationManager(private val context: Context) {
 
             val notification = builder.build()
             // it's rare but possible for the call state to change by now
+            Log.e("TAN", "setupNotification getState: "+CallManager.getState()+"##"+callState )
+
+
+
+
             if (CallManager.getState() == callState) {
-                notificationManager.notify(CALL_NOTIFICATION_ID, notification)
+              //  notificationManager.notify(CALL_NOTIFICATION_ID, notification)
+                val activityManager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+
+                val taskList = activityManager.getRunningTasks(10)
+                Log.e("TAN", "topActivity: "+ taskList[0].topActivity?.className  )
+                if (taskList.isNotEmpty() &&
+                    taskList[0].numActivities == 1 &&
+                    taskList[0].topActivity?.className != "CallDialerActivity") {
+                    val activityIntent = Intent(context, CallActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Phải có flag này
+                    }
+                    Log.e("TAN", "setupNotification: "+callContact.number+"##"+callContact.numberLabel )
+                    activityIntent.putExtra(Constant.PHONE_NUMBER, callContact.number)
+                    activityIntent.putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
+                    context.startActivity(activityIntent)
+                }
+
+
             }
+
         }
     }
 

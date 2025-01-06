@@ -14,6 +14,7 @@ import android.os.Looper
 import android.os.PowerManager
 import android.telecom.Call
 import android.telecom.CallAudioState
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -63,16 +64,17 @@ import com.simplemobiletools.commons.helpers.isOreoPlus
 import com.simplemobiletools.commons.models.SimpleListItem
 import com.simplemobiletools.dialer.extensions.addCharacter
 import com.simplemobiletools.dialer.extensions.disableKeyboard
-import com.simplemobiletools.dialer.extensions.getCallDuration
-import com.simplemobiletools.dialer.extensions.getStateCompat
-import com.simplemobiletools.dialer.extensions.hasCapability
-import com.simplemobiletools.dialer.extensions.isConference
+import com.colorcall.callerscreen.dialer.extensions.getCallDuration
+import com.colorcall.callerscreen.dialer.extensions.getStateCompat
+import com.colorcall.callerscreen.dialer.extensions.hasCapability
+import com.colorcall.callerscreen.dialer.extensions.isConference
 import kotlin.math.max
 import kotlin.math.min
 
 class CallDialerActivity : DialerActivity() {
     companion object {
         fun getStartIntent(context: Context): Intent {
+            Log.e("TAN", "CallDialerActivity getStartIntent: 11111", )
             val openAppIntent = Intent(context, CallDialerActivity::class.java)
             openAppIntent.flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             return openAppIntent
