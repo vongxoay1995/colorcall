@@ -1,14 +1,14 @@
 package com.colorcall.callerscreen.contact;
 
+import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
+
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -21,7 +21,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,7 +29,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
-import com.colorcall.callerscreen.analystic.Event;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
@@ -38,12 +36,10 @@ import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.database.Contact;
 import com.colorcall.callerscreen.database.DatabaseViewModel;
 import com.colorcall.callerscreen.databinding.ActivitySelectContactBinding;
-import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
-import com.colorcall.callerscreen.utils.PermistionUtils;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.gson.Gson;
 
@@ -57,7 +53,6 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     private Background background;
     private Analystic analystic;
     private AppOpenManager appOpenManager;
-    private boolean isRequestPermission = false;
     private DatabaseViewModel databaseViewModel;
     private ActivitySelectContactBinding binding;
     @Override
@@ -155,7 +150,11 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         binding.layoutSet.setOnClickListener(view -> {
             analystic.trackEvent(ManagerEvent.contactSet());
             Log.e("TAN", "listener: click");
-            PermistionUtils.checkPermissionCall(this, this);
+            if(!isDefaultDialer(this)){
+                AppUtils.launchSetDefaultDialerIntent(this);
+            }else {
+                setTheme();
+            }
         });
         binding.imgClear.setOnClickListener(view -> {
             binding.edtSearch.setText("");
@@ -277,7 +276,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     }
 
     public void setTheme() {
-        PhoneService.startService(this);
+        //PhoneService.startService(this);
         HawkHelper.setStateColorCall(true);
       /*  if (adapter != null) {
             List<String> listContactIdSelected = adapter.getContactSelected();
@@ -358,7 +357,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         }
     }
 
-    @Override
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constant.REQUEST_OVERLAY) {
@@ -377,9 +376,9 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
                 setTheme();
             }
         }
-    }
+    }*/
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+ /*   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
@@ -392,7 +391,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
                 AppUtils.showDrawOverlayApp(this);
             }
         }
-    }
+    }*/
 
     @Override
     protected void onResume() {

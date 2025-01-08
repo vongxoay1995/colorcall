@@ -1,19 +1,18 @@
 package com.colorcall.callerscreen.setting;
 
+import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
 import static com.colorcall.callerscreen.utils.ConstantAds.setting_banner_admob2;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.colorcall.callerscreen.BuildConfig;
@@ -24,7 +23,6 @@ import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.databinding.ActivitySettingBinding;
-import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
@@ -112,11 +110,16 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private void listener() {
         binding.swStateApp.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isCallState = isChecked;
-            if (!isResultDenyCallPermission) {
+            if(!isDefaultDialer(this)){
+                AppUtils.launchSetDefaultDialerIntent(this);
+            }else {
+                HawkHelper.setStateColorCall(isCallState);
+            }
+          /*  if (!isResultDenyCallPermission) {
                 PermistionUtils.checkPermissionCall(SettingActivity.this, this);
             } else {
                 isResultDenyCallPermission = false;
-            }
+            }*/
         });
 
         binding.swFlash.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -225,7 +228,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         isResultDenyCallPermission = true;
         binding.swStateApp.setChecked(!isCallState);
     }
-
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -248,7 +251,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 onHasCallPermistion();
             }
         }
-    }
+    }*/
 
     @Override
     public void onHasFlashPermistion() {
@@ -257,11 +260,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
 
     @Override
     public void onHasCallPermistion() {
-        if (isCallState){
+       /* if (isCallState){
             PhoneService.startService(this);
         }else {
             PhoneService.stopService(this);
-        }
+        }*/
         HawkHelper.setStateColorCall(isCallState);
     }
     @Override

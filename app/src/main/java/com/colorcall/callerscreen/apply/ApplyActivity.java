@@ -1,6 +1,7 @@
 package com.colorcall.callerscreen.apply;
 
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
+import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
 import static com.colorcall.callerscreen.utils.ConstantAds.apply_banner_admob2;
 
 import android.annotation.SuppressLint;
@@ -16,7 +17,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -49,7 +48,6 @@ import com.colorcall.callerscreen.listener.DialogDeleteListener;
 import com.colorcall.callerscreen.model.SignApplyImage;
 import com.colorcall.callerscreen.model.SignApplyMyTheme;
 import com.colorcall.callerscreen.model.SignApplyVideo;
-import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
@@ -81,7 +79,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private int posRandom;
     private AppOpenManager appOpenManager;
     private InterstitialApply interstitialApply;
-    private boolean isRequestPermission = false;
     private DatabaseViewModel databaseViewModel;
     private ActivityApplyBinding binding;
 
@@ -130,22 +127,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         downloadTask.setListener(this);
         newPathItem = folderApp + videoName;
         downloadTask.execute(url, newPathItem);
-    }
-
-    public boolean checkShowInter() {
-       /* if (HawkHelper.isCanShowDiaLogRate() && !disableShowRate()) {
-            return false;
-        }*/
-        return true;
-    }
-
-    private boolean disableShowRate() {
-        int count = HawkHelper.getCoutShowRate();
-        if (count <= 30) {
-            return count != 2 && count != 7 && count != 12;
-        } else {
-            return (count - 30) % 30 != 0;
-        }
     }
 
     private void initInfor() {
@@ -257,8 +238,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         deleteFileByPath(this, background.getPathItem());
         Log.e("TAN", "deleteTheme: "+background.getPathItem()+"##"+background.getPathThumb());
         databaseViewModel.deleteBackground(background);
-
-      //  DataManager.query().getBackgroundDao().delete(background);
     }
     public void deleteInternalFile(Context context, String filePath) {
         File file = new File(filePath);
@@ -361,9 +340,10 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             analystic.trackEvent(ManagerEvent.applyApplyClick());
             if (isDownloaded) {
                 startDownloadBg(background.getPathItem(), background.getName());
-            } else {
+            } else if(!isDefaultDialer(this)){
+                AppUtils.launchSetDefaultDialerIntent(this);
+            }else {
                 applyBgCall();
-              //  PermistionUtils.checkPermissionCall(this, this);
             }
         });
         binding.imgDelete.setOnClickListener(view1 -> {
@@ -404,7 +384,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     @SuppressLint("UseCompatLoadingForDrawables")
     public void applyTheme() {
         HawkHelper.setBackgroundSelect(background);
-        PhoneService.startService(this);
+        //PhoneService.startService(this);
         HawkHelper.setStateColorCall(true);
         Toast.makeText(getApplicationContext(), getString(R.string.apply_done), Toast.LENGTH_SHORT).show();
         binding.layoutApply.setEnabled(false);
@@ -441,19 +421,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Constant.PERMISSION_REQUEST_CODE_CALL_PHONE && grantResults.length > 0 && AppUtils.checkPermissionGrand(grantResults)) {
-            // if (AppUtils.canDrawOverlays(this)) {
-            if (AppUtils.checkDrawOverlayApp2(this)) {
-                analystic.trackEvent(new Event("Permission_Dialog_DrawOver_Apply_Granted",new Bundle()));
-                if (!AppUtils.checkNotificationAccessSettings(this)) {
-                    isRequestPermission = true;
-                    AppUtils.showNotificationAccess(this);
-                }
-            } else {
-                Log.e("TAN", "onRequestPermissionsResult: 2222");
-                AppUtils.showDrawOverlayApp(this);
-            }
-        } else if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 onHasContactPermistion();
@@ -463,7 +431,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         }
     }
 
-    @Override
+  /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constant.REQUEST_OVERLAY) {
@@ -491,7 +459,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             isRequestPermission = true;
             new Handler().postDelayed(() -> isRequestPermission = false, 500);
         }
-    }
+    }*/
 
     public void startAnimation() {
         Animation anim8 = AnimationUtils.loadAnimation(this, R.anim.anm_accept_call);

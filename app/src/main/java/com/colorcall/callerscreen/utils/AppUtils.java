@@ -611,4 +611,9 @@ public class AppUtils {
                 }
             }
         }
+    public static boolean isDefaultDialer(Context context) {
+        TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+        String defaultDialerPackage = telecomManager.getDefaultDialerPackage();
+        return context.getPackageName().equals(defaultDialerPackage);
+    }
 }
