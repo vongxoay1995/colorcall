@@ -1,5 +1,6 @@
 package com.colorcall.callerscreen.setting;
 
+import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
 import static com.colorcall.callerscreen.utils.ConstantAds.setting_banner_admob2;
 
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.colorcall.callerscreen.BuildConfig;
@@ -110,8 +112,11 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private void listener() {
         binding.swStateApp.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isCallState = isChecked;
+
             if(!isDefaultDialer(this)){
-                AppUtils.launchSetDefaultDialerIntent(this);
+                if (isChecked){
+                    AppUtils.launchSetDefaultDialerIntent(this);
+                }
             }else {
                 HawkHelper.setStateColorCall(isCallState);
             }
@@ -228,11 +233,10 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         isResultDenyCallPermission = true;
         binding.swStateApp.setChecked(!isCallState);
     }
-/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constant.REQUEST_OVERLAY) {
+   /*     if (requestCode == Constant.REQUEST_OVERLAY) {
             if (AppUtils.checkDrawOverlayApp2(this)) {
                 analystic.trackEvent(new Event("Per_Dlg_DrawOver_Setting_Result_Granted",new Bundle()));
                 if (!AppUtils.checkNotificationAccessSettings(this)) {
@@ -250,8 +254,15 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
                 analystic.trackEvent(new Event("Per_Dlg_Setting_Use_App_Granted",new Bundle()));
                 onHasCallPermistion();
             }
+        }*/
+        if (requestCode ==REQUEST_CODE_SET_DEFAULT_DIALER) {
+            if(isDefaultDialer(this)){
+                HawkHelper.setStateColorCall(isCallState);
+            }else {
+                binding.swStateApp.setChecked(false);
+            }
         }
-    }*/
+    }
 
     @Override
     public void onHasFlashPermistion() {

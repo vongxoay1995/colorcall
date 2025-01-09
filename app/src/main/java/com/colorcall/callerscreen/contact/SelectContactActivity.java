@@ -1,10 +1,12 @@
 package com.colorcall.callerscreen.contact;
 
+import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -160,6 +163,18 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             binding.edtSearch.setText("");
             binding.imgClear.setVisibility(View.GONE);
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode ==REQUEST_CODE_SET_DEFAULT_DIALER) {
+                if(isDefaultDialer(this)){
+                    setTheme();
+                }else {
+                    Toast.makeText(this, getString(R.string.permistion_not_default_dialer), Toast.LENGTH_LONG).show();
+                }
+            }
     }
 
     @Override

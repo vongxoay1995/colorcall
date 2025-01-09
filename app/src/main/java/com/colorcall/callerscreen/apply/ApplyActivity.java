@@ -1,6 +1,7 @@
 package com.colorcall.callerscreen.apply;
 
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
+import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
 import static com.colorcall.callerscreen.utils.ConstantAds.apply_banner_admob2;
 
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -431,6 +433,17 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode ==REQUEST_CODE_SET_DEFAULT_DIALER) {
+            if(isDefaultDialer(this)){
+                applyBgCall();
+            }else {
+                Toast.makeText(this, getString(R.string.permistion_not_default_dialer), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
   /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

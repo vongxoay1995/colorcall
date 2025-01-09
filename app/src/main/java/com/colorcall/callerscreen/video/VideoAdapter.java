@@ -53,7 +53,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) layout_item.getLayoutParams();
-        layoutParams.width = (int) ((float) width / 2.1f);
+        layoutParams.width = (int) ((float) width / 2.15f);
         layoutParams.height = (5 * width) / 6;
         layout_item.setLayoutParams(layoutParams);
     }

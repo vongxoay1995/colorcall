@@ -38,7 +38,6 @@ import com.colorcall.callerscreen.rate.DialogRate;
 import com.colorcall.callerscreen.response.AppClient;
 import com.colorcall.callerscreen.response.AppData;
 import com.colorcall.callerscreen.response.AppService;
-import com.colorcall.callerscreen.service.PhoneService;
 import com.colorcall.callerscreen.setting.SettingActivity;
 import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppOpenManager;
@@ -88,9 +87,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         binding= ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
-        if (HawkHelper.isEnableColorCall()) {
-            PhoneService.startService(this);
-        }
         googleMobileAdsConsentManager = GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
         showForm();
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();

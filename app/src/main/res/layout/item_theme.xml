@@ -108,10 +108,9 @@
                     android:id="@+id/layoutBorderItemSelect"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:padding="2dp"
                     android:background="@drawable/bg_item_selected"
-                    android:visibility="visible"
-                    tools:layout_editor_absoluteX="0dp"
-                    tools:layout_editor_absoluteY="-1dp" />
+                    android:visibility="visible" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout

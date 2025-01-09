@@ -126,5 +126,7 @@
     <string name="deletion_confirmation_short">Delete %s?</string>
     <string name="select_sim">Select SIM</string>
     <string name="always_use_this_sim">Always use this SIM for this number</string>
+    <string name="permistion_not_default_dialer">Default Dialer permission is required for this feature.</string>
+    <string name="color_call_dialer">Color Call Dialer</string>
 
 </resources>
