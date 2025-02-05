@@ -616,4 +616,16 @@ public class AppUtils {
         String defaultDialerPackage = telecomManager.getDefaultDialerPackage();
         return context.getPackageName().equals(defaultDialerPackage);
     }
+
+    public static void openDetailPermission(Activity activity){
+        if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
+            Intent intent = new Intent("miui.intent.action.APP_PERM_EDITOR");
+            intent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.PermissionsEditorActivity");
+            intent.putExtra("extra_pkgname", activity.getPackageName());
+            activity.startActivity(intent);
+        }
+    }
+    public static boolean checkPermissionXiaomi(Activity ac){
+        return XiaomiUtilities.isCustomPermissionGranted(ac,XiaomiUtilities.OP_BACKGROUND_START_ACTIVITY)&&XiaomiUtilities.isCustomPermissionGranted(ac,XiaomiUtilities.OP_SHOW_WHEN_LOCKED)&&XiaomiUtilities.isCustomPermissionGranted(ac,XiaomiUtilities.OP_INSTALL_SHORTCUT);
+    }
 }

@@ -53,11 +53,13 @@ import com.colorcall.callerscreen.model.SignApplyVideo;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
+import com.colorcall.callerscreen.utils.DialogPermissionXiaomi;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.PermissionContactListener;
 import com.colorcall.callerscreen.utils.PermistionCallListener;
 import com.colorcall.callerscreen.utils.PermistionUtils;
+import com.colorcall.callerscreen.utils.XiaomiUtilities;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.gson.Gson;
 
@@ -104,8 +106,20 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         loadAdsBanner();
         analystic.trackEvent(ManagerEvent.applyOpen());
         listener();
-    }
+        dialogPermissionXiaomi = new DialogPermissionXiaomi(this);
+        dialogPermissionXiaomi.setListener(new DialogPermissionXiaomi.DialogPermissionXiaomiListener() {
+            @Override
+            public void onOkClicked() {
+                isPressGotoSetting = true;
+                AppUtils.openDetailPermission(ApplyActivity.this);
+            }
 
+            @Override
+            public void onDialogDismissed() {
+
+            }
+        });
+    }
 
 
     private void loadAdsBanner() {
@@ -178,7 +192,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             } else {
                 sPathThumb = background.getPathItem();
             }
-            Log.e("TAN", "checkInforTheme: "+sPathThumb);
+            Log.e("TAN", "checkInforTheme: " + sPathThumb);
             Glide.with(getApplicationContext())
                     .load(sPathThumb)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -204,7 +218,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 .into(binding.imgBackgroundCall);
         if (background.getPathItem().contains("storage") || background.getPathItem().contains("/data/data") || background.getPathItem().contains("data/user/")) {
             sPath = background.getPathItem();
-            Log.e("TAN", "processVideo: "+sPath);
+            Log.e("TAN", "processVideo: " + sPath);
 
             if (!sPath.startsWith("http")) {
                 isDownloaded = false;
@@ -234,13 +248,14 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.APPLY_ITEM_DEFAULT);
             EventBus.getDefault().postSticky(signApplyVideo);
         }
-        if (background.getType()==0) {
+        if (background.getType() == 0) {
             deleteInternalFile(this, background.getPathThumb());
         }
         deleteFileByPath(this, background.getPathItem());
-        Log.e("TAN", "deleteTheme: "+background.getPathItem()+"##"+background.getPathThumb());
+        Log.e("TAN", "deleteTheme: " + background.getPathItem() + "##" + background.getPathThumb());
         databaseViewModel.deleteBackground(background);
     }
+
     public void deleteInternalFile(Context context, String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
@@ -261,7 +276,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
         // Thiết lập điều kiện truy vấn với đường dẫn đầy đủ của tệp
         String selection = MediaStore.MediaColumns.DATA + "=?";
-        String[] selectionArgs = new String[] { filePath };
+        String[] selectionArgs = new String[]{filePath};
 
         try (Cursor cursor = contentResolver.query(collection, null, selection, selectionArgs, null)) {
             if (cursor != null && cursor.moveToFirst()) {
@@ -282,14 +297,15 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             }
         }
     }
+
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public void deleteFilesInColorCallImages(Context context,Uri collecttion,String path,String fileName) {
+    public void deleteFilesInColorCallImages(Context context, Uri collecttion, String path, String fileName) {
         ContentResolver contentResolver = context.getContentResolver();
         Uri collection = collecttion;
 
         // Truy vấn tất cả các tệp trong thư mục "ColorCall/Images"
         String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=? AND " + MediaStore.MediaColumns.DISPLAY_NAME + "=?";
-        String[] selectionArgs = new String[] { path, fileName };
+        String[] selectionArgs = new String[]{path, fileName};
 
         try (Cursor cursor = contentResolver.query(collection, null, selection, selectionArgs, null)) {
             if (cursor != null && cursor.moveToFirst()) {
@@ -300,7 +316,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                     // Xóa từng tệp
                     int rowsDeleted = contentResolver.delete(fileUri, null, null);
                     if (rowsDeleted > 0) {
-                       Log.e("TAN", "deleteFilesInColorCallImages: "+fileUri);
+                        Log.e("TAN", "deleteFilesInColorCallImages: " + fileUri);
                     } else {
                         Log.e("TAN", "Failed to delete file: " + fileUri);
                     }
@@ -310,6 +326,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             }
         }
     }
+
     private void playVideo() {
         binding.imgBackgroundCall.setVisibility(View.GONE);
         binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
@@ -323,13 +340,24 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         });
         binding.vdoBackgroundCall.start();
     }
-
+    boolean isPressGotoSetting;
     @Override
     protected void onResume() {
         binding.vdoBackgroundCall.start();
         startAnimation();
+        if (isPressGotoSetting) {
+            isPressGotoSetting = false;
+            if (!AppUtils.checkPermissionXiaomi(ApplyActivity.this)){
+                Toast.makeText(ApplyActivity.this, getString(R.string.request_permission_for_feature), Toast.LENGTH_SHORT).show();
+            }else {
+                applyBgCall();
+            }
+        }
         super.onResume();
     }
+
+    DialogPermissionXiaomi dialogPermissionXiaomi;
+
 
     public void listener() {
         binding.btnBack.setOnClickListener(view1 -> {
@@ -342,9 +370,11 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             analystic.trackEvent(ManagerEvent.applyApplyClick());
             if (isDownloaded) {
                 startDownloadBg(background.getPathItem(), background.getName());
-            } else if(!isDefaultDialer(this)){
+            } else if (!isDefaultDialer(this)) {
                 AppUtils.launchSetDefaultDialerIntent(this);
-            }else {
+            } else if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(this)) {
+               dialogPermissionXiaomi.show();
+            } else {
                 applyBgCall();
             }
         });
@@ -436,10 +466,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode ==REQUEST_CODE_SET_DEFAULT_DIALER) {
-            if(isDefaultDialer(this)){
+        if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER) {
+            if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(ApplyActivity.this)) {
+                dialogPermissionXiaomi.show();
+            }else  if (isDefaultDialer(this)) {
                 applyBgCall();
-            }else {
+            } else {
                 Toast.makeText(this, getString(R.string.permistion_not_default_dialer), Toast.LENGTH_LONG).show();
             }
         }
@@ -584,7 +616,6 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     private boolean hasActive() {
         return !isFinishing() && !isDestroyed();
     }
-
 
 
 }

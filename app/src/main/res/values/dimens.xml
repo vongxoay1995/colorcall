@@ -21,5 +21,6 @@
     <dimen name="incoming_call_button_size">72dp</dimen>
     <dimen name="incoming_call_arrow_size">50dp</dimen>
     <dimen name="small_text_size">10sp</dimen>
+    <dimen name="normal_margin">12dp</dimen>
 
 </resources>

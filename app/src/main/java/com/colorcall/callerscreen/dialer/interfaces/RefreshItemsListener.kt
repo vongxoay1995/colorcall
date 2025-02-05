@@ -1,4 +1,4 @@
-package com.colorcall.callerscreen.dialer.`interface`
+package com.colorcall.callerscreen.dialer.interfaces
 
 interface RefreshItemsListener {
     fun refreshItems(callback: (() -> Unit)? = null)

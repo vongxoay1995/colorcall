@@ -26,6 +26,7 @@ import android.provider.OpenableColumns
 import android.provider.Settings
 import android.telecom.TelecomManager
 import android.telephony.PhoneNumberUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -253,11 +254,13 @@ fun Context.getPermissionString(id: Int) = when (id) {
 }
 
 fun Context.launchActivityIntent(intent: Intent) {
+    Log.e("TAN", "launchActivityIntent: "+intent )
     try {
         startActivity(intent)
     } catch (e: ActivityNotFoundException) {
         toast(R.string.no_app_found)
     } catch (e: Exception) {
+        Log.e("TAN", "launchActivityInten Exceptiont: ${e.localizedMessage}", )
         showErrorToast(e)
     }
 }
@@ -986,14 +989,17 @@ fun Context.getCornerRadius() = resources.getDimension(R.dimen.rounded_corner_ra
 
 // we need the Default Dialer functionality only in Simple Dialer and in Simple Contacts for now
 fun Context.isDefaultDialer(): Boolean {
-    return if (!packageName.startsWith("com.simplemobiletools.contacts") && !packageName.startsWith("com.simplemobiletools.dialer")) {
+    val telecomManager = getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+    val defaultDialerPackage = telecomManager.defaultDialerPackage
+    return packageName == defaultDialerPackage
+  /*  return if (!packageName.startsWith("com.simplemobiletools.contacts") && !packageName.startsWith("com.simplemobiletools.dialer")) {
         true
     } else if ((packageName.startsWith("com.simplemobiletools.contacts") || packageName.startsWith("com.simplemobiletools.dialer")) && isQPlus()) {
         val roleManager = getSystemService(RoleManager::class.java)
         roleManager!!.isRoleAvailable(RoleManager.ROLE_DIALER) && roleManager.isRoleHeld(RoleManager.ROLE_DIALER)
     } else {
         telecomManager.defaultDialerPackage == packageName
-    }
+    }*/
 }
 
 fun Context.getContactsHasMap(withComparableNumbers: Boolean = false, callback: (HashMap<String, String>) -> Unit) {

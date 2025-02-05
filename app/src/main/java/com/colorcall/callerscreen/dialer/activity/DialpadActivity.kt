@@ -222,13 +222,13 @@ class DialpadActivity : DialerActivity() {
     }
 
     private fun setupOptionsMenu() {
-      /*  binding.dialpadToolbar.setOnMenuItemClickListener { menuItem ->
+        binding.dialpadToolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.add_number_to_contact -> addNumberToContact()
                 else -> return@setOnMenuItemClickListener false
             }
             return@setOnMenuItemClickListener true
-        }*/
+        }
     }
 
     private fun checkDialIntent(): Boolean {

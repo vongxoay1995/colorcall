@@ -101,6 +101,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.room:room-runtime:2.6.0")
     implementation(libs.indicator.fast.scroll)
+    implementation(libs.autofit.text.view)
 
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")

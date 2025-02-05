@@ -8,7 +8,10 @@ import android.provider.ContactsContract
 import android.telecom.PhoneAccount
 import android.telecom.PhoneAccountHandle
 import android.telecom.TelecomManager
+import android.util.Log
+import com.colorcall.callerscreen.dialer.activity.Dialer2Activity
 import com.colorcall.callerscreen.dialer.activity.DialerActivity
+import com.colorcall.callerscreen.dialer.dialog.SelectSIMDialog
 import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.extensions.isDefaultDialer
 import com.simplemobiletools.commons.extensions.isPackageInstalled
@@ -22,14 +25,16 @@ import com.simplemobiletools.commons.helpers.PERMISSION_READ_PHONE_STATE
 import com.simplemobiletools.commons.helpers.SimpleContactsHelper
 import com.simplemobiletools.commons.helpers.ensureBackgroundThread
 import com.simplemobiletools.commons.models.contacts.Contact
-import com.colorcall.callerscreen.dialer.dialog.SelectSIMDialog
 
 fun DialerActivity.startCallIntent(recipient: String) {
     if (isDefaultDialer()) {
         getHandleToUse(null, recipient) { handle ->
+            Log.e("TAN", "startCallIntent: $recipient", )
             launchCallIntent(recipient, handle)
         }
     } else {
+        Log.e("TAN", "startCallIntent2: $recipient", )
+
         launchCallIntent(recipient, null)
     }
 }
@@ -46,6 +51,8 @@ fun BaseSimpleActivity.callContactWithSim(recipient: String, useMainSIM: Boolean
     handlePermission(PERMISSION_READ_PHONE_STATE) {
         val wantedSimIndex = if (useMainSIM) 0 else 1
         val handle = getAvailableSIMCardLabels().sortedBy { it.id }.getOrNull(wantedSimIndex)?.handle
+        Log.e("TAN", "startCallIntent3: $recipient", )
+
         launchCallIntent(recipient, handle)
     }
 }
@@ -91,7 +98,7 @@ fun DialerActivity.getHandleToUse(intent: Intent?, phoneNumber: String, callback
                 defaultHandle != null -> callback(defaultHandle)
                 else -> {
                     SelectSIMDialog(this, phoneNumber, onDismiss = {
-                        if (this is DialerActivity) {
+                        if (this is Dialer2Activity) {
                             finish()
                         }
                     }) { handle ->

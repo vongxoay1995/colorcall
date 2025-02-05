@@ -1,4 +1,3 @@
-/*
 package com.colorcall.callerscreen.dialer.activity
 
 import android.annotation.SuppressLint
@@ -11,46 +10,49 @@ import android.graphics.drawable.Icon
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.viewpager.widget.ViewPager
+import com.colorcall.callerscreen.BuildConfig
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.databinding.ActivityCallOwnerBinding
-import com.colorcall.callerscreen.databinding.ActivityDialpadBinding
 import com.colorcall.callerscreen.dialer.OPEN_DIAL_PAD_AT_LAUNCH
 import com.colorcall.callerscreen.dialer.RecentsHelper
+import com.colorcall.callerscreen.dialer.adapter.ViewPagerAdapter
+import com.colorcall.callerscreen.dialer.dialog.ChangeSortingDialog
+import com.colorcall.callerscreen.dialer.dialog.FilterContactSourcesDialog
+import com.colorcall.callerscreen.dialer.extensions.beGoneIf
+import com.colorcall.callerscreen.dialer.extensions.config
 import com.colorcall.callerscreen.dialer.extensions.launchCreateNewContactIntent
+import com.colorcall.callerscreen.dialer.fragments.ContactsFragment
+import com.colorcall.callerscreen.dialer.fragments.FavoritesFragment
+import com.colorcall.callerscreen.dialer.fragments.MyViewPagerFragment
+import com.colorcall.callerscreen.dialer.fragments.RecentsFragment
 import com.colorcall.callerscreen.dialer.tabsList
-import com.google.android.material.snackbar.Snackbar
 import com.simplemobiletools.commons.dialogs.ChangeViewTypeDialog
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
-import com.simplemobiletools.commons.dialogs.PermissionRequiredDialog
 import com.simplemobiletools.commons.dialogs.RadioGroupDialog
 import com.simplemobiletools.commons.extensions.appLaunched
 import com.simplemobiletools.commons.extensions.applyColorFilter
 import com.simplemobiletools.commons.extensions.baseConfig
 import com.simplemobiletools.commons.extensions.convertToBitmap
-import com.simplemobiletools.commons.extensions.darkenColor
 import com.simplemobiletools.commons.extensions.getBottomNavigationBackgroundColor
 import com.simplemobiletools.commons.extensions.getColoredDrawableWithColor
 import com.simplemobiletools.commons.extensions.getContrastColor
 import com.simplemobiletools.commons.extensions.getProperBackgroundColor
 import com.simplemobiletools.commons.extensions.getProperPrimaryColor
 import com.simplemobiletools.commons.extensions.getProperTextColor
-import com.simplemobiletools.commons.extensions.launchMoreAppsFromUsIntent
+import com.simplemobiletools.commons.extensions.onGlobalLayout
 import com.simplemobiletools.commons.extensions.onTabSelectionChanged
-import com.simplemobiletools.commons.extensions.openNotificationSettings
 import com.simplemobiletools.commons.extensions.shortcutManager
 import com.simplemobiletools.commons.extensions.telecomManager
+import com.simplemobiletools.commons.extensions.toast
 import com.simplemobiletools.commons.extensions.updateBottomTabItemColors
 import com.simplemobiletools.commons.extensions.updateTextColors
 import com.simplemobiletools.commons.extensions.viewBinding
 import com.simplemobiletools.commons.helpers.CONTACTS_GRID_MAX_COLUMNS_COUNT
-import com.simplemobiletools.commons.helpers.LICENSE_AUTOFITTEXTVIEW
-import com.simplemobiletools.commons.helpers.LICENSE_GLIDE
-import com.simplemobiletools.commons.helpers.LICENSE_INDICATOR_FAST_SCROLL
 import com.simplemobiletools.commons.helpers.PERMISSION_READ_CONTACTS
 import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_CALLER_ID
 import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_DIALER
@@ -62,9 +64,9 @@ import com.simplemobiletools.commons.helpers.VIEW_TYPE_GRID
 import com.simplemobiletools.commons.helpers.ensureBackgroundThread
 import com.simplemobiletools.commons.helpers.isNougatMR1Plus
 import com.simplemobiletools.commons.helpers.isQPlus
-import com.simplemobiletools.commons.models.FAQItem
 import com.simplemobiletools.commons.models.RadioItem
 import com.simplemobiletools.commons.models.contacts.Contact
+import me.grantland.widget.AutofitHelper
 
 class CallOwnerActivity : DialerActivity() {
     private val binding by viewBinding(ActivityCallOwnerBinding::inflate)
@@ -85,7 +87,7 @@ class CallOwnerActivity : DialerActivity() {
 
         launchedDialer = savedInstanceState?.getBoolean(OPEN_DIAL_PAD_AT_LAUNCH) ?: false
 
-        if (isDefaultDialer()) {
+       /* if (isDefaultDialer()) {
             checkContactPermissions()
 
             if (!config.wasOverlaySnackbarConfirmed && !Settings.canDrawOverlays(this)) {
@@ -108,13 +110,14 @@ class CallOwnerActivity : DialerActivity() {
         } else {
             launchSetDefaultDialerIntent()
         }
-
+*/
         if (isQPlus() && (config.blockUnknownNumbers || config.blockHiddenNumbers)) {
             setDefaultCallerIdApp()
         }
-
         setupTabs()
         Contact.sorting = config.sorting
+        checkContactPermissions()
+
     }
 
     override fun onResume() {
@@ -132,9 +135,8 @@ class CallOwnerActivity : DialerActivity() {
 
         updateTextColors(binding.mainHolder)
         setupTabColors()
-
-        getAllFragments().forEach {
-            it?.setupColors(getProperTextColor(), getProperPrimaryColor(), getProperPrimaryColor())
+        for (fragment in getAllFragments()) {
+            fragment?.setupColors(getProperTextColor(), getProperPrimaryColor(), getProperPrimaryColor())
         }
 
         val configStartNameWithSurname = config.startNameWithSurname
@@ -150,8 +152,8 @@ class CallOwnerActivity : DialerActivity() {
 
         val configFontSize = config.fontSize
         if (storedFontSize != configFontSize) {
-            getAllFragments().forEach {
-                it?.fontSizeChanged()
+            for (fragment in getAllFragments()) {
+                fragment?.fontSizeChanged()
             }
         }
 
@@ -206,7 +208,6 @@ class CallOwnerActivity : DialerActivity() {
             findItem(R.id.create_new_contact).isVisible = currentFragment == getContactsFragment()
             findItem(R.id.change_view_type).isVisible = currentFragment == getFavoritesFragment()
             findItem(R.id.column_count).isVisible = currentFragment == getFavoritesFragment() && config.viewType == VIEW_TYPE_GRID
-            findItem(R.id.more_apps_from_us).isVisible = !resources.getBoolean(R.bool.hide_google_relations)
         }
     }
 
@@ -217,8 +218,8 @@ class CallOwnerActivity : DialerActivity() {
             setupMenu()
 
             onSearchClosedListener = {
-                getAllFragments().forEach {
-                    it?.onSearchQueryChanged("")
+                for (fragment in getAllFragments()) {
+                    fragment?.onSearchQueryChanged("")
                 }
             }
 
@@ -232,11 +233,9 @@ class CallOwnerActivity : DialerActivity() {
                     R.id.create_new_contact -> launchCreateNewContactIntent()
                     R.id.sort -> showSortingDialog(showCustomSorting = getCurrentFragment() is FavoritesFragment)
                     R.id.filter -> showFilterDialog()
-                    R.id.more_apps_from_us -> launchMoreAppsFromUsIntent()
-                    R.id.settings -> launchSettings()
+                //    R.id.settings -> launchSettings()
                     R.id.change_view_type -> changeViewType()
                     R.id.column_count -> changeColumnCount()
-                    R.id.about -> launchAbout()
                     else -> return@setOnMenuItemClickListener false
                 }
                 return@setOnMenuItemClickListener true
@@ -480,7 +479,7 @@ class CallOwnerActivity : DialerActivity() {
 
         binding.apply {
             if (viewPager.adapter == null) {
-                viewPager.adapter = ViewPagerAdapter(this@MainActivity)
+                viewPager.adapter = ViewPagerAdapter(this@CallOwnerActivity)
                 viewPager.currentItem = if (openLastTab) config.lastUsedViewPagerPage else getDefaultTab()
                 viewPager.onGlobalLayout {
                     refreshFragments()
@@ -492,6 +491,7 @@ class CallOwnerActivity : DialerActivity() {
     }
 
     private fun launchDialpad() {
+        Log.e("TAN", "launchDialpad: ", )
         Intent(applicationContext, DialpadActivity::class.java).apply {
             startActivity(this)
         }
@@ -570,24 +570,8 @@ class CallOwnerActivity : DialerActivity() {
     }
 
     private fun launchSettings() {
-        hideKeyboard()
-        startActivity(Intent(applicationContext, SettingsActivity::class.java))
-    }
-
-    private fun launchAbout() {
-        val licenses = LICENSE_GLIDE or LICENSE_INDICATOR_FAST_SCROLL or LICENSE_AUTOFITTEXTVIEW
-
-        val faqItems = arrayListOf(
-            FAQItem(R.string.faq_1_title, R.string.faq_1_text),
-            FAQItem(R.string.faq_9_title_commons, R.string.faq_9_text_commons)
-        )
-
-        if (!resources.getBoolean(R.bool.hide_google_relations)) {
-            faqItems.add(FAQItem(R.string.faq_2_title_commons, R.string.faq_2_text_commons))
-            faqItems.add(FAQItem(R.string.faq_6_title_commons, R.string.faq_6_text_commons))
-        }
-
-        startAboutActivity(R.string.app_name, licenses, BuildConfig.VERSION_NAME, faqItems, true)
+    //    hideKeyboard()
+     //   startActivity(Intent(applicationContext, SettingsActivity::class.java))
     }
 
     private fun showSortingDialog(showCustomSorting: Boolean) {
@@ -635,4 +619,4 @@ class CallOwnerActivity : DialerActivity() {
         } catch (e: Exception) {
         }
     }
-}*/
+}

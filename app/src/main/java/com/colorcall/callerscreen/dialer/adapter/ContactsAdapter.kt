@@ -22,7 +22,7 @@ import com.colorcall.callerscreen.dialer.extensions.areMultipleSIMsAvailable
 import com.colorcall.callerscreen.dialer.extensions.callContactWithSim
 import com.colorcall.callerscreen.dialer.extensions.config
 import com.colorcall.callerscreen.dialer.extensions.startContactDetailsIntent
-import com.colorcall.callerscreen.dialer.`interface`.RefreshItemsListener
+import com.colorcall.callerscreen.dialer.interfaces.RefreshItemsListener
 import com.simplemobiletools.commons.adapters.MyRecyclerViewAdapter
 import com.simplemobiletools.commons.databinding.ItemContactWithoutNumberBinding
 import com.simplemobiletools.commons.databinding.ItemContactWithoutNumberGridBinding

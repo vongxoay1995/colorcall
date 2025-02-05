@@ -4,7 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.content.*
+import android.content.ActivityNotFoundException
+import android.content.ComponentName
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
 import android.content.Intent.EXTRA_STREAM
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -38,13 +42,51 @@ import com.simplemobiletools.commons.R
 import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.compose.extensions.DEVELOPER_PLAY_STORE_URL
 import com.simplemobiletools.commons.databinding.DialogTitleBinding
-import com.simplemobiletools.commons.dialogs.*
+import com.simplemobiletools.commons.dialogs.AppSideloadedDialog
+import com.simplemobiletools.commons.dialogs.ConfirmationAdvancedDialog
+import com.simplemobiletools.commons.dialogs.CustomIntervalPickerDialog
+import com.simplemobiletools.commons.dialogs.DonateDialog
+import com.simplemobiletools.commons.dialogs.RadioGroupDialog
+import com.simplemobiletools.commons.dialogs.RateStarsDialog
+import com.simplemobiletools.commons.dialogs.SecurityDialog
+import com.simplemobiletools.commons.dialogs.UpgradeToProDialog
+import com.simplemobiletools.commons.dialogs.WhatsNewDialog
+import com.simplemobiletools.commons.dialogs.WritePermissionDialog
 import com.simplemobiletools.commons.dialogs.WritePermissionDialog.WritePermissionDialogMode
-import com.simplemobiletools.commons.helpers.*
-import com.simplemobiletools.commons.models.*
+import com.simplemobiletools.commons.helpers.CREATE_DOCUMENT_SDK_30
+import com.simplemobiletools.commons.helpers.EXTRA_SHOW_ADVANCED
+import com.simplemobiletools.commons.helpers.IS_FROM_GALLERY
+import com.simplemobiletools.commons.helpers.MINUTE_SECONDS
+import com.simplemobiletools.commons.helpers.MyContentProvider
+import com.simplemobiletools.commons.helpers.OPEN_DOCUMENT_TREE_FOR_ANDROID_DATA_OR_OBB
+import com.simplemobiletools.commons.helpers.OPEN_DOCUMENT_TREE_FOR_SDK_30
+import com.simplemobiletools.commons.helpers.OPEN_DOCUMENT_TREE_OTG
+import com.simplemobiletools.commons.helpers.OPEN_DOCUMENT_TREE_SD
+import com.simplemobiletools.commons.helpers.PERMISSION_CALL_PHONE
+import com.simplemobiletools.commons.helpers.PERMISSION_READ_STORAGE
+import com.simplemobiletools.commons.helpers.PROTECTION_FINGERPRINT
+import com.simplemobiletools.commons.helpers.REAL_FILE_PATH
+import com.simplemobiletools.commons.helpers.REQUEST_EDIT_IMAGE
+import com.simplemobiletools.commons.helpers.REQUEST_SET_AS
+import com.simplemobiletools.commons.helpers.SIDELOADING_FALSE
+import com.simplemobiletools.commons.helpers.SIDELOADING_TRUE
+import com.simplemobiletools.commons.helpers.SILENT
+import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.simplemobiletools.commons.helpers.isOnMainThread
+import com.simplemobiletools.commons.helpers.isRPlus
+import com.simplemobiletools.commons.models.AlarmSound
+import com.simplemobiletools.commons.models.Android30RenameFormat
+import com.simplemobiletools.commons.models.FileDirItem
+import com.simplemobiletools.commons.models.RadioItem
+import com.simplemobiletools.commons.models.Release
+import com.simplemobiletools.commons.models.SharedTheme
 import com.simplemobiletools.commons.views.MyTextView
-import java.io.*
-import java.util.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import java.util.TreeSet
 
 fun Activity.appLaunched(appId: String) {
     baseConfig.internalStoragePath = getInternalStoragePath()
@@ -548,11 +590,10 @@ fun BaseSimpleActivity.launchCallIntent(recipient: String, handle: PhoneAccountH
             }
 
             if (isDefaultDialer()) {
-                val packageName = if (baseConfig.appId.contains(".debug", true)) "com.simplemobiletools.dialer.debug" else "com.simplemobiletools.dialer"
-                val className = "com.simplemobiletools.dialer.activities.DialerActivity"
+                val packageName = if (baseConfig.appId.contains(".debug", true)) "$packageName.debug" else packageName
+                val className = "com.colorcall.callerscreen.dialer.activity.Dialer2Activity"
                 setClassName(packageName, className)
             }
-
             launchActivityIntent(this)
         }
     }

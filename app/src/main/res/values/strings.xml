@@ -128,5 +128,36 @@
     <string name="always_use_this_sim">Always use this SIM for this number</string>
     <string name="permistion_not_default_dialer">Default Dialer permission is required for this feature.</string>
     <string name="color_call_dialer">Color Call Dialer</string>
+    <string name="request_permission">Request permission</string>
+    <string name="request_permission_for_feature">The application cannot work if you do not grant enough permissions. Please grant permissions again!</string>
+    <string name="request_permission_xiaomi_content">Để ứng dụng có thể hoạt động bình thường, bạn cần cho phép các quyền dưới đây</string>
+    <string name="step1">Step 1: Open \"Other permissions\"</string>
+    <string name="other_pemissions">Other pemissions</string>
+    <string name="step2">Step 2: Enable \"Show on Lock screen\", \"Home screen shortcut\" and \"Open new windows while running in background\"</string>
+    <string name="show_on_lock_screen">Show on lock screen</string>
+    <string name="open_new_window">Open new windows while running in background</string>
+    <string name="home_screen_short">Home screen shortcut</string>
+    <string name="open_settings">Open settings</string>
+    <string name="must_make_default_caller_id_app">Can\'t block unknown numbers without caller ID permission.</string>
+    <string name="show_call_details">Show call details</string>
+    <string name="clear_call_history">Clear call history</string>
+    <string name="clear_history_confirmation">Are you sure you want to remove everything from the Call History?</string>
+    <string name="cannot_be_undone">This action cannot be undone.</string>
+    <string name="contacts_tab">Contacts</string>
+    <string name="favorites_tab">Favorites</string>
+    <string name="call_history_tab">Call History</string>
+    <string name="request_access">Request access</string>
+    <string name="no_previous_calls">No previous calls have been found</string>
+    <string name="sort_by">Sort by</string>
+    <string name="dialpad">Diapad</string>
+    <string name="block_number">Block number</string>
+    <string name="remove_confirmation">Are you sure you want to remove the selected items from the Call History?</string>
+    <string name="could_not_access_the_call_history">Could not access the call history</string>
+    <string name="no_contacts_found">No contacts found</string>
+    <string name="could_not_access_contacts">Could not access your contacts</string>
+    <string name="create_new_contact">Create new contact</string>
+    <string name="unknown_error_occurred">An unknown error occurred</string>
+    <string name="calling_blocked_number">The number you are calling is blocked</string>
+    <string name="default_phone_app_prompt">Please make this app the default Phone app</string>
 
 </resources>

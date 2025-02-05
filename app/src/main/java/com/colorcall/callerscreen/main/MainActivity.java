@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.main;
 
+import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
+import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
 import static com.colorcall.callerscreen.utils.ConstantAds.banner_main_admob2;
 
 import android.Manifest;
@@ -29,6 +31,7 @@ import com.colorcall.callerscreen.application.ColorCallApplication;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.databinding.ActivityMainBinding;
+import com.colorcall.callerscreen.dialer.activity.CallOwnerActivity;
 import com.colorcall.callerscreen.image.ImagesFragment;
 import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignMainImage;
@@ -43,11 +46,13 @@ import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
+import com.colorcall.callerscreen.utils.DialogPermissionXiaomi;
 import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.utils.PermistionUtils;
+import com.colorcall.callerscreen.utils.XiaomiUtilities;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.tasks.Task;
@@ -80,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
     public boolean isShowConsent = false;
     private ActivityMainBinding binding;
-
+    DialogPermissionXiaomi dialogPermissionXiaomi;
+    boolean isPressGotoSetting;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +116,24 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
                 startActivity(new Intent(MainActivity.this, SettingActivity.class));
             }
         });
+        initDialogPermissionXiaomi();
         requestNotificationPermission();
+    }
+
+    private void initDialogPermissionXiaomi() {
+        dialogPermissionXiaomi = new DialogPermissionXiaomi(this);
+        dialogPermissionXiaomi.setListener(new DialogPermissionXiaomi.DialogPermissionXiaomiListener() {
+            @Override
+            public void onOkClicked() {
+                isPressGotoSetting = true;
+                AppUtils.openDetailPermission(MainActivity.this);
+            }
+
+            @Override
+            public void onDialogDismissed() {
+
+            }
+        });
     }
 
     private void showForm() {
@@ -195,6 +218,18 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             }
         });
         preLoadInter();
+        binding.mainDialpadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isDefaultDialer(MainActivity.this)) {
+                    AppUtils.launchSetDefaultDialerIntent(MainActivity.this);
+                } else if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(MainActivity.this)) {
+                    dialogPermissionXiaomi.show();
+                }else {
+                    moveCallOwnerActivity();
+                }
+            }
+        });
     }
 
     private void preLoadInter() {
@@ -205,12 +240,30 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Override
     protected void onResume() {
+        if (isPressGotoSetting) {
+            isPressGotoSetting = false;
+            if (!AppUtils.checkPermissionXiaomi(MainActivity.this)){
+                Toast.makeText(MainActivity.this, getString(R.string.request_permission_for_feature), Toast.LENGTH_SHORT).show();
+            }else {
+                moveCallOwnerActivity();
+            }
+        }
         super.onResume();
     }
 
+   public void moveCallOwnerActivity(){
+       startActivity(new Intent(MainActivity.this, CallOwnerActivity.class));
+   }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode==RESULT_OK&&requestCode==REQUEST_CODE_SET_DEFAULT_DIALER){
+            if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(MainActivity.this)) {
+                dialogPermissionXiaomi.show();
+            }else {
+                moveCallOwnerActivity();
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -270,13 +323,11 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void checkHasNewData(ArrayList<Background> listBg) {
-        Log.e("TAN", "checkHasNewData: "+listBg);
         long lastTimeUpdate = HawkHelper.getTimeStamp();
         boolean isSelected = false;
         int initPosition = HawkHelper.getListBackground().size();
         ArrayList<Background> arr = HawkHelper.getListBackground();
         for (int i = 0; i < listBg.size(); i++) {
-            Log.e("TAN", "checkHasNewData: "+listBg.get(i));
             if (Long.parseLong(listBg.get(i).getTimeUpdate()) > lastTimeUpdate) {
                 listBg.get(i).setPosition(initPosition + i);
                 arr.add(listBg.get(i));
