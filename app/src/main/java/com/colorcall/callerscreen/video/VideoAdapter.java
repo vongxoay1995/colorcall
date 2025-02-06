@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         .thumbnail(0.1f)
                         .into(binding.imgItemThumbTheme);
             }
-
+            Log.e("TAN", "onBind: "+background.getPathThumb()+"##"+backgroundSelected.getPathThumb());
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
                 binding.layoutSelected.setVisibility(View.VISIBLE);
                 binding.layoutBorderItemSelect.setVisibility(View.VISIBLE);

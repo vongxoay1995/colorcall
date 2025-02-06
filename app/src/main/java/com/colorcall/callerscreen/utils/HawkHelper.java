@@ -40,7 +40,8 @@ public class HawkHelper {
     }
 
     public static boolean isEnableColorCall() {
-        return Hawk.get(ENABLE_COLOR, false);
+        return true;
+       // return Hawk.get(ENABLE_COLOR, false);
     }
 
     public static void setStateColorCall(boolean value) {

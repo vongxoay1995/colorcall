@@ -111,11 +111,10 @@ class CallNotificationManager(private val context: Context) {
 
 
             if (CallManager.getState() == callState) {
-              //  notificationManager.notify(CALL_NOTIFICATION_ID, notification)
                 val activityManager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
 
-                val taskList = activityManager.getRunningTasks(10)
-                Log.e("TAN", "topActivity: "+ taskList[0].topActivity?.className  )
+              /*  val taskList = activityManager.getRunningTasks(10)
+                Log.e("TAN", "topActivity: "+ taskList.size )
                 if (taskList.isNotEmpty() &&
                     taskList[0].numActivities == 1 &&
                     taskList[0].topActivity?.className != "CallDialerActivity") {
@@ -126,8 +125,34 @@ class CallNotificationManager(private val context: Context) {
                     activityIntent.putExtra(Constant.PHONE_NUMBER, callContact.number)
                     activityIntent.putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
                     context.startActivity(activityIntent)
+                }else{
+                    val activityIntent = Intent(context, CallActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Phải có flag này
+                    }
+                    Log.e("TAN", "setupNotification: "+callContact.number+"##"+callContact.numberLabel )
+                    activityIntent.putExtra(Constant.PHONE_NUMBER, callContact.number)
+                    activityIntent.putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
+                    context.startActivity(activityIntent)
+                }*/
+                val taskList = activityManager.getRunningTasks(10)
+
+                Log.e("TAN", "topActivity: ${taskList.size}")
+
+                val isNotCallDialerActivity = taskList.isNotEmpty() &&
+                        taskList[0].numActivities == 1 &&
+                        taskList[0].topActivity?.className != "CallDialerActivity"
+
+                val activityIntent = Intent(context, CallActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra(Constant.PHONE_NUMBER, callContact.number)
+                    putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
                 }
 
+                Log.e("TAN", "setupNotification: ${callContact.number}##${callContact.numberLabel}")
+
+                if (isNotCallDialerActivity || taskList.isEmpty()) {
+                    context.startActivity(activityIntent)
+                }
 
             }
 
