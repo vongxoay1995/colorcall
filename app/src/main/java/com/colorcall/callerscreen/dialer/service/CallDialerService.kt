@@ -28,8 +28,7 @@ class CallDialerService : InCallService() {
                  val localBroadcastManager = LocalBroadcastManager
                      .getInstance(this@CallDialerService)
                  localBroadcastManager.sendBroadcast(Intent("com.colorcall.endCall"))
-
-                // callNotificationManager.cancelNotification()
+                 callNotificationManager.cancelNotification()
              } else {
                  Log.e("TAN", "onStateChanged: TAN 1" )
                  callNotificationManager.setupNotification()

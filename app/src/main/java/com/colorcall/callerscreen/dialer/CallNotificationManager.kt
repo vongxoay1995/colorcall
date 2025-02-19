@@ -148,11 +148,11 @@ class CallNotificationManager(private val context: Context) {
                     putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
                 }
 
-                Log.e("TAN", "setupNotification: ${callContact.number}##${callContact.numberLabel}")
+                Log.e("TAN", "setupNotification: ${isNotCallDialerActivity}##${ taskList.isEmpty()}")
 
-                if (isNotCallDialerActivity || taskList.isEmpty()) {
-                    context.startActivity(activityIntent)
-                }
+                //if (isNotCallDialerActivity || taskList.isEmpty()) {
+                if (callState==2) context.startActivity(activityIntent)
+               // }
 
             }
 
