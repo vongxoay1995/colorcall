@@ -2,7 +2,7 @@ package com.colorcall.callerscreen.main;
 
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
-import static com.colorcall.callerscreen.utils.ConstantAds.banner_main_admob2;
+import static com.colorcall.callerscreen.utils.ConstantAds.banner_main_admob;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
@@ -52,6 +52,7 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.utils.PermistionUtils;
+import com.colorcall.callerscreen.utils.WindowInsetsHelper;
 import com.colorcall.callerscreen.utils.XiaomiUtilities;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.gms.ads.appopen.AppOpenAd;
@@ -118,6 +119,14 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         });
         initDialogPermissionXiaomi();
         requestNotificationPermission();
+        WindowInsetsHelper.applyWindowInsets(
+                getWindow(),
+                false,
+                binding.getRoot(),
+                (statusBarHeight, bottomBarHeight) -> {
+                    Log.e("Insets", "StatusBar: " + statusBarHeight + ", NavBar: " + bottomBarHeight);
+                }
+        );
     }
 
     private void initDialogPermissionXiaomi() {
@@ -270,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/4654234996";
 
-        bannerAdsUtils.setIdAds(banner_main_admob2);
+        bannerAdsUtils.setIdAds(banner_main_admob);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();
     }
