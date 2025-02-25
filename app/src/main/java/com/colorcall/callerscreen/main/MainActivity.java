@@ -13,7 +13,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -52,7 +55,6 @@ import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.InterstitialApply;
 import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.colorcall.callerscreen.utils.PermistionUtils;
-import com.colorcall.callerscreen.utils.WindowInsetsHelper;
 import com.colorcall.callerscreen.utils.XiaomiUtilities;
 import com.colorcall.callerscreen.video.VideoFragment;
 import com.google.android.gms.ads.appopen.AppOpenAd;
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             loadAds();
         } else {
             binding.layoutAds.setVisibility(View.GONE);
+            updateButtonPosition();
         }
         disableToolTipTextTab();
         analystic.trackEvent(ManagerEvent.mainOpen());
@@ -119,16 +122,27 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         });
         initDialogPermissionXiaomi();
         requestNotificationPermission();
-        WindowInsetsHelper.applyWindowInsets(
-                getWindow(),
-                false,
-                binding.getRoot(),
-                (statusBarHeight, bottomBarHeight) -> {
-                    Log.e("Insets", "StatusBar: " + statusBarHeight + ", NavBar: " + bottomBarHeight);
-                }
-        );
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController insetsController = getWindow().getInsetsController();
+            if (insetsController != null) {
+                insetsController.hide( WindowInsets.Type.navigationBars());
+                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+                    getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
+        }
     }
 
+    private void updateButtonPosition() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.mainDialpadButton.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        binding.mainDialpadButton.setLayoutParams(params);
+    }
     private void initDialogPermissionXiaomi() {
         dialogPermissionXiaomi = new DialogPermissionXiaomi(this);
         dialogPermissionXiaomi.setListener(new DialogPermissionXiaomi.DialogPermissionXiaomiListener() {

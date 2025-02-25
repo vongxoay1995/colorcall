@@ -174,7 +174,6 @@
         <activity
             android:name=".main.MainActivity"
             android:exported="true"
-            android:theme="@style/AppTheme3"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
