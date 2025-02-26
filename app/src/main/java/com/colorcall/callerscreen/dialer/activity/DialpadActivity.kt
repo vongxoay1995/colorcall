@@ -199,6 +199,7 @@ class DialpadActivity : DialerActivity() {
         } else {
             R.drawable.ic_phone_vector
         }
+        binding.btnBack.setOnClickListener { onBackPressed() }
 
         binding.apply {
             val callIcon = resources.getColoredDrawableWithColor(callIconId, properPrimaryColor.getContrastColor())

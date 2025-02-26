@@ -4,11 +4,26 @@
     android:id="@+id/main_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <com.simplemobiletools.commons.views.MySearchMenu
-        android:id="@+id/main_menu"
+    <RelativeLayout
+        android:id="@+id/layout_head"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="?android:attr/actionBarSize"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_back_black" />
+        <com.simplemobiletools.commons.views.MySearchMenu
+            android:id="@+id/main_menu"
+            android:layout_width="0dp"
+            android:layout_toEndOf="@id/btnBack"
+            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_holder"

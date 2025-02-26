@@ -117,7 +117,7 @@ class CallOwnerActivity : DialerActivity() {
         setupTabs()
         Contact.sorting = config.sorting
         checkContactPermissions()
-
+        binding.btnBack.setOnClickListener { onBackPressed() }
     }
 
     override fun onResume() {

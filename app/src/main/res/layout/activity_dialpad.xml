@@ -5,14 +5,29 @@
     android:id="@+id/dialpad_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/dialpad_toolbar"
+    <RelativeLayout
+        android:id="@+id/layout_head"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:menu="@menu/menu_dialpad"
-        app:title="@string/dialpad"
-        app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
+        android:layout_height="?android:attr/actionBarSize"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_12sdp"
+            app:srcCompat="@drawable/ic_back_black" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/dialpad_toolbar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/menu_dialpad"
+            app:title="@string/dialpad"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/btnBack"
+            app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
+    </RelativeLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/dialpad_holder"
