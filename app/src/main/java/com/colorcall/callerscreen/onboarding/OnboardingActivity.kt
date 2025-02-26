@@ -1,21 +1,26 @@
 package com.colorcall.callerscreen.onboarding
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.viewpager.widget.ViewPager
 import com.colorcall.callerscreen.R
+import com.colorcall.callerscreen.databinding.ActivityOnboardingBinding
+import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 
 class OnboardingActivity : AppCompatActivity() {
+    private lateinit var mBinding: ActivityOnboardingBinding
+    private var adapter: ViewPagerAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_onboarding)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        mBinding = ActivityOnboardingBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+        setupViewpager()
+    }
+
+    private fun setupViewpager() {
+        val adapter = ViewPagerAdapter()
+        mBinding.viewPager2.adapter = adapter
+        mBinding.dotsIndicator.attachTo(mBinding.viewPager2)
     }
 }
