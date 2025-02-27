@@ -1,12 +1,12 @@
 package com.colorcall.callerscreen.onboarding
 
-import android.graphics.pdf.PdfDocument.Page
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.databinding.ActivityOnboardingBinding
+import com.colorcall.callerscreen.main.MainActivity
 
 class OnboardingActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityOnboardingBinding
@@ -31,8 +31,7 @@ class OnboardingActivity : AppCompatActivity() {
             if (mBinding.viewPager2.currentItem < onboardingItems.size - 1) {
                 mBinding.viewPager2.currentItem += 1
             } else {
-                // Chuyển sang màn hình chính hoặc kết thúc onboarding
-                Log.e("TAN", "setupViewpager: OK", )
+                moveMain()
             }
         }
         mBinding.viewPager2.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -42,5 +41,10 @@ class OnboardingActivity : AppCompatActivity() {
             }
             override fun onPageScrollStateChanged(state: Int) {}
         })
+    }
+
+    private fun moveMain() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }

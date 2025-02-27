@@ -11,6 +11,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="@dimen/_50sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -33,8 +34,8 @@
             android:layout_marginTop="@dimen/_15sdp"
             app:dotsColor="#175CC5"
             app:dotsCornerRadius="8dp"
-            app:dotsSize="16dp"
-            app:dotsSpacing="4dp"
+            app:dotsSize="13dp"
+            app:dotsSpacing="5dp"
             app:dotsWidthFactor="2.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewPager2"
@@ -50,7 +51,7 @@
             android:background="@drawable/bg_get_start_onboarding"
             android:fontFamily="@font/roboto_medium"
             android:gravity="center"
-            android:paddingVertical="@dimen/_12sdp"
+            android:paddingVertical="@dimen/_10sdp"
             android:text="@string/get_started"
             android:textAllCaps="false"
             android:textColor="@color/white"

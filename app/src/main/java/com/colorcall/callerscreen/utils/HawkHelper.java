@@ -22,6 +22,7 @@ public class HawkHelper {
     private static String IS_SCREEN_CALL = "IS_SCREEN_CALL";
     private static String PRIORITY_ADS = "PRIORITY_ADS";
     private static String IS_AB = "IS_AB";
+    private static String IS_SHOWED_OB = "IS_SHOWED_OB";
 
     public static boolean isLoadDataFirst() {
         return Hawk.get(LOAD_DATA_FIRST_FIRST, false);
@@ -30,6 +31,15 @@ public class HawkHelper {
     public static void setLoadDataFirst(boolean value) {
         Hawk.put(LOAD_DATA_FIRST_FIRST, value);
     }
+
+    public static boolean isShowedOb() {
+        return Hawk.get(IS_SHOWED_OB, false);
+    }
+
+    public static void setShowedOb(boolean value) {
+        Hawk.put(IS_SHOWED_OB, value);
+    }
+
 
     public static ArrayList<Background> getListBackground() {
         return Hawk.get(LIST_BACKGROUND, new ArrayList<>());

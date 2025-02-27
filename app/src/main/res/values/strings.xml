@@ -161,5 +161,6 @@
     <string name="default_phone_app_prompt">Please make this app the default Phone app</string>
     <string name="get_started">Get Started</string>
     <string name="next">Next</string>
+    <string name="this_action_can_show_ads">This action may contain ads</string>
 
 </resources>

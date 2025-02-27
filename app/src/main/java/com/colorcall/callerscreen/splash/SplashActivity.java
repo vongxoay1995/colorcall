@@ -16,10 +16,12 @@ import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.databinding.ActivitySplashBinding;
 import com.colorcall.callerscreen.main.MainActivity;
+import com.colorcall.callerscreen.onboarding.OnboardingActivity;
 import com.colorcall.callerscreen.update.UpdateManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.ConstantAds;
 import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
+import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.JobScreen;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -83,8 +85,18 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         });*/
 
         loadConsentForm();
+        if (!HawkHelper.isShowedOb()){
+            moveOnboarding();
+            HawkHelper.setShowedOb(true);
+            return;
+        }
         checkIAP();
 
+    }
+
+    private void moveOnboarding() {
+      startActivity(new Intent(this, OnboardingActivity.class));
+      finish();
     }
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;

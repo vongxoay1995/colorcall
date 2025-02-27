@@ -1,21 +1,13 @@
 package com.colorcall.callerscreen.onboarding
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
+import com.bumptech.glide.Glide
 import com.colorcall.callerscreen.R
 
 class ViewPagerAdapter(val context: Context, private val items: List<PageData>) : PagerAdapter() {
@@ -32,8 +24,7 @@ class ViewPagerAdapter(val context: Context, private val items: List<PageData>) 
         val imageView = view.findViewById<ImageView>(R.id.img_ob)
         val titleText = view.findViewById<TextView>(R.id.title)
         val descText = view.findViewById<TextView>(R.id.des)
-
-        imageView.setImageResource(item.imageResId)
+        Glide.with(context).load(item.imageResId).into(imageView)
         titleText.text = item.title
         descText.text = item.des
 

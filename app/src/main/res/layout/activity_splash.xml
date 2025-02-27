@@ -95,9 +95,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/loading"
+                android:text="@string/this_action_can_show_ads"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_18sdp" />
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:textSize="@dimen/_14sdp" />
 
             <SeekBar
                 android:id="@+id/seekbar"
