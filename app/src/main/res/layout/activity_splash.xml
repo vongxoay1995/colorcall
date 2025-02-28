@@ -99,16 +99,18 @@
                 android:textColor="@color/white"
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:textSize="@dimen/_14sdp" />
-
-            <SeekBar
+            <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/seekbar"
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="@dimen/_3sdp"
+                android:layout_weight="3"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:max="100"
-                android:progressDrawable="@drawable/bg_seek_bar"
-                android:thumb="@null" />
+                app:indicatorColor="@color/bg_seekBar"
+                app:trackCornerRadius="@dimen/_3sdp"
+                android:indeterminate="true"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_5sdp" />
+
         </LinearLayout>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -35,6 +35,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -390,7 +392,20 @@ public class AppUtils {
         // native ad view with this native ad.
         adView.setNativeAd(nativeAd);
     }
-
+    public static void setFullNav(Activity activity){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController insetsController = activity.getWindow().getInsetsController();
+            if (insetsController != null) {
+                insetsController.hide( WindowInsets.Type.navigationBars());
+                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            activity.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
+        }
+    }
     public static Bitmap getContactPhoto(Context context, String number) {
         Bitmap photo = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.user);

@@ -42,12 +42,12 @@ public class InterstitialUtil {
         return sInterstitial;
     }
 
-    public void init(Context context) {
+    public void init(Context context,String id_ads) {
         mContext = context;
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
         } else {
-            idInter = ConstantAds.id_ads_inter_item_admob;
+            idInter = id_ads;
         }
         loadInterstitial(mContext, 1);
     }

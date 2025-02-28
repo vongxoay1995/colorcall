@@ -13,8 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -49,6 +47,7 @@ import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
+import com.colorcall.callerscreen.utils.ConstantAds;
 import com.colorcall.callerscreen.utils.DialogPermissionXiaomi;
 import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -122,19 +121,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         });
         initDialogPermissionXiaomi();
         requestNotificationPermission();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowInsetsController insetsController = getWindow().getInsetsController();
-            if (insetsController != null) {
-                insetsController.hide( WindowInsets.Type.navigationBars());
-                insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-            }
-        } else {
-                    getWindow().getDecorView().setSystemUiVisibility(
-                             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            );
-        }
+        AppUtils.setFullNav(this);
     }
 
     private void updateButtonPosition() {
@@ -256,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     private void preLoadInter() {
         interstitialUtil = InterstitialUtil.getInstance();
-        interstitialUtil.init(this);
+        interstitialUtil.init(this, ConstantAds.id_ads_inter_item_admob);
         InterstitialApply.getInstance().init(this);
     }
 
@@ -274,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
    public void moveCallOwnerActivity(){
+        HawkHelper.setStateColorCall(true);
        startActivity(new Intent(MainActivity.this, CallOwnerActivity.class));
    }
 

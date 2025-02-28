@@ -14,6 +14,7 @@ import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
+import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.databinding.ActivitySplashBinding;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.onboarding.OnboardingActivity;
@@ -28,6 +29,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.appopen.AppOpenAd;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.ump.FormError;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -45,6 +48,10 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     private boolean isLoadAdError = false;
     private boolean isShowAds = false;
     public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
+    private InterstitialAd mInterstitialAd;
+    private boolean fullAdsLoaded = false;
+    private boolean isShowingInter = false;
+    private boolean loadFailed = false;
 
 
     @Override
@@ -85,18 +92,14 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         });*/
 
         loadConsentForm();
-        if (!HawkHelper.isShowedOb()){
-            moveOnboarding();
-            HawkHelper.setShowedOb(true);
-            return;
-        }
         checkIAP();
 
     }
 
     private void moveOnboarding() {
-      startActivity(new Intent(this, OnboardingActivity.class));
-      finish();
+        startActivity(new Intent(this, OnboardingActivity.class));
+        HawkHelper.setShowedOb(true);
+        finish();
     }
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
@@ -244,19 +247,77 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
 
     private void checkIAP() {
         if (AppUtils.isNetworkConnected(this)) {
-            AdRequest request = new AdRequest.Builder().build();
-            String id_ads = "";
-            if (BuildConfig.DEBUG) {
-                id_ads = ConstantAds.id_ads_open_test;
+            if (!HawkHelper.isShowedOb()) {
+                loadInterAds();
             } else {
-                id_ads = ConstantAds.id_splash_open_admob2;
+                AdRequest request = new AdRequest.Builder().build();
+                String id_ads = "";
+                if (BuildConfig.DEBUG) {
+                    id_ads = ConstantAds.id_ads_open_test;
+                } else {
+                    id_ads = ConstantAds.id_splash_open_admob2;
+                }
+                AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
             }
-            AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+
             jobScreen.startJob(this);
         } else {
             Log.e("TAN", "checkIAP: no net work");
             skip();
         }
+    }
+
+    public void loadInterAds() {
+        isShowingInter=true;
+        String idInter;
+        if (BuildConfig.DEBUG) {
+            idInter = Constant.ID_INTER_TEST;
+        } else {
+            idInter = ConstantAds.inter_splash_cu;
+        }
+        //idInter = ID_ADS;
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this, idInter, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        fullAdsLoaded = true;
+                        mInterstitialAd = interstitialAd;
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                moveOnboarding();
+                                // Called when fullscreen content is dismissed.
+                                Log.e("TAG", "The ad was dismissed.");
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when fullscreen content failed to show.
+                                moveOnboarding();
+                                Log.d("TAG", "The ad failed to show.");
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                mInterstitialAd = null;
+                                isShowAds = true;
+                                Log.e("TAG", "The ad was shown.");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        loadFailed = true;
+                        fullAdsLoaded = false;
+                        mInterstitialAd = null;
+                    }
+                });
     }
 
     @Override
@@ -266,16 +327,28 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             return;
         }
         progress++;
-        binding.seekbar.setProgress(progress);
-        if (appOpenAds != null) {
-            stopJobScreen();
-            isShowAds = true;
-            appOpenAds.show(this);
-            hideLoading();
-        } else if ((!isShowAds && jobScreen.isProgressMax()) || isLoadAdError) {
-            Log.e("TAN", "onProgress: skip");
-            skip();
+        if (isShowingInter){
+            if (mInterstitialAd != null) {
+                stopJobScreen();
+                isShowAds = true;
+                mInterstitialAd.show(this);
+                hideLoading();
+            } else if ((!isShowAds && jobScreen.isProgressMax()) || isLoadAdError) {
+                Log.e("TAN", "onProgress: skip");
+                moveOnboarding();
+            }
+        }else {
+            if (appOpenAds != null) {
+                stopJobScreen();
+                isShowAds = true;
+                appOpenAds.show(this);
+                hideLoading();
+            } else if ((!isShowAds && jobScreen.isProgressMax()) || isLoadAdError) {
+                Log.e("TAN", "onProgress: skip");
+                skip();
+            }
         }
+
     }
 
     @Override

@@ -257,7 +257,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         }*/
         if (requestCode ==REQUEST_CODE_SET_DEFAULT_DIALER) {
             if(isDefaultDialer(this)){
-                HawkHelper.setStateColorCall(isCallState);
+                HawkHelper.setStateColorCall(true);
             }else {
                 binding.swStateApp.setChecked(false);
             }

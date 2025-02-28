@@ -170,6 +170,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         super.onActivityResult(requestCode, resultCode, data);
             if (requestCode ==REQUEST_CODE_SET_DEFAULT_DIALER) {
                 if(isDefaultDialer(this)){
+                    HawkHelper.setStateColorCall(true);
                     setTheme();
                 }else {
                     Toast.makeText(this, getString(R.string.permistion_not_default_dialer), Toast.LENGTH_LONG).show();

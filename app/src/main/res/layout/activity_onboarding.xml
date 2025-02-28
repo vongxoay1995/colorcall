@@ -56,8 +56,24 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/_14sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/layout_ads"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintWidth_percent="0.4" />
+        <RelativeLayout
+            android:id="@+id/layout_ads"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:visibility="visible"
+            android:background="@drawable/border_ads"
+            android:paddingStart="1dp"
+            android:paddingEnd="1dp"
+            android:gravity="center"
+            android:paddingTop="@dimen/_3sdp"
+            android:paddingBottom="@dimen/_3sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

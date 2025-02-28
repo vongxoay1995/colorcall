@@ -119,6 +119,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
             }
         });
+        AppUtils.setFullNav(this);
     }
 
 
@@ -470,6 +471,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
             if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(ApplyActivity.this)) {
                 dialogPermissionXiaomi.show();
             }else  if (isDefaultDialer(this)) {
+                HawkHelper.setStateColorCall(true);
                 applyBgCall();
             } else {
                 Toast.makeText(this, getString(R.string.permistion_not_default_dialer), Toast.LENGTH_LONG).show();

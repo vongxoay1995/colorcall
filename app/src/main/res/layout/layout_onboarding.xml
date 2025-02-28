@@ -33,6 +33,7 @@
         android:textSize="@dimen/_12sdp"
         android:fontFamily="@font/roboto_light"
         android:textColor="#323232"
+        android:layout_marginHorizontal="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

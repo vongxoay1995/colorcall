@@ -162,5 +162,9 @@
     <string name="get_started">Get Started</string>
     <string name="next">Next</string>
     <string name="this_action_can_show_ads">This action may contain ads</string>
+    <string name="title_ob1">Your unique call screen</string>
+    <string name="des_ob1">The call screen is extremely outstanding with both videos and images</string>
+    <string name="title_ob2">Easy to use</string>
+    <string name="des_ob2">Enable permissions and experience your dialer</string>
 
 </resources>
