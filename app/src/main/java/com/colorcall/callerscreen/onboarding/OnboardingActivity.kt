@@ -31,7 +31,7 @@ class OnboardingActivity : AppCompatActivity(), AdListener {
         AppUtils.setFullNav(this)
     }
     private fun loadAds() {
-        bannerAdsUtils!!.setIdAds(ConstantAds.banner_main_admob)
+        bannerAdsUtils!!.setIdAds(ConstantAds.banner_onboarding)
         bannerAdsUtils!!.setAdListener(this)
         bannerAdsUtils!!.loadAds()
     }

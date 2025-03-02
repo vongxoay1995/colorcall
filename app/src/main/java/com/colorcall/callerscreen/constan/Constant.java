@@ -10,6 +10,7 @@ public interface Constant {
     String POLICY_URL = "https://sites.google.com/view/privacypolicyforcolorcallflash";
     int REQUEST_VIDEO = 1;
     int REQUEST_CODE_SET_DEFAULT_DIALER = 95;
+    int REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG = 94;
     int REQUEST_OVERLAY = 0 ;
     int REQUEST_NOTIFICATION_ACCESS =3 ;
     String SHOW_IMG_DELETE = "delete";

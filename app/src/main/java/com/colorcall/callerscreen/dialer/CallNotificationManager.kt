@@ -14,10 +14,13 @@ import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.colorcall.callerscreen.R
+import com.colorcall.callerscreen.broadcast.CallReceiver
 import com.colorcall.callerscreen.call.CallActivity
 import com.colorcall.callerscreen.constan.Constant
 import com.colorcall.callerscreen.dialer.activity.CallDialerActivity
 import com.colorcall.callerscreen.dialer.extensions.powerManager
+import com.colorcall.callerscreen.utils.FlashUtils
+import com.colorcall.callerscreen.utils.HawkHelper
 import com.google.gson.Gson
 import com.simplemobiletools.commons.extensions.notificationManager
 import com.simplemobiletools.commons.extensions.setText
@@ -30,7 +33,7 @@ class CallNotificationManager(private val context: Context) {
     private val DECLINE_CALL_CODE = 1
     private val notificationManager = context.notificationManager
     private val callContactAvatarHelper = CallContactAvatarHelper(context)
-
+    val flashUtils = FlashUtils.getInstance(true, context)
     @SuppressLint("NewApi")
     fun setupNotification(forceLowPriority: Boolean = false) {
         getCallContact(context.applicationContext, CallManager.getPrimaryCall()) { callContact ->
@@ -151,7 +154,12 @@ class CallNotificationManager(private val context: Context) {
                 Log.e("TAN", "setupNotification: ${isNotCallDialerActivity}##${ taskList.isEmpty()}")
 
                 //if (isNotCallDialerActivity || taskList.isEmpty()) {
-                if (callState==2) context.startActivity(activityIntent)
+                if (callState==2){
+                    context.startActivity(activityIntent)
+                    if (HawkHelper.isEnableFlash()) {
+                        Thread(flashUtils).start()
+                    }
+                }
                // }
 
             }

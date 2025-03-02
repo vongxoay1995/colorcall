@@ -8,7 +8,7 @@ public interface ConstantAds {
     String id_ads_open_test = "ca-app-pub-3940256099942544/9257395921";
     String banner_main_admob2 = "ca-app-pub-3134368447261649/3593165656";
     String banner_main_admob = "ca-app-pub-3134368447261649/3593165656";
-    String banner_onboarding = "ca-app-pub-3134368447261649/3593165656";
+    String banner_onboarding = "ca-app-pub-3222539657172474/1724363528";
 
    // String id_ads_inter_item_admob2 = "ca-app-pub-3134368447261649/2906807937";
     String id_ads_inter_item_admob = "ca-app-pub-3222539657172474/2357386636";

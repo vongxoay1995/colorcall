@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.telecom.TelecomManager
+import android.util.Log
 import android.widget.Toast
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.dialer.extensions.getHandleToUse
@@ -41,6 +42,7 @@ class Dialer2Activity : DialerActivity() {
 
     @SuppressLint("MissingPermission")
     private fun initOutgoingCall() {
+        Log.e("TAN", "initOutgoingCall:  -- "+getBlockedNumbers())
         try {
             if (isNumberBlocked(callNumber.toString().replace("tel:", ""), getBlockedNumbers())) {
                 toast(R.string.calling_blocked_number)

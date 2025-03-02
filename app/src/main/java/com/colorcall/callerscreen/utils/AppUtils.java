@@ -1,6 +1,7 @@
 package com.colorcall.callerscreen.utils;
 
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
+import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG;
 import static com.colorcall.callerscreen.utils.FileUtils.createImageFile;
 
 import android.app.Activity;
@@ -626,6 +627,27 @@ public class AppUtils {
                 }
             }
         }
+    public static void launchSetDefaultDialerIntentDialog(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Log.e("TAN", "launchSetDefaultDialerIntent: a");
+            RoleManager roleManager = activity.getSystemService(RoleManager.class);
+            if (roleManager.isRoleAvailable(RoleManager.ROLE_DIALER) && !roleManager.isRoleHeld(RoleManager.ROLE_DIALER)) {
+                Log.e("TAN", "launchSetDefaultDialerIntent: 1");
+                Intent intent = roleManager.createRequestRoleIntent(RoleManager.ROLE_DIALER);
+                activity.startActivityForResult(intent, REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG);
+            }
+        } else {
+            try {
+                Log.e("TAN", "launchSetDefaultDialerIntent: 2");
+                Intent intent = new Intent(TelecomManager.ACTION_CHANGE_DEFAULT_DIALER).putExtra(TelecomManager.EXTRA_CHANGE_DEFAULT_DIALER_PACKAGE_NAME, activity.getPackageName());
+                activity.startActivityForResult(intent, REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG);
+            } catch (ActivityNotFoundException e) {
+                //                    toast(R.string.no_app_found)
+            } catch ( Exception e) {
+                //showErrorToast(e)
+            }
+        }
+    }
     public static boolean isDefaultDialer(Context context) {
         TelecomManager telecomManager = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
         String defaultDialerPackage = telecomManager.getDefaultDialerPackage();

@@ -8,6 +8,7 @@ import android.telecom.CallAudioState
 import android.telecom.InCallService
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.colorcall.callerscreen.broadcast.CallReceiver
 import com.colorcall.callerscreen.dialer.CallManager
 import com.colorcall.callerscreen.dialer.CallNotificationManager
 import com.colorcall.callerscreen.dialer.NoCall
@@ -15,10 +16,11 @@ import com.colorcall.callerscreen.dialer.activity.CallDialerActivity
 import com.colorcall.callerscreen.dialer.extensions.config
 import com.colorcall.callerscreen.dialer.extensions.isOutgoing
 import com.colorcall.callerscreen.dialer.extensions.powerManager
+import com.colorcall.callerscreen.utils.FlashUtils
 
 class CallDialerService : InCallService() {
     private val callNotificationManager by lazy { CallNotificationManager(this) }
-
+    val flashUtils = FlashUtils.getInstance(true, this)
     private val callListener = object : Call.Callback() {
         override fun onStateChanged(call: Call, state: Int) {
             super.onStateChanged(call, state)
@@ -29,6 +31,9 @@ class CallDialerService : InCallService() {
                      .getInstance(this@CallDialerService)
                  localBroadcastManager.sendBroadcast(Intent("com.colorcall.endCall"))
                  callNotificationManager.cancelNotification()
+                 if (flashUtils != null && flashUtils.isRunning) {
+                     flashUtils.stop()
+                 }
              } else {
                  Log.e("TAN", "onStateChanged: TAN 1" )
                  callNotificationManager.setupNotification()

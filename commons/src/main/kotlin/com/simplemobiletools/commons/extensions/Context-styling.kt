@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
+import android.util.Log
 import android.view.ViewGroup
 import androidx.loader.content.CursorLoader
 import com.simplemobiletools.commons.R
@@ -15,8 +16,11 @@ import com.simplemobiletools.commons.views.*
 
 // handle system default theme (Material You) specially as the color is taken from the system, not hardcoded by us
 fun Context.getProperTextColor() = if (baseConfig.isUsingSystemTheme) {
+    Log.e("TAN", "getProperTextColor: "+resources.getColor(R.color.you_neutral_text_color, theme))
     resources.getColor(R.color.you_neutral_text_color, theme)
 } else {
+    Log.e("TAN", "getProperTextColor22: "+ baseConfig.textColor)
+
     baseConfig.textColor
 }
 

@@ -6,6 +6,7 @@ import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.widget.ImageView

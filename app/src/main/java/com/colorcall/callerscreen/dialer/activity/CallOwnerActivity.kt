@@ -111,6 +111,9 @@ class CallOwnerActivity : DialerActivity() {
             launchSetDefaultDialerIntent()
         }
 */
+
+        binding.btnBack.setColorFilter(getProperTextColor())
+
         if (isQPlus() && (config.blockUnknownNumbers || config.blockHiddenNumbers)) {
             setDefaultCallerIdApp()
         }

@@ -166,5 +166,6 @@
     <string name="des_ob1">The call screen is extremely outstanding with both videos and images</string>
     <string name="title_ob2">Easy to use</string>
     <string name="des_ob2">Enable permissions and experience your dialer</string>
+    <string name="please_allow_call_dialer">Please allow Call Color Screen to display incomming calls</string>
 
 </resources>

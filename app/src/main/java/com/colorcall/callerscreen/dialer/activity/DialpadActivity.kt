@@ -12,6 +12,7 @@ import android.os.Looper
 import android.provider.Telephony.Sms.Intents.SECRET_CODE_ACTION
 import android.telephony.PhoneNumberUtils
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -85,8 +86,8 @@ class DialpadActivity : DialerActivity() {
         binding.apply {
             updateMaterialActivityViews(dialpadCoordinator, dialpadHolder, useTransparentNavigation = true, useTopSearchMenu = false)
         //    setupMaterialScrollListener(dialpadList, dialpadToolbar)
+            btnBack.setColorFilter(getProperTextColor())
         }
-
         updateNavigationBarColor(getProperBackgroundColor())
 
         if (checkAppSideloading()) {
@@ -361,6 +362,7 @@ class DialpadActivity : DialerActivity() {
     private fun initCall(number: String = binding.dialpadInput.value, handleIndex: Int) {
         if (number.isNotEmpty()) {
             if (handleIndex != -1 && areMultipleSIMsAvailable()) {
+                Log.e("TAN", "initCall: 1")
                 if (config.showCallConfirmation) {
                     CallConfirmationDialog(this, number) {
                         callContactWithSim(number, handleIndex == 0)
@@ -369,6 +371,7 @@ class DialpadActivity : DialerActivity() {
                     callContactWithSim(number, handleIndex == 0)
                 }
             } else {
+                Log.e("TAN", "initCall: 2")
                 if (config.showCallConfirmation) {
                     CallConfirmationDialog(this, number) {
                         startCallIntent(number)
