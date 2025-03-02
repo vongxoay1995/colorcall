@@ -91,10 +91,11 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     DialogPermissionXiaomi dialogPermissionXiaomi;
     DialogPermissionCall dialogPermissionCall;
     boolean isPressGotoSetting;
+    boolean isPressLaunchDialer;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding= ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
         googleMobileAdsConsentManager = GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
@@ -131,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         binding.mainDialpadButton.setLayoutParams(params);
     }
+
     private void initDialogPermissionXiaomi() {
         dialogPermissionXiaomi = new DialogPermissionXiaomi(this);
         dialogPermissionXiaomi.setListener(new DialogPermissionXiaomi.DialogPermissionXiaomiListener() {
@@ -189,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !dialogPermissionCall.isShowing()) {
             if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
                 notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
@@ -249,10 +251,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             @Override
             public void onClick(View view) {
                 if (!isDefaultDialer(MainActivity.this)) {
-                    AppUtils.launchSetDefaultDialerIntent(MainActivity.this);
-                } else if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(MainActivity.this)) {
-                    dialogPermissionXiaomi.show();
-                }else {
+                    dialogPermissionCall.show();
+                } else {
                     moveCallOwnerActivity();
                 }
             }
@@ -269,40 +269,41 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     protected void onResume() {
         if (isPressGotoSetting) {
             isPressGotoSetting = false;
-            if (!AppUtils.checkPermissionXiaomi(MainActivity.this)){
+            if (!AppUtils.checkPermissionXiaomi(MainActivity.this)) {
                 Toast.makeText(MainActivity.this, getString(R.string.request_permission_for_feature), Toast.LENGTH_SHORT).show();
-            }else {
+            } else if (isPressLaunchDialer) {
+                isPressLaunchDialer = false;
                 moveCallOwnerActivity();
             }
         }
         super.onResume();
     }
 
-   public void moveCallOwnerActivity(){
+    public void moveCallOwnerActivity() {
         HawkHelper.setStateColorCall(true);
-       startActivity(new Intent(MainActivity.this, CallOwnerActivity.class));
-   }
+        startActivity(new Intent(MainActivity.this, CallOwnerActivity.class));
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode==RESULT_OK){
-            if (requestCode==REQUEST_CODE_SET_DEFAULT_DIALER){
-                if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(MainActivity.this)) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER) {
+                if (XiaomiUtilities.isMIUI() && !AppUtils.checkPermissionXiaomi(MainActivity.this)) {
                     dialogPermissionXiaomi.show();
-                }else {
+                } else {
                     moveCallOwnerActivity();
                 }
-            }else if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG){
-                if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(MainActivity.this)&&dialogPermissionCall.isShowing()) {
+            } else if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG) {
+                if (XiaomiUtilities.isMIUI() && !AppUtils.checkPermissionXiaomi(MainActivity.this) && dialogPermissionCall.isShowing()) {
                     dialogPermissionCall.setStateSw(true);
                     dialogPermissionCall.dismiss();
                     dialogPermissionXiaomi.show();
-                }else {
+                } else {
                     dialogPermissionCall.setStateSw(true);
                     dialogPermissionCall.dismiss();
                 }
             }
-        }else if (dialogPermissionCall.isShowing()){
+        } else if (dialogPermissionCall.isShowing()) {
             dialogPermissionCall.setStateSw(false);
         }
         super.onActivityResult(requestCode, resultCode, data);
