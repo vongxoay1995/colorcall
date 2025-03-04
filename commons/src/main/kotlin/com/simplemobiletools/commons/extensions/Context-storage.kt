@@ -90,9 +90,17 @@ fun Context.getStorageDirectories(): Array<String> {
     val rawExternalStorage = System.getenv("EXTERNAL_STORAGE")
     val rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE")
     val rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET")
+
     if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
-        getExternalFilesDirs(null).filterNotNull().map { it.absolutePath }
-            .mapTo(paths) { it.substring(0, it.indexOf("Android/data")) }
+        getExternalFilesDirs(null).filterNotNull().map { it.absolutePath }.forEach { path ->
+            val androidDataIndex = path.indexOf("Android/data")
+            if (androidDataIndex != -1) {
+                paths.add(path.substring(0, androidDataIndex))
+            } else {
+                // Nếu không có "Android/data", thêm đường dẫn gốc hoặc bỏ qua
+                paths.add(path) // Hoặc xử lý theo cách khác tùy yêu cầu
+            }
+        }
     } else {
         val path = Environment.getExternalStorageDirectory().absolutePath
         val folders = Pattern.compile("/").split(path)
@@ -113,12 +121,13 @@ fun Context.getStorageDirectories(): Array<String> {
     }
 
     if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
-        val rawSecondaryStorages = rawSecondaryStoragesStr!!.split(File.pathSeparator.toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
+        val rawSecondaryStorages = rawSecondaryStoragesStr!!.split(File.pathSeparator.toRegex())
+            .dropLastWhile(String::isEmpty).toTypedArray()
         Collections.addAll(paths, *rawSecondaryStorages)
     }
+
     return paths.map { it.trimEnd('/') }.toTypedArray()
 }
-
 fun Context.getHumanReadablePath(path: String): String {
     return getString(
         when (path) {
