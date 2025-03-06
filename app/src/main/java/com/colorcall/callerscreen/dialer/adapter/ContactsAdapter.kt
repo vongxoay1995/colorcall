@@ -6,9 +6,12 @@ import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,15 +31,34 @@ import com.simplemobiletools.commons.adapters.MyRecyclerViewAdapter
 import com.simplemobiletools.commons.databinding.ItemContactWithoutNumberBinding
 import com.simplemobiletools.commons.databinding.ItemContactWithoutNumberGridBinding
 import com.simplemobiletools.commons.dialogs.ConfirmationDialog
-import com.simplemobiletools.commons.dialogs.FeatureLockedDialog
-import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.*
+import com.simplemobiletools.commons.extensions.addLockedLabelIfNeeded
+import com.simplemobiletools.commons.extensions.applyColorFilter
+import com.simplemobiletools.commons.extensions.beGone
+import com.simplemobiletools.commons.extensions.beVisibleIf
+import com.simplemobiletools.commons.extensions.blockContact
+import com.simplemobiletools.commons.extensions.getTextSize
+import com.simplemobiletools.commons.extensions.highlightTextFromNumbers
+import com.simplemobiletools.commons.extensions.highlightTextPart
+import com.simplemobiletools.commons.extensions.isContactBlocked
+import com.simplemobiletools.commons.extensions.launchSendSMSIntent
+import com.simplemobiletools.commons.extensions.setupViewBackground
+import com.simplemobiletools.commons.extensions.shortcutManager
+import com.simplemobiletools.commons.extensions.toast
+import com.simplemobiletools.commons.extensions.unblockContact
+import com.simplemobiletools.commons.helpers.CONTACTS_GRID_MAX_COLUMNS_COUNT
+import com.simplemobiletools.commons.helpers.PERMISSION_CALL_PHONE
+import com.simplemobiletools.commons.helpers.PERMISSION_WRITE_CONTACTS
+import com.simplemobiletools.commons.helpers.SimpleContactsHelper
+import com.simplemobiletools.commons.helpers.VIEW_TYPE_GRID
+import com.simplemobiletools.commons.helpers.VIEW_TYPE_LIST
+import com.simplemobiletools.commons.helpers.isNougatPlus
+import com.simplemobiletools.commons.helpers.isOreoPlus
 import com.simplemobiletools.commons.interfaces.ItemMoveCallback
 import com.simplemobiletools.commons.interfaces.ItemTouchHelperContract
 import com.simplemobiletools.commons.interfaces.StartReorderDragListener
 import com.simplemobiletools.commons.models.contacts.Contact
 import com.simplemobiletools.commons.views.MyRecyclerView
-import java.util.*
+import java.util.Collections
 
 class ContactsAdapter(
     activity: DialerActivity,
@@ -91,7 +113,6 @@ class ContactsAdapter(
             findItem(R.id.cab_call_sim_2).isVisible = hasMultipleSIMs && isOneItemSelected
             findItem(R.id.cab_remove_default_sim).isVisible = isOneItemSelected && (activity.config.getCustomSIM(selectedNumber) ?: "") != ""
 
-            findItem(R.id.cab_delete).isVisible = showDeleteButton
             findItem(R.id.cab_create_shortcut).title = activity.addLockedLabelIfNeeded(R.string.create_shortcut)
             findItem(R.id.cab_create_shortcut).isVisible = isOneItemSelected && isOreoPlus()
             findItem(R.id.cab_view_details).isVisible = isOneItemSelected
@@ -112,7 +133,6 @@ class ContactsAdapter(
             R.id.cab_call_sim_1 -> callContact(true)
             R.id.cab_call_sim_2 -> callContact(false)
             R.id.cab_remove_default_sim -> removeDefaultSIM()
-            R.id.cab_delete -> askConfirmDelete()
             R.id.cab_send_sms -> sendSMS()
             R.id.cab_view_details -> viewContactDetails()
             R.id.cab_create_shortcut -> tryCreateShortcut()
@@ -172,8 +192,14 @@ class ContactsAdapter(
 
     private fun tryBlockingUnblocking() {
         val contact = getSelectedItems().firstOrNull() ?: return
-
-        if (activity.isOrWasThankYouInstalled()) {
+        activity.isContactBlocked(contact) { blocked ->
+            if (blocked) {
+                tryUnblocking(contact)
+            } else {
+                tryBlocking(contact)
+            }
+        }
+        /*if (activity.isOrWasThankYouInstalled()) {
             activity.isContactBlocked(contact) { blocked ->
                 if (blocked) {
                     tryUnblocking(contact)
@@ -183,7 +209,7 @@ class ContactsAdapter(
             }
         } else {
             FeatureLockedDialog(activity) { }
-        }
+        }*/
     }
 
     private fun tryBlocking(contact: Contact) {
@@ -314,11 +340,13 @@ class ContactsAdapter(
     }
 
     private fun tryCreateShortcut() {
-        if (activity.isOrWasThankYouInstalled()) {
+       /* if (activity.isOrWasThankYouInstalled()) {
             createShortcut()
         } else {
             FeatureLockedDialog(activity) { }
-        }
+        }*/
+        createShortcut()
+
     }
 
     @SuppressLint("NewApi")
