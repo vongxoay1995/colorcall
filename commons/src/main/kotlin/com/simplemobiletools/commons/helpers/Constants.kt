@@ -363,6 +363,7 @@ const val SIDELOADING_FALSE = 2
 // default tabs
 const val TAB_LAST_USED = 0
 const val TAB_CONTACTS = 1
+const val TAB_DIAPAD = 3
 const val TAB_FAVORITES = 2
 const val TAB_CALL_HISTORY = 4
 const val TAB_GROUPS = 8

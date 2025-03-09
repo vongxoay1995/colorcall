@@ -6,11 +6,10 @@ import androidx.viewpager.widget.PagerAdapter
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.dialer.activity.DialerActivity
 import com.colorcall.callerscreen.dialer.extensions.config
-import com.colorcall.callerscreen.dialer.tabsList
-import com.simplemobiletools.commons.helpers.TAB_CALL_HISTORY
-import com.simplemobiletools.commons.helpers.TAB_CONTACTS
-import com.simplemobiletools.commons.helpers.TAB_FAVORITES
 import com.colorcall.callerscreen.dialer.fragments.MyViewPagerFragment
+import com.colorcall.callerscreen.dialer.tabsList
+import com.simplemobiletools.commons.helpers.TAB_CONTACTS
+import com.simplemobiletools.commons.helpers.TAB_DIAPAD
 
 class ViewPagerAdapter(val activity: DialerActivity) : PagerAdapter() {
 
@@ -37,18 +36,21 @@ class ViewPagerAdapter(val activity: DialerActivity) : PagerAdapter() {
     private fun getFragment(position: Int): Int {
         val showTabs = activity.config.showTabs
         val fragments = arrayListOf<Int>()
+        if (showTabs and TAB_DIAPAD > 0) {
+            fragments.add(R.layout.fragment_diapad)
+        }
         if (showTabs and TAB_CONTACTS > 0) {
             fragments.add(R.layout.fragment_contacts)
         }
 
-        if (showTabs and TAB_FAVORITES > 0) {
+       /* if (showTabs and TAB_FAVORITES > 0) {
             fragments.add(R.layout.fragment_favorites)
         }
 
         if (showTabs and TAB_CALL_HISTORY > 0) {
             fragments.add(R.layout.fragment_recents)
         }
-
+*/
         return if (position < fragments.size) fragments[position] else fragments.last()
     }
 }

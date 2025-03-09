@@ -11,6 +11,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -27,6 +28,7 @@ import com.colorcall.callerscreen.dialer.extensions.beGoneIf
 import com.colorcall.callerscreen.dialer.extensions.config
 import com.colorcall.callerscreen.dialer.extensions.launchCreateNewContactIntent
 import com.colorcall.callerscreen.dialer.fragments.ContactsFragment
+import com.colorcall.callerscreen.dialer.fragments.DialpadFragment
 import com.colorcall.callerscreen.dialer.fragments.FavoritesFragment
 import com.colorcall.callerscreen.dialer.fragments.MyViewPagerFragment
 import com.colorcall.callerscreen.dialer.fragments.RecentsFragment
@@ -44,6 +46,7 @@ import com.simplemobiletools.commons.extensions.getContrastColor
 import com.simplemobiletools.commons.extensions.getProperBackgroundColor
 import com.simplemobiletools.commons.extensions.getProperPrimaryColor
 import com.simplemobiletools.commons.extensions.getProperTextColor
+import com.simplemobiletools.commons.extensions.launchActivityIntent
 import com.simplemobiletools.commons.extensions.onGlobalLayout
 import com.simplemobiletools.commons.extensions.onTabSelectionChanged
 import com.simplemobiletools.commons.extensions.shortcutManager
@@ -53,15 +56,12 @@ import com.simplemobiletools.commons.extensions.updateBottomTabItemColors
 import com.simplemobiletools.commons.extensions.updateTextColors
 import com.simplemobiletools.commons.extensions.viewBinding
 import com.simplemobiletools.commons.helpers.CONTACTS_GRID_MAX_COLUMNS_COUNT
+import com.simplemobiletools.commons.helpers.KEY_PHONE
 import com.simplemobiletools.commons.helpers.PERMISSION_READ_CONTACTS
 import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_CALLER_ID
 import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_DIALER
-import com.simplemobiletools.commons.helpers.TAB_CALL_HISTORY
 import com.simplemobiletools.commons.helpers.TAB_CONTACTS
-import com.simplemobiletools.commons.helpers.TAB_FAVORITES
-import com.simplemobiletools.commons.helpers.TAB_LAST_USED
-import com.simplemobiletools.commons.helpers.VIEW_TYPE_GRID
-import com.simplemobiletools.commons.helpers.ensureBackgroundThread
+import com.simplemobiletools.commons.helpers.TAB_DIAPAD
 import com.simplemobiletools.commons.helpers.isNougatMR1Plus
 import com.simplemobiletools.commons.helpers.isQPlus
 import com.simplemobiletools.commons.models.RadioItem
@@ -86,32 +86,6 @@ class CallOwnerActivity : DialerActivity() {
         updateMaterialActivityViews(binding.mainCoordinator, binding.mainHolder, useTransparentNavigation = false, useTopSearchMenu = true)
 
         launchedDialer = savedInstanceState?.getBoolean(OPEN_DIAL_PAD_AT_LAUNCH) ?: false
-
-       /* if (isDefaultDialer()) {
-            checkContactPermissions()
-
-            if (!config.wasOverlaySnackbarConfirmed && !Settings.canDrawOverlays(this)) {
-                val snackbar = Snackbar.make(binding.mainHolder, R.string.allow_displaying_over_other_apps, Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok) {
-                    config.wasOverlaySnackbarConfirmed = true
-                    startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION))
-                }
-
-                snackbar.setBackgroundTint(getProperBackgroundColor().darkenColor())
-                snackbar.setTextColor(getProperTextColor())
-                snackbar.setActionTextColor(getProperTextColor())
-                snackbar.show()
-            }
-
-            handleNotificationPermission { granted ->
-                if (!granted) {
-                    PermissionRequiredDialog(this, R.string.allow_notifications_incoming_calls, { openNotificationSettings() })
-                }
-            }
-        } else {
-            launchSetDefaultDialerIntent()
-        }
-*/
-
         binding.btnBack.setColorFilter(getProperTextColor())
 
         if (isQPlus() && (config.blockUnknownNumbers || config.blockHiddenNumbers)) {
@@ -145,7 +119,7 @@ class CallOwnerActivity : DialerActivity() {
         val configStartNameWithSurname = config.startNameWithSurname
         if (storedStartNameWithSurname != configStartNameWithSurname) {
             getContactsFragment()?.startNameWithSurnameChanged(configStartNameWithSurname)
-            getFavoritesFragment()?.startNameWithSurnameChanged(configStartNameWithSurname)
+           // getFavoritesFragment()?.startNameWithSurnameChanged(configStartNameWithSurname)
             storedStartNameWithSurname = config.startNameWithSurname
         }
 
@@ -161,9 +135,9 @@ class CallOwnerActivity : DialerActivity() {
         }
 
         checkShortcuts()
-        Handler().postDelayed({
+  /*      Handler().postDelayed({
             getRecentsFragment()?.refreshItems()
-        }, 2000)
+        }, 2000)*/
     }
 
     override fun onPause() {
@@ -206,15 +180,37 @@ class CallOwnerActivity : DialerActivity() {
     private fun refreshMenuItems() {
         val currentFragment = getCurrentFragment()
         binding.mainMenu.getToolbar().menu.apply {
-            findItem(R.id.clear_call_history).isVisible = currentFragment == getRecentsFragment()
+            //findItem(R.id.clear_call_history).isVisible = currentFragment == getRecentsFragment()
             findItem(R.id.sort).isVisible = currentFragment != getRecentsFragment()
             findItem(R.id.create_new_contact).isVisible = currentFragment == getContactsFragment()
-            findItem(R.id.change_view_type).isVisible = currentFragment == getFavoritesFragment()
-            findItem(R.id.column_count).isVisible = currentFragment == getFavoritesFragment() && config.viewType == VIEW_TYPE_GRID
+           // findItem(R.id.change_view_type).isVisible = currentFragment == getFavoritesFragment()
+          //  findItem(R.id.column_count).isVisible = currentFragment == getFavoritesFragment() && config.viewType == VIEW_TYPE_GRID
         }
     }
+    private fun addNumberToContact() {
+        Log.e("TAN", "addNumberToContact: getCurrentFragment ${binding.viewPager.currentItem} ", )
+        if (binding.viewPager.currentItem == 0){
+            Log.e("TAN", "addNumberToContact: ", )
+            val value = (getCurrentFragment() as DialpadFragment).getEdtNumber().text.toString()
+            Intent().apply {
+                action = Intent.ACTION_INSERT_OR_EDIT
+                type = "vnd.android.cursor.item/contact"
+                putExtra(KEY_PHONE, value)
+                launchActivityIntent(this)
+            }
+        }
 
+    }
     private fun setupOptionsMenu() {
+        val menuItem = binding.dialpadToolbar.menu.findItem(R.id.add_number_to_contact)
+        menuItem?.icon?.setTint(resources.getColor(R.color.black))
+        binding.dialpadToolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.add_number_to_contact -> addNumberToContact()
+                else -> return@setOnMenuItemClickListener false
+            }
+            return@setOnMenuItemClickListener true
+        }
         binding.mainMenu.apply {
             getToolbar().inflateMenu(R.menu.menu)
             toggleHideOnScroll(false)
@@ -232,9 +228,9 @@ class CallOwnerActivity : DialerActivity() {
 
             getToolbar().setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.clear_call_history -> clearCallHistory()
+                 //   R.id.clear_call_history -> clearCallHistory()
                     R.id.create_new_contact -> launchCreateNewContactIntent()
-                    R.id.sort -> showSortingDialog(showCustomSorting = getCurrentFragment() is FavoritesFragment)
+               //     R.id.sort -> showSortingDialog(showCustomSorting = getCurrentFragment() is FavoritesFragment)
                     R.id.filter -> showFilterDialog()
                 //    R.id.settings -> launchSettings()
                     R.id.change_view_type -> changeViewType()
@@ -328,6 +324,7 @@ class CallOwnerActivity : DialerActivity() {
 
         getInactiveTabIndexes(binding.viewPager.currentItem).forEach { index ->
             val inactiveView = binding.mainTabsHolder.getTabAt(index)?.customView
+            Log.e("TAN", "setupTabColors: $index", )
             updateBottomTabItemColors(inactiveView, false, getDeselectedTabDrawableIds()[index])
         }
 
@@ -341,18 +338,23 @@ class CallOwnerActivity : DialerActivity() {
     private fun getSelectedTabDrawableIds(): List<Int> {
         val showTabs = config.showTabs
         val icons = mutableListOf<Int>()
-
+        if (showTabs and TAB_DIAPAD != 0) {
+            icons.add(R.drawable.diapad_fill)
+        }
         if (showTabs and TAB_CONTACTS != 0) {
             icons.add(R.drawable.ic_person_vector)
         }
 
+
+
+/*
         if (showTabs and TAB_FAVORITES != 0) {
             icons.add(R.drawable.ic_star_vector)
         }
 
         if (showTabs and TAB_CALL_HISTORY != 0) {
             icons.add(R.drawable.ic_clock_filled_vector)
-        }
+        }*/
 
         return icons
     }
@@ -360,18 +362,20 @@ class CallOwnerActivity : DialerActivity() {
     private fun getDeselectedTabDrawableIds(): ArrayList<Int> {
         val showTabs = config.showTabs
         val icons = ArrayList<Int>()
-
+        if (showTabs and TAB_DIAPAD != 0) {
+            icons.add(R.drawable.diapad_stroke)
+        }
         if (showTabs and TAB_CONTACTS != 0) {
             icons.add(R.drawable.ic_person_outline_vector)
         }
 
-        if (showTabs and TAB_FAVORITES != 0) {
+       /* if (showTabs and TAB_FAVORITES != 0) {
             icons.add(R.drawable.ic_star_outline_vector)
         }
 
         if (showTabs and TAB_CALL_HISTORY != 0) {
             icons.add(R.drawable.ic_clock_vector)
-        }
+        }*/
 
         return icons
     }
@@ -388,6 +392,13 @@ class CallOwnerActivity : DialerActivity() {
                 getAllFragments().forEach {
                     it?.finishActMode()
                 }
+                if(position == 0){
+                    binding.mainMenu.visibility = View.GONE
+                    binding.dialpadToolbar.visibility = View.VISIBLE
+                }else{
+                    binding.mainMenu.visibility = View.VISIBLE
+                    binding.dialpadToolbar.visibility = View.GONE
+                }
                 refreshMenuItems()
             }
         })
@@ -398,13 +409,13 @@ class CallOwnerActivity : DialerActivity() {
                 var wantedTab = getDefaultTab()
 
                 // open the Recents tab if we got here by clicking a missed call notification
-                if (intent.action == Intent.ACTION_VIEW && config.showTabs and TAB_CALL_HISTORY > 0) {
+             /*   if (intent.action == Intent.ACTION_VIEW && config.showTabs and TAB_CALL_HISTORY > 0) {
                     wantedTab = binding.mainTabsHolder.tabCount - 1
 
                     ensureBackgroundThread {
                         clearMissedCalls()
                     }
-                }
+                }*/
 
                 binding.mainTabsHolder.getTabAt(wantedTab)?.select()
                 refreshMenuItems()
@@ -457,9 +468,8 @@ class CallOwnerActivity : DialerActivity() {
 
     private fun getTabIcon(position: Int): Drawable {
         val drawableId = when (position) {
-            0 -> R.drawable.ic_person_vector
-            1 -> R.drawable.ic_star_vector
-            else -> R.drawable.ic_clock_vector
+            0 -> R.drawable.diapad_fill
+            else -> R.drawable.ic_person_vector
         }
 
         return resources.getColoredDrawableWithColor(drawableId, getProperTextColor())
@@ -467,9 +477,10 @@ class CallOwnerActivity : DialerActivity() {
 
     private fun getTabLabel(position: Int): String {
         val stringId = when (position) {
-            0 -> R.string.contacts_tab
-            1 -> R.string.favorites_tab
-            else -> R.string.call_history_tab
+            0 -> R.string.dialpad
+           // 1 -> R.string.favorites_tab
+           // else -> R.string.call_history_tab
+            else -> R.string.contacts_tab
         }
 
         return resources.getString(stringId)
@@ -502,25 +513,28 @@ class CallOwnerActivity : DialerActivity() {
 
     fun refreshFragments() {
         getContactsFragment()?.refreshItems()
-        getFavoritesFragment()?.refreshItems()
-        getRecentsFragment()?.refreshItems()
+        //getFavoritesFragment()?.refreshItems()
+        //getRecentsFragment()?.refreshItems()
     }
 
     private fun getAllFragments(): ArrayList<MyViewPagerFragment<*>?> {
         val showTabs = config.showTabs
         val fragments = arrayListOf<MyViewPagerFragment<*>?>()
 
+        if (showTabs and TAB_DIAPAD > 0) {
+            fragments.add(getDiapadFragment())
+        }
         if (showTabs and TAB_CONTACTS > 0) {
             fragments.add(getContactsFragment())
         }
 
-        if (showTabs and TAB_FAVORITES > 0) {
+       /* if (showTabs and TAB_FAVORITES > 0) {
             fragments.add(getFavoritesFragment())
         }
 
         if (showTabs and TAB_CALL_HISTORY > 0) {
             fragments.add(getRecentsFragment())
-        }
+        }*/
 
         return fragments
     }
@@ -529,13 +543,15 @@ class CallOwnerActivity : DialerActivity() {
 
     private fun getContactsFragment(): ContactsFragment? = findViewById(R.id.contacts_fragment)
 
+    private fun getDiapadFragment(): DialpadFragment? = findViewById(R.id.diapad_fragment)
+
     private fun getFavoritesFragment(): FavoritesFragment? = findViewById(R.id.favorites_fragment)
 
     private fun getRecentsFragment(): RecentsFragment? = findViewById(R.id.recents_fragment)
 
     private fun getDefaultTab(): Int {
         val showTabsMask = config.showTabs
-        return when (config.defaultTab) {
+        /*return when (config.defaultTab) {
             TAB_LAST_USED -> if (config.lastUsedViewPagerPage < binding.mainTabsHolder.tabCount) config.lastUsedViewPagerPage else 0
             TAB_CONTACTS -> 0
             TAB_FAVORITES -> if (showTabsMask and TAB_CONTACTS > 0) 1 else 0
@@ -558,7 +574,8 @@ class CallOwnerActivity : DialerActivity() {
                     0
                 }
             }
-        }
+        }*/
+        return 0
     }
 
     @SuppressLint("MissingPermission")
@@ -621,5 +638,12 @@ class CallOwnerActivity : DialerActivity() {
             cachedContacts.addAll(contacts)
         } catch (e: Exception) {
         }
+    }
+
+    fun visibleMenuAdd(value:Boolean) {
+        Log.e("TAN", "visibleMenuAdd: value $value", )
+        val menuItem = binding.dialpadToolbar.menu.findItem(R.id.add_number_to_contact)
+        menuItem.isVisible = value
+
     }
 }

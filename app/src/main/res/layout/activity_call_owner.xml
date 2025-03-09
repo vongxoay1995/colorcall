@@ -19,9 +19,19 @@
         <com.simplemobiletools.commons.views.MySearchMenu
             android:id="@+id/main_menu"
             android:layout_width="0dp"
+            android:visibility="gone"
             android:layout_toEndOf="@id/btnBack"
             android:layout_alignParentEnd="true"
             android:layout_height="wrap_content" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/dialpad_toolbar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/menu_dialpad"
+            app:title="@string/dialpad"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/btnBack"
+            app:titleTextAppearance="@style/AppTheme.ActionBar.TitleTextStyle" />
     </RelativeLayout>
 
 
@@ -53,6 +63,7 @@
             app:backgroundTint="@color/color_primary"
             app:layout_constraintBottom_toTopOf="@+id/main_tabs_holder"
             app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
             app:rippleColor="@color/pressed_item_foreground" />
 
         <com.google.android.material.tabs.TabLayout

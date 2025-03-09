@@ -1,8 +1,7 @@
 package com.colorcall.callerscreen.dialer
 
-import com.simplemobiletools.commons.helpers.TAB_CALL_HISTORY
 import com.simplemobiletools.commons.helpers.TAB_CONTACTS
-import com.simplemobiletools.commons.helpers.TAB_FAVORITES
+import com.simplemobiletools.commons.helpers.TAB_DIAPAD
 
 // shared prefs
 const val SPEED_DIAL = "speed_dial"
@@ -20,9 +19,11 @@ const val DIALPAD_BEEPS = "dialpad_beeps"
 const val HIDE_DIALPAD_NUMBERS = "hide_dialpad_numbers"
 const val ALWAYS_SHOW_FULLSCREEN = "always_show_fullscreen"
 
-const val ALL_TABS_MASK = TAB_CONTACTS or TAB_FAVORITES or TAB_CALL_HISTORY
+//const val ALL_TABS_MASK = TAB_CONTACTS or TAB_FAVORITES or TAB_CALL_HISTORY
+const val ALL_TABS_MASK = TAB_DIAPAD or TAB_CONTACTS
 
-val tabsList = arrayListOf(TAB_CONTACTS, TAB_FAVORITES, TAB_CALL_HISTORY)
+//val tabsList = arrayListOf(TAB_CONTACTS, TAB_FAVORITES, TAB_CALL_HISTORY)
+val tabsList = arrayListOf(TAB_DIAPAD,TAB_CONTACTS, )
 
 private const val PATH = "com.simplemobiletools.dialer.action."
 const val ACCEPT_CALL = PATH + "accept_call"

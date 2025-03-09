@@ -1260,7 +1260,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
     }
 
     @SuppressLint("InlinedApi")
-    protected fun launchSetDefaultDialerIntent() {
+    fun launchSetDefaultDialerIntent() {
         if (isQPlus()) {
             val roleManager = getSystemService(RoleManager::class.java)
             if (roleManager!!.isRoleAvailable(RoleManager.ROLE_DIALER) && !roleManager.isRoleHeld(RoleManager.ROLE_DIALER)) {

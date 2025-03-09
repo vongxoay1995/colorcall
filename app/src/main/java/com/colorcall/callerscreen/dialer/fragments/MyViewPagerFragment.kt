@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.dialer.fragments
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.RelativeLayout
+import com.colorcall.callerscreen.databinding.FragmentDiapadLayoutBinding
 import com.colorcall.callerscreen.databinding.FragmentLettersLayoutBinding
 import com.colorcall.callerscreen.databinding.FragmentRecentsBinding
 import com.colorcall.callerscreen.dialer.Config
@@ -84,5 +85,9 @@ abstract class MyViewPagerFragment<BINDING : MyViewPagerFragment.InnerBinding>(c
     class RecentsInnerBinding(val binding: FragmentRecentsBinding) : InnerBinding {
         override val fragmentList = null
         override val recentsList = binding.recentsList
+    }
+    class DiapadInnerBinding(val binding: FragmentDiapadLayoutBinding) : InnerBinding {
+        override val fragmentList:MyRecyclerView = binding.dialpadList
+        override val recentsList = null
     }
 }
