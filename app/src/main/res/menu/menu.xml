@@ -19,7 +19,7 @@
         android:icon="@drawable/ic_plus_vector"
         android:title="@string/create_new_contact"
         app:showAsAction="always" />
-    <item
+   <!-- <item
         android:id="@+id/change_view_type"
         android:icon="@drawable/ic_change_view_vector"
         android:title="@string/change_view_type"
@@ -28,7 +28,7 @@
         android:id="@+id/column_count"
         android:icon="@drawable/ic_column_count_vector"
         android:title="@string/column_count"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
 <!--    <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_settings_cog_vector"

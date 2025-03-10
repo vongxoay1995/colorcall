@@ -230,11 +230,11 @@ class CallOwnerActivity : DialerActivity() {
                 when (menuItem.itemId) {
                  //   R.id.clear_call_history -> clearCallHistory()
                     R.id.create_new_contact -> launchCreateNewContactIntent()
-               //     R.id.sort -> showSortingDialog(showCustomSorting = getCurrentFragment() is FavoritesFragment)
+                    R.id.sort -> showSortingDialog(showCustomSorting = getCurrentFragment() is FavoritesFragment)
                     R.id.filter -> showFilterDialog()
                 //    R.id.settings -> launchSettings()
-                    R.id.change_view_type -> changeViewType()
-                    R.id.column_count -> changeColumnCount()
+                  //  R.id.change_view_type -> changeViewType()
+                  //  R.id.column_count -> changeColumnCount()
                     else -> return@setOnMenuItemClickListener false
                 }
                 return@setOnMenuItemClickListener true
@@ -395,6 +395,8 @@ class CallOwnerActivity : DialerActivity() {
                 if(position == 0){
                     binding.mainMenu.visibility = View.GONE
                     binding.dialpadToolbar.visibility = View.VISIBLE
+                    val value = (getCurrentFragment() as DialpadFragment).getEdtNumber().text.toString()
+                    visibleMenuAdd(value.isNotEmpty())
                 }else{
                     binding.mainMenu.visibility = View.VISIBLE
                     binding.dialpadToolbar.visibility = View.GONE

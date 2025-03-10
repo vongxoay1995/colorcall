@@ -23,7 +23,6 @@ import com.colorcall.callerscreen.dialer.activity.DialerActivity
 import com.colorcall.callerscreen.dialer.adapter.ContactsAdapter
 import com.colorcall.callerscreen.dialer.extensions.areMultipleSIMsAvailable
 import com.colorcall.callerscreen.dialer.extensions.boundingBox
-import com.colorcall.callerscreen.dialer.extensions.callContactWithSim
 import com.colorcall.callerscreen.dialer.extensions.config
 import com.colorcall.callerscreen.dialer.extensions.startCallIntent
 import com.colorcall.callerscreen.dialer.models.SpeedDial
@@ -36,7 +35,6 @@ import com.simplemobiletools.commons.extensions.getColorStateList
 import com.simplemobiletools.commons.extensions.getColoredDrawableWithColor
 import com.simplemobiletools.commons.extensions.getContrastColor
 import com.simplemobiletools.commons.extensions.getMyContactsCursor
-import com.simplemobiletools.commons.extensions.getProperPrimaryColor
 import com.simplemobiletools.commons.extensions.normalizeString
 import com.simplemobiletools.commons.extensions.onTextChangeListener
 import com.simplemobiletools.commons.extensions.performHapticFeedback
@@ -142,14 +140,14 @@ class DialpadFragment(context: Context, attributeSet: AttributeSet) :
             dialpadInput.onTextChangeListener { dialpadValueChanged(it) }
             dialpadInput.requestFocus()
             dialpadInput.disableKeyboard()
-
+/*
             if (context.areMultipleSIMsAvailable()) {
                 val callIcon = resources.getColoredDrawableWithColor(R.drawable.ic_phone_two_vector, context.getProperPrimaryColor().getContrastColor())
                 dialpadCallTwoButton.setImageDrawable(callIcon)
                 dialpadCallTwoButton.background.applyColorFilter(context.getProperPrimaryColor())
                 dialpadCallTwoButton.beVisible()
                 dialpadCallTwoButton.setOnClickListener { initCall(dialpadInput.value, 1) }
-            }
+            }*/
         }
 
         ContactsHelper(context).getContacts(showOnlyContactsWithNumbers = true) { contacts ->
@@ -163,7 +161,7 @@ class DialpadFragment(context: Context, attributeSet: AttributeSet) :
 
             val callIconId = if (context.areMultipleSIMsAvailable()) R.drawable.ic_phone_one_vector else R.drawable.ic_phone_vector
             val callIcon = resources.getColoredDrawableWithColor(callIconId, properPrimaryColor.getContrastColor())
-            dialpadCallButton.setImageDrawable(callIcon)
+           /// dialpadCallButton.setImageDrawable(callIcon)
             dialpadCallButton.background.applyColorFilter(properPrimaryColor)
 
             letterFastscroller.textColor = textColor.getColorStateList()
@@ -262,7 +260,7 @@ class DialpadFragment(context: Context, attributeSet: AttributeSet) :
 
     private fun initCall(number: String, handleIndex: Int) {
         if (number.isNotEmpty()) {
-            if (handleIndex != -1 && context.areMultipleSIMsAvailable()) {
+           /* if (handleIndex != -1 && context.areMultipleSIMsAvailable()) {
                 if (context.config.showCallConfirmation) {
                     CallConfirmationDialog(activity!!, number) {
                         activity?.callContactWithSim(number, handleIndex == 0)
@@ -278,7 +276,8 @@ class DialpadFragment(context: Context, attributeSet: AttributeSet) :
                 } else {
                     activity?.startCallIntent(number)
                 }
-            }
+            }*/
+            activity?.startCallIntent(number)
         }
     }
 
