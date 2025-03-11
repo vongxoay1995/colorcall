@@ -8,7 +8,6 @@
     <RelativeLayout
         android:id="@+id/layout_head"
         android:layout_width="match_parent"
-        android:background="#ED2121"
         android:layout_height="?android:attr/actionBarSize"
         android:gravity="center">
         <ImageView

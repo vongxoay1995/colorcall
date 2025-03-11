@@ -12,7 +12,6 @@ import android.os.Looper
 import android.provider.Telephony.Sms.Intents.SECRET_CODE_ACTION
 import android.telephony.PhoneNumberUtils
 import android.telephony.TelephonyManager
-import android.util.Log
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -28,7 +27,6 @@ import com.colorcall.callerscreen.dialer.adapter.ContactsAdapter
 import com.colorcall.callerscreen.dialer.extensions.areMultipleSIMsAvailable
 import com.colorcall.callerscreen.dialer.extensions.beVisibleIf
 import com.colorcall.callerscreen.dialer.extensions.boundingBox
-import com.colorcall.callerscreen.dialer.extensions.callContactWithSim
 import com.colorcall.callerscreen.dialer.extensions.config
 import com.colorcall.callerscreen.dialer.extensions.startCallIntent
 import com.colorcall.callerscreen.dialer.models.SpeedDial
@@ -190,7 +188,7 @@ class DialpadActivity : DialerActivity() {
             binding.apply {
                 dialpadCallTwoButton.setImageDrawable(callIcon)
                 dialpadCallTwoButton.background.applyColorFilter(properPrimaryColor)
-                dialpadCallTwoButton.beVisible()
+              //  dialpadCallTwoButton.beVisible()
                 dialpadCallTwoButton.setOnClickListener {
                     initCall(dialpadInput.value, 1)
                 }
@@ -204,7 +202,7 @@ class DialpadActivity : DialerActivity() {
 
         binding.apply {
             val callIcon = resources.getColoredDrawableWithColor(callIconId, properPrimaryColor.getContrastColor())
-            dialpadCallButton.setImageDrawable(callIcon)
+           // dialpadCallButton.setImageDrawable(callIcon)
             dialpadCallButton.background.applyColorFilter(properPrimaryColor)
 
             letterFastscroller.textColor = getProperTextColor().getColorStateList()
@@ -361,7 +359,7 @@ class DialpadActivity : DialerActivity() {
 
     private fun initCall(number: String = binding.dialpadInput.value, handleIndex: Int) {
         if (number.isNotEmpty()) {
-            if (handleIndex != -1 && areMultipleSIMsAvailable()) {
+           /* if (handleIndex != -1 && areMultipleSIMsAvailable()) {
                 Log.e("TAN", "initCall: 1")
                 if (config.showCallConfirmation) {
                     CallConfirmationDialog(this, number) {
@@ -379,7 +377,8 @@ class DialpadActivity : DialerActivity() {
                 } else {
                     startCallIntent(number)
                 }
-            }
+            }*/
+            startCallIntent(number)
         }
     }
 

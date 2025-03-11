@@ -146,7 +146,11 @@
             android:name=".splash.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -314,14 +318,9 @@
         <activity
             android:name=".dialer.activity.CallOwnerActivity"
             android:exported="true"
-            android:icon="@drawable/color_phone"
+            android:icon="@drawable/icon_call"
             android:label="@string/color_call_dialer"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
