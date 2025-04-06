@@ -97,9 +97,19 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     }
 
     private void moveOnboarding() {
-        startActivity(new Intent(this, OnboardingActivity.class));
-        HawkHelper.setShowedOb(true);
-        finish();
+        try {
+            if (isActive()) {
+                stopJobScreen();
+                startActivity(new Intent(this, OnboardingActivity.class));
+                HawkHelper.setShowedOb(true);
+                finish();
+            }
+
+        }catch (Exception e){
+            skip();
+            e.printStackTrace();
+        }
+
     }
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;

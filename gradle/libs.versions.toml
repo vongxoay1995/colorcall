@@ -15,7 +15,7 @@ kotlinxSerializationJson = "1.5.1"
 #Simple tools
 simple-commons = "eceb48949e"
 #Gradle
-gradlePlugins-agp = "8.1.2"
+gradlePlugins-agp = "8.9.0"
 compose = "1.6.0-alpha07"
 composeActivity = "1.8.0"
 
@@ -148,6 +148,6 @@ library = { id = "com.android.library", version.ref = "gradlePlugins-agp" }
 android = { id = "com.android.application", version.ref = "gradlePlugins-agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-googleServices = { id = "com.google.gms.google-services", version = "4.3.4" }
-firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version = "2.9.2" }
+googleServices = { id = "com.google.gms.google-services", version = "4.4.2" }
+firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.3" }
 kotlinKapt = { id = "org.jetbrains.kotlin.kapt", version = "1.7.10" }

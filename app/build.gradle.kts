@@ -10,27 +10,28 @@ plugins {
 android {
     namespace = "com.colorcall.callerscreen"
     compileSdk = 34
-    buildToolsVersion = "33.0.1"
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.colorcall.callerscreen"
         minSdk = 23
         targetSdk = 34
-        versionCode = 61
-        versionName = "1.5.8"
+        versionCode = 63
+        versionName = "1.6.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         getByName("debug") {
-            isMinifyEnabled = false
-            isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            manifestPlaceholders["enableCrashReporting"] = "false"
         }
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            manifestPlaceholders["enableCrashReporting"] = "true"
+
         }
     }
 
@@ -93,7 +94,7 @@ dependencies {
     implementation("com.google.android.material:material:1.5.0-alpha01")
     implementation("com.google.firebase:firebase-analytics:21.3.0")
     implementation("com.google.firebase:firebase-config:21.4.1")
-    implementation("com.google.firebase:firebase-core:21.1.1")  
+    implementation("com.google.firebase:firebase-core:21.1.1")
     implementation("com.google.firebase:firebase-crashlytics:18.4.3")
     implementation("net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC2")
     implementation("com.google.android.gms:play-services-ads:22.4.0")

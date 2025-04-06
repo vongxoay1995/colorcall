@@ -140,7 +140,6 @@
   @com.google.gson.annotations.SerializedName <fields>;
 }
 
-
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class * extends com.bumptech.glide.module.AppGlideModule {
  <init>(...);
@@ -155,5 +154,41 @@
 -keep class com.bytedance.sdk.** { *; }
 -keep class com.google.android.gms.internal.** { *; }
 -keep class com.google.android.gms.** { *; }
+
+# Giữ nguyên các class model (AppData, Background, ChangeLog, v.v.)
+-keep class com.colorcall.callerscreen.response.AppData { *; }
+-keep class com.colorcall.callerscreen.response.ChangeLog { *; }
+-keep class com.colorcall.callerscreen.database.Background { *; }
+
+# Giữ nguyên các annotation của Gson
+-keepattributes *Annotation*
+-keepattributes Signature
+
+# Giữ nguyên các field và method trong class có annotation @SerializedName
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Giữ nguyên các interface của Retrofit
+-keep class com.colorcall.callerscreen.response.AppService { *; }
+
+# Giữ Gson để parse JSON
+-keep class com.google.gson.** { *; }
+-dontwarn com.google.gson.**
+
+# Nếu dùng OkHttp
+-keep class okhttp3.** { *; }
+-dontwarn okhttp3.**
+
+# Nếu dùng Retrofit
+-keep class retrofit2.** { *; }
+-dontwarn retrofit2.**
+
+# Ngăn ProGuard đổi tên các class được serialized
+-keepnames class com.colorcall.callerscreen.response.AppData
+-keepnames class com.colorcall.callerscreen.response.ChangeLog
+-keepnames class com.colorcall.callerscreen.database.Background
+
+
 # Uncomment for DexGuard only
 #-keepresourcexmlelements manifest/application/meta-data@value=GlideModule

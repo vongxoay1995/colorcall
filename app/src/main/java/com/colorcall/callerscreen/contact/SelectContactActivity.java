@@ -58,6 +58,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     private AppOpenManager appOpenManager;
     private DatabaseViewModel databaseViewModel;
     private ActivitySelectContactBinding binding;
+
     @Override
     public void onHasCallPermistion() {
         Log.e("TAN", "onHasCallPermistion: 111");
@@ -114,7 +115,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         binding.edtSearch.requestFocus();
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputMethodManager.isActive()) {
-            inputMethodManager.showSoftInput(  binding.edtSearch, 0);
+            inputMethodManager.showSoftInput(binding.edtSearch, 0);
         }
     }
 
@@ -122,7 +123,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         Gson gson = new Gson();
         background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
         String pathFile;
-        if (!background.getPathThumb().equals("")) {
+        if (background != null && !background.getPathThumb().isEmpty()) {
             if (background.getPathItem().contains("default")) {
                 pathFile = "file:///android_asset/" + background.getPathThumb();
             } else {
@@ -132,9 +133,9 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
                     .load(pathFile)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .thumbnail(0.1f)
-                    .into(  binding.imgBG);
+                    .into(binding.imgBG);
+            getAllContact();
         }
-        getAllContact();
         binding.edtSearch.addTextChangedListener(new EditTextListener());
         listener();
     }
@@ -153,9 +154,9 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         binding.layoutSet.setOnClickListener(view -> {
             analystic.trackEvent(ManagerEvent.contactSet());
             Log.e("TAN", "listener: click");
-            if(!isDefaultDialer(this)){
+            if (!isDefaultDialer(this)) {
                 AppUtils.launchSetDefaultDialerIntent(this);
-            }else {
+            } else {
                 setTheme();
             }
         });
@@ -168,14 +169,14 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode ==REQUEST_CODE_SET_DEFAULT_DIALER) {
-                if(isDefaultDialer(this)){
-                    HawkHelper.setStateColorCall(true);
-                    setTheme();
-                }else {
-                    Toast.makeText(this, getString(R.string.permistion_not_default_dialer), Toast.LENGTH_LONG).show();
-                }
+        if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER) {
+            if (isDefaultDialer(this)) {
+                HawkHelper.setStateColorCall(true);
+                setTheme();
+            } else {
+                Toast.makeText(this, getString(R.string.permistion_not_default_dialer), Toast.LENGTH_LONG).show();
             }
+        }
     }
 
     @Override
@@ -185,7 +186,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             binding.header1.setVisibility(View.VISIBLE);
             binding.header2.setVisibility(View.GONE);
             binding.edtSearch.setText("");
-            AppUtils.hideKeyboard(  binding.edtSearch);
+            AppUtils.hideKeyboard(binding.edtSearch);
         } else {
             super.onBackPressed();
         }
@@ -244,10 +245,10 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.e("TAN", "getAllContactaaaa: "+linkedHashSet.size());
+        Log.e("TAN", "getAllContactaaaa: " + linkedHashSet.size());
         ArrayList<ContactInfor> arrListContact = new ArrayList<>(linkedHashSet);
         // Sử dụng ViewModel để lấy danh sách Contact từ Room
-        Log.e("TAN", "getAllContact: "+databaseViewModel+"##"+background);
+        Log.e("TAN", "getAllContact: " + databaseViewModel + "##" + background);
         databaseViewModel.getContactsByBackgroundPath(background.getPathItem()).observe(this, new Observer<List<Contact>>() {
             @Override
             public void onChanged(List<Contact> listContactDB) {

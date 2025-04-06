@@ -51,6 +51,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="q">
+        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="${enableCrashReporting}"/>
+
         <activity
             android:name=".onboarding.OnboardingActivity"
             android:exported="false" />

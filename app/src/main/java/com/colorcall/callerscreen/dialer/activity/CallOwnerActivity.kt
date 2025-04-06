@@ -191,7 +191,10 @@ class CallOwnerActivity : DialerActivity() {
         Log.e("TAN", "addNumberToContact: getCurrentFragment ${binding.viewPager.currentItem} ", )
         if (binding.viewPager.currentItem == 0){
             Log.e("TAN", "addNumberToContact: ", )
-            val value = (getCurrentFragment() as DialpadFragment).getEdtNumber().text.toString()
+            var value = ""
+            if (getCurrentFragment()!=null&&(getCurrentFragment() as DialpadFragment)!=null){
+                value = (getCurrentFragment() as DialpadFragment).getEdtNumber().text.toString()
+            }
             Intent().apply {
                 action = Intent.ACTION_INSERT_OR_EDIT
                 type = "vnd.android.cursor.item/contact"
@@ -395,8 +398,10 @@ class CallOwnerActivity : DialerActivity() {
                 if(position == 0){
                     binding.mainMenu.visibility = View.GONE
                     binding.dialpadToolbar.visibility = View.VISIBLE
-                    val value = (getCurrentFragment() as DialpadFragment).getEdtNumber().text.toString()
-                    visibleMenuAdd(value.isNotEmpty())
+                    if (getCurrentFragment()!=null&&(getCurrentFragment() as DialpadFragment)!=null){
+                        val value = (getCurrentFragment() as DialpadFragment).getEdtNumber().text.toString()
+                        visibleMenuAdd(value.isNotEmpty())
+                    }
                 }else{
                     binding.mainMenu.visibility = View.VISIBLE
                     binding.dialpadToolbar.visibility = View.GONE

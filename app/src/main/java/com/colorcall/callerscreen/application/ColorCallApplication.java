@@ -10,7 +10,6 @@ import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.orhanobut.hawk.Hawk;
 
@@ -34,7 +33,6 @@ public class ColorCallApplication extends Application {
        // DataManager.getInstance().init(this);
 
        if (BuildConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
             List<String> testDeviceIds = Arrays.asList("E0CD7D898DDF7923BC4BA027C02F7876");
             RequestConfiguration configuration = new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
             MobileAds.setRequestConfiguration(configuration);
