@@ -1,9 +1,10 @@
 package com.colorcall.callerscreen.apply;
 
+import static android.view.View.GONE;
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
-import static com.colorcall.callerscreen.utils.ConstantAds.apply_banner_admob2;
+import static com.colorcall.callerscreen.utils.ConstantAds.apply_banner_admob_tk_cu;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -103,7 +104,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         folderApp = Constant.LINK_VIDEO_CACHE;
         checkInforTheme();
         fromScreen = getIntent().getIntExtra(Constant.FROM_SCREEN, -1);
-        loadAdsBanner();
+        if (!HawkHelper.isPayed()){
+            loadAdsBanner();
+        }else {
+            binding.layoutAds.setVisibility(GONE);
+        }
+
         analystic.trackEvent(ManagerEvent.applyOpen());
         listener();
         dialogPermissionXiaomi = new DialogPermissionXiaomi(this);
@@ -125,7 +131,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     private void loadAdsBanner() {
         String ID_ADS_GG = "ca-app-pub-3134368447261649/7123602157";
-        bannerAdsUtils.setIdAds(apply_banner_admob2);
+        bannerAdsUtils.setIdAds(apply_banner_admob_tk_cu);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();
     }
@@ -164,12 +170,13 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         if (getIntent().getBooleanExtra(Constant.SHOW_IMG_DELETE, false)) {
             binding.imgDelete.setVisibility(View.VISIBLE);
         } else {
-            binding.imgDelete.setVisibility(View.GONE);
+            binding.imgDelete.setVisibility(GONE);
         }
         Gson gson = new Gson();
         background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
         Background backgroundCurrent = HawkHelper.getBackgroundSelect();
-        if (backgroundCurrent != null) {
+        if (backgroundCurrent != null && background != null) {
+
             if (background.getPathItem().equals(backgroundCurrent.getPathItem()) && HawkHelper.isEnableColorCall()) {
                 binding.layoutApply.setEnabled(false);
                 binding.layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_gray_apply));
@@ -180,26 +187,26 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 binding.layoutApply.setBackground(getResources().getDrawable(R.drawable.bg_green_radius_60));
                 binding.txtApply.setTextColor(Color.WHITE);
             }
-        }
 
-        String sPathThumb;
-        if (background.getType() == Constant.TYPE_VIDEO) {
-            processVideo();
-        } else {
-            binding.layoutContact.setVisibility(View.VISIBLE);
-            binding.imgBackgroundCall.setVisibility(View.VISIBLE);
-            if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
-                sPathThumb = "file:///android_asset/" + background.getPathItem();
+            String sPathThumb;
+            if (background.getType() == Constant.TYPE_VIDEO) {
+                processVideo();
             } else {
-                sPathThumb = background.getPathItem();
+                binding.layoutContact.setVisibility(View.VISIBLE);
+                binding.imgBackgroundCall.setVisibility(View.VISIBLE);
+                if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
+                    sPathThumb = "file:///android_asset/" + background.getPathItem();
+                } else {
+                    sPathThumb = background.getPathItem();
+                }
+                Log.e("TAN", "checkInforTheme: " + sPathThumb);
+                Glide.with(getApplicationContext())
+                        .load(sPathThumb)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .thumbnail(0.1f)
+                        .into(binding.imgBackgroundCall);
+                binding.vdoBackgroundCall.setVisibility(GONE);
             }
-            Log.e("TAN", "checkInforTheme: " + sPathThumb);
-            Glide.with(getApplicationContext())
-                    .load(sPathThumb)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .thumbnail(0.1f)
-                    .into(binding.imgBackgroundCall);
-            binding.vdoBackgroundCall.setVisibility(View.GONE);
         }
     }
 
@@ -230,7 +237,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 binding.txtApply.setText(getString(R.string.applyContact));
             } else {
                 isDownloaded = true;
-                binding.layoutContact.setVisibility(View.GONE);
+                binding.layoutContact.setVisibility(GONE);
                 binding.layoutFooter.setPadding(getResources().getDimensionPixelSize(com.intuit.sdp.R.dimen._45sdp), binding.layoutFooter.getPaddingTop(), getResources().getDimensionPixelSize(com.intuit.sdp.R.dimen._45sdp), binding.layoutFooter.getPaddingBottom());
                 binding.txtApply.setText(getString(R.string.download));
             }
@@ -329,7 +336,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     }
 
     private void playVideo() {
-        binding.imgBackgroundCall.setVisibility(View.GONE);
+        binding.imgBackgroundCall.setVisibility(GONE);
         binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
         binding.vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> {
             mediaPlayer.setLooping(true);
@@ -341,16 +348,18 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         });
         binding.vdoBackgroundCall.start();
     }
+
     boolean isPressGotoSetting;
+
     @Override
     protected void onResume() {
         binding.vdoBackgroundCall.start();
         startAnimation();
         if (isPressGotoSetting) {
             isPressGotoSetting = false;
-            if (!AppUtils.checkPermissionXiaomi(ApplyActivity.this)){
+            if (!AppUtils.checkPermissionXiaomi(ApplyActivity.this)) {
                 Toast.makeText(ApplyActivity.this, getString(R.string.request_permission_for_feature), Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
                 applyBgCall();
             }
         }
@@ -373,8 +382,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 startDownloadBg(background.getPathItem(), background.getName());
             } else if (!isDefaultDialer(this)) {
                 AppUtils.launchSetDefaultDialerIntent(this);
-            } else if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(this)) {
-               dialogPermissionXiaomi.show();
+            } else if (XiaomiUtilities.isMIUI() && !AppUtils.checkPermissionXiaomi(this)) {
+                dialogPermissionXiaomi.show();
             } else {
                 applyBgCall();
             }
@@ -409,9 +418,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
        /* if (checkShowInter()) {
             InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
         } else {
-            applyTheme();
         }*/
-        InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
+        if (!HawkHelper.isPayed()){
+            InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
+        }else{
+            applyTheme();
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -468,9 +480,9 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER) {
-            if (XiaomiUtilities.isMIUI()&& !AppUtils.checkPermissionXiaomi(ApplyActivity.this)) {
+            if (XiaomiUtilities.isMIUI() && !AppUtils.checkPermissionXiaomi(ApplyActivity.this)) {
                 dialogPermissionXiaomi.show();
-            }else  if (isDefaultDialer(this)) {
+            } else if (isDefaultDialer(this)) {
                 HawkHelper.setStateColorCall(true);
                 applyBgCall();
             } else {
@@ -568,7 +580,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     @Override
     public void onAdFailed() {
-        binding.layoutHeader.setVisibility(View.GONE);
+        binding.layoutHeader.setVisibility(GONE);
     }
 
     public void setTranslucent() {

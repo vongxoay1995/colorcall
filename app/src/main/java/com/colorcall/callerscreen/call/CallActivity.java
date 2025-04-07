@@ -140,7 +140,7 @@ public class CallActivity extends AppCompatActivity {
             }
             //Bitmap bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
            // binding.profileImage.setImageBitmap(bmpAvatar);
-            binding.txtPhone.setText(String.valueOf(phoneNumber));
+   //        binding.txtPhone.setText(String.valueOf(phoneNumber));
             binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
            /* List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
                     .where(ContactDao.Properties.Contact_id.eq(contactId))

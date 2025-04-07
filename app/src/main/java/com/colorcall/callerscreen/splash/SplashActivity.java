@@ -90,10 +90,10 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 Log.e("TAN", "onDownloadProgress: "+ bytesDownloaded + " / " + totalBytes);
             }
         });*/
-
-        loadConsentForm();
-        checkIAP();
-
+        if (!HawkHelper.isPayed()){
+            loadConsentForm();
+            checkIAP();
+        }else skip();
     }
 
     private void moveOnboarding() {
@@ -220,14 +220,20 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     }
 
     public void skip() {
-        if (isActive()) {
-            stopJobScreen();
-            Intent failedIntent = new Intent(SplashActivity.this, MainActivity.class);
-            failedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            failedIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(failedIntent);
-            finish();
+        try {
+            if (isActive()) {
+                stopJobScreen();
+                Intent failedIntent = new Intent(this, MainActivity.class);
+                failedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                failedIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(failedIntent);
+                finish();
+            }
+        }catch (Exception e){
+            analystic.trackEvent("Error_Skip_Splash_To_Main");
+            e.printStackTrace();
         }
+
     }
 
     private void loadConsentForm() {
@@ -265,7 +271,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 if (BuildConfig.DEBUG) {
                     id_ads = ConstantAds.id_ads_open_test;
                 } else {
-                    id_ads = ConstantAds.id_splash_open_admob2;
+                    id_ads = ConstantAds.id_splash_open_tk_cu;
                 }
                 AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
             }

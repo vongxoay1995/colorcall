@@ -47,7 +47,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.2"
                     android:layout_gravity="center"
-                    android:src="@drawable/testtt"
                     app:civ_border_color="#FFFFFF"
                     app:civ_border_width="1dp"/>
 

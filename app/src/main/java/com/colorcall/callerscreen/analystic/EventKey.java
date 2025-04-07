@@ -64,4 +64,9 @@ public interface EventKey {
     String RATE_NOT_NOW = "RATE_NOT_NOW";
     String RATE_FEED_BACK = "RATE_FEED_BACK";
     String RATE_REVIEW = "RATE_REVIEW";
+
+    String CALL_DIALER_SHOW = "CALL_DIALER_SHOW";
+
+    String CALL_OWNER_SHOW = "CALL_OWNER_SHOW";
+
 }

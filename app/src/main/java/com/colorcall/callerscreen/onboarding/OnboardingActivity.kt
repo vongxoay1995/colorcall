@@ -12,6 +12,7 @@ import com.colorcall.callerscreen.utils.AdListener
 import com.colorcall.callerscreen.utils.AppUtils
 import com.colorcall.callerscreen.utils.BannerAdsUtils
 import com.colorcall.callerscreen.utils.ConstantAds
+import com.colorcall.callerscreen.utils.HawkHelper
 
 class OnboardingActivity : AppCompatActivity(), AdListener {
     private lateinit var mBinding: ActivityOnboardingBinding
@@ -23,15 +24,15 @@ class OnboardingActivity : AppCompatActivity(), AdListener {
         setContentView(mBinding.root)
         bannerAdsUtils = BannerAdsUtils(this, mBinding.layoutAds)
         setupViewpager()
-        if (AppUtils.isNetworkConnected(this)) {
+        if (AppUtils.isNetworkConnected(this)&&!HawkHelper.isPayed()) {
             loadAds()
         } else {
-            mBinding.layoutAds.setVisibility(View.GONE)
+            mBinding.layoutAds.visibility = View.GONE
         }
         AppUtils.setFullNav(this)
     }
     private fun loadAds() {
-        bannerAdsUtils!!.setIdAds(ConstantAds.banner_onboarding)
+        bannerAdsUtils!!.setIdAds(ConstantAds.banner_onboarding_tk_cu)
         bannerAdsUtils!!.setAdListener(this)
         bannerAdsUtils!!.loadAds()
     }

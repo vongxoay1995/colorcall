@@ -3,9 +3,10 @@ package com.colorcall.callerscreen.main;
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
-import static com.colorcall.callerscreen.utils.ConstantAds.banner_main_admob;
+import static com.colorcall.callerscreen.utils.ConstantAds.banner_main_admob_tk_cu;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -71,7 +73,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -105,7 +109,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         analystic = Analystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, binding.layoutAds);
         initDataPage();
-        if (AppUtils.isNetworkConnected(this)) {
+        if (AppUtils.isNetworkConnected(this)&&!HawkHelper.isPayed()) {
+            createWindowManagerField();
+            preLoadInter();
             loadAds();
         } else {
             binding.layoutAds.setVisibility(View.GONE);
@@ -246,10 +252,11 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
             }
         });
-        preLoadInter();
+
         binding.mainDialpadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                analystic.trackEvent("Main_Dial_Pad_Button_Clicked");
                 if (!isDefaultDialer(MainActivity.this)) {
                     dialogPermissionCall.show();
                 } else {
@@ -261,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     private void preLoadInter() {
         interstitialUtil = InterstitialUtil.getInstance();
-        interstitialUtil.init(this, ConstantAds.id_ads_inter_item_admob);
+        interstitialUtil.init(this, ConstantAds.id_ads_inter_item_admob_tk_cu);
         InterstitialApply.getInstance().init(this);
     }
 
@@ -281,7 +288,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     public void moveCallOwnerActivity() {
         HawkHelper.setStateColorCall(true);
-        startActivity(new Intent(MainActivity.this, CallOwnerActivity.class));
+        Intent intent =  new Intent(MainActivity.this, CallOwnerActivity.class);
+        intent.putExtra("move_dialer_from_main",true);
+        startActivity(intent);
     }
 
     @Override
@@ -312,9 +321,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private void loadAds() {
         String ID_ADS_GG = "ca-app-pub-3222539657172474/4654234996";
 
-        bannerAdsUtils.setIdAds(banner_main_admob);
+        bannerAdsUtils.setIdAds(banner_main_admob_tk_cu);
         bannerAdsUtils.setAdListener(this);
-        bannerAdsUtils.loadAds();
+        bannerAdsUtils.loadCollapsibleBanner();
     }
 
     @Override
@@ -491,7 +500,44 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (!HawkHelper.isPayed()){
+            cleanPopupWindow();
+        }
         appOpenManager.unregisterObserver();
+    }
+
+    private Field windowManagerField;
+    private Field  viewsField;
+
+    @SuppressLint({"PrivateApi", "DiscouragedPrivateApi"})
+    private void createWindowManagerField() {
+        try {
+            Class<?> windowManagerImplClass = Class.forName("android.view.WindowManagerImpl");
+            windowManagerField = windowManagerImplClass.getDeclaredField("mGlobal");
+            windowManagerField.setAccessible(true);
+
+            Class<?> windowManagerGlobalClass = Class.forName("android.view.WindowManagerGlobal");
+            viewsField = windowManagerGlobalClass.getDeclaredField("mViews");
+            viewsField.setAccessible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void cleanPopupWindow() {
+        try {
+            WindowManager windowManagerImpl = (WindowManager) getSystemService(WINDOW_SERVICE);
+            Object windowManagerGlobal = windowManagerField.get(windowManagerImpl);
+            @SuppressWarnings("unchecked")
+            List<View> views = (List<View>) viewsField.get(windowManagerGlobal);
+
+            for (View view : views) {
+                if (view.getClass().getName().contains("PopupDecorView")) {
+                    windowManagerImpl.removeViewImmediate(view);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

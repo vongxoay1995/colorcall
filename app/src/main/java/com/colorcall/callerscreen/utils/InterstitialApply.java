@@ -45,7 +45,7 @@ public class InterstitialApply {
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
         } else {
-            idInter = ConstantAds.id_ads_inter_apply_admob;
+            idInter = ConstantAds.id_ads_inter_apply_admob_tk_cu;
         }
         loadInterstitial(mContext, 1);
     }

@@ -126,10 +126,15 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
         if (!AppUtils.allowViewClick())
             return;
         Log.e("TAN", "countAds: " + countAds);
-        InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
-            this.countAds = 1;
+        if (!HawkHelper.isPayed()){
+            InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
+                this.countAds = 1;
+                moveApplyTheme(backgrounds, position, delete, posRandom, false);
+            });
+        }else {
             moveApplyTheme(backgrounds, position, delete, posRandom, false);
-        });
+        }
+
     }
 
     @Override

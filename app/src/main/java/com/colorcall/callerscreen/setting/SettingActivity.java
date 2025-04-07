@@ -2,7 +2,7 @@ package com.colorcall.callerscreen.setting;
 
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
-import static com.colorcall.callerscreen.utils.ConstantAds.setting_banner_admob2;
+import static com.colorcall.callerscreen.utils.ConstantAds.setting_banner_admob_tk_cu;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -60,13 +60,17 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         analystic = Analystic.getInstance(this);
         binding.swStateApp.setChecked(HawkHelper.isEnableColorCall());
         binding.swFlash.setChecked(HawkHelper.isEnableFlash());
-        loadAds();
+        if (!HawkHelper.isPayed()){
+            loadAds();
+        }else {
+            binding.layoutUMP.setVisibility(View.GONE);
+        }
         listener();
         analystic.trackEvent(ManagerEvent.settingOpen());
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
         googleMobileAdsConsentManager =
                 GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
-        if (googleMobileAdsConsentManager.isPrivacyOptionsRequired()){
+        if (googleMobileAdsConsentManager.isPrivacyOptionsRequired()&&!HawkHelper.isPayed()){
             binding.layoutUMP.setVisibility(View.VISIBLE);
         }
         ///appOpenManager.registerObserver(this);
@@ -78,7 +82,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
         if (BuildConfig.DEBUG) {
             idGG = Constant.ID_NATIVE_TEST;
         } else {
-            idGG = setting_banner_admob2;
+            idGG = setting_banner_admob_tk_cu;
         }
         AdLoader.Builder builder = new AdLoader.Builder(this, idGG)
                 .forNativeAd(nativeAd -> {

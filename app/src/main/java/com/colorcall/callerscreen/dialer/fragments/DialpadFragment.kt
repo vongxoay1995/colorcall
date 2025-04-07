@@ -14,6 +14,7 @@ import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.colorcall.callerscreen.R
+import com.colorcall.callerscreen.analystic.Analystic
 import com.colorcall.callerscreen.databinding.FragmentDiapadBinding
 import com.colorcall.callerscreen.databinding.FragmentDiapadLayoutBinding
 import com.colorcall.callerscreen.dialer.DIALPAD_TONE_LENGTH_MS
@@ -60,7 +61,9 @@ class DialpadFragment(context: Context, attributeSet: AttributeSet) :
     private val longPressTimeout = ViewConfiguration.getLongPressTimeout().toLong()
     private val longPressHandler = Handler(Looper.getMainLooper())
     private val pressedKeys = mutableSetOf<Char>()
-
+    private val analystic: Analystic by lazy {
+        Analystic.getInstance(context)
+    }
     override fun onFinishInflate() {
         super.onFinishInflate()
         binding = FragmentDiapadLayoutBinding.bind(FragmentDiapadBinding.bind(this).diapadFragment)
@@ -136,7 +139,9 @@ class DialpadFragment(context: Context, attributeSet: AttributeSet) :
 
             dialpadClearChar.setOnClickListener { clearChar(it) }
             dialpadClearChar.setOnLongClickListener { clearInput(); true }
-            dialpadCallButton.setOnClickListener { initCall(dialpadInput.value, 0) }
+            dialpadCallButton.setOnClickListener {
+                analystic.trackEvent("Diapad_Fragment_Call_Button_Clicked")
+                initCall(dialpadInput.value, 0) }
             dialpadInput.onTextChangeListener { dialpadValueChanged(it) }
             dialpadInput.requestFocus()
             dialpadInput.disableKeyboard()

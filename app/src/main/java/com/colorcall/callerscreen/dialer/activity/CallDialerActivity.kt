@@ -24,6 +24,9 @@ import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import com.colorcall.callerscreen.R
+import com.colorcall.callerscreen.analystic.Analystic
+import com.colorcall.callerscreen.analystic.EventKey.CALL_DIALER_SHOW
+import com.colorcall.callerscreen.analystic.ManagerEvent
 import com.colorcall.callerscreen.databinding.ActivityCallDialerBinding
 import com.colorcall.callerscreen.dialer.CallContactAvatarHelper
 import com.colorcall.callerscreen.dialer.CallManager
@@ -34,7 +37,11 @@ import com.colorcall.callerscreen.dialer.TwoCalls
 import com.colorcall.callerscreen.dialer.dialog.DynamicBottomSheetChooserDialog
 import com.colorcall.callerscreen.dialer.extensions.audioManager
 import com.colorcall.callerscreen.dialer.extensions.config
+import com.colorcall.callerscreen.dialer.extensions.getCallDuration
 import com.colorcall.callerscreen.dialer.extensions.getHandleToUse
+import com.colorcall.callerscreen.dialer.extensions.getStateCompat
+import com.colorcall.callerscreen.dialer.extensions.hasCapability
+import com.colorcall.callerscreen.dialer.extensions.isConference
 import com.colorcall.callerscreen.dialer.getCallContact
 import com.colorcall.callerscreen.dialer.models.AudioRoute
 import com.colorcall.callerscreen.dialer.models.CallContact
@@ -64,17 +71,13 @@ import com.simplemobiletools.commons.helpers.isOreoPlus
 import com.simplemobiletools.commons.models.SimpleListItem
 import com.simplemobiletools.dialer.extensions.addCharacter
 import com.simplemobiletools.dialer.extensions.disableKeyboard
-import com.colorcall.callerscreen.dialer.extensions.getCallDuration
-import com.colorcall.callerscreen.dialer.extensions.getStateCompat
-import com.colorcall.callerscreen.dialer.extensions.hasCapability
-import com.colorcall.callerscreen.dialer.extensions.isConference
 import kotlin.math.max
 import kotlin.math.min
 
 class CallDialerActivity : DialerActivity() {
     companion object {
         fun getStartIntent(context: Context): Intent {
-            Log.e("TAN", "CallDialerActivity getStartIntent: 11111", )
+            Log.e("TAN", "CallDialerActivity getStartIntent: 11111")
             val openAppIntent = Intent(context, CallDialerActivity::class.java)
             openAppIntent.flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             return openAppIntent
@@ -98,7 +101,9 @@ class CallDialerActivity : DialerActivity() {
     private var dialpadHeight = 0f
 
     private var audioRouteChooserDialog: DynamicBottomSheetChooserDialog? = null
-
+    private val analystic: Analystic by lazy {
+        Analystic.getInstance(this)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -107,6 +112,7 @@ class CallDialerActivity : DialerActivity() {
             finish()
             return
         }
+        analystic.trackEvent(CALL_DIALER_SHOW)
 
         updateTextColors(binding.callHolder)
         initButtons()
@@ -593,10 +599,10 @@ class CallDialerActivity : DialerActivity() {
         binding.apply {
             callerNameLabel.text = if (callContact!!.name.isNotEmpty()) callContact!!.name else getString(R.string.unknowContact)
             if (callContact!!.number.isNotEmpty() && callContact!!.number != callContact!!.name) {
-                callerNumber.text = callContact!!.number
+                callerNumber.text = /*callContact!!.number*/"000-000-0000"
 
                 if (callContact!!.numberLabel.isNotEmpty()) {
-                    callerNumber.text = "${callContact!!.number} - ${callContact!!.numberLabel}"
+                    callerNumber.text ="000-000-0000" /*"${callContact!!.number} - ${callContact!!.numberLabel}"*/
                 }
             } else {
                 callerNumber.beGone()

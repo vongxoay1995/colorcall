@@ -107,10 +107,15 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
                 moveApplyTheme(backgrounds, position, delete,posRandom,false);
             });
         }*/
-        InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
-            this.countAds = 1;
+        if (!HawkHelper.isPayed()){
+            InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
+                this.countAds = 1;
+                moveApplyTheme(backgrounds, position, delete,posRandom,false);
+            });
+        }else{
             moveApplyTheme(backgrounds, position, delete,posRandom,false);
-        });
+        }
+
     }
 
     private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom, boolean isAllowShowAds) {

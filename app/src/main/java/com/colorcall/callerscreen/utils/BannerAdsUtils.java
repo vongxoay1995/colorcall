@@ -2,6 +2,7 @@ package com.colorcall.callerscreen.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -9,7 +10,9 @@ import android.widget.RelativeLayout;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 
@@ -109,5 +112,75 @@ public class BannerAdsUtils {
         float density = outMetrics.density;
         int adWidth = (int) (widthPixels / density);
         return com.google.android.gms.ads.AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth);
+    }
+    private Boolean isCollapsible = false;
+    private Boolean isLoading = false;
+
+    public void loadCollapsibleBanner() {
+        isCollapsible = true;
+        if (isLoading) {
+            return;
+        }
+        isLoading = true;
+        adviewGoogle = new AdView(context);
+
+        Bundle extras = new Bundle();
+        extras.putString("collapsible", "bottom");
+
+
+        AdSize adSize = getAdSize();  // Assuming adSize is a method or property
+        adviewGoogle.setAdSize(adSize);
+
+        if (BuildConfig.DEBUG) {
+            adviewGoogle.setAdUnitId(Constant.ID_TEST_BANNER_ADMOD);
+        } else {
+            adviewGoogle.setAdUnitId(idGG);
+        }
+        AdRequest adRequest = new AdRequest.Builder()
+                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                .build();
+        adviewGoogle.loadAd(adRequest);
+        adviewGoogle.setAdListener(new com.google.android.gms.ads.AdListener() {
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                isLoading = false;
+                if(adListener!=null){
+                    adListener.onAdFailed();
+                }
+            }
+
+            @Override
+            public void onAdLoaded() {
+                isLoading = false;
+                layoutBannerAds.setVisibility(View.VISIBLE);
+                layoutBannerAds.removeAllViews();
+                layoutBannerAds.addView(adviewGoogle);
+                super.onAdLoaded();
+                if(adListener!=null){
+                    adListener.onAdloaded();
+                }
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (isCollapsible) {
+                    loadCollapsibleBanner();
+                } else {
+                    loadAds();
+                }
+
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+        });
     }
 }

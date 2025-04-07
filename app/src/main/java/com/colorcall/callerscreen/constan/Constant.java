@@ -8,6 +8,7 @@ public interface Constant {
     String PLAY_STORE_LINK = "https://play.google.com/store/apps/details?id=";
     String CALL_CONTACT = "call_contact";
     String POLICY_URL = "https://sites.google.com/view/privacypolicyforcolorcallflash";
+    String TERMS_URL = "https://sites.google.com/view/utilitiesmobilesterms";
     int REQUEST_VIDEO = 1;
     int REQUEST_CODE_SET_DEFAULT_DIALER = 95;
     int REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG = 94;
