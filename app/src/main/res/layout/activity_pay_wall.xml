@@ -6,14 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".paywall.PayWallActivity">
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lotie_hand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/bg_pay_wall"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:adjustViewBounds="true"/>
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/paywall" />
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_close"
         android:layout_width="@dimen/_40sdp"
@@ -37,35 +39,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_white_radius_top">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ic_no_ads"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_no_ads"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="@dimen/_15sdp"/>
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/title_paywall_no_ads"
+                android:text="@string/ready_to_go_pro"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_20sdp"
-                app:layout_constraintTop_toBottomOf="@id/ic_no_ads"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:textStyle="bold"/>
             <TextView
                 android:id="@+id/content1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/content_1_paywall_no_ads"
+                android:text="@string/free_trial_for_3_days_no_payment_now"
                 android:textColor="#848484"
                 android:textSize="@dimen/_12sdp"
                 android:paddingHorizontal="@dimen/_15sdp"
@@ -74,44 +66,173 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center"
                 android:layout_marginTop="@dimen/_5sdp"/>
-            <TextView
-                android:id="@+id/tvPrice"
+            <LinearLayout
+                android:id="@+id/layoutDesIap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="30000 dong"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_25sdp"
-                app:layout_constraintTop_toBottomOf="@id/content1"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="@dimen/_15sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:gravity="center"
-                android:paddingHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/tvDes"
+                android:background="@drawable/bg_round_stroke_iap"
+                android:padding="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                app:layout_constraintTop_toBottomOf="@id/content1">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_more_annoying_ads_unlock_all_theme_amp_get_supported_24_7"
+                    android:textColor="#848484"
+                    android:textSize="@dimen/_12sdp"/>
+                <TextView
+                    android:id="@+id/content3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/free_for_first_3_days_then_s_week"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_5sdp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/auto_renew_cancel_anytime"
+                    android:textColor="#848484"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_12sdp"/>
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/layoutToggle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/content_weekly"
-                android:textColor="#877C7C"
-                android:textSize="@dimen/_12sdp"
-                app:layout_constraintTop_toBottomOf="@id/tvPrice"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/layoutDesIap"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:gravity="center"
-                android:paddingHorizontal="@dimen/_15sdp"/>
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:background="@drawable/bg_round_stroke_iap"
+                android:padding="@dimen/_13sdp">
+
+                <TextView
+                    android:id="@+id/tvToggle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/free_trial_enabled"
+                    android:textSize="@dimen/_14sdp"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/sw_enable_trial"
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sw_enable_trial"
+                    android:layout_width="@dimen/_42sdp"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:thumb="@drawable/custom_thump_switch"
+                    android:layout_alignParentEnd="true"
+                    app:track="@drawable/custom_track_switch" />
+            </RelativeLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutToggle"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_12sdp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/vertical_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:src="@drawable/paywall_vertical_line"
+                    android:adjustViewBounds="true"
+                    app:layout_constraintTop_toTopOf="@id/tvToday"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_purchase_day"
+                    android:layout_marginVertical="@dimen/_4sdp"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <TextView
+                    android:id="@+id/tvToday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"
+                    android:text="Today"
+                    app:layout_constraintStart_toStartOf="@id/vertical_line"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_day_free"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#159DFF"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textSize="@dimen/_12sdp"
+                    app:layout_constraintStart_toEndOf="@id/tvToday"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintEnd_toStartOf="@id/tvPriceSave"
+                    app:autoSizeTextType="uniform"
+                    android:maxLines="1"
+                    android:text="3 days free"
+                    app:autoSizeMinTextSize="@dimen/_9sdp"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:id="@+id/tvPriceSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/_8sdp"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textSize="@dimen/_12sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textStyle="bold"
+                    android:text="$0.00/week"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_purchase_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#171C2C"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    app:layout_constraintTop_toBottomOf="@id/tvToday"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:textSize="@dimen/_12sdp"
+                    android:text="Until 7th June, 2025"
+                    app:layout_constraintStart_toStartOf="@id/vertical_line"/>
+
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_12sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_purchase_day"
+                    android:text="$4.99/week"
+                    android:textColor="#171C2C"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <RelativeLayout
                 android:id="@+id/layoutBuyNow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tvDes"
+                app:layout_constraintTop_toBottomOf="@id/layoutPrice"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="@drawable/bg_button_buy_iap"
                 android:layout_marginHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:paddingTop="@dimen/_10sdp"
-                android:paddingBottom="@dimen/_10sdp">
+                android:layout_marginTop="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_15sdp">
 
                 <TextView
                     android:id="@+id/txtBuyNow"
@@ -121,7 +242,7 @@
                     android:gravity="center"
                     android:textStyle="bold"
                     android:textAllCaps="true"
-                    android:text="@string/buy_now"
+                    android:text="@string/start_free_trial_now"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_16sdp" />
             </RelativeLayout>
