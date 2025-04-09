@@ -176,8 +176,12 @@
     <string name="ready_to_go_pro">Ready to go PRO?</string>
     <string name="free_trial_for_3_days_no_payment_now">Free trial for 3 days, no payment now</string>
     <string name="no_more_annoying_ads_unlock_all_theme_amp_get_supported_24_7"><![CDATA[No more annoying ads. Unlock all theme & get supported 24/7.]]></string>
-    <string name="free_for_first_3_days_then_s_week">Free for first 3 days, then %s/week</string>
+    <string name="free_for_first_3_days_then_s_week">Free for first %s days, then %s/week</string>
     <string name="auto_renew_cancel_anytime">Auto renew, cancel anytime.</string>
     <string name="free_trial_enabled">Free trial enabled</string>
     <string name="start_free_trial_now">START FREE TRIAL NOW</string>
+    <string name="today">Today</string>
+    <string name="s_days_free">%s days free</string>
+    <string name="only_s_per_week">Only %s/week</string>
+    <string name="until">Until</string>
 </resources>
