@@ -9,7 +9,8 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lotie_hand"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="W,1.28:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,25 +34,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintHeight_percent="0.6"
+        android:background="@drawable/bg_white_radius_top"
         android:fillViewport="true">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_white_radius_top">
+            android:layout_height="match_parent">
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/ready_to_go_pro"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_20sdp"
+                android:textSize="@dimen/_19sdp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:textStyle="bold"/>
             <TextView
                 android:id="@+id/content1"
@@ -75,7 +76,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="@drawable/bg_round_stroke_iap"
-                android:padding="@dimen/_15sdp"
+                android:padding="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_15sdp"
                 app:layout_constraintTop_toBottomOf="@id/content1">
                 <TextView
@@ -112,14 +113,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_round_stroke_iap"
-                android:padding="@dimen/_13sdp">
+                android:padding="@dimen/_12sdp">
 
                 <TextView
                     android:id="@+id/tvToggle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/free_trial_enabled"
-                    android:textSize="@dimen/_14sdp"
+                    android:textSize="@dimen/_13sdp"
                     android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/sw_enable_trial"
                     android:layout_centerVertical="true"
@@ -143,7 +144,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layoutToggle"
                 android:layout_marginHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_12sdp">
+                android:layout_marginTop="@dimen/_10sdp">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/vertical_line"
@@ -231,7 +232,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="@drawable/bg_button_buy_iap"
                 android:layout_marginHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_15sdp">
 
                 <TextView
@@ -254,7 +255,7 @@
                 android:textSize="@dimen/_10sdp"
                 android:fontFamily="@font/roboto_light"
                 android:layout_marginHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 app:layout_constraintTop_toBottomOf="@id/layoutBuyNow"
                 android:textColor="#bababa"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
