@@ -108,6 +108,6 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
     implementation(libs.kotlinx.serialization.json)
-
+    implementation ("com.android.billingclient:billing:7.1.1")
 }
 
