@@ -56,4 +56,6 @@ public interface Constant {
     String VIDEO_INPUT_NAME = "input_video.mp4";
     String IMAGE_INPUT_NAME = "input_image.jpg";
     String TEMP_DIR = "temp";
+    String WEEK_LY = "weekly_1";
+    String LIFE_TIME = "life_time";
 }

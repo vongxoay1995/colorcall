@@ -17,6 +17,7 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.SkuDetails
+import com.colorcall.callerscreen.constan.Constant
 import com.colorcall.callerscreen.utils.AppHelper
 
 class BillingHelper(private val context: Context) {
@@ -117,7 +118,7 @@ class BillingHelper(private val context: Context) {
 
     private fun querySubscription() {
         val products = ArrayList<QueryProductDetailsParams.Product>()
-        val productId: List<String> = mutableListOf("sdf","safd")
+        val productId: List<String> = mutableListOf(Constant.WEEK_LY)
         for (s in productId) {
             val product = QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(s)
@@ -149,7 +150,7 @@ class BillingHelper(private val context: Context) {
 
     private fun queryInApp() {
         val products = ArrayList<QueryProductDetailsParams.Product>()
-        val productId: List<String> = mutableListOf("sdf","safd")
+        val productId: List<String> = mutableListOf(Constant.LIFE_TIME)
         for (s in productId) {
             val product = QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(s)
@@ -374,7 +375,7 @@ class BillingHelper(private val context: Context) {
         if (listener != null) {
             Handler().postDelayed({
                 AppHelper.isPurchased = true
-                purchases.add(Purchase("{\"orderId\":\"GPA.3322-6123-2845-14284\",\"packageName\":\"com.eco.flashlight\",\"productId\":\"weekly399_1st_saleoff\",\"purchaseTime\":1733818993940,\"purchaseState\":0,\"purchaseToken\":\"fmbaacehncggolklmlnegbhg.AO-J1OwIzu_ASJnGmezJ2FU481vFwE4P0ZsTyTAF09x_xyw66eM5KOoLrdkJ_Gz_tNkk6fYfxs5S6bh14wSqaHAzXM0tFR82Hw\",\"quantity\":1,\"autoRenewing\":true,\"acknowledged\":true}",""))
+              //  purchases.add(Purchase("{\"orderId\":\"GPA.3322-6123-2845-14284\",\"packageName\":\"com.eco.flashlight\",\"productId\":\"weekly399_1st_saleoff\",\"purchaseTime\":1733818993940,\"purchaseState\":0,\"purchaseToken\":\"fmbaacehncggolklmlnegbhg.AO-J1OwIzu_ASJnGmezJ2FU481vFwE4P0ZsTyTAF09x_xyw66eM5KOoLrdkJ_Gz_tNkk6fYfxs5S6bh14wSqaHAzXM0tFR82Hw\",\"quantity\":1,\"autoRenewing\":true,\"acknowledged\":true}",""))
                 listener?.onPurchaseUpdatedV5(purchases)
             }, 1500)
             Handler().postDelayed({

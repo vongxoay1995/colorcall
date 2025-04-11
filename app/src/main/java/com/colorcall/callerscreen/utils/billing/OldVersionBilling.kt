@@ -4,6 +4,7 @@ import android.content.Context
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
+import com.colorcall.callerscreen.constan.Constant
 import com.colorcall.callerscreen.utils.AppHelper
 
 
@@ -26,7 +27,7 @@ class OldVersionBilling private constructor(private val billingClient: BillingCl
     }
 
     private fun querySubscription() {
-        val skuList: List<String> = mutableListOf("","")
+        val skuList: List<String> = mutableListOf(Constant.WEEK_LY)
         val params = SkuDetailsParams.newBuilder()
         params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS)
 
@@ -47,7 +48,7 @@ class OldVersionBilling private constructor(private val billingClient: BillingCl
     }
 
     private fun queryInApp() {
-        val skuList: List<String> = mutableListOf("","")
+        val skuList: List<String> = mutableListOf(Constant.LIFE_TIME)
         val params = SkuDetailsParams.newBuilder()
         params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
 

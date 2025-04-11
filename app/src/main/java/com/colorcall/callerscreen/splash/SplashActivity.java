@@ -6,8 +6,12 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.SkuDetails;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.BuildConfig;
@@ -24,6 +28,8 @@ import com.colorcall.callerscreen.utils.ConstantAds;
 import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.colorcall.callerscreen.utils.JobScreen;
+import com.colorcall.callerscreen.utils.billing.BillingHelper;
+import com.colorcall.callerscreen.utils.billing.BillingListener;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -36,6 +42,8 @@ import com.google.android.ump.FormError;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.orhanobut.hawk.Hawk;
+
+import java.util.List;
 
 public class SplashActivity extends AppCompatActivity implements JobScreen.JobProgress {
     private ActivitySplashBinding binding;
@@ -52,6 +60,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     private boolean fullAdsLoaded = false;
     private boolean isShowingInter = false;
     private boolean loadFailed = false;
+    BillingHelper billingHelper;
 
 
     @Override
@@ -90,10 +99,55 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 Log.e("TAN", "onDownloadProgress: "+ bytesDownloaded + " / " + totalBytes);
             }
         });*/
+        initBilling();
         if (!HawkHelper.isPayed()){
             loadConsentForm();
             checkIAP();
         }else skip();
+    }
+
+    private void initBilling() {
+        billingHelper = new BillingHelper(this);
+        billingHelper.init();
+        billingHelper.setListener(new BillingListener() {
+            @Override
+            public void onPurchaseUpdatedV5Below(@Nullable List<? extends SkuDetails> list) {
+
+            }
+
+            @Override
+            public void onPurchaseUpdatedV5(@Nullable List<? extends Purchase> list) {
+
+            }
+
+            @Override
+            public void setupBillingDone() {
+                for (int i = 0; i < billingHelper.getProductDetails().size(); i++) {
+                    ProductDetails productDetails = billingHelper.getProductDetails().get(i);
+                    Log.e("TAN", "ProductDetails: "+productDetails );
+                    if (productDetails.getProductId().equals(Constant.WEEK_LY)) {
+                        if (productDetails.getSubscriptionOfferDetails() != null &&
+                                !productDetails.getSubscriptionOfferDetails().isEmpty() &&
+                                productDetails.getSubscriptionOfferDetails().get(0).getPricingPhases() != null &&
+                                productDetails.getSubscriptionOfferDetails().get(0).getPricingPhases().getPricingPhaseList().size() > 1) {
+                            if (productDetails.getSubscriptionOfferDetails().get(0).getOfferId() != null&&productDetails.getSubscriptionOfferDetails().get(0).getPricingPhases().getPricingPhaseList().get(0).getPriceAmountMicros()==0){
+                                Log.e("TAN", "setupBillingDone: HAS TRIAL");
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onUserCanceled() {
+            }
+
+            @Override
+            public void setupBillingFailed(String s) {
+                Log.e("TAN", "setupBillingFailed: "+s );
+            }
+        });
     }
 
     private void moveOnboarding() {
