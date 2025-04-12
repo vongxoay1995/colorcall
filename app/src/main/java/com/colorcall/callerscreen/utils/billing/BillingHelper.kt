@@ -19,6 +19,7 @@ import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.SkuDetails
 import com.colorcall.callerscreen.constan.Constant
 import com.colorcall.callerscreen.utils.AppHelper
+import com.colorcall.callerscreen.utils.HawkHelper
 
 class BillingHelper(private val context: Context) {
     private var billingClient: BillingClient? = null
@@ -169,6 +170,7 @@ class BillingHelper(private val context: Context) {
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 isQueryInAppDone = true
                 productDetails.addAll(list)
+                Log.e("TAN", "queryInApp: 2222", )
                 checkSetupDone()
             }
         }
@@ -219,7 +221,7 @@ class BillingHelper(private val context: Context) {
     }
 
     private fun checkBuyIap() {
-        AppHelper.isPurchased = purchases.size > 0
+        HawkHelper.setPay(purchases.size>0)
     }
 
     @Synchronized
@@ -228,13 +230,13 @@ class BillingHelper(private val context: Context) {
             if (isQuerySubDone && isQueryInAppDone && isQueryPurchaseDone) {
                 billingStatus = BillingStatus.CONNECTED
                 listener?.setupBillingDone()
-                AppHelper.isPurchased = purchases.isNotEmpty()
+                HawkHelper.setPay(purchases.isNotEmpty())
             }
         } else {
             if (isQueryPurchaseDone) {
                 billingStatus = BillingStatus.CONNECTED
                 listener?.setupBillingDone()
-                AppHelper.isPurchased = purchases.isNotEmpty()
+                HawkHelper.setPay(purchases.isNotEmpty())
             }
         }
     }
@@ -374,12 +376,12 @@ class BillingHelper(private val context: Context) {
     fun fakeBoughtIap() {
         if (listener != null) {
             Handler().postDelayed({
-                AppHelper.isPurchased = true
+                HawkHelper.setPay(true)
               //  purchases.add(Purchase("{\"orderId\":\"GPA.3322-6123-2845-14284\",\"packageName\":\"com.eco.flashlight\",\"productId\":\"weekly399_1st_saleoff\",\"purchaseTime\":1733818993940,\"purchaseState\":0,\"purchaseToken\":\"fmbaacehncggolklmlnegbhg.AO-J1OwIzu_ASJnGmezJ2FU481vFwE4P0ZsTyTAF09x_xyw66eM5KOoLrdkJ_Gz_tNkk6fYfxs5S6bh14wSqaHAzXM0tFR82Hw\",\"quantity\":1,\"autoRenewing\":true,\"acknowledged\":true}",""))
                 listener?.onPurchaseUpdatedV5(purchases)
             }, 1500)
             Handler().postDelayed({
-                AppHelper.isPurchased = false
+                HawkHelper.setPay(false)
             }, 30000)
         }
     }

@@ -1,17 +1,12 @@
 package com.colorcall.callerscreen.paywall
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.method.LinkMovementMethod
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.analystic.Analystic
-import com.colorcall.callerscreen.databinding.ActivityOnboardingBinding
 import com.colorcall.callerscreen.databinding.ActivityPayWallBinding
+import com.colorcall.callerscreen.utils.billing.BillingHelper
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -21,10 +16,11 @@ class PayWallActivity : AppCompatActivity() {
     val analystic:Analystic by lazy {
         Analystic.getInstance(this)
     }
+    lateinit var billingHelper:BillingHelper
     var hasFreeTrial: Boolean = false
     var priceP1 = ""
-    var priceP2 = ""
-    var savePercent = 0.0
+    var offerIdIap = ""
+    var offerIdTemp = ""
     val loadingText by lazy {
         ContextCompat.getString(this, R.string.loading)
     }

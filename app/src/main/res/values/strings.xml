@@ -184,4 +184,7 @@
     <string name="s_days_free">%s days free</string>
     <string name="only_s_per_week">Only %s/week</string>
     <string name="until">Until</string>
+    <string name="unleadsh_your_limit">Unleash your limit</string>
+    <string name="continues">Continue</string>
+    <string name="three_day_frees">3 days free</string>
 </resources>

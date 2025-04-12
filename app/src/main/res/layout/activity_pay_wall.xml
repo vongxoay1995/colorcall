@@ -28,7 +28,9 @@
         android:layout_marginTop="@dimen/_25sdp"
         android:layout_marginEnd="@dimen/_15sdp"
         android:adjustViewBounds="true"/>
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_iap"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -182,7 +184,7 @@
                     app:layout_constraintEnd_toStartOf="@id/tvPriceSave"
                     app:autoSizeTextType="uniform"
                     android:maxLines="1"
-                    android:text="3 days free"
+                    android:text="@string/three_day_frees"
                     app:autoSizeMinTextSize="@dimen/_9sdp"
                     android:textStyle="bold"
                     />
@@ -260,4 +262,19 @@
                 android:textColor="#bababa"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.6"
+        android:visibility="gone"
+        android:background="@drawable/bg_white_radius_top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/layoutLoading">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

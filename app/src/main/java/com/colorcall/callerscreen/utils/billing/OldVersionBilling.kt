@@ -5,7 +5,7 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.colorcall.callerscreen.constan.Constant
-import com.colorcall.callerscreen.utils.AppHelper
+import com.colorcall.callerscreen.utils.HawkHelper
 
 
 class OldVersionBilling private constructor(private val billingClient: BillingClient) {
@@ -69,7 +69,7 @@ class OldVersionBilling private constructor(private val billingClient: BillingCl
     }
 
     private fun checkBuyIap() {
-        AppHelper.isPurchased = list.size > 0
+        HawkHelper.setPay( list.size > 0)
     }
 
     private fun checkSetupDone() {
