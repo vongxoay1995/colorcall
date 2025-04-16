@@ -7,6 +7,7 @@ import static com.colorcall.callerscreen.utils.ConstantAds.banner_main_admob_tk_
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -41,6 +42,7 @@ import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignMainImage;
 import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.mytheme.MyThemeFragment;
+import com.colorcall.callerscreen.paywall.PayWallActivity;
 import com.colorcall.callerscreen.rate.DialogRate;
 import com.colorcall.callerscreen.response.AppClient;
 import com.colorcall.callerscreen.response.AppData;
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         analystic = Analystic.getInstance(this);
         bannerAdsUtils = new BannerAdsUtils(this, binding.layoutAds);
         initDataPage();
-        if (AppUtils.isNetworkConnected(this)&&!HawkHelper.isPayed()) {
+        if (AppUtils.isNetworkConnected(this) && !HawkHelper.isPayed()) {
             createWindowManagerField();
             preLoadInter();
             loadAds();
@@ -128,9 +130,29 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
                 startActivity(new Intent(MainActivity.this, SettingActivity.class));
             }
         });
+        binding.btnRemoveAds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveIapScreen();
+            }
+        });
         initDialogPermissionXiaomi();
         requestNotificationPermission();
         AppUtils.setFullNav(this);
+    }
+
+    private final ActivityResultLauncher<Intent> payWallLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    recreate();
+                }
+            }
+    );
+
+    private void moveIapScreen() {
+        Intent intent = new Intent(this, PayWallActivity.class);
+        payWallLauncher.launch(intent);
     }
 
     private void updateButtonPosition() {
@@ -288,8 +310,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     public void moveCallOwnerActivity() {
         HawkHelper.setStateColorCall(true);
-        Intent intent =  new Intent(MainActivity.this, CallOwnerActivity.class);
-        intent.putExtra("move_dialer_from_main",true);
+        Intent intent = new Intent(MainActivity.this, CallOwnerActivity.class);
+        intent.putExtra("move_dialer_from_main", true);
         startActivity(intent);
     }
 
@@ -500,14 +522,14 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!HawkHelper.isPayed()){
+        if (!HawkHelper.isPayed()) {
             cleanPopupWindow();
         }
         appOpenManager.unregisterObserver();
     }
 
     private Field windowManagerField;
-    private Field  viewsField;
+    private Field viewsField;
 
     @SuppressLint({"PrivateApi", "DiscouragedPrivateApi"})
     private void createWindowManagerField() {
@@ -523,6 +545,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             e.printStackTrace();
         }
     }
+
     private void cleanPopupWindow() {
         try {
             WindowManager windowManagerImpl = (WindowManager) getSystemService(WINDOW_SERVICE);

@@ -21,6 +21,11 @@ class PayWallActivity : AppCompatActivity() {
     var priceP1 = ""
     var offerIdIap = ""
     var offerIdTemp = ""
+    var is_just_bought = false
+    var isGetTempValue = false
+    var countSizeList = 0
+
+
     val loadingText by lazy {
         ContextCompat.getString(this, R.string.loading)
     }

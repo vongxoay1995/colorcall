@@ -1,10 +1,12 @@
 package com.colorcall.callerscreen.paywall
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
@@ -30,25 +32,48 @@ fun PayWallActivity.listener() {
     }
 }
 
+fun PayWallActivity.isHasActive(): Boolean {
+    return !isFinishing && !isDestroyed
+}
+
 fun PayWallActivity.initBilling() {
     billingHelper = BillingHelper(this).apply {
         init()
         setListener(object : BillingListener {
             override fun onPurchaseUpdatedV5Below(list: List<SkuDetails?>?) {}
             override fun onPurchaseUpdatedV5(list: List<Purchase?>?) {
-
+                if (list != null) {
+                    if (!isGetTempValue) {
+                        countSizeList = list.size
+                        isGetTempValue = true
+                    }
+                    if (countSizeList < list.size) {
+                        is_just_bought = true
+                        if (isHasActive()) {
+                            runOnUiThread {
+                                Toast.makeText(this@initBilling,"Purchased success!",Toast.LENGTH_SHORT).show()
+                                setResult(Activity.RESULT_OK)
+                                finish()
+                            }
+                        }
+                    }
+                }
             }
+
             override fun onUserCanceled() {}
 
             override fun setupBillingDone() {
-                runOnUiThread {
-                    with(mBinding) {
-                        layoutLoading.visibility = View.GONE
-                        scrollIap.visibility = View.VISIBLE
+                if (!is_just_bought) {
+                    runOnUiThread {
+                        with(mBinding) {
+                            layoutLoading.visibility = View.GONE
+                            scrollIap.visibility = View.VISIBLE
+                        }
+                        processProductDetails()
+                        setPrice()
                     }
-                    processProductDetails()
-                    setPrice()
                 }
+
             }
 
             override fun setupBillingFailed(s: String) {
@@ -98,12 +123,13 @@ fun PayWallActivity.setPrice() {
 }
 
 fun PayWallActivity.buyNow() {
-    billingHelper.launchPurchaseSubFlow(
+    billingHelper.fakeBoughtIap()
+  /*  billingHelper.launchPurchaseSubFlow(
         this,
         BillingClient.ProductType.SUBS,
         Constant.WEEK_LY,
         offerIdTemp.takeIf { it.isNotEmpty() }
-    )
+    )*/
 }
 
 fun PayWallActivity.setupWordSpannable() {
@@ -155,9 +181,10 @@ fun PayWallActivity.switchProduct(position: Int) {
                 offerIdTemp = offerIdIap
                 content3.text = getString(R.string.free_for_first_3_days_then_s_week, "3", priceP1)
             }
+
             1 -> {
                 swEnableTrial.isChecked = false
-                offerIdTemp=""
+                offerIdTemp = ""
                 layoutPrice.apply {
                     tvToday.text = getString(R.string.today)
                     tvDayFree.visibility = View.GONE
