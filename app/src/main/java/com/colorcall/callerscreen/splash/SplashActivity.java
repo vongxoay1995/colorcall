@@ -205,13 +205,16 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     private void createAndPostFirebaseEvent() {
         Long time = mFirebaseRemoteConfig.getLong(ConstantAds.TIME_BETWEEN_ADS);
         String numberShowPayWall = mFirebaseRemoteConfig.getString(ConstantAds.NUM_SHOW_PAYWALL);
+        try {
+            String[] stringArray = numberShowPayWall.split(",");
 
-        String[] stringArray = numberShowPayWall.split(",");
-
-        for (String s : stringArray) {
-            outputList.add(Integer.parseInt(s));
+            for (String s : stringArray) {
+                outputList.add(Integer.parseInt(s));
+            }
+            Log.e("TAN", "outputList: "+outputList );
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        Log.e("TAN", "outputList: "+outputList );
         Hawk.put(ConstantAds.TIME_BETWEEN_ADS, time);
         Hawk.put("NumShowPayWall", outputList);
     }
