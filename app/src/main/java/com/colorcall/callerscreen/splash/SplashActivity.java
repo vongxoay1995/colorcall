@@ -22,6 +22,7 @@ import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.databinding.ActivitySplashBinding;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.onboarding.OnboardingActivity;
+import com.colorcall.callerscreen.paywall.PayWallActivity;
 import com.colorcall.callerscreen.update.UpdateManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.ConstantAds;
@@ -73,6 +74,9 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         jobScreen = new JobScreen();
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        int countOpenApp = HawkHelper.getCountOpenApp();
+        countOpenApp++;
+        HawkHelper.setCountOpenApp(countOpenApp);
         new Thread(this::configFirebaseRemote).start();
         Glide.with(getApplicationContext())
                 .load(R.drawable.ic_bg_splash)
@@ -100,10 +104,10 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             }
         });*/
         initBilling();
-        if (!HawkHelper.isPayed()){
+        if (!HawkHelper.isPayed()) {
             loadConsentForm();
             checkIAP();
-        }else skip();
+        } else skip();
     }
 
     private void initBilling() {
@@ -124,13 +128,13 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             public void setupBillingDone() {
                 for (int i = 0; i < billingHelper.getProductDetails().size(); i++) {
                     ProductDetails productDetails = billingHelper.getProductDetails().get(i);
-                    Log.e("TAN", "ProductDetails: "+productDetails );
+                    Log.e("TAN", "ProductDetails: " + productDetails);
                     if (productDetails.getProductId().equals(Constant.WEEK_LY)) {
                         if (productDetails.getSubscriptionOfferDetails() != null &&
                                 !productDetails.getSubscriptionOfferDetails().isEmpty() &&
                                 productDetails.getSubscriptionOfferDetails().get(0).getPricingPhases() != null &&
                                 productDetails.getSubscriptionOfferDetails().get(0).getPricingPhases().getPricingPhaseList().size() > 1) {
-                            if (productDetails.getSubscriptionOfferDetails().get(0).getOfferId() != null&&productDetails.getSubscriptionOfferDetails().get(0).getPricingPhases().getPricingPhaseList().get(0).getPriceAmountMicros()==0){
+                            if (productDetails.getSubscriptionOfferDetails().get(0).getOfferId() != null && productDetails.getSubscriptionOfferDetails().get(0).getPricingPhases().getPricingPhaseList().get(0).getPriceAmountMicros() == 0) {
                                 Log.e("TAN", "setupBillingDone: HAS TRIAL");
                             }
                         }
@@ -145,7 +149,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
 
             @Override
             public void setupBillingFailed(String s) {
-                Log.e("TAN", "setupBillingFailed: "+s );
+                Log.e("TAN", "setupBillingFailed: " + s);
             }
         });
     }
@@ -159,7 +163,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 finish();
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             skip();
             e.printStackTrace();
         }
@@ -182,6 +186,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         fetchDataFromFirebase();
     }
 
+
     private void fetchDataFromFirebase() {
         mFirebaseRemoteConfig.fetch().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -198,7 +203,9 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
 
     private void createAndPostFirebaseEvent() {
         Long time = mFirebaseRemoteConfig.getLong(ConstantAds.TIME_BETWEEN_ADS);
+        Long numberShowPayWall = mFirebaseRemoteConfig.getLong(ConstantAds.NUM_SHOW_PAYWALL);
         Hawk.put(ConstantAds.TIME_BETWEEN_ADS, time);
+        Hawk.put("NumShowPayWall", numberShowPayWall);
     }
 
     public void callFlexibleUpdate() {
@@ -283,7 +290,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 startActivity(failedIntent);
                 finish();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             analystic.trackEvent("Error_Skip_Splash_To_Main");
             e.printStackTrace();
         }
@@ -311,9 +318,11 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     @Override
     protected void onDestroy() {
         stopJobScreen();
+        billingHelper.destroy();
         super.onDestroy();
     }
 
+    boolean actionMovePayWall = false;
 
     private void checkIAP() {
         if (AppUtils.isNetworkConnected(this)) {
@@ -327,7 +336,11 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 } else {
                     id_ads = ConstantAds.id_splash_open_tk_cu;
                 }
-                AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+                if (HawkHelper.getCountOpenApp() > Hawk.get("NumShowPayWall", 0L)) {
+                    actionMovePayWall = true;
+                } else {
+                    AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+                }
             }
 
             jobScreen.startJob(this);
@@ -338,7 +351,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     }
 
     public void loadInterAds() {
-        isShowingInter=true;
+        isShowingInter = true;
         String idInter;
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
@@ -397,7 +410,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             return;
         }
         progress++;
-        if (isShowingInter){
+        if (isShowingInter) {
             if (mInterstitialAd != null) {
                 stopJobScreen();
                 isShowAds = true;
@@ -407,18 +420,29 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 Log.e("TAN", "onProgress: skip");
                 moveOnboarding();
             }
-        }else {
+        } else {
             if (appOpenAds != null) {
                 stopJobScreen();
                 isShowAds = true;
                 appOpenAds.show(this);
                 hideLoading();
+            } else if (actionMovePayWall && progress > 12) {
+                stopJobScreen();
+                hideLoading();
+                movePayWall();
             } else if ((!isShowAds && jobScreen.isProgressMax()) || isLoadAdError) {
                 Log.e("TAN", "onProgress: skip");
                 skip();
             }
         }
 
+    }
+
+    private void movePayWall() {
+        Intent intent = new Intent(this, PayWallActivity.class);
+        intent.putExtra("from_scr","Splash");
+        startActivity(intent);
+        finish();
     }
 
     @Override

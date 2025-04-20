@@ -293,6 +293,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     }
 
     public void setTheme() {
+        Log.e("TAN", "setTheme: ");
         //PhoneService.startService(this);
         HawkHelper.setStateColorCall(true);
       /*  if (adapter != null) {

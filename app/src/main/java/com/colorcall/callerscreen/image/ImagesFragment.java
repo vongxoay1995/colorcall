@@ -94,9 +94,13 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     }
 
     @Override
-    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom) {
+    public void onItemClick(ArrayList<Background> backgrounds, int position,boolean isPro, boolean delete, int posRandom) {
         if (!AppUtils.allowViewClick())
             return;
+        if (isPro){
+            mainActivity.moveIapScreen();
+            return;
+        }
       /*  if(countAds%3!=0){
             this.countAds++;
             moveApplyTheme(backgrounds, position, delete,posRandom,true);

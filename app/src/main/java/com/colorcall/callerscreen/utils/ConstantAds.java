@@ -28,4 +28,5 @@ public interface ConstantAds {
     String inter_ads_dialer_back = "ca-app-pub-3222539657172474/8901577439";
     String BEFORE_TIME = "BEFORE_TIME";
     String TIME_BETWEEN_ADS = "TIME_BETWEEN_ADS";
+    String NUM_SHOW_PAYWALL = "NUM_SHOW_PAYWALL";
 }

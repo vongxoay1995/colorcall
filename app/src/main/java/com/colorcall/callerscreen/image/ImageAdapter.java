@@ -89,7 +89,9 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 binding.layoutBorderItemSelect.setVisibility(View.GONE);
                 binding.btnAccept.clearAnimation();
             }
-
+            if (isPro(background)){
+                binding.btnPro.setVisibility(View.VISIBLE);
+            }
             String pathFile;
             if (!background.getPathThumb().equals("")) {
                 if (background.getPathItem().contains("default")) {
@@ -122,7 +124,7 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private void listener() {
             this.binding.imgItemThumbTheme.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
+                    listener.onItemClick(listBg, position, isPro(listBg.get(position)), listBg.get(position).getDelete(), posRandom);
                 }
             });
         }
@@ -131,12 +133,18 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             Animation anim8 = AnimationUtils.loadAnimation(context, R.anim.anm_accept_call);
             binding.btnAccept.startAnimation(anim8);
         }
+        private boolean isPro(Background background){
+            return !HawkHelper.isPayed() &&( background.getPathItem().contains("img1") ||
+                    background.getPathItem().contains("img15") ||
+                    background.getPathItem().contains("img19") ||
+                    background.getPathItem().contains("img2"));
+        }
     }
 
     Listener listener;
 
     public interface Listener {
-        void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom);
+        void onItemClick(ArrayList<Background> backgrounds, int position,boolean isPro, boolean delete, int posRandom);
 
         void onItemThemeSelected(Background background, int position);
     }

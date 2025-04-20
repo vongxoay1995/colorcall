@@ -596,7 +596,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         Intent intent = new Intent(this, SelectContactActivity.class);
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
-        startActivityForResult(intent, 95);
+        startActivityForResult(intent, 91);
     }
 
     @Override

@@ -16,6 +16,7 @@ public class HawkHelper {
     private static String TIME_STAMP = "TIME_STAMP";
     private static String LAST_TIME_SHOW_INTER = "LAST_TIME_SHOW_INTER";
     private static String COUNT_FOR_DIALOG_RATE = "CountShowRate";
+    private static String COUNT_OPEN_APP = "COUNT_OPEN_APP";
     private static String CAN_SHOW_DIALOG_RATE = "CAN_SHOW_DIALOG_RATE";
     private static String COUNT_FOR_DIALOG_UPDATE = "COUNT_FOR_DIALOG_UPDATE";
     private static String CAN_SHOW_DIALOG_UPDATE = "CAN_SHOW_DIALOG_UPDATE";
@@ -98,6 +99,14 @@ public class HawkHelper {
 
     public static void setLastTimeShowInter(long timeStamp) {
         Hawk.put(LAST_TIME_SHOW_INTER, timeStamp);
+    }
+
+    public static int getCountOpenApp() {
+        return Hawk.get(COUNT_OPEN_APP, 0);
+    }
+
+    public static void setCountOpenApp(int value) {
+        Hawk.put(COUNT_OPEN_APP, value);
     }
 
     public static int getCoutShowRate() {

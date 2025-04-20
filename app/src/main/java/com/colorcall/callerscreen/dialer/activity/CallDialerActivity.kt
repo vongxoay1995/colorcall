@@ -599,10 +599,12 @@ class CallDialerActivity : DialerActivity() {
         binding.apply {
             callerNameLabel.text = if (callContact!!.name.isNotEmpty()) callContact!!.name else getString(R.string.unknowContact)
             if (callContact!!.number.isNotEmpty() && callContact!!.number != callContact!!.name) {
-                callerNumber.text = /*callContact!!.number*/"000-000-0000"
+               // callerNumber.text = /*callContact!!.number*/"000-000-0000"
+                callerNumber.text = callContact!!.number
 
                 if (callContact!!.numberLabel.isNotEmpty()) {
-                    callerNumber.text ="000-000-0000" /*"${callContact!!.number} - ${callContact!!.numberLabel}"*/
+                    //callerNumber.text ="000-000-0000" /*"${callContact!!.number} - ${callContact!!.numberLabel}"*/
+                    callerNumber.text = "${callContact!!.number} - ${callContact!!.numberLabel}"
                 }
             } else {
                 callerNumber.beGone()

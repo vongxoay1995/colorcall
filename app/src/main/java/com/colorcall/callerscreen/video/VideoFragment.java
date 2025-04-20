@@ -5,7 +5,6 @@ import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,10 +121,13 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
     }
 
     @Override
-    public void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom) {
+    public void onItemClick(ArrayList<Background> backgrounds, int position,boolean isPro, boolean delete, int posRandom) {
         if (!AppUtils.allowViewClick())
             return;
-        Log.e("TAN", "countAds: " + countAds);
+        if (isPro){
+            mainActivity.moveIapScreen();
+            return;
+        }
         if (!HawkHelper.isPayed()){
             InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
                 this.countAds = 1;

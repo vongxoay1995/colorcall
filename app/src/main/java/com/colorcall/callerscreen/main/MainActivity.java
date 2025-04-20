@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.main;
 
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
@@ -116,7 +118,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             preLoadInter();
             loadAds();
         } else {
-            binding.layoutAds.setVisibility(View.GONE);
+            binding.layoutAds.setVisibility(GONE);
+            binding.btnRemoveAds.setVisibility(INVISIBLE);
             updateButtonPosition();
         }
         disableToolTipTextTab();
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             }
     );
 
-    private void moveIapScreen() {
+    public void moveIapScreen() {
         Intent intent = new Intent(this, PayWallActivity.class);
         payWallLauncher.launch(intent);
     }
@@ -356,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
 
     @Override
     public void onAdFailed() {
-        binding.layoutAds.setVisibility(View.GONE);
+        binding.layoutAds.setVisibility(GONE);
     }
 
 
@@ -510,7 +513,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     public void onVisibilityChanged(boolean isOpen) {
         if (isOpen) {
-            binding.layoutAds.setVisibility(View.GONE);
+            binding.layoutAds.setVisibility(GONE);
         } else {
             if (showLayoutAds) {
                 binding.layoutAds.setVisibility(View.VISIBLE);

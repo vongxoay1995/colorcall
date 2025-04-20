@@ -7,6 +7,7 @@ import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.analystic.Analystic
 import com.colorcall.callerscreen.databinding.ActivityPayWallBinding
 import com.colorcall.callerscreen.utils.billing.BillingHelper
+import com.google.android.gms.ads.interstitial.InterstitialAd
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -24,7 +25,7 @@ class PayWallActivity : AppCompatActivity() {
     var is_just_bought = false
     var isGetTempValue = false
     var countSizeList = 0
-
+    var mInterstitialAd: InterstitialAd? = null
 
     val loadingText by lazy {
         ContextCompat.getString(this, R.string.loading)
@@ -50,4 +51,8 @@ class PayWallActivity : AppCompatActivity() {
         listener()
     }
 
+    override fun onDestroy() {
+        billingHelper.destroy()
+        super.onDestroy()
+    }
 }

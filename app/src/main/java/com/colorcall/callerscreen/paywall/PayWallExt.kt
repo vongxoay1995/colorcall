@@ -2,23 +2,87 @@ package com.colorcall.callerscreen.paywall
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
+import com.colorcall.callerscreen.BuildConfig
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.constan.Constant
+import com.colorcall.callerscreen.main.MainActivity
+import com.colorcall.callerscreen.utils.ConstantAds
+import com.colorcall.callerscreen.utils.HawkHelper
 import com.colorcall.callerscreen.utils.billing.BillingHelper
 import com.colorcall.callerscreen.utils.billing.BillingListener
+import com.colorcall.callerscreen.utils.shineAnimationView
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 fun PayWallActivity.setupView() {
+    if (intent.getStringExtra("from_scr") == "Splash" && !HawkHelper.isPayed()) {
+        loadInterAds()
+    }
     setupWordSpannable()
     initBilling()
     listener()
+    mBinding.layoutBuyNow.shineAnimationView()
+}
+
+fun PayWallActivity.loadInterAds() {
+    val idInter = if (BuildConfig.DEBUG) {
+        Constant.ID_INTER_TEST
+    } else {
+        ConstantAds.inter_splash_cu
+    }
+    //idInter = ID_ADS;
+    val adRequest = AdRequest.Builder().build()
+    InterstitialAd.load(
+        this, idInter, adRequest,
+        object : InterstitialAdLoadCallback() {
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                mInterstitialAd = interstitialAd
+                mInterstitialAd?.setFullScreenContentCallback(object : FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        moveMain()
+                        Log.e("TAG", "The ad was dismissed.")
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        // Called when fullscreen content failed to show.
+                        moveMain()
+                        Log.d("TAG", "The ad failed to show.")
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        // Called when fullscreen content is shown.
+                        // Make sure to set your reference to null so you don't
+                        // show it a second time.
+                        mInterstitialAd = null
+                        Log.e("TAG", "The ad was shown.")
+                    }
+                })
+            }
+
+            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                // Handle the error
+                mInterstitialAd = null
+            }
+        })
+}
+
+fun PayWallActivity.moveMain() {
+    startActivity(Intent(this, MainActivity::class.java))
+    finish()
 }
 
 fun PayWallActivity.listener() {
@@ -28,7 +92,30 @@ fun PayWallActivity.listener() {
             switchProduct(if (isChecked) 0 else 1)
         }
         layoutBuyNow.setOnClickListener { buyNow() }
-        icClose.setOnClickListener { finish() }
+        icClose.setOnClickListener {
+            analystic.trackEvent("PayWallScr_Close_Clicked")
+            if (intent.getStringExtra("from_scr")=="Splash"){
+                showInterAds()
+            }else finish()
+        }
+    }
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if(intent.getStringExtra("from_scr")=="Splash"){
+                    moveMain()
+                }else{
+                    finish()
+                }
+            }
+        }
+    )
+}
+
+fun PayWallActivity.showInterAds() {
+    if(mInterstitialAd != null){
+        mInterstitialAd?.show(this)
+    }else{
+        moveMain()
     }
 }
 
@@ -49,11 +136,17 @@ fun PayWallActivity.initBilling() {
                     }
                     if (countSizeList < list.size) {
                         is_just_bought = true
+                        analystic.trackEvent("PayWallScr_Buy_Success")
                         if (isHasActive()) {
                             runOnUiThread {
-                                Toast.makeText(this@initBilling,"Purchased success!",Toast.LENGTH_SHORT).show()
-                                setResult(Activity.RESULT_OK)
-                                finish()
+                                Toast.makeText(this@initBilling, "Purchased success!", Toast.LENGTH_SHORT).show()
+                                if (intent.getStringExtra("from_scr") == "Splash"){
+                                    moveMain()
+                                }else{
+                                    setResult(Activity.RESULT_OK)
+                                    finish()
+                                }
+
                             }
                         }
                     }
@@ -123,13 +216,14 @@ fun PayWallActivity.setPrice() {
 }
 
 fun PayWallActivity.buyNow() {
-    billingHelper.fakeBoughtIap()
-  /*  billingHelper.launchPurchaseSubFlow(
-        this,
-        BillingClient.ProductType.SUBS,
-        Constant.WEEK_LY,
-        offerIdTemp.takeIf { it.isNotEmpty() }
-    )*/
+    analystic.trackEvent("PayWallScr_Buy_Clicked")
+    //billingHelper.fakeBoughtIap()
+      billingHelper.launchPurchaseSubFlow(
+          this,
+          BillingClient.ProductType.SUBS,
+          Constant.WEEK_LY,
+          offerIdTemp.takeIf { it.isNotEmpty() }
+      )
 }
 
 fun PayWallActivity.setupWordSpannable() {

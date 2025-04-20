@@ -95,7 +95,10 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         .thumbnail(0.1f)
                         .into(binding.imgItemThumbTheme);
             }
-            Log.e("TAN", "onBind: "+background.getPathThumb()+"##"+backgroundSelected.getPathThumb());
+            if (isPro(background)){
+                binding.btnPro.setVisibility(View.VISIBLE);
+            }
+                Log.e("TAN", "onBind: "+background.getPathThumb()+"##"+backgroundSelected.getPathThumb());
             if (background.getPathThumb().equals(backgroundSelected.getPathThumb()) && HawkHelper.isEnableColorCall()) {
                 binding.layoutSelected.setVisibility(View.VISIBLE);
                 binding.layoutBorderItemSelect.setVisibility(View.VISIBLE);
@@ -139,12 +142,12 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private void listener() {
             this.binding.imgItemThumbTheme.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
+                    listener.onItemClick(listBg, position, isPro(listBg.get(position)), listBg.get(position).getDelete(), posRandom);
                 }
             });
             this.binding.vdoBackgroundCall.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onItemClick(listBg, position, listBg.get(position).getDelete(), posRandom);
+                    listener.onItemClick(listBg, position, isPro(listBg.get(position)), listBg.get(position).getDelete(), posRandom);
                 }
             });
         }
@@ -163,7 +166,12 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 playVideo();
             }
         }
-
+        private boolean isPro(Background background){
+            return !HawkHelper.isPayed() &&( background.getPathItem().contains("video6") ||
+                    background.getPathItem().contains("video23") ||
+                    background.getPathItem().contains("video48") ||
+                    background.getPathItem().contains("video7"));
+        }
         private void playVideo() {
             binding.vdoBackgroundCall.setOnPreparedListener(mediaPlayer -> {
                 mediaPlayer.setLooping(true);
@@ -191,7 +199,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     Listener listener;
 
     public interface Listener {
-        void onItemClick(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom);
+        void onItemClick(ArrayList<Background> backgrounds, int position,boolean isPro, boolean delete, int posRandom);
 
         void onItemThemeSelected(int position);
     }
