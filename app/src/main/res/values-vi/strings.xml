@@ -121,4 +121,26 @@
     <string name="des_ob1">Màn hình cuộc gọi nổi bật với cả video và hình ảnh</string>
     <string name="title_ob2">Dễ sử dụng</string>
     <string name="des_ob2">Kích hoạt quyền và trải nghiệm bộ quay số của bạn</string>
+    <string name="please_allow_call_dialer">Vui lòng cho phép Call Color Screen hiển thị các cuộc gọi đến</string>
+    <string name="title_paywall_no_ads">Chán những quảng cáo làm phiền?</string>
+    <string name="content_1_paywall_no_ads">Trải nghiệm ứng dụng sạch sẽ, không quảng cáo.</string>
+    <string name="buy_now">Mua ngay</string>
+    <string name="term_paywall">Bằng cách tiếp tục, bạn đồng ý với %s và %s.\nThanh toán sẽ được tính vào tài khoản Google Play của bạn khi xác nhận mua hàng hoặc vào cuối kỳ thử nghiệm (nếu có).\n \t • \t Trong kỳ thử nghiệm, bạn sẽ không bị tính phí. Sau khi kỳ thử nghiệm kết thúc, gói sẽ tự động gia hạn với mức giá gốc.\n \t • \t Đăng ký sẽ tự động gia hạn theo gói đăng ký mà bạn chọn, trừ khi hủy 24 giờ trước khi kết thúc kỳ hiện tại hoặc kỳ thử nghiệm (nếu có)\n \t • \t Người dùng không đăng ký vẫn có thể sử dụng ứng dụng, tuy nhiên một số tính năng trả phí có thể bị hạn chế.\n \t • \t Bạn có thể quản lý hoặc hủy đăng ký của mình bất kỳ lúc nào trong mục Đăng ký trên Google Play.</string>
+    <string name="content_weekly"><![CDATA[<b>%s mỗi tuần</b>. Tự động gia hạn, hủy bất cứ lúc nào.]]></string>
+    <string name="terms">Điều khoản</string>
+    <string name="ready_to_go_pro">Sẵn sàng nâng cấp lên PRO?</string>
+    <string name="free_trial_for_3_days_no_payment_now">Dùng thử miễn phí trong 3 ngày, không cần thanh toán ngay</string>
+    <string name="no_more_annoying_ads_unlock_all_theme_amp_get_supported_24_7"><![CDATA[Không còn quảng cáo làm phiền. Mở khóa tất cả chủ đề và nhận hỗ trợ 24/7.]]></string>
+    <string name="free_for_first_3_days_then_s_week">Miễn phí trong %s ngày đầu, sau đó %s/tuần</string>
+    <string name="auto_renew_cancel_anytime">Gia hạn tự động, hủy bất cứ lúc nào.</string>
+    <string name="free_trial_enabled">Kích hoạt dùng thử miễn phí</string>
+    <string name="start_free_trial_now">BẮT ĐẦU DÙNG THỬ MIỄN PHÍ NGAY</string>
+    <string name="today">Hôm nay</string>
+    <string name="s_days_free">%s ngày miễn phí</string>
+    <string name="only_s_per_week">Chỉ %s/tuần</string>
+    <string name="until">Đến khi</string>
+    <string name="unleadsh_your_limit">Mở giới hạn của bạn</string>
+    <string name="continues">Tiếp tục</string>
+    <string name="three_day_frees">3 ngày miễn phí</string>
+
 </resources>

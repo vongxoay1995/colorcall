@@ -123,4 +123,26 @@
     <string name="des_ob1">कॉल स्क्रीन वीडियो और छवियों के साथ बेहद शानदार है</string>
     <string name="title_ob2">उपयोग में आसान</string>
     <string name="des_ob2">अनुमतियाँ दें और अपने डायलर तक पहुँच प्रदान करें</string>
+    <string name="please_allow_call_dialer">कृपया कॉल रंग स्क्रीन को आने वाली कॉल दिखाने की अनुमति दें</string>
+    <string name="title_paywall_no_ads">क्या आप परेशान करने वाली विज्ञापनों से थक गए हैं?</string>
+    <string name="content_1_paywall_no_ads">एक साफ, बिना विज्ञापन अनुभव के साथ ऐप का उपयोग करें।</string>
+    <string name="buy_now">अभी खरीदें</string>
+    <string name="term_paywall">जारी रखते हुए आप हमारे %s और %s से सहमत होते हैं।\nखरीद की पुष्टि के बाद या परीक्षण अवधि के अंत में (यदि लागू हो) भुगतान आपके Google Play खाते से लिया जाएगा।\n \t • \t परीक्षण अवधि के दौरान, कोई शुल्क नहीं लिया जाएगा। परीक्षण समाप्त होने के बाद, योजना स्वचालित रूप से मूल मूल्य पर नवीनीकरण हो जाएगी।\n \t • \t चयनित पैकेज के अनुसार सब्सक्रिप्शन स्वचालित रूप से नवीनीकरण होगा, जब तक कि 24 घंटे पहले वर्तमान अवधि या परीक्षण अवधि के अंत से पहले रद्द न कर दिया जाए\n \t • \t गैर-सब्सक्राइब उपयोगकर्ता अभी भी ऐप का उपयोग कर सकते हैं, हालांकि कुछ भुगतान सुविधाएँ सीमित हो सकती हैं।\n \t • \t आप कभी भी Google Play में सब्सक्रिप्शन को प्रबंधित या रद्द कर सकते हैं।</string>
+    <string name="content_weekly"><![CDATA[<b>%s प्रति सप्ताह</b>. स्वचालित नवीनीकरण, कभी भी रद्द करें।]]></string>
+    <string name="terms">नियम</string>
+    <string name="ready_to_go_pro">क्या आप PRO में जाना चाहते हैं?</string>
+    <string name="free_trial_for_3_days_no_payment_now">3 दिन की मुफ्त ट्रायल, अब कोई भुगतान नहीं</string>
+    <string name="no_more_annoying_ads_unlock_all_theme_amp_get_supported_24_7"><![CDATA[कोई और परेशान करने वाली विज्ञापन नहीं। सभी विषयों को अनलॉक करें और 24/7 सहायता प्राप्त करें।]]></string>
+    <string name="free_for_first_3_days_then_s_week">पहले %s दिनों के लिए मुफ्त, फिर %s/सप्ताह</string>
+    <string name="auto_renew_cancel_anytime">स्वचालित नवीनीकरण, कभी भी रद्द करें।</string>
+    <string name="free_trial_enabled">मुफ्त ट्रायल सक्षम है</string>
+    <string name="start_free_trial_now">अभी मुफ्त ट्रायल शुरू करें</string>
+    <string name="today">आज</string>
+    <string name="s_days_free">%s दिन मुफ्त</string>
+    <string name="only_s_per_week">केवल %s/सप्ताह</string>
+    <string name="until">तक</string>
+    <string name="unleadsh_your_limit">अपनी सीमा को खोलें</string>
+    <string name="continues">जारी रखें</string>
+    <string name="three_day_frees">3 दिन मुफ्त</string>
+
 </resources>

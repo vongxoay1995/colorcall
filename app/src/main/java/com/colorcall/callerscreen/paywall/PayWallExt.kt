@@ -42,7 +42,7 @@ fun PayWallActivity.loadInterAds() {
     val idInter = if (BuildConfig.DEBUG) {
         Constant.ID_INTER_TEST
     } else {
-        ConstantAds.inter_splash_cu
+        ConstantAds.interPaywall
     }
     //idInter = ID_ADS;
     val adRequest = AdRequest.Builder().build()

@@ -44,6 +44,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.orhanobut.hawk.Hawk;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SplashActivity extends AppCompatActivity implements JobScreen.JobProgress {
@@ -200,12 +201,19 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             }
         }).addOnCanceledListener(this::createAndPostFirebaseEvent);
     }
-
+    List<Integer> outputList = new ArrayList<>();
     private void createAndPostFirebaseEvent() {
         Long time = mFirebaseRemoteConfig.getLong(ConstantAds.TIME_BETWEEN_ADS);
-        Long numberShowPayWall = mFirebaseRemoteConfig.getLong(ConstantAds.NUM_SHOW_PAYWALL);
+        String numberShowPayWall = mFirebaseRemoteConfig.getString(ConstantAds.NUM_SHOW_PAYWALL);
+
+        String[] stringArray = numberShowPayWall.split(",");
+
+        for (String s : stringArray) {
+            outputList.add(Integer.parseInt(s));
+        }
+        Log.e("TAN", "outputList: "+outputList );
         Hawk.put(ConstantAds.TIME_BETWEEN_ADS, time);
-        Hawk.put("NumShowPayWall", numberShowPayWall);
+        Hawk.put("NumShowPayWall", outputList);
     }
 
     public void callFlexibleUpdate() {
@@ -336,7 +344,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 } else {
                     id_ads = ConstantAds.id_splash_open_tk_cu;
                 }
-                if (HawkHelper.getCountOpenApp() > Hawk.get("NumShowPayWall", 0L)) {
+                if (Hawk.get("NumShowPayWall", new ArrayList<>()).contains(HawkHelper.getCountOpenApp())) {
                     actionMovePayWall = true;
                 } else {
                     AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
@@ -426,7 +434,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 isShowAds = true;
                 appOpenAds.show(this);
                 hideLoading();
-            } else if (actionMovePayWall && progress > 12) {
+            } else if (actionMovePayWall && progress > 9) {
                 stopJobScreen();
                 hideLoading();
                 movePayWall();

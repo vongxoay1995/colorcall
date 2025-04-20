@@ -123,4 +123,26 @@
     <string name="des_ob1">شاشة المكالمات مميزة للغاية مع كل من الفيديوهات والصور</string>
     <string name="title_ob2">سهل الاستخدام</string>
     <string name="des_ob2">قم بتمكين الأذونات واستمتع بتجربة الاتصال</string>
+    <string name="please_allow_call_dialer">يرجى السماح لبرنامج Call Color Screen بعرض المكالمات الواردة</string>
+    <string name="title_paywall_no_ads">هل سئمت من الإعلانات المزعجة؟</string>
+    <string name="content_1_paywall_no_ads">استمتع بتجربة تطبيق نظيفة وخالية من الإعلانات.</string>
+    <string name="buy_now">اشترِ الآن</string>
+    <string name="term_paywall">بالاستمرار في استخدامك، فإنك توافق على %s و %s.\nسيتم تحميل الدفع إلى حسابك في Google Play عند تأكيد الشراء أو في نهاية فترة التجربة (إذا كانت تنطبق).\n \t • \t خلال فترة التجربة، لن يتم تحميل أي رسوم. بعد انتهاء التجربة، سيتم تجديد الخطة تلقائيًا بالسعر الأصلي.\n \t • \t سيتم تجديد الاشتراك تلقائيًا حسب حزمة الاشتراك التي اخترتها ما لم يتم إلغاءه قبل 24 ساعة من نهاية الفترة الحالية أو فترة التجربة (إذا كان لديك تجربة)\n \t • \t يمكن للمستخدمين غير المشتركين استخدام التطبيق، ولكن قد تكون بعض الميزات المدفوعة محدودة.\n \t • \t يمكنك إدارة اشتراكك أو إلغاؤه في أي وقت في الاشتراكات على Google Play.</string>
+    <string name="content_weekly"><![CDATA[<b>%s أسبوعيًا</b>. تجدد تلقائيًا، يمكنك الإلغاء في أي وقت.]]></string>
+    <string name="terms">الشروط</string>
+    <string name="ready_to_go_pro">هل أنت جاهز للترقية إلى PRO؟</string>
+    <string name="free_trial_for_3_days_no_payment_now">تجربة مجانية لمدة 3 أيام، لا يوجد دفع الآن</string>
+    <string name="no_more_annoying_ads_unlock_all_theme_amp_get_supported_24_7"><![CDATA[لا مزيد من الإعلانات المزعجة. فتح جميع السمات والدعم على مدار الساعة.]]></string>
+    <string name="free_for_first_3_days_then_s_week">مجاني لأول %s يومًا، ثم %s/أسبوع</string>
+    <string name="auto_renew_cancel_anytime">التجديد التلقائي، يمكنك الإلغاء في أي وقت.</string>
+    <string name="free_trial_enabled">تم تمكين النسخة التجريبية المجانية</string>
+    <string name="start_free_trial_now">ابدأ النسخة التجريبية المجانية الآن</string>
+    <string name="today">اليوم</string>
+    <string name="s_days_free">%s أيام مجانية</string>
+    <string name="only_s_per_week">فقط %s/أسبوع</string>
+    <string name="until">حتى</string>
+    <string name="unleadsh_your_limit">افتح حدودك</string>
+    <string name="continues">استمرار</string>
+    <string name="three_day_frees">3 أيام مجانية</string>
+
 </resources>

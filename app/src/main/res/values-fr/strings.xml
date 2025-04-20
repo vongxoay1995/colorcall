@@ -122,5 +122,26 @@
     <string name="des_ob1">L\'écran d\'appel est extrêmement remarquable avec à la fois des vidéos et des images</string>
     <string name="title_ob2">Facile à utiliser</string>
     <string name="des_ob2">Activez les autorisations et profitez de votre composeur</string>
+    <string name="please_allow_call_dialer">Veuillez autoriser Call Color Screen à afficher les appels entrants</string>
+    <string name="title_paywall_no_ads">Marre des publicités gênantes ?</string>
+    <string name="content_1_paywall_no_ads">Profitez d\'une expérience d\'application propre, sans publicité.</string>
+    <string name="buy_now">Achetez maintenant</string>
+    <string name="term_paywall">En continuant, vous acceptez nos %s et %s.\nLe paiement sera facturé sur votre compte Google Play lors de la confirmation de l\'achat ou à la fin de la période d\'essai (si applicable).\n \t • \t Pendant la période d\'essai, aucun frais ne vous sera facturé. Après la fin de l\'essai, le plan sera automatiquement renouvelé au prix d\'origine.\n \t • \t L\'abonnement sera automatiquement renouvelé selon le package d\'abonnement que vous choisissez, sauf si vous annulez 24 heures avant la fin de la période actuelle ou de la période d\'essai (si vous avez un essai)\n \t • \t Les utilisateurs non abonnés peuvent toujours utiliser l\'application, mais certaines fonctionnalités payantes peuvent être limitées.\n \t • \t Vous pouvez gérer ou annuler votre abonnement à tout moment dans les abonnements de Google Play.</string>
+    <string name="content_weekly"><![CDATA[<b>%s par semaine</b>. Renouvellement automatique, annulation à tout moment.]]></string>
+    <string name="terms">Conditions</string>
+    <string name="ready_to_go_pro">Prêt à passer en PRO ?</string>
+    <string name="free_trial_for_3_days_no_payment_now">Essai gratuit de 3 jours, aucun paiement maintenant</string>
+    <string name="no_more_annoying_ads_unlock_all_theme_amp_get_supported_24_7"><![CDATA[Plus de publicités gênantes. Débloquez tous les thèmes et bénéficiez d\'un support 24/7.]]></string>
+    <string name="free_for_first_3_days_then_s_week">Gratuit pendant les premiers %s jours, puis %s/semaine</string>
+    <string name="auto_renew_cancel_anytime">Renouvellement automatique, annulation à tout moment.</string>
+    <string name="free_trial_enabled">Essai gratuit activé</string>
+    <string name="start_free_trial_now">DÉMARRER L\'ESSAI GRATUIT MAINTENANT</string>
+    <string name="today">Aujourd\'hui</string>
+    <string name="s_days_free">%s jours gratuits</string>
+    <string name="only_s_per_week">Seulement %s/semaine</string>
+    <string name="until">Jusqu\'à</string>
+    <string name="unleadsh_your_limit">Déclenchez votre limite</string>
+    <string name="continues">Continuer</string>
+    <string name="three_day_frees">3 jours gratuits</string>
 
 </resources>
