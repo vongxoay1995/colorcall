@@ -360,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     public void onAdFailed() {
         binding.layoutAds.setVisibility(GONE);
+        updateButtonPosition();
     }
 
 

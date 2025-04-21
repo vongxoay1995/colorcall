@@ -139,14 +139,12 @@
         android:layout_height="@dimen/_50sdp"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/_10sdp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@drawable/border_ads"
         android:paddingStart="1dp"
         android:paddingEnd="1dp"
         android:gravity="center"
         android:paddingTop="@dimen/_3sdp"
         android:paddingBottom="@dimen/_3sdp"
-        >
-
-    </RelativeLayout>
+       />
 </RelativeLayout>

@@ -369,8 +369,12 @@ class BillingHelper(private val context: Context) {
           }
       }*/
     fun destroy() {
-        billingClient?.endConnection()
-        billingClient = null
+        try {
+            billingClient?.endConnection()
+            billingClient = null
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun fakeBoughtIap() {
