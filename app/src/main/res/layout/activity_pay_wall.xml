@@ -73,35 +73,24 @@
                 android:id="@+id/layoutDesIap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:background="@drawable/bg_round_stroke_iap"
-                android:padding="@dimen/_10sdp"
+                android:background="@drawable/bg_round_iap"
+                android:padding="@dimen/_15sdp"
                 android:layout_marginTop="@dimen/_15sdp"
                 app:layout_constraintTop_toBottomOf="@id/content1">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:src="@drawable/ic_diamond"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
                     android:text="@string/no_more_annoying_ads_unlock_all_theme_amp_get_supported_24_7"
-                    android:textColor="#848484"
-                    android:textSize="@dimen/_12sdp"/>
-                <TextView
-                    android:id="@+id/content3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/free_for_first_3_days_then_s_week"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_12sdp"
-                    android:layout_marginTop="@dimen/_5sdp"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/auto_renew_cancel_anytime"
-                    android:textColor="#848484"
-                    android:layout_marginTop="@dimen/_5sdp"
+                    android:textColor="#171C2C"
                     android:textSize="@dimen/_12sdp"/>
             </LinearLayout>
             <RelativeLayout
@@ -115,7 +104,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 android:background="@drawable/bg_round_stroke_iap"
-                android:padding="@dimen/_12sdp">
+                android:padding="@dimen/_15sdp">
 
                 <TextView
                     android:id="@+id/tvToggle"
@@ -138,98 +127,38 @@
                     android:layout_alignParentEnd="true"
                     app:track="@drawable/custom_track_switch" />
             </RelativeLayout>
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layoutPrice"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/content3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/free_for_first_3_days_then_s_week"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:gravity="center"
+                android:textSize="@dimen/_12sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layoutToggle"
+                android:layout_marginTop="@dimen/_10sdp"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txtdesPack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/auto_renew_cancel_anytime"
+                android:textColor="#171C2C"
                 android:layout_marginHorizontal="@dimen/_15sdp"
-                android:layout_marginTop="@dimen/_10sdp">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/vertical_line"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:src="@drawable/paywall_vertical_line"
-                    android:adjustViewBounds="true"
-                    app:layout_constraintTop_toTopOf="@id/tvToday"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_purchase_day"
-                    android:layout_marginVertical="@dimen/_4sdp"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/tvToday"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="@dimen/_16sdp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:textSize="@dimen/_12sdp"
-                    android:textStyle="bold"
-                    android:text="Today"
-                    app:layout_constraintStart_toStartOf="@id/vertical_line"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_day_free"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#159DFF"
-                    android:layout_marginStart="@dimen/_16sdp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:textSize="@dimen/_12sdp"
-                    app:layout_constraintStart_toEndOf="@id/tvToday"
-                    app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintEnd_toStartOf="@id/tvPriceSave"
-                    app:autoSizeTextType="uniform"
-                    android:maxLines="1"
-                    android:text="@string/three_day_frees"
-                    app:autoSizeMinTextSize="@dimen/_9sdp"
-                    android:textStyle="bold"
-                    />
-
-                <TextView
-                    android:id="@+id/tvPriceSave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_8sdp"
-                    android:textColor="@color/black"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:textSize="@dimen/_12sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:textStyle="bold"
-                    android:text="$0.00/week"
-                    />
-
-                <TextView
-                    android:id="@+id/tv_purchase_day"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#171C2C"
-                    android:layout_marginStart="@dimen/_16sdp"
-                    app:layout_constraintTop_toBottomOf="@id/tvToday"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:textSize="@dimen/_12sdp"
-                    android:text="Until 7th June, 2025"
-                    app:layout_constraintStart_toStartOf="@id/vertical_line"/>
-
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/_12sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_purchase_day"
-                    android:text="$4.99/week"
-                    android:textColor="#171C2C"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/content3"
+                android:textSize="@dimen/_12sdp"/>
             <RelativeLayout
                 android:id="@+id/layoutBuyNow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/layoutPrice"
+                app:layout_constraintTop_toBottomOf="@id/txtdesPack"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="@drawable/bg_button_buy_iap"
@@ -245,9 +174,10 @@
                     android:gravity="center"
                     android:textStyle="bold"
                     android:textAllCaps="true"
-                    android:text="@string/start_free_trial_now"
+                    android:text="@string/start_3_days"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_16sdp" />
+                    android:ellipsize="end"
+                    android:textSize="@dimen/_15sdp" />
             </RelativeLayout>
             <TextView
                 android:id="@+id/terms"
@@ -268,7 +198,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.6"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@drawable/bg_white_radius_top"
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/layoutLoading">

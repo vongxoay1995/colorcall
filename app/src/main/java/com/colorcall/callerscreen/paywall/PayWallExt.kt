@@ -198,18 +198,12 @@ fun PayWallActivity.setPrice() {
         if (hasFreeTrial) {
             switchProduct(0)
             content1.text = getString(R.string.free_trial_for_3_days_no_payment_now)
-            txtBuyNow.text = getString(R.string.start_free_trial_now)
-            tvDayFree.visibility = View.VISIBLE
-            tvPrice.text = priceP1
-            tvPriceSave.text = formatToZero(priceP1)
+            txtBuyNow.text = getString(R.string.start_3_days)
             offerIdTemp = offerIdIap
         } else {
             layoutToggle.visibility = View.GONE
             content1.text = getString(R.string.unleadsh_your_limit)
             txtBuyNow.text = getString(R.string.continues)
-            tvDayFree.visibility = View.GONE
-            tvPrice.text = priceP1
-            tvPriceSave.text = priceP1
             offerIdTemp = ""
         }
     }
@@ -260,18 +254,8 @@ fun PayWallActivity.switchProduct(position: Int) {
         when (position) {
             0 -> {
                 swEnableTrial.isChecked = true
-                layoutPrice.apply {
-                    tvToday.text = getString(R.string.today)
-                    tvDayFree.text = getString(R.string.s_days_free, "3")
-                    tvPurchaseDay.text = "${getString(R.string.until)} $next3DayFormat"
-                    tvPriceSave.apply {
-                        visibility = View.VISIBLE
-                        text = if (priceP1 == loadingText) "" else formatToZero(priceP1)
-                    }
-                    tvPrice.text = priceP1
-                    content1.text = getString(R.string.free_trial_for_3_days_no_payment_now)
-                    txtBuyNow.text = getString(R.string.start_free_trial_now)
-                }
+                content1.text = getString(R.string.free_trial_for_3_days_no_payment_now)
+                txtBuyNow.text = getString(R.string.start_3_days)
                 offerIdTemp = offerIdIap
                 content3.text = getString(R.string.free_for_first_3_days_then_s_week, "3", priceP1)
             }
@@ -279,18 +263,8 @@ fun PayWallActivity.switchProduct(position: Int) {
             1 -> {
                 swEnableTrial.isChecked = false
                 offerIdTemp = ""
-                layoutPrice.apply {
-                    tvToday.text = getString(R.string.today)
-                    tvDayFree.visibility = View.GONE
-                    tvPurchaseDay.text = "${getString(R.string.until)} $next7DayFormat"
-                    tvPriceSave.apply {
-                        visibility = View.VISIBLE
-                        text = priceP1
-                    }
-                    tvPrice.text = priceP1
-                    content1.text = getString(R.string.unleadsh_your_limit)
-                    txtBuyNow.text = getString(R.string.continues)
-                }
+                content1.text = getString(R.string.unleadsh_your_limit)
+                txtBuyNow.text = getString(R.string.continues)
                 content3.text = getString(R.string.only_s_per_week, priceP1)
             }
         }

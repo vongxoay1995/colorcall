@@ -16,8 +16,8 @@ android {
         applicationId = "com.colorcall.callerscreen"
         minSdk = 23
         targetSdk = 34
-        versionCode = 68
-        versionName = "1.6.3"
+        versionCode = 70
+        versionName = "1.6.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

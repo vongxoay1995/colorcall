@@ -170,7 +170,7 @@
     <string name="title_paywall_no_ads">Tired of annoying ads?</string>
     <string name="content_1_paywall_no_ads">Go ad-free with a clean, uninterrupted app experience.</string>
     <string name="buy_now">Buy Now</string>
-    <string name="term_paywall">By continuing you agree to our %s and %s.\nPayment will be charged to your Google Play account upon confirmation of purchase or at the end of the trial period (if applicable).\n \t • \tDuring the trial period, you won’t be charged any fees. After the trial ends, the plan will automatically renew at the original price.\n \t • \tSubscription will automatically renew according to the subscription package you choose unless canceled 24 hours before the end of the current period or trial period (if you have a trial)\n \t • \tNon-subscribed users can still use the application, however, some paid features may be limited.\n \t • \tYou can manage or cancel your subscription at any time in the Subscriptions in Google Play.</string>
+    <string name="term_paywall">By continuing you agree to our %s and %s.\n\t • Payment will be charged to your Google Play account upon confirmation of purchase or at the end of the trial period (if applicable).\n \t • \tDuring the trial period, you won’t be charged any fees. After the trial ends, the plan will automatically renew at the original price.\n \t • \tSubscription will automatically renew according to the subscription package you choose unless canceled 24 hours before the end of the current period or trial period (if you have a trial)\n \t • \tNon-subscribed users can still use the application, however, some paid features may be limited.\n \t • \tYou can manage or cancel your subscription at any time in the Subscriptions in Google Play.</string>
     <string name="content_weekly"><![CDATA[<b>%s mỗi tuần</b>. Tự động gia hạn, hủy bất cứ lúc nào.]]></string>
     <string name="terms">Terms</string>
     <string name="ready_to_go_pro">Ready to go PRO?</string>
@@ -187,4 +187,5 @@
     <string name="unleadsh_your_limit">Unleash your limit</string>
     <string name="continues">Continue</string>
     <string name="three_day_frees">3 days free</string>
+    <string name="start_3_days">START 3-DAY FREE TRIAL</string>
 </resources>

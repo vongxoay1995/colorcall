@@ -126,7 +126,7 @@
     <string name="title_paywall_no_ads">Marre des publicités gênantes ?</string>
     <string name="content_1_paywall_no_ads">Profitez d\'une expérience d\'application propre, sans publicité.</string>
     <string name="buy_now">Achetez maintenant</string>
-    <string name="term_paywall">En continuant, vous acceptez nos %s et %s.\nLe paiement sera facturé sur votre compte Google Play lors de la confirmation de l\'achat ou à la fin de la période d\'essai (si applicable).\n \t • \t Pendant la période d\'essai, aucun frais ne vous sera facturé. Après la fin de l\'essai, le plan sera automatiquement renouvelé au prix d\'origine.\n \t • \t L\'abonnement sera automatiquement renouvelé selon le package d\'abonnement que vous choisissez, sauf si vous annulez 24 heures avant la fin de la période actuelle ou de la période d\'essai (si vous avez un essai)\n \t • \t Les utilisateurs non abonnés peuvent toujours utiliser l\'application, mais certaines fonctionnalités payantes peuvent être limitées.\n \t • \t Vous pouvez gérer ou annuler votre abonnement à tout moment dans les abonnements de Google Play.</string>
+    <string name="term_paywall">En continuant, vous acceptez nos %s et %s.\n\t • Le paiement sera facturé sur votre compte Google Play lors de la confirmation de l\'achat ou à la fin de la période d\'essai (si applicable).\n \t • \t Pendant la période d\'essai, aucun frais ne vous sera facturé. Après la fin de l\'essai, le plan sera automatiquement renouvelé au prix d\'origine.\n \t • \t L\'abonnement sera automatiquement renouvelé selon le package d\'abonnement que vous choisissez, sauf si vous annulez 24 heures avant la fin de la période actuelle ou de la période d\'essai (si vous avez un essai)\n \t • \t Les utilisateurs non abonnés peuvent toujours utiliser l\'application, mais certaines fonctionnalités payantes peuvent être limitées.\n \t • \t Vous pouvez gérer ou annuler votre abonnement à tout moment dans les abonnements de Google Play.</string>
     <string name="content_weekly"><![CDATA[<b>%s par semaine</b>. Renouvellement automatique, annulation à tout moment.]]></string>
     <string name="terms">Conditions</string>
     <string name="ready_to_go_pro">Prêt à passer en PRO ?</string>
@@ -143,5 +143,5 @@
     <string name="unleadsh_your_limit">Déclenchez votre limite</string>
     <string name="continues">Continuer</string>
     <string name="three_day_frees">3 jours gratuits</string>
-
+    <string name="start_3_days">Démarrer l\'essai gratuit de 3 jours</string>
 </resources>
