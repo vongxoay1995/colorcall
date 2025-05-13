@@ -54,7 +54,6 @@ import com.colorcall.callerscreen.utils.AdListener;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.BannerAdsUtils;
-import com.colorcall.callerscreen.utils.ConstantAds;
 import com.colorcall.callerscreen.utils.DialogPermissionXiaomi;
 import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
 import com.colorcall.callerscreen.utils.HawkHelper;
@@ -92,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private Fragment imageFrag, videoFrag, mythemeFrag;
     ViewPagerMainAdapter mAdapter;
     private AppOpenManager appOpenManager;
-    private InterstitialUtil interstitialUtil;
     public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
     public boolean isShowConsent = false;
     private ActivityMainBinding binding;
@@ -292,8 +290,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void preLoadInter() {
-        interstitialUtil = InterstitialUtil.getInstance();
-        interstitialUtil.init(this, ConstantAds.id_ads_inter_item_admob_tk_cu);
+        InterstitialUtil.getInstance().init(this);
         InterstitialApply.getInstance().init(this);
     }
 

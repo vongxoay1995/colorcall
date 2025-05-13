@@ -52,7 +52,7 @@ class PayWallActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        billingHelper.destroy()
+        if (billingHelper != null) billingHelper.destroy()
         super.onDestroy()
     }
 }

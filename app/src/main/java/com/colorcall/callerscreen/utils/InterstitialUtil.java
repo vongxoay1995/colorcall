@@ -26,7 +26,7 @@ public class InterstitialUtil {
     private InterstitialAd interstitialAd;
     private AdCloseListener adCloseListener;
     private Context mContext;
-    private String idInter;
+    private String idInter = ConstantAds.id_ads_inter_item_admob_tk_cu;
     private long loadTime = 0;
     private boolean isLoading;
     private boolean isShowAds;
@@ -42,12 +42,12 @@ public class InterstitialUtil {
         return sInterstitial;
     }
 
-    public void init(Context context,String id_ads) {
+    public void init(Context context) {
         mContext = context;
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
         } else {
-            idInter = id_ads;
+            idInter = ConstantAds.id_ads_inter_item_admob_tk_cu;
         }
         loadInterstitial(mContext, 1);
     }

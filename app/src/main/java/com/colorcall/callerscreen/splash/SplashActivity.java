@@ -329,7 +329,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     @Override
     protected void onDestroy() {
         stopJobScreen();
-        billingHelper.destroy();
+        if (billingHelper!=null) billingHelper.destroy();
         super.onDestroy();
     }
 
