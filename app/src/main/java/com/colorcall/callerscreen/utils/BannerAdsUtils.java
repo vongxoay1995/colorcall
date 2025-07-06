@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -143,6 +144,7 @@ public class BannerAdsUtils {
         adviewGoogle.setAdListener(new com.google.android.gms.ads.AdListener() {
             @Override
             public void onAdFailedToLoad(LoadAdError loadAdError) {
+                Log.e("TAN", "onAdFailedToLoad: "+loadAdError.getMessage() );
                 isLoading = false;
                 if(adListener!=null){
                     adListener.onAdFailed();
@@ -151,6 +153,7 @@ public class BannerAdsUtils {
 
             @Override
             public void onAdLoaded() {
+                Log.e("TAN", "onAdLoaded: " );
                 isLoading = false;
                 layoutBannerAds.setVisibility(View.VISIBLE);
                 layoutBannerAds.removeAllViews();

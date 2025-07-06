@@ -20,12 +20,12 @@ data class Background(
     @SerializedName("path-thumb")
     @NonNull
     @ColumnInfo(name = "path_thumb")
-    var pathThumb: String,
+    var pathThumb: String="",
 
     @SerializedName("path-file")
     @NonNull
     @ColumnInfo(name = "path_item")
-    var pathItem: String,
+    var pathItem: String="",
 
     @SerializedName("delete")
     @ColumnInfo(name = "delete")
@@ -34,12 +34,12 @@ data class Background(
     @SerializedName("name")
     @NonNull
     @ColumnInfo(name = "name")
-    var name: String,
+    var name: String="",
 
     @SerializedName("time_update")
     @NonNull
     @ColumnInfo(name = "time_update")
-    var timeUpdate: String,
+    var timeUpdate: String="",
 
     @SerializedName("position")
     @ColumnInfo(name = "position")

@@ -10,7 +10,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.util.Log;
 
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
@@ -133,7 +132,7 @@ public class FileUtils {
             outputStream.close();
 
         } catch (Exception e) {
-            Log.e("Exception", e.getMessage());
+            e.printStackTrace();
         } finally {
             if (returnCursor != null) {
                 returnCursor.close();

@@ -303,6 +303,8 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             } else if (isPressLaunchDialer) {
                 isPressLaunchDialer = false;
                 moveCallOwnerActivity();
+            }else{
+                HawkHelper.setStateColorCall(true);
             }
         }
         super.onResume();
@@ -322,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
                 if (XiaomiUtilities.isMIUI() && !AppUtils.checkPermissionXiaomi(MainActivity.this)) {
                     dialogPermissionXiaomi.show();
                 } else {
+                    Log.e("TAN", "onActivityResult:1 " );
                     moveCallOwnerActivity();
                 }
             } else if (requestCode == REQUEST_CODE_SET_DEFAULT_DIALER_DIALOG) {
@@ -330,6 +333,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
                     dialogPermissionCall.dismiss();
                     dialogPermissionXiaomi.show();
                 } else {
+                    Log.e("TAN", "onActivityResult:2 " );
+
+                    HawkHelper.setStateColorCall(true);
                     dialogPermissionCall.setStateSw(true);
                     dialogPermissionCall.dismiss();
                 }

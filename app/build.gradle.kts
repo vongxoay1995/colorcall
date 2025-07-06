@@ -16,8 +16,8 @@ android {
         applicationId = "com.colorcall.callerscreen"
         minSdk = 23
         targetSdk = 34
-        versionCode = 71
-        versionName = "1.6.6"
+        versionCode = 72
+        versionName = "1.6.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -97,7 +97,7 @@ dependencies {
     implementation("com.google.firebase:firebase-core:21.1.1")
     implementation("com.google.firebase:firebase-crashlytics:18.4.3")
     implementation("net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC2")
-    implementation("com.google.android.gms:play-services-ads:24.1.0")
+    implementation("com.google.android.gms:play-services-ads:23.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.room:room-runtime:2.6.0")

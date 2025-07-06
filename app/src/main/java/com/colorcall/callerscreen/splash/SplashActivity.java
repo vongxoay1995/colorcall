@@ -228,6 +228,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         @Override
         public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
             super.onAdFailedToLoad(loadAdError);
+            Log.e("TAN", "onAdFailedInterToLoad: "+loadAdError.getMessage() );
             if (isActive()) {
                 isLoadAdError = true;
             }
@@ -347,9 +348,14 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 } else {
                     id_ads = ConstantAds.id_splash_open_tk_cu;
                 }
+                Log.e("TAN", "checkIAP:NumShowPayWall "+(Hawk.get("NumShowPayWall", new ArrayList<>()) ));
+
                 if (Hawk.get("NumShowPayWall", new ArrayList<>()).contains(HawkHelper.getCountOpenApp())) {
+                    Log.e("TAN", "checkIAP:actionMovePayWall " );
                     actionMovePayWall = true;
                 } else {
+                    Log.e("TAN", "checkIAP:AppOpenAd " );
+
                     AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
                 }
             }
@@ -407,9 +413,9 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error
-                        loadFailed = true;
                         fullAdsLoaded = false;
                         mInterstitialAd = null;
+                        isLoadAdError = true;
                     }
                 });
     }
@@ -422,12 +428,15 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         }
         progress++;
         if (isShowingInter) {
+            Log.e("TAN", "11111");
             if (mInterstitialAd != null) {
+                Log.e("TAN", "2222");
                 stopJobScreen();
                 isShowAds = true;
                 mInterstitialAd.show(this);
                 hideLoading();
             } else if ((!isShowAds && jobScreen.isProgressMax()) || isLoadAdError) {
+                Log.e("TAN", "333");
                 Log.e("TAN", "onProgress: skip");
                 moveOnboarding();
             }
