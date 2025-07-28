@@ -16,8 +16,8 @@ android {
         applicationId = "com.colorcall.callerscreen"
         minSdk = 23
         targetSdk = 34
-        versionCode = 72
-        versionName = "1.6.7"
+        versionCode = 74
+        versionName = "1.6.9"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.androidx.constraintlayout)
     testImplementation("junit:junit:4.13.2")
+    implementation ("com.google.firebase:firebase-messaging:24.0.1")
     implementation("com.intuit.ssp:ssp-android:1.0.6")
     implementation("org.greenrobot:eventbus:3.3.1")
     implementation("com.github.bumptech.glide:glide:4.12.0")

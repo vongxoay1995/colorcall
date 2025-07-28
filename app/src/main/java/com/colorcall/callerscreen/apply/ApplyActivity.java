@@ -428,7 +428,10 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
     @SuppressLint("UseCompatLoadingForDrawables")
     public void applyTheme() {
-        if (background==null) Toast.makeText(this,"Apply theme failed, exit app and retry", Toast.LENGTH_SHORT).show();
+        if (background==null) {
+            Toast.makeText(this,"Apply theme failed, exit app and retry", Toast.LENGTH_SHORT).show();
+            return;
+        }
         HawkHelper.setBackgroundSelect(background);
         //PhoneService.startService(this);
         HawkHelper.setStateColorCall(true);

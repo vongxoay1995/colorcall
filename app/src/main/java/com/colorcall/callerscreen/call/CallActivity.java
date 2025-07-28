@@ -136,7 +136,33 @@ public class CallActivity extends AppCompatActivity {
                 if (bmpAvatar!=null){
                     binding.profileImage.setImageBitmap(bmpAvatar);
                 }
-                Log.e("TAN", "showViewCall:getContactId "+contactId+"##"+callContact.getContactId());
+                databaseViewModel.getContactsByContactId(callContact.getContactId()+"").observe(this, new Observer<List<Contact>>() {
+                    @Override
+                    public void onChanged(List<Contact> contacts) {
+                        Log.e("TAN", "showViewCall:22 ");
+
+                        if (contacts != null && !contacts.isEmpty()) {
+                            // Xử lý kết quả trả về
+                            Log.e("TAN", "showViewCall:333 ");
+
+                            Contact mContact = contacts.get(0);
+                            back_ground_contact = new Gson().fromJson(mContact.getBackground(), Background.class);
+
+                            if (back_ground_contact != null) {
+                                backgroundSelect = back_ground_contact;
+                                typeBgCall[0] = back_ground_contact.getType(); // Tạo biến mới
+                                Log.e("TAN", "showViewCall:444 ");
+
+                            }
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                checkTypeCall(typeBgCall[0]); // Sử dụng biến mới
+                            }
+                        });
+                    }
+                });
             }
             //Bitmap bmpAvatar = AppUtils.getContactPhoto(getApplicationContext(), String.valueOf(phoneNumber));
            // binding.profileImage.setImageBitmap(bmpAvatar);
@@ -157,33 +183,7 @@ public class CallActivity extends AppCompatActivity {
             checkTypeCall(typeBgCall);*/
             // Sử dụng Room và ViewModel để truy vấn danh sách Contact từ DB
             Log.e("TAN", "showViewCall:11 ");
-            databaseViewModel.getContactsByContactId(callContact.getContactId()+"").observe(this, new Observer<List<Contact>>() {
-                @Override
-                public void onChanged(List<Contact> contacts) {
-                    Log.e("TAN", "showViewCall:22 ");
 
-                    if (contacts != null && !contacts.isEmpty()) {
-                        // Xử lý kết quả trả về
-                        Log.e("TAN", "showViewCall:333 ");
-
-                        Contact mContact = contacts.get(0);
-                        back_ground_contact = new Gson().fromJson(mContact.getBackground(), Background.class);
-
-                        if (back_ground_contact != null) {
-                            backgroundSelect = back_ground_contact;
-                            typeBgCall[0] = back_ground_contact.getType(); // Tạo biến mới
-                            Log.e("TAN", "showViewCall:444 ");
-
-                        }
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            checkTypeCall(typeBgCall[0]); // Sử dụng biến mới
-                        }
-                    });
-                }
-            });
            //
             new Handler().postDelayed(this::startAnimation, 400);
             handlingCallState();

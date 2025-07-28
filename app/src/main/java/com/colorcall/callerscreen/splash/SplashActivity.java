@@ -373,7 +373,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
         } else {
-            idInter = ConstantAds.inter_splash_cu;
+            idInter = "ca-app-pub-3222539657172474/2797404365";
         }
         //idInter = ID_ADS;
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -386,6 +386,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                         mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {
+                                Hawk.put(ConstantAds.BEFORE_TIME, System.currentTimeMillis());
                                 moveOnboarding();
                                 // Called when fullscreen content is dismissed.
                                 Log.e("TAG", "The ad was dismissed.");

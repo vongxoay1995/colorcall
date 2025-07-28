@@ -188,6 +188,8 @@
 -keepnames class com.colorcall.callerscreen.response.AppData
 -keepnames class com.colorcall.callerscreen.response.ChangeLog
 -keepnames class com.colorcall.callerscreen.database.Background
+-keep class com.google.android.material.R$drawable { *; }
+
 
 
 # Uncomment for DexGuard only
