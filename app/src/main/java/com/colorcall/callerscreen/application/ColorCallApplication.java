@@ -1,12 +1,16 @@
 package com.colorcall.callerscreen.application;
 
+import static com.colorcall.callerscreen.utils.SharePreferenceKeyKt.LOAD_DATA_FIRST_FIRST;
+
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.util.Log;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
+import com.colorcall.callerscreen.utils.ContextExtKt;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
@@ -44,14 +48,14 @@ public class ColorCallApplication extends Application {
     }
 
 
-
     @SuppressLint("StaticFieldLeak")
     private void loadData() {
-        if (!HawkHelper.isLoadDataFirst()) {
+        if (!ContextExtKt.getBoolean(this,LOAD_DATA_FIRST_FIRST,false)) {
+            Log.e("TAN", "loadData: AAAA" );
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 HawkHelper.setListBackground(AppUtils.loadDataDefault(getApplicationContext(), Constant.THUMB_DEFAULT));
-                HawkHelper.setLoadDataFirst(true);
+                ContextExtKt.putExtra(this,LOAD_DATA_FIRST_FIRST,true);
             });
         }
     }
