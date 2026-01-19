@@ -27,7 +27,6 @@ import com.colorcall.callerscreen.model.SignMainImage;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,25 +100,15 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
             mainActivity.moveIapScreen();
             return;
         }
-      /*  if(countAds%3!=0){
-            this.countAds++;
-            moveApplyTheme(backgrounds, position, delete,posRandom,true);
-        }else {
-            this.countAds++;
-            InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
-                this.countAds = 1;
-                moveApplyTheme(backgrounds, position, delete,posRandom,false);
-            });
-        }*/
-        if (!HawkHelper.isPayed()){
+     /*   if (!HawkHelper.isPayed()){
             InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
                 this.countAds = 1;
                 moveApplyTheme(backgrounds, position, delete,posRandom,false);
             });
         }else{
             moveApplyTheme(backgrounds, position, delete,posRandom,false);
-        }
-
+        }*/
+        moveApplyTheme(backgrounds, position, delete,posRandom,false);
     }
 
     private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom, boolean isAllowShowAds) {

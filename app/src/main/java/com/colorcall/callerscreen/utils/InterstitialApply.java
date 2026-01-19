@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.model.AdsConfig;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -28,7 +29,7 @@ public class InterstitialApply {
     private long loadTime = 0;
     private boolean isLoading;
     private boolean isShowAds;
-
+    AdsConfig adsConfig;
     public interface AdCloseListener {
         void onAdClose();
     }
@@ -41,11 +42,12 @@ public class InterstitialApply {
     }
 
     public void init(Context context) {
+        adsConfig = Hawk.get(ConstantAds.ADS_CONFIG);
         mContext = context;
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
         } else {
-            idInter = ConstantAds.id_ads_inter_apply_admob_tk_cu;
+            idInter = ConstantAds.id_ads_inter_apply_admob_moi;
         }
         loadInterstitial(mContext, 1);
     }
@@ -65,6 +67,7 @@ public class InterstitialApply {
     }
 
     public void loadInterstitial(Context context, int index) {
+        if (!adsConfig.getInter_enable()) return;
         if (isAdAvailable()) {
             return;
         }

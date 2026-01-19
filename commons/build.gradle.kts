@@ -81,7 +81,6 @@ dependencies {
     api(libs.joda.time)
     api(libs.recyclerView.fastScroller)
     api(libs.reprint)
-    api(libs.rtl.viewpager)
     api(libs.patternLockView)
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)

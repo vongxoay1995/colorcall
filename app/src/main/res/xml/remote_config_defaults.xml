@@ -3,5 +3,13 @@
     <entry>
         <key>priority_ads</key>
         <value>-1</value>
+        <key>script_ads</key>
+        <value>{
+            "ads_enable": true,
+            "banner_enable": true,
+            "inter_enable": true,
+            "open_ads_enable": true
+            }
+        </value>
     </entry>
 </defaultsMap>

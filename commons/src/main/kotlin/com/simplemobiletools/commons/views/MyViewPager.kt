@@ -3,9 +3,9 @@ package com.simplemobiletools.commons.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
-import com.duolingo.open.rtlviewpager.RtlViewPager
+import androidx.viewpager.widget.ViewPager
 
-class MyViewPager : RtlViewPager {
+class MyViewPager : ViewPager {
 
     constructor(context: Context) : super(context)
 

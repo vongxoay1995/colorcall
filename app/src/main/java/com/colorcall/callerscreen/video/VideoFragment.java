@@ -30,7 +30,6 @@ import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.Boast;
 import com.colorcall.callerscreen.utils.HawkHelper;
-import com.colorcall.callerscreen.utils.InterstitialUtil;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -128,15 +127,15 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
             mainActivity.moveIapScreen();
             return;
         }
-        if (!HawkHelper.isPayed()){
+       /* if (!HawkHelper.isPayed()){
             InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
                 this.countAds = 1;
                 moveApplyTheme(backgrounds, position, delete, posRandom, false);
             });
         }else {
             moveApplyTheme(backgrounds, position, delete, posRandom, false);
-        }
-
+        }*/
+        moveApplyTheme(backgrounds, position, delete, posRandom, false);
     }
 
     @Override

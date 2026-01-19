@@ -4,18 +4,17 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
-
 import com.colorcall.callerscreen.BuildConfig
 import com.colorcall.callerscreen.application.ColorCallApplication
-import com.colorcall.callerscreen.splash.SplashActivity
+import com.colorcall.callerscreen.model.AdsConfig
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
+import com.orhanobut.hawk.Hawk
 import java.util.*
 
 class AppOpenManager(private val application: ColorCallApplication) : LifecycleObserver,
@@ -30,18 +29,18 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onStart() {
-        Log.e("TAN", "onStart: "+currentActivity )
+        Log.e("TAN", "onStart: " + currentActivity)
         //if (!PreferencesUtils.getBoolean(AppConstant.IS_PURCHASED, false)) {
-      /*  if (currentActivity !is SplashActivity && currentActivity !is AdActivity) {
-            showAdIfAvailable()
-        }*/
+        /*  if (currentActivity !is SplashActivity && currentActivity !is AdActivity) {
+              showAdIfAvailable()
+          }*/
         // }
     }
 
     fun showAdIfAvailable() {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
-        Log.e("TAN", "showAdIfAvailable: "+isShowingAd+"##"+isAdAvailable )
+        Log.e("TAN", "showAdIfAvailable: " + isShowingAd + "##" + isAdAvailable)
         if (!isShowingAd && isAdAvailable) {
             Log.e(
                 "TAN",
@@ -86,7 +85,8 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
 
     fun fetchAd() {
         // Have unused ad, no need to fetch another.
-        if (isAdAvailable) {
+        val adsConfig: AdsConfig? = Hawk.get(ConstantAds.ADS_CONFIG)
+        if (adsConfig?.open_ads_enable == false || isAdAvailable) {
             return
         }
         loadCallback = object : AppOpenAdLoadCallback() {
@@ -97,7 +97,7 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
             }
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                Log.e("TAN", "onAdFailedToLoad: ,"+loadAdError.message )
+                Log.e("TAN", "onAdFailedToLoad: ," + loadAdError.message)
             }
         }
         val request = adRequest

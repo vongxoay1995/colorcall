@@ -21,6 +21,7 @@ import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.databinding.ActivitySplashBinding;
 import com.colorcall.callerscreen.main.MainActivity;
+import com.colorcall.callerscreen.model.AdsConfig;
 import com.colorcall.callerscreen.onboarding.OnboardingActivity;
 import com.colorcall.callerscreen.paywall.PayWallActivity;
 import com.colorcall.callerscreen.update.UpdateManager;
@@ -42,6 +43,7 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.ump.FormError;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
 import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
@@ -201,7 +203,9 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             }
         }).addOnCanceledListener(this::createAndPostFirebaseEvent);
     }
+
     List<Integer> outputList = new ArrayList<>();
+
     private void createAndPostFirebaseEvent() {
         Long time = mFirebaseRemoteConfig.getLong(ConstantAds.TIME_BETWEEN_ADS);
         String numberShowPayWall = mFirebaseRemoteConfig.getString(ConstantAds.NUM_SHOW_PAYWALL);
@@ -211,12 +215,25 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             for (String s : stringArray) {
                 outputList.add(Integer.parseInt(s));
             }
-            Log.e("TAN", "outputList: "+outputList );
-        }catch (Exception e){
+            Log.e("TAN", "outputList: " + outputList);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Hawk.put(ConstantAds.TIME_BETWEEN_ADS, time);
         Hawk.put("NumShowPayWall", outputList);
+        String jsonString = mFirebaseRemoteConfig.getString("script_ads");
+        Gson gson = new Gson();
+        if (!jsonString.isEmpty()) {
+            try {
+                AdsConfig adsConfig = gson.fromJson(jsonString, AdsConfig.class);
+                Hawk.put(ConstantAds.ADS_CONFIG, adsConfig);
+                // Sử dụng để bật/tắt quảng cáo...
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Xử lý lỗi parse JSON
+            }
+        }
     }
 
     public void callFlexibleUpdate() {
@@ -228,7 +245,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         @Override
         public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
             super.onAdFailedToLoad(loadAdError);
-            Log.e("TAN", "onAdFailedInterToLoad: "+loadAdError.getMessage() );
+            Log.e("TAN", "onAdFailedInterToLoad: " + loadAdError.getMessage());
             if (isActive()) {
                 isLoadAdError = true;
             }
@@ -330,7 +347,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     @Override
     protected void onDestroy() {
         stopJobScreen();
-        if (billingHelper!=null) billingHelper.destroy();
+        if (billingHelper != null) billingHelper.destroy();
         super.onDestroy();
     }
 
@@ -346,17 +363,22 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 if (BuildConfig.DEBUG) {
                     id_ads = ConstantAds.id_ads_open_test;
                 } else {
-                    id_ads = ConstantAds.id_splash_open_tk_cu;
+                    id_ads = ConstantAds.open_splash_moi;
                 }
-                Log.e("TAN", "checkIAP:NumShowPayWall "+(Hawk.get("NumShowPayWall", new ArrayList<>()) ));
+                Log.e("TAN", "checkIAP:NumShowPayWall " + (Hawk.get("NumShowPayWall", new ArrayList<>())));
 
                 if (Hawk.get("NumShowPayWall", new ArrayList<>()).contains(HawkHelper.getCountOpenApp())) {
-                    Log.e("TAN", "checkIAP:actionMovePayWall " );
+                    Log.e("TAN", "checkIAP:actionMovePayWall ");
                     actionMovePayWall = true;
                 } else {
-                    Log.e("TAN", "checkIAP:AppOpenAd " );
-
-                    AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+                    AdsConfig adsConfig = Hawk.get(ConstantAds.ADS_CONFIG);
+                    if (adsConfig == null || adsConfig.getOpen_ads_enable()) {
+                        AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+                    } else {
+                        stopJobScreen();
+                        hideLoading();
+                        movePayWall();
+                    }
                 }
             }
 
@@ -461,7 +483,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
 
     private void movePayWall() {
         Intent intent = new Intent(this, PayWallActivity.class);
-        intent.putExtra("from_scr","Splash");
+        intent.putExtra("from_scr", "Splash");
         startActivity(intent);
         finish();
     }

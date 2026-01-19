@@ -103,7 +103,6 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 joda-time = { module = "joda-time:joda-time", version.ref = "jodaTime" }
 recyclerView-FastScroller = { module = "com.github.tibbi:RecyclerView-FastScroller", version.ref = "recyclerviewFastscroller" }
 reprint = { module = "com.github.tibbi:reprint", version.ref = "reprint" }
-rtl-viewpager = { module = "com.github.duolingo:rtl-viewpager", version.ref = "rtlViewpager" }
 patternLockView = { module = "com.github.aritraroy:patternLockView", version.ref = "patternLockView" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-coreKtx" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }

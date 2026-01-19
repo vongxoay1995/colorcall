@@ -4,7 +4,6 @@ import static android.view.View.GONE;
 import static com.colorcall.callerscreen.constan.Constant.PERMISSIONS_REQUEST_READ_CONTACTS;
 import static com.colorcall.callerscreen.constan.Constant.REQUEST_CODE_SET_DEFAULT_DIALER;
 import static com.colorcall.callerscreen.utils.AppUtils.isDefaultDialer;
-import static com.colorcall.callerscreen.utils.ConstantAds.apply_banner_admob_tk_cu;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -130,8 +129,8 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
 
     private void loadAdsBanner() {
-        String ID_ADS_GG = "ca-app-pub-3134368447261649/7123602157";
-        bannerAdsUtils.setIdAds(apply_banner_admob_tk_cu);
+        String ID_ADS_GG = "ca-app-pub-3222539657172474/8401908310";
+        bannerAdsUtils.setIdAds(ID_ADS_GG);
         bannerAdsUtils.setAdListener(this);
         bannerAdsUtils.loadAds();
     }

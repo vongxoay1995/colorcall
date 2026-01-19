@@ -11,11 +11,13 @@ import android.widget.RelativeLayout;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
+import com.colorcall.callerscreen.model.AdsConfig;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
+import com.orhanobut.hawk.Hawk;
 
 public class BannerAdsUtils {
     private Context context;
@@ -23,10 +25,11 @@ public class BannerAdsUtils {
     private String idGG;
     private RelativeLayout layoutBannerAds;
     private AdListener adListener;
-
+    AdsConfig adsConfig;
     public BannerAdsUtils(Context context, RelativeLayout viewContainer) {
         this.context = context;
         this.layoutBannerAds = viewContainer;
+        adsConfig= Hawk.get(ConstantAds.ADS_CONFIG);
     }
     public void setIdAds(String idGG) {
         if (BuildConfig.DEBUG) {
@@ -61,6 +64,12 @@ public class BannerAdsUtils {
         });
     }
     public void loadAds() {
+        if (!adsConfig.getBanner_enable()) {
+            if(adListener!=null){
+                adListener.onAdFailed();
+            }
+            return;
+        }
         adviewGoogle = new AdView(context);
         AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
         com.google.android.gms.ads.AdSize adSize = getAdSize();
@@ -118,6 +127,12 @@ public class BannerAdsUtils {
     private Boolean isLoading = false;
 
     public void loadCollapsibleBanner() {
+        if (!adsConfig.getBanner_enable()){
+            if(adListener!=null){
+                adListener.onAdFailed();
+            }
+            return;
+        }
         isCollapsible = true;
         if (isLoading) {
             return;

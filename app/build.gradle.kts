@@ -9,15 +9,15 @@ plugins {
 }
 android {
     namespace = "com.colorcall.callerscreen"
-    compileSdk = 34
+    compileSdk = 35
     buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.colorcall.callerscreen"
         minSdk = 23
-        targetSdk = 34
-        versionCode = 74
-        versionName = "1.6.9"
+        targetSdk = 35
+        versionCode = 75
+        versionName = "1.7.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
