@@ -1,0 +1,15 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml:1:1-41
+INJECTED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml:1:1-41
+	package
+		ADDED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml:1:11-39
+		INJECTED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml
+uses-sdk
+INJECTED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml
+INJECTED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/phamthanhtan/AndroidStudioProjects/colorcall/hawk/src/main/AndroidManifest.xml

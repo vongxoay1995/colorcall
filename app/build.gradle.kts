@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     alias(libs.plugins.android)
     alias(libs.plugins.googleServices)
@@ -62,6 +64,7 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation(project(":commons"))
+    implementation(project(":hawk"))
     implementation(libs.activity)
     implementation(libs.androidx.constraintlayout)
     testImplementation("junit:junit:4.13.2")
@@ -76,7 +79,6 @@ dependencies {
     implementation("com.android.support:multidex:1.0.3")
     implementation("com.makeramen:roundedimageview:2.3.0")
     implementation("com.zhihu.android:matisse:0.5.2")
-    implementation("com.orhanobut:hawk:2.0.1")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.ybq:Android-SpinKit:1.4.0")
     implementation("com.google.android.play:review:2.0.1")
@@ -105,7 +107,6 @@ dependencies {
     implementation(libs.indicator.fast.scroll)
     implementation(libs.autofit.text.view)
     implementation("com.tbuonomo:dotsindicator:5.1.0")
-
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
     implementation(libs.kotlinx.serialization.json)

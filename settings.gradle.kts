@@ -30,3 +30,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Color Call"
 include(":app",":commons")
+include(":hawk")

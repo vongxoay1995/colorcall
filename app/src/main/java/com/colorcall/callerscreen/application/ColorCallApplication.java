@@ -50,12 +50,12 @@ public class ColorCallApplication extends Application {
 
     @SuppressLint("StaticFieldLeak")
     private void loadData() {
-        if (!ContextExtKt.getBoolean(this,LOAD_DATA_FIRST_FIRST,false)) {
+        if (!HawkHelper.isLoadDataFirst()) {
             Log.e("TAN", "loadData: AAAA" );
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 HawkHelper.setListBackground(AppUtils.loadDataDefault(getApplicationContext(), Constant.THUMB_DEFAULT));
-                ContextExtKt.putExtra(this,LOAD_DATA_FIRST_FIRST,true);
+                HawkHelper.setLoadDataFirst(true);
             });
         }
     }

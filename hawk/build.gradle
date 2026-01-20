@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+  compileSdkVersion 34
+  namespace = "com.orhanobut.hawk"
+
+  defaultConfig {
+    minSdkVersion 21
+    consumerProguardFiles 'proguard-rules.pro'
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+
+  lintOptions {
+    textReport true
+    textOutput 'stdout'
+  }
+}
+
+dependencies {
+  implementation "com.google.code.gson:gson:2.13.1"
+
+  testImplementation "junit:junit:4.13.2"
+  testImplementation "com.google.truth:truth:1.4.4"
+  testImplementation "org.robolectric:robolectric:4.15.1"
+  testImplementation "org.mockito:mockito-core:5.18.0"
+  implementation "androidx.security:security-crypto:1.1.0"
+  //implementation "androidx.security:security-crypto:1.0.0"
+  testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.21"
+
+  androidTestImplementation "junit:junit:4.13.2"
+  androidTestImplementation "com.google.truth:truth:1.4.4"
+  androidTestImplementation "com.android.support.test:runner:1.0.2"
+  androidTestImplementation "com.android.support.test:rules:1.0.2"
+  androidTestImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.21"
+
+}
