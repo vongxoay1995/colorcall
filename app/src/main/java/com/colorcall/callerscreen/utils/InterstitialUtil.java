@@ -3,6 +3,7 @@ package com.colorcall.callerscreen.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -92,6 +93,10 @@ public class InterstitialUtil {
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         InterstitialUtil.this.interstitialAd = interstitialAd;
                         InterstitialUtil.this.loadTime = (new Date()).getTime();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                            InterstitialUtil.this.interstitialAd.setImmersiveMode(true);
+                        }
+
                         InterstitialUtil.this.interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {

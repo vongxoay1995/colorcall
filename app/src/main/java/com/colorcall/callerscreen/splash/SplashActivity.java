@@ -1,6 +1,7 @@
 package com.colorcall.callerscreen.splash;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -258,6 +259,10 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 isLoadAdError = false;
                 appOpenAd.setFullScreenContentCallback(fullScreenContentCallback);
                 appOpenAds = appOpenAd;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                    appOpenAds.setImmersiveMode(true);
+                }
+
             }
         }
     };
@@ -405,6 +410,10 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         fullAdsLoaded = true;
                         mInterstitialAd = interstitialAd;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                            mInterstitialAd.setImmersiveMode(true);
+                        }
+
                         mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {

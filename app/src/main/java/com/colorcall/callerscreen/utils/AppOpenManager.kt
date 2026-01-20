@@ -2,6 +2,7 @@ package com.colorcall.callerscreen.utils
 
 import android.app.Activity
 import android.app.Application
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Lifecycle
@@ -11,11 +12,14 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.colorcall.callerscreen.BuildConfig
 import com.colorcall.callerscreen.application.ColorCallApplication
 import com.colorcall.callerscreen.model.AdsConfig
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
 import com.orhanobut.hawk.Hawk
-import java.util.*
+import java.util.Date
 
 class AppOpenManager(private val application: ColorCallApplication) : LifecycleObserver,
     Application.ActivityLifecycleCallbacks {
@@ -93,6 +97,10 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
 
             override fun onAdLoaded(ad: AppOpenAd) {
                 appOpenAd = ad
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                    appOpenAd?.setImmersiveMode(true)
+                }
+
                 loadTime = Date().time
             }
 
