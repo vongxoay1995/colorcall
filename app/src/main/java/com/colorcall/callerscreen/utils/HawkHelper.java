@@ -43,7 +43,6 @@ public class HawkHelper {
     }
 
     public static boolean isPayed() {
-        //return  true;
         return Hawk.get(IS_PAY, false);
     }
 
@@ -53,6 +52,7 @@ public class HawkHelper {
 
 
     public static ArrayList<Background> getListBackground() {
+
         return Hawk.get(LIST_BACKGROUND, new ArrayList<>());
     }
 
@@ -93,13 +93,6 @@ public class HawkHelper {
         return Hawk.get(BACKGROUND_SELECT, background);
     }
 
-    public static long getLastTimeShowInter() {
-        return Hawk.get(LAST_TIME_SHOW_INTER, (long) 0);
-    }
-
-    public static void setLastTimeShowInter(long timeStamp) {
-        Hawk.put(LAST_TIME_SHOW_INTER, timeStamp);
-    }
 
     public static int getCountOpenApp() {
         return Hawk.get(COUNT_OPEN_APP, 0);
@@ -124,45 +117,4 @@ public class HawkHelper {
     public static void setDialogShowRate(boolean value) {
         Hawk.put(CAN_SHOW_DIALOG_RATE, value);
     }
-
-    public static void setScreenCall(long value) {
-        Hawk.put(IS_SCREEN_CALL, value);
-    }
-
-    public static long isScreenCall() {
-        return Long.parseLong(Hawk.get(IS_SCREEN_CALL, 0) + "");
-    }
-
-    public static void setPriorityAds(long value) {
-        Hawk.put(PRIORITY_ADS, value);
-    }
-
-    public static long getPriorityAds() {
-        return Long.parseLong(Hawk.get(PRIORITY_ADS, 0) + "");
-    }
-
-    public static void setIsFirstAB(boolean value) {
-        Hawk.put(IS_AB, value);
-    }
-
-    public static boolean isFirstAB() {
-        return Hawk.get(IS_AB, false);
-    }
-
-    public static int getCountShowDialogUpdate() {
-        return Hawk.get(COUNT_FOR_DIALOG_UPDATE, 0);
-    }
-
-    public static void setCountShowDialogUpdate(int value) {
-        Hawk.put(COUNT_FOR_DIALOG_UPDATE, value);
-    }
-
-    public static boolean isCanShowDiaLogUpdate() {
-        return Hawk.get(CAN_SHOW_DIALOG_UPDATE, true);
-    }
-
-    public static void setDialogShowUpdate(boolean value) {
-        Hawk.put(CAN_SHOW_DIALOG_UPDATE, value);
-    }
-
 }

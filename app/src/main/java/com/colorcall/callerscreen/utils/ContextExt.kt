@@ -2,6 +2,10 @@ package com.colorcall.callerscreen.utils
 
 import android.content.Context
 import androidx.core.content.edit
+import com.google.common.reflect.TypeToken
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 
 inline fun <reified T> Context.getApplication(callback: (T) -> Unit) {
     if (applicationContext is T) callback.invoke(applicationContext as T)
@@ -36,3 +40,5 @@ fun Context.putExtra(key: String, value: Any) {
         }
     }
 }
+
+
