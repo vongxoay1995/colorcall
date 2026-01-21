@@ -1,7 +1,5 @@
 package com.colorcall.callerscreen.application;
 
-import static com.colorcall.callerscreen.utils.SharePreferenceKeyKt.LOAD_DATA_FIRST_FIRST;
-
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
@@ -10,8 +8,8 @@ import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.utils.AppOpenManager;
 import com.colorcall.callerscreen.utils.AppUtils;
-import com.colorcall.callerscreen.utils.ContextExtKt;
 import com.colorcall.callerscreen.utils.HawkHelper;
+import com.colorcall.callerscreen.utils.SharedPreferencesUtil;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -31,6 +29,7 @@ public class ColorCallApplication extends Application {
         super.onCreate();
         MobileAds.initialize(ColorCallApplication.this, initializationStatus -> {
         });
+        SharedPreferencesUtil.INSTANCE.init(this);
         if (BuildConfig.DEBUG){
             List<String> testDeviceIds = Arrays.asList("13C6FDCBDDECC41B0B5817912A40E9E6");
             RequestConfiguration configuration =

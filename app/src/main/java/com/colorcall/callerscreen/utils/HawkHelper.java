@@ -52,12 +52,13 @@ public class HawkHelper {
 
 
     public static ArrayList<Background> getListBackground() {
-
-        return Hawk.get(LIST_BACKGROUND, new ArrayList<>());
+        return  SharedPreferencesUtil.INSTANCE.getListBackground();
+        //return Hawk.get(LIST_BACKGROUND, new ArrayList<>());
     }
 
     public static void setListBackground(ArrayList<Background> listBackground) {
-        Hawk.put(LIST_BACKGROUND, listBackground);
+        SharedPreferencesUtil.INSTANCE.saveListBackground(listBackground);
+        //Hawk.put(LIST_BACKGROUND, listBackground);
     }
 
     public static boolean isEnableColorCall() {

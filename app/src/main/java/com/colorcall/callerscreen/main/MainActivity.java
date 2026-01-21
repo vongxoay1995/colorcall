@@ -376,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         app.enqueue(new Callback<AppData>() {
             @Override
             public void onResponse(@NonNull Call<AppData> call, @NonNull Response<AppData> response) {
+                Log.e("TAN", "onResponse: res = "+response.body().getApp());
                 if (response.body() != null && response.body().getApp().size() > 0) {
                     checkHasNewData(response.body().getApp());
                 }
@@ -402,14 +403,21 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void checkHasNewData(ArrayList<Background> listBg) {
+        Log.e("TAN", "checkHasNewData: list = "+listBg );
         long lastTimeUpdate = HawkHelper.getTimeStamp();
         boolean isSelected = false;
         int initPosition = HawkHelper.getListBackground().size();
         ArrayList<Background> arr = HawkHelper.getListBackground();
+        Log.e("TAN", "checkHasNewData2: list = "+arr );
+
         for (int i = 0; i < listBg.size(); i++) {
+            Log.e("TAN", "checkHasNewData3: list = "+Long.parseLong(listBg.get(i).getTimeUpdate())+"##"+lastTimeUpdate);
+            Log.e("TAN", "33333: list = "+listBg.get(i) );
             if (Long.parseLong(listBg.get(i).getTimeUpdate()) > lastTimeUpdate) {
                 listBg.get(i).setPosition(initPosition + i);
                 arr.add(listBg.get(i));
+                Log.e("TAN", "444: list = "+arr);
+
                 if (!isSelected) {
                     HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTimeUpdate()));
                     isSelected = true;
@@ -426,6 +434,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             }*/
 
         }
+        Log.e("TAN", "checkHasNewData: "+arr );
         HawkHelper.setListBackground(arr);
     }
 
