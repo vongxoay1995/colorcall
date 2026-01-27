@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
-
 plugins {
     alias(libs.plugins.android)
     alias(libs.plugins.googleServices)
@@ -36,9 +34,12 @@ android {
 
         }
     }
-
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
         buildConfig = true
     }
 
@@ -109,6 +110,9 @@ dependencies {
     implementation("com.tbuonomo:dotsindicator:5.1.0")
     kapt("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
+
+   // api(libs.koin.core)
+    //api(libs.koin.android)
     implementation(libs.kotlinx.serialization.json)
     implementation ("com.android.billingclient:billing:7.1.1")
 }

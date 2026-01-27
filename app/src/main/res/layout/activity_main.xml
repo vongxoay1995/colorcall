@@ -1,150 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorApp">
-
-    <RelativeLayout
-        android:id="@+id/layout_head"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/colorHeaderMain"
-        android:gravity="center">
-        <ImageView
-            android:id="@+id/btnRemoveAds"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:padding="@dimen/_9sdp"
-            android:layout_marginStart="@dimen/_5sdp"
-            app:srcCompat="@drawable/ic_crown"
-            tools:ignore="VectorDrawableCompat" />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            app:tabBackground="@color/transparent"
-            android:textAllCaps="true"
-            android:layout_centerVertical="true"
-            android:fontFamily="@font/roboto_light"
-            android:textColor="@color/white"
-            android:layout_toEndOf="@id/btnRemoveAds"
-            android:layout_toStartOf="@id/layoutBottom"
-            android:layout_marginStart="@dimen/_17sdp"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:id="@+id/layoutBottom"
-            android:layout_width="wrap_content"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentEnd="true"
-            android:orientation="horizontal"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:weightSum="3"
-            android:gravity="center">
-            <ImageView
-                android:id="@+id/btnSetting"
-                android:layout_width="@dimen/_40sdp"
-                android:layout_height="@dimen/_40sdp"
-                android:padding="@dimen/_9sdp"
-                app:srcCompat="@drawable/ic_setting"
-                android:layout_marginBottom="@dimen/_2sdp"
-                tools:ignore="VectorDrawableCompat" />
-        </LinearLayout>
-    </RelativeLayout>
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        android:background="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
-        app:tabIndicatorColor="#2196F3"
-        app:tabMode="fixed"
-        app:tabRippleColor="@null"
-        style="@style/MyCustomTabLayout"
-        app:tabSelectedTextColor="#2196F3"
-        app:tabTextColor="@color/colorTextApp"
-        android:layout_below="@id/layout_head"/>
-    <RelativeLayout
-        android:id="@+id/laypoutPermission"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_5sdp"
-        android:background="@drawable/bg_radius_blue"
-        android:layout_below="@id/tab_layout"
-        android:padding="@dimen/_7sdp"
-        android:visibility="gone"
-        android:gravity="center">
-        <ImageView
-            android:id="@+id/imgIcon"
-            android:layout_width="@dimen/_25sdp"
-            android:layout_height="@dimen/_25sdp"
-            android:src="@mipmap/ic_launcher"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/allow_permission"
-            android:textColor="@color/white"
-            android:layout_toEndOf="@id/imgIcon"
-            android:ellipsize="end"
-            android:paddingStart="@dimen/_3sdp"
-            android:paddingEnd="@dimen/_3sdp"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:layout_toStartOf="@id/goto_setting"/>
-        <TextView
-            android:id="@+id/goto_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/go_to_setting"
-            android:textColor="@color/black"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/bg_radius_white"
-            android:paddingStart="@dimen/_10sdp"
-            android:paddingEnd="@dimen/_10sdp"
-            android:paddingTop="@dimen/_2sdp"
-            android:paddingBottom="@dimen/_2sdp"
-            android:layout_centerVertical="true" />
-    </RelativeLayout>
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pageBgColor"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:aapt="http://schemas.android.com/aapt"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/laypoutPermission"
-        android:layout_above="@id/layout_ads"
-        android:layout_marginTop="2dp">
+        android:background="@color/colorApp">
 
-    </androidx.viewpager.widget.ViewPager>
-    <com.simplemobiletools.commons.views.MyFloatingActionButton
-        android:id="@+id/main_dialpad_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/bigger_margin"
-        android:layout_marginBottom="@dimen/activity_margin"
-        android:contentDescription="@string/dialpad"
-        android:elevation="@dimen/medium_margin"
-        android:padding="@dimen/activity_margin"
-        android:src="@drawable/ic_dialpad_vector"
-        android:layout_above="@id/layout_ads"
-        android:layout_alignParentEnd="true"
-        app:rippleColor="@color/pressed_item_foreground" />
-    <RelativeLayout
-        android:id="@+id/layout_ads"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_50sdp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:visibility="visible"
-        android:background="@drawable/border_ads"
-        android:paddingStart="1dp"
-        android:paddingEnd="1dp"
-        android:gravity="center"
-        android:paddingTop="@dimen/_3sdp"
-        android:paddingBottom="@dimen/_3sdp"
-       />
-</RelativeLayout>
+        <View
+            android:id="@+id/topView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <RelativeLayout
+            android:id="@+id/layout_head"
+            android:layout_width="match_parent"
+            android:layout_below="@id/topView"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/colorHeaderMain"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/btnRemoveAds"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:padding="@dimen/_9sdp"
+                app:srcCompat="@drawable/ic_crown"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/_17sdp"
+                android:layout_toStartOf="@id/layoutBottom"
+                android:layout_toEndOf="@id/btnRemoveAds"
+                android:fontFamily="@font/roboto_light"
+                android:text="@string/app_name"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_15sdp"
+                android:textStyle="bold"
+                app:tabBackground="@color/transparent" />
+
+            <LinearLayout
+                android:id="@+id/layoutBottom"
+                android:layout_width="wrap_content"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <ImageView
+                    android:id="@+id/btnSetting"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:padding="@dimen/_9sdp"
+                    app:srcCompat="@drawable/ic_setting"
+                    tools:ignore="VectorDrawableCompat" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            style="@style/MyCustomTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_head"
+            android:background="@color/white"
+            android:fillViewport="true"
+            app:tabIndicatorColor="#2196F3"
+            app:tabMode="fixed"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="#2196F3"
+            app:tabTextColor="@color/colorTextApp" />
+
+        <RelativeLayout
+            android:id="@+id/laypoutPermission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tab_layout"
+            android:layout_margin="@dimen/_5sdp"
+            android:background="@drawable/bg_radius_blue"
+            android:gravity="center"
+            android:padding="@dimen/_7sdp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgIcon"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/goto_setting"
+                android:layout_toEndOf="@id/imgIcon"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:paddingStart="@dimen/_3sdp"
+                android:paddingEnd="@dimen/_3sdp"
+                android:text="@string/allow_permission"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/goto_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/bg_radius_white"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingTop="@dimen/_2sdp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:paddingBottom="@dimen/_2sdp"
+                android:text="@string/go_to_setting"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pageBgColor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_ads"
+            android:layout_below="@id/laypoutPermission"
+            android:layout_marginTop="2dp">
+
+        </androidx.viewpager.widget.ViewPager>
+
+        <com.simplemobiletools.commons.views.MyFloatingActionButton
+            android:id="@+id/main_dialpad_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/layout_ads"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/bigger_margin"
+            android:layout_marginBottom="@dimen/activity_margin"
+            android:contentDescription="@string/dialpad"
+            android:elevation="@dimen/medium_margin"
+            android:padding="@dimen/activity_margin"
+            android:src="@drawable/ic_dialpad_vector"
+            app:rippleColor="@color/pressed_item_foreground" />
+
+        <RelativeLayout
+            android:id="@+id/layout_ads"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_above="@id/bottomView"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/border_ads"
+            android:gravity="center"
+            android:paddingStart="1dp"
+            android:paddingTop="@dimen/_3sdp"
+            android:paddingEnd="1dp"
+            android:paddingBottom="@dimen/_3sdp"
+            android:visibility="visible" />
+
+        <View
+            android:id="@+id/bottomView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </RelativeLayout>
+

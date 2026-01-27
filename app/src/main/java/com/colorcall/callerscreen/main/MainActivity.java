@@ -15,7 +15,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -35,6 +33,7 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
 import com.colorcall.callerscreen.analystic.ManagerEvent;
 import com.colorcall.callerscreen.application.ColorCallApplication;
+import com.colorcall.callerscreen.base.BaseActivity;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.databinding.ActivityMainBinding;
@@ -83,7 +82,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements AdListener, DialogRate.DialogRateListener, KeyboardVisibilityEventListener, AppOpenManager.AppOpenManagerObserver {
+public class MainActivity extends BaseActivity<ActivityMainBinding> implements AdListener, DialogRate.DialogRateListener, KeyboardVisibilityEventListener, AppOpenManager.AppOpenManagerObserver {
     private Analystic analystic;
     private BannerAdsUtils bannerAdsUtils;
     private boolean showLayoutAds;
@@ -92,53 +91,12 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     private AppOpenManager appOpenManager;
     public GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
     public boolean isShowConsent = false;
-    private ActivityMainBinding binding;
     DialogPermissionXiaomi dialogPermissionXiaomi;
     DialogPermissionCall dialogPermissionCall;
     boolean isPressGotoSetting;
     boolean isPressLaunchDialer;
-
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
-        googleMobileAdsConsentManager = GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
-        showForm();
-        appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
-        loadDataApi(true);
-        analystic = Analystic.getInstance(this);
-        bannerAdsUtils = new BannerAdsUtils(this, binding.layoutAds);
-        initDataPage();
-        if (AppUtils.isNetworkConnected(this) && !HawkHelper.isPayed()) {
-            createWindowManagerField();
-            preLoadInter();
-            loadAds();
-        } else {
-            binding.layoutAds.setVisibility(GONE);
-            binding.btnRemoveAds.setVisibility(INVISIBLE);
-            updateButtonPosition();
-        }
-        disableToolTipTextTab();
-        analystic.trackEvent(ManagerEvent.mainOpen());
-        analystic.trackEvent(ManagerEvent.grantedPermission(PermistionUtils.checkHasPermissionCall(this)));
-        KeyboardVisibilityEvent.setEventListener(this, this);
-        binding.btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                analystic.trackEvent(ManagerEvent.mainSlideClick());
-                startActivity(new Intent(MainActivity.this, SettingActivity.class));
-            }
-        });
-        binding.btnRemoveAds.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                moveIapScreen();
-            }
-        });
-        initDialogPermissionXiaomi();
-        requestNotificationPermission();
-        AppUtils.setFullNav(this);
+    public MainActivity() {
+        super(ActivityMainBinding::inflate);
     }
 
     private final ActivityResultLauncher<Intent> payWallLauncher = registerForActivityResult(
@@ -156,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void updateButtonPosition() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) binding.mainDialpadButton.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) getBinding().mainDialpadButton.getLayoutParams();
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        binding.mainDialpadButton.setLayoutParams(params);
+        getBinding().mainDialpadButton.setLayoutParams(params);
     }
 
     private void initDialogPermissionXiaomi() {
@@ -239,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     }
 
     private void disableToolTipTextTab() {
-        LinearLayout tabStrip = (LinearLayout) binding.tabLayout.getChildAt(0);
+        LinearLayout tabStrip = (LinearLayout) getBinding().tabLayout.getChildAt(0);
         for (int i = 0; i < tabStrip.getChildCount(); i++) {
             tabStrip.getChildAt(i).setOnLongClickListener(v -> true);
         }
@@ -253,12 +211,12 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         mAdapter.addFrag(videoFrag, getString(R.string.videos));
         mAdapter.addFrag(imageFrag, getString(R.string.images));
         mAdapter.addFrag(mythemeFrag, getString(R.string.mytheme));
-        binding.pageBgColor.setAdapter(mAdapter);
-        binding.tabLayout.setupWithViewPager(binding.pageBgColor);
-        binding.pageBgColor.setCurrentItem(0);
+        getBinding().pageBgColor.setAdapter(mAdapter);
+        getBinding().tabLayout.setupWithViewPager(getBinding().pageBgColor);
+        getBinding().pageBgColor.setCurrentItem(0);
         mAdapter.notifyDataSetChanged();
-        binding.pageBgColor.setOffscreenPageLimit(2);
-        binding.pageBgColor.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        getBinding().pageBgColor.setOffscreenPageLimit(2);
+        getBinding().pageBgColor.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -275,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             }
         });
 
-        binding.mainDialpadButton.setOnClickListener(new View.OnClickListener() {
+        getBinding().mainDialpadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 analystic.trackEvent("Main_Dial_Pad_Button_Clicked");
@@ -356,12 +314,12 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     public void onAdloaded() {
         showLayoutAds = true;
-        binding.layoutAds.setVisibility(View.VISIBLE);
+        getBinding().layoutAds.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onAdFailed() {
-        binding.layoutAds.setVisibility(GONE);
+        getBinding().layoutAds.setVisibility(GONE);
         updateButtonPosition();
     }
 
@@ -413,17 +371,17 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
         for (int i = 0; i < listBg.size(); i++) {
             Log.e("TAN", "checkHasNewData3: list = "+Long.parseLong(listBg.get(i).getTimeUpdate())+"##"+lastTimeUpdate);
             Log.e("TAN", "33333: list = "+listBg.get(i) );
-            if (Long.parseLong(listBg.get(i).getTimeUpdate()) > lastTimeUpdate) {
-                listBg.get(i).setPosition(initPosition + i);
-                arr.add(listBg.get(i));
-                Log.e("TAN", "444: list = "+arr);
+           /* if (Long.parseLong(listBg.get(i).getTimeUpdate()) > lastTimeUpdate) {
 
-                if (!isSelected) {
-                    HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTimeUpdate()));
-                    isSelected = true;
-                }
+            }*/
+            listBg.get(i).setPosition(initPosition + i);
+            arr.add(listBg.get(i));
+            Log.e("TAN", "444: list = "+arr);
+
+            if (!isSelected) {
+                HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTimeUpdate()));
+                isSelected = true;
             }
-
         /*    if(!contains(listBg.get(i))) {
                 listBg.get(i).setPosition(initPosition+i);
                 arr.add(listBg.get(i));
@@ -525,10 +483,10 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
     @Override
     public void onVisibilityChanged(boolean isOpen) {
         if (isOpen) {
-            binding.layoutAds.setVisibility(GONE);
+            getBinding().layoutAds.setVisibility(GONE);
         } else {
             if (showLayoutAds) {
-                binding.layoutAds.setVisibility(View.VISIBLE);
+                getBinding().layoutAds.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -615,4 +573,74 @@ public class MainActivity extends AppCompatActivity implements AdListener, Dialo
             });
 
 
+    @Override
+    protected void onCreate() {
+        consumeSystemBars(false, (statusBarHeight, bottomBarHeight) -> {
+            getBinding().topView.getLayoutParams().height = statusBarHeight;
+            getBinding().bottomView.getLayoutParams().height = bottomBarHeight;
+
+            if (getBinding().topView.getLayoutParams().height == 0) {
+                getBinding().topView.getLayoutParams().height = statusBarHeight;
+            }
+            getBinding().bottomView.requestLayout();
+            getBinding().topView.requestLayout();
+            return null;
+        });
+
+        setSystemBarStyle(true);
+        //AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
+        googleMobileAdsConsentManager = GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
+        showForm();
+        appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
+        loadDataApi(true);
+        analystic = Analystic.getInstance(this);
+        bannerAdsUtils = new BannerAdsUtils(this, getBinding().layoutAds);
+
+        if (AppUtils.isNetworkConnected(this) && !HawkHelper.isPayed()) {
+            createWindowManagerField();
+            preLoadInter();
+            loadAds();
+        } else {
+            getBinding().layoutAds.setVisibility(GONE);
+            getBinding().btnRemoveAds.setVisibility(INVISIBLE);
+            updateButtonPosition();
+        }
+
+        analystic.trackEvent(ManagerEvent.mainOpen());
+        analystic.trackEvent(ManagerEvent.grantedPermission(PermistionUtils.checkHasPermissionCall(this)));
+        KeyboardVisibilityEvent.setEventListener(this, this);
+
+        initDialogPermissionXiaomi();
+        requestNotificationPermission();
+        //AppUtils.setFullNav(this);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        hideBottomNavigationBar(getBinding().getRoot());
+    }
+
+    @Override
+    protected void onView() {
+        initDataPage();
+        disableToolTipTextTab();
+
+        getBinding().btnSetting.setOnClickListener(view -> {
+            analystic.trackEvent(ManagerEvent.mainSlideClick());
+            startActivity(new Intent(MainActivity.this, SettingActivity.class));
+        });
+
+        getBinding().btnRemoveAds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveIapScreen();
+            }
+        });
+    }
+
+ /*   @Override
+    public void onCloseScope() {
+
+    }*/
 }
