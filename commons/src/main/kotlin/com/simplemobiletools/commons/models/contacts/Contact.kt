@@ -171,7 +171,7 @@ data class Contact(
         return copy(
             id = 0,
             prefix = "",
-            firstName = getNameToDisplay().toLowerCase(),
+            firstName = getNameToDisplay().lowercase(),
             middleName = "",
             surname = "",
             suffix = "",

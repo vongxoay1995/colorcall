@@ -44,7 +44,7 @@ fun Context.getSDCardPath(): String {
 
     val fullSDpattern = Pattern.compile(SD_OTG_PATTERN)
     var sdCardPath = directories.firstOrNull { fullSDpattern.matcher(it).matches() }
-        ?: directories.firstOrNull { !physicalPaths.contains(it.toLowerCase()) } ?: ""
+        ?: directories.firstOrNull { !physicalPaths.contains(it.lowercase()) } ?: ""
 
     // on some devices no method retrieved any SD card path, so test if its not sdcard1 by any chance. It happened on an Android 5.1
     if (sdCardPath.trimEnd('/').isEmpty()) {

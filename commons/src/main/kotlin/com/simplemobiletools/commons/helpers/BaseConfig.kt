@@ -277,17 +277,17 @@ open class BaseConfig(val context: Context) {
         if (path.isEmpty()) {
             sorting = value
         } else {
-            prefs.edit().putInt(SORT_FOLDER_PREFIX + path.toLowerCase(), value).apply()
+        prefs.edit().putInt(SORT_FOLDER_PREFIX + path.lowercase(), value).apply()
         }
     }
 
-    fun getFolderSorting(path: String) = prefs.getInt(SORT_FOLDER_PREFIX + path.toLowerCase(), sorting)
+    fun getFolderSorting(path: String) = prefs.getInt(SORT_FOLDER_PREFIX + path.lowercase(), sorting)
 
     fun removeCustomSorting(path: String) {
-        prefs.edit().remove(SORT_FOLDER_PREFIX + path.toLowerCase()).apply()
+        prefs.edit().remove(SORT_FOLDER_PREFIX + path.lowercase()).apply()
     }
 
-    fun hasCustomSorting(path: String) = prefs.contains(SORT_FOLDER_PREFIX + path.toLowerCase())
+    fun hasCustomSorting(path: String) = prefs.contains(SORT_FOLDER_PREFIX + path.lowercase())
 
     var hadThankYouInstalled: Boolean
         get() = prefs.getBoolean(HAD_THANK_YOU_INSTALLED, false)

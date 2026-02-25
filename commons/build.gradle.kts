@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinCompose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.parcelize)
@@ -33,9 +34,6 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
 
     compileOptions {
         val currentJavaVersionFromLibs = JavaVersion.valueOf(libs.versions.app.build.javaVersion.get().toString())

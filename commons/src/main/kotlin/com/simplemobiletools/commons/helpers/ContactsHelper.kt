@@ -70,7 +70,7 @@ class ContactsHelper(val context: Context) {
             }
 
             if (context.baseConfig.mergeDuplicateContacts && ignoredContactSources.isEmpty() && !getAll) {
-                tempContacts.filter { displayContactSources.contains(it.source) }.groupBy { it.getNameToDisplay().toLowerCase() }.values.forEach { it ->
+                tempContacts.filter { displayContactSources.contains(it.source) }.groupBy { it.getNameToDisplay().lowercase() }.values.forEach { it ->
                     if (it.size == 1) {
                         resultContacts.add(it.first())
                     } else {

@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.googleServices)
     alias(libs.plugins.firebaseCrashlytics)
     alias(libs.plugins.kotlinAndroid)
-    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinSerialization)
 
 }
@@ -46,6 +46,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
     }
 
     lint {
@@ -108,7 +112,7 @@ dependencies {
     implementation(libs.indicator.fast.scroll)
     implementation(libs.autofit.text.view)
     implementation("com.tbuonomo:dotsindicator:5.1.0")
-    kapt("androidx.room:room-compiler:2.6.0")
+    ksp("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
 
    // api(libs.koin.core)
