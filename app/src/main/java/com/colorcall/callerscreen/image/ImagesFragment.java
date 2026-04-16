@@ -62,14 +62,19 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
+        init(); // Khởi tạo data ngay khi view tạo, không phụ thuộc vào EventBus sticky
         return binding.getRoot();
     }
 
 
     private void init() {
         listBg = HawkHelper.getListBackground();
-        this.networkChangeReceiver = new NetworkChangeReceiver();
-        this.networkChangeReceiver.registerReceiver(this.getContext(), this);
+        // Guard: tránh đăng ký NetworkChangeReceiver 2 lần khi init() gọi từ cả
+        // onCreateView() lẫn EventBus (onSignMainApply với isSwiped=true)
+        if (this.networkChangeReceiver == null) {
+            this.networkChangeReceiver = new NetworkChangeReceiver();
+            this.networkChangeReceiver.registerReceiver(this.getContext(), this);
+        }
         this.binding.swRefesh.setRefreshing(false);
         this.binding.swRefesh.setOnRefreshListener(this::onRefreshLayout);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
@@ -79,6 +84,12 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
         adapter = new ImageAdapter(getContext(), listBg);
         adapter.setListener(this);
         binding.rcvBgImages.setAdapter(adapter);
+        // Hiển thị loading nếu chưa có data, ẩn đi nếu đã có
+        if (listBg.isEmpty()) {
+            binding.layoutLoading.setVisibility(View.VISIBLE);
+        } else {
+            binding.layoutLoading.setVisibility(View.GONE);
+        }
         binding.rcvBgImages.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

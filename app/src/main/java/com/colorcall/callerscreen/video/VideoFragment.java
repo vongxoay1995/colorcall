@@ -88,6 +88,12 @@ public class VideoFragment extends Fragment implements VideoAdapter.Listener, Ne
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
         binding.rcvBgVideo.setAdapter(adapter);
+        // Hiển thị loading nếu chưa có data, ẩn đi nếu đã có
+        if (listBg.isEmpty()) {
+            binding.layoutLoading.setVisibility(View.VISIBLE);
+        } else {
+            binding.layoutLoading.setVisibility(View.GONE);
+        }
         binding.rcvBgVideo.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {

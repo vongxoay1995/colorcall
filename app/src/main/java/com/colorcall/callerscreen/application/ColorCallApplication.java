@@ -17,8 +17,6 @@ import com.orhanobut.hawk.Hawk;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class ColorCallApplication extends Application {
@@ -47,15 +45,13 @@ public class ColorCallApplication extends Application {
     }
 
 
-    @SuppressLint("StaticFieldLeak")
     private void loadData() {
         if (!HawkHelper.isLoadDataFirst()) {
-            Log.e("TAN", "loadData: AAAA" );
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(() -> {
-                HawkHelper.setListBackground(AppUtils.loadDataDefault(getApplicationContext(), Constant.THUMB_DEFAULT));
-                HawkHelper.setLoadDataFirst(true);
-            });
+            Log.e("TAN", "loadData: sync load default data");
+            // Chạy đồng bộ trên main thread — loadDataDefault() chỉ đọc assets (~1ms),
+            // không gây ANR. Đảm bảo data có sẵn trước khi Fragment mount.
+            HawkHelper.setListBackground(AppUtils.loadDataDefault(getApplicationContext(), Constant.THUMB_DEFAULT));
+            HawkHelper.setLoadDataFirst(true);
         }
     }
 }

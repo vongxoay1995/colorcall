@@ -362,38 +362,28 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
     }
 
     private void checkHasNewData(ArrayList<Background> listBg) {
-        Log.e("TAN", "checkHasNewData: list = "+listBg );
-        long lastTimeUpdate = HawkHelper.getTimeStamp();
+        Log.e("TAN", "checkHasNewData: list = " + listBg);
         boolean isSelected = false;
-        int initPosition = HawkHelper.getListBackground().size();
         ArrayList<Background> arr = HawkHelper.getListBackground();
-        Log.e("TAN", "checkHasNewData2: list = "+arr );
+        Log.e("TAN", "checkHasNewData2: existing = " + arr);
 
         for (int i = 0; i < listBg.size(); i++) {
-            Log.e("TAN", "checkHasNewData3: list = "+Long.parseLong(listBg.get(i).getTimeUpdate())+"##"+lastTimeUpdate);
-            Log.e("TAN", "33333: list = "+listBg.get(i) );
-           /* if (Long.parseLong(listBg.get(i).getTimeUpdate()) > lastTimeUpdate) {
-
-            }*/
-            listBg.get(i).setPosition(initPosition + i);
-            arr.add(listBg.get(i));
-            Log.e("TAN", "444: list = "+arr);
-
-            if (!isSelected) {
-                HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTimeUpdate()));
-                isSelected = true;
-            }
-        /*    if(!contains(listBg.get(i))) {
-                listBg.get(i).setPosition(initPosition+i);
-                arr.add(listBg.get(i));
-                if(!isSelected){
-                    HawkHelper.setTimeStamp(Long.parseLong(listBg.get(i).getTime_update()));
+            Background newItem = listBg.get(i);
+            Log.e("TAN", "checkHasNewData3: timeUpdate=" + newItem.getTimeUpdate());
+            // Chỉ add nếu chưa tồn tại trong list → tránh duplicate + data phình to
+            if (!contains(newItem)) {
+                newItem.setPosition(arr.size());
+                arr.add(newItem);
+                Log.e("TAN", "checkHasNewData: added item = " + newItem);
+                if (!isSelected) {
+                    HawkHelper.setTimeStamp(Long.parseLong(newItem.getTimeUpdate()));
                     isSelected = true;
                 }
-            }*/
-
+            } else {
+                Log.e("TAN", "checkHasNewData: skip duplicate = " + newItem.getName());
+            }
         }
-        Log.e("TAN", "checkHasNewData: "+arr );
+        Log.e("TAN", "checkHasNewData: final list size = " + arr.size());
         HawkHelper.setListBackground(arr);
     }
 
