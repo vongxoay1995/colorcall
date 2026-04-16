@@ -5,9 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".contact.SelectContactActivity">
+    <!-- Placeholder for status bar - height set programmatically -->
+    <View
+        android:id="@+id/topView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/color_1E1E1E" />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/topView">
         <ScrollView
             android:id="@+id/scroll"
             android:layout_width="match_parent"
@@ -138,7 +145,7 @@
                 android:layout_alignParentBottom="true"
                 android:orientation="horizontal"
                 android:padding="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_15sdp">
+                android:layout_marginBottom="@dimen/_25sdp">
 
                 <RelativeLayout
                     android:id="@+id/layoutSet"

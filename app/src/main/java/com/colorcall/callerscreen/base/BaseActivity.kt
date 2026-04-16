@@ -125,6 +125,8 @@ abstract class BaseActivity<B : ViewBinding>(
             callback?.invoke(statusBarHeight, bottomBarHeight)
             WindowInsetsCompat.CONSUMED
         }
+        // Force immediate insets dispatch so topView gets correct height before first frame
+        ViewCompat.requestApplyInsets(window.decorView)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -140,6 +142,8 @@ abstract class BaseActivity<B : ViewBinding>(
         setContentView(binding.root)
         //binding.lifecycleOwner = this
         //setupKoinFragmentFactory(scope)
+        // Re-request insets after content view is attached so views update before first draw
+        ViewCompat.requestApplyInsets(window.decorView)
         binding.root.post { if (isActive()) onView() }
     }
 

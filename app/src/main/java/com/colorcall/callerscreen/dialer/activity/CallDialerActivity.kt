@@ -21,6 +21,10 @@ import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import com.colorcall.callerscreen.R
@@ -107,6 +111,19 @@ class CallDialerActivity : DialerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        // Full-screen call UI: ẩn system bars, add status bar padding to avoid content overlap
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            hide(WindowInsetsCompat.Type.navigationBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            setAppearanceLightStatusBars(false)
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.callHolder) { view, insets ->
+            val sbHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(0, sbHeight, 0, 0)
+            insets
+        }
 
         if (CallManager.getPhoneState() == NoCall) {
             finish()

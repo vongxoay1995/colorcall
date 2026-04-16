@@ -13,9 +13,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
@@ -52,9 +57,20 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private ActivitySettingBinding binding;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this); // handles edge-to-edge, transparent status/nav bar on all devices
+        // White icons on blue/dark header
+        new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(false);
         binding = ActivitySettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
+        // Set topView height = status bar height để header không bị che
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) binding.topView.getLayoutParams();
+            lp.height = statusBarHeight;
+            binding.topView.setLayoutParams(lp);
+            return insets;
+        });
 
         //AppUtils.showFullHeader(this, layoutHead);
         analystic = Analystic.getInstance(this);

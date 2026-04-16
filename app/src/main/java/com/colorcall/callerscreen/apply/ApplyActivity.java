@@ -28,10 +28,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -89,13 +94,22 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setTranslucent();
+        EdgeToEdge.enable(this);
+        new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(false); // white icons on dark/translucent header
         binding = ActivityApplyBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        // Set topView height = status bar height để nút back không bị che
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            android.view.ViewGroup.LayoutParams lp = binding.topView.getLayoutParams();
+            lp.height = statusBarHeight;
+            binding.topView.setLayoutParams(lp);
+            return insets;
+        });
         databaseViewModel = new ViewModelProvider(this).get(DatabaseViewModel.class);
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
         interstitialApply = InterstitialApply.getInstance();
-        AppUtils.changeStatusBarColor(this, R.color.blackAlpha30);
         posRandom = getIntent().getIntExtra(Constant.POS_RANDOM, 0);
         position = getIntent().getIntExtra(Constant.ITEM_POSITION, -1);
         bannerAdsUtils = new BannerAdsUtils(this, binding.layoutAds);

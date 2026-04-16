@@ -67,8 +67,8 @@ import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.android.ump.FormError;
 
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
+import android.graphics.Rect;
+import android.view.ViewTreeObserver;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -82,7 +82,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends BaseActivity<ActivityMainBinding> implements AdListener, DialogRate.DialogRateListener, KeyboardVisibilityEventListener, AppOpenManager.AppOpenManagerObserver {
+public class MainActivity extends BaseActivity<ActivityMainBinding> implements AdListener, DialogRate.DialogRateListener, AppOpenManager.AppOpenManagerObserver {
     private Analystic analystic;
     private BannerAdsUtils bannerAdsUtils;
     private boolean showLayoutAds;
@@ -95,6 +95,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
     DialogPermissionCall dialogPermissionCall;
     boolean isPressGotoSetting;
     boolean isPressLaunchDialer;
+    private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
     public MainActivity() {
         super(ActivityMainBinding::inflate);
     }
@@ -480,15 +481,23 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
         super.onStop();
     }
 
-    @Override
-    public void onVisibilityChanged(boolean isOpen) {
-        if (isOpen) {
-            getBinding().layoutAds.setVisibility(GONE);
-        } else {
-            if (showLayoutAds) {
-                getBinding().layoutAds.setVisibility(View.VISIBLE);
+    private void setupKeyboardListener() {
+        final View rootView = getBinding().getRoot();
+        keyboardLayoutListener = () -> {
+            Rect rect = new Rect();
+            rootView.getWindowVisibleDisplayFrame(rect);
+            int screenHeight = rootView.getRootView().getHeight();
+            int keypadHeight = screenHeight - rect.bottom;
+            boolean isKeyboardOpen = keypadHeight > screenHeight * 0.15;
+            if (isKeyboardOpen) {
+                getBinding().layoutAds.setVisibility(GONE);
+            } else {
+                if (showLayoutAds) {
+                    getBinding().layoutAds.setVisibility(View.VISIBLE);
+                }
             }
-        }
+        };
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(keyboardLayoutListener);
     }
 
 
@@ -499,6 +508,11 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
             cleanPopupWindow();
         }
         appOpenManager.unregisterObserver();
+        // Remove keyboard listener to avoid memory leak
+        if (keyboardLayoutListener != null) {
+            getBinding().getRoot().getViewTreeObserver().removeOnGlobalLayoutListener(keyboardLayoutListener);
+            keyboardLayoutListener = null;
+        }
     }
 
     private Field windowManagerField;
@@ -587,7 +601,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
             return null;
         });
 
-        setSystemBarStyle(true);
+        setSystemBarStyle(false); // false = white icons on dark/colored background
         //AppUtils.changeStatusBarColor(this, R.color.colorHeaderMain);
         googleMobileAdsConsentManager = GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
         showForm();
@@ -608,7 +622,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
 
         analystic.trackEvent(ManagerEvent.mainOpen());
         analystic.trackEvent(ManagerEvent.grantedPermission(PermistionUtils.checkHasPermissionCall(this)));
-        KeyboardVisibilityEvent.setEventListener(this, this);
+        setupKeyboardListener();
 
         initDialogPermissionXiaomi();
         requestNotificationPermission();
@@ -623,6 +637,23 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
 
     @Override
     protected void onView() {
+        // Safety fallback: if topView is still 0dp after view is attached, apply insets now
+        if (getBinding().topView.getHeight() == 0 || getBinding().topView.getLayoutParams().height == 0) {
+            androidx.core.view.WindowInsetsCompat rootInsets =
+                    androidx.core.view.ViewCompat.getRootWindowInsets(getBinding().getRoot());
+            if (rootInsets != null) {
+                int sbHeight = rootInsets.getInsets(androidx.core.view.WindowInsetsCompat.Type.statusBars()).top;
+                int nbHeight = rootInsets.getInsets(androidx.core.view.WindowInsetsCompat.Type.navigationBars()).bottom;
+                if (sbHeight > 0) {
+                    getBinding().topView.getLayoutParams().height = sbHeight;
+                    getBinding().topView.requestLayout();
+                }
+                if (nbHeight > 0) {
+                    getBinding().bottomView.getLayoutParams().height = nbHeight;
+                    getBinding().bottomView.requestLayout();
+                }
+            }
+        }
         initDataPage();
         disableToolTipTextTab();
 

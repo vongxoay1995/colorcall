@@ -1,6 +1,8 @@
 package com.colorcall.callerscreen.utils;
 
 
+import android.content.Context;
+
 import com.colorcall.callerscreen.database.Background;
 import com.orhanobut.hawk.Hawk;
 
@@ -26,28 +28,38 @@ public class HawkHelper {
     private static String IS_PAY = "IS_PAY";
     private static String IS_SHOWED_OB = "IS_SHOWED_OB";
 
+    /**
+     * Đảm bảo Hawk đã được khởi tạo trước khi dùng.
+     * An toàn khi gọi nhiều lần và từ bất kỳ Context nào (BroadcastReceiver, Service, v.v.)
+     */
+    private static void ensureInit(Context context) {
+        if (!Hawk.isBuilt()) {
+            Hawk.init(context.getApplicationContext()).build();
+        }
+    }
+
     public static boolean isLoadDataFirst() {
-        return Hawk.get(LOAD_DATA_FIRST_FIRST, false);
+        return Hawk.isBuilt() && Hawk.get(LOAD_DATA_FIRST_FIRST, false);
     }
 
     public static void setLoadDataFirst(boolean value) {
-        Hawk.put(LOAD_DATA_FIRST_FIRST, value);
+        if (Hawk.isBuilt()) Hawk.put(LOAD_DATA_FIRST_FIRST, value);
     }
 
     public static boolean isShowedOb() {
-        return Hawk.get(IS_SHOWED_OB, false);
+        return Hawk.isBuilt() && Hawk.get(IS_SHOWED_OB, false);
     }
 
     public static void setShowedOb(boolean value) {
-        Hawk.put(IS_SHOWED_OB, value);
+        if (Hawk.isBuilt()) Hawk.put(IS_SHOWED_OB, value);
     }
 
     public static boolean isPayed() {
-        return Hawk.get(IS_PAY, false);
+        return Hawk.isBuilt() && Hawk.get(IS_PAY, false);
     }
 
     public static void setPay(boolean value) {
-        Hawk.put(IS_PAY, value);
+        if (Hawk.isBuilt()) Hawk.put(IS_PAY, value);
     }
 
 
@@ -58,64 +70,64 @@ public class HawkHelper {
 
     public static void setListBackground(ArrayList<Background> listBackground) {
         SharedPreferencesUtil.INSTANCE.saveListBackground(listBackground);
-        //Hawk.put(LIST_BACKGROUND, listBackground);
+        //if (Hawk.isBuilt()) Hawk.put(LIST_BACKGROUND, listBackground);
     }
 
     public static boolean isEnableColorCall() {
-        return Hawk.get(ENABLE_COLOR, false);
+        return Hawk.isBuilt() && Hawk.get(ENABLE_COLOR, false);
     }
 
     public static void setStateColorCall(boolean value) {
-        Hawk.put(ENABLE_COLOR, value);
+        if (Hawk.isBuilt()) Hawk.put(ENABLE_COLOR, value);
     }
 
     public static long getTimeStamp() {
-        return Hawk.get(TIME_STAMP, (long) 0);
+        return Hawk.isBuilt() ? Hawk.get(TIME_STAMP, (long) 0) : 0L;
     }
 
     public static void setTimeStamp(long timeStamp) {
-        Hawk.put(TIME_STAMP, timeStamp);
+        if (Hawk.isBuilt()) Hawk.put(TIME_STAMP, timeStamp);
     }
 
     public static boolean isEnableFlash() {
-        return Hawk.get(ENABLE_FLASH, false);
+        return Hawk.isBuilt() && Hawk.get(ENABLE_FLASH, false);
     }
 
     public static void setFlash(boolean value) {
-        Hawk.put(ENABLE_FLASH, value);
+        if (Hawk.isBuilt()) Hawk.put(ENABLE_FLASH, value);
     }
 
     public static void setBackgroundSelect(Background backgroundSelect) {
-        Hawk.put(BACKGROUND_SELECT, backgroundSelect);
+        if (Hawk.isBuilt()) Hawk.put(BACKGROUND_SELECT, backgroundSelect);
     }
 
     public static Background getBackgroundSelect() {
         Background background = new Background(null, 0, "thumbDefault/default1.webp", "/raw/default1", false, "default1");
-        return Hawk.get(BACKGROUND_SELECT, background);
+        return Hawk.isBuilt() ? Hawk.get(BACKGROUND_SELECT, background) : background;
     }
 
 
     public static int getCountOpenApp() {
-        return Hawk.get(COUNT_OPEN_APP, 0);
+        return Hawk.isBuilt() ? Hawk.get(COUNT_OPEN_APP, 0) : 0;
     }
 
     public static void setCountOpenApp(int value) {
-        Hawk.put(COUNT_OPEN_APP, value);
+        if (Hawk.isBuilt()) Hawk.put(COUNT_OPEN_APP, value);
     }
 
     public static int getCoutShowRate() {
-        return Hawk.get(COUNT_FOR_DIALOG_RATE, 0);
+        return Hawk.isBuilt() ? Hawk.get(COUNT_FOR_DIALOG_RATE, 0) : 0;
     }
 
     public static void setCountRate(int value) {
-        Hawk.put(COUNT_FOR_DIALOG_RATE, value);
+        if (Hawk.isBuilt()) Hawk.put(COUNT_FOR_DIALOG_RATE, value);
     }
 
     public static boolean isCanShowDiaLogRate() {
-        return Hawk.get(CAN_SHOW_DIALOG_RATE, true);
+        return !Hawk.isBuilt() || Hawk.get(CAN_SHOW_DIALOG_RATE, true);
     }
 
     public static void setDialogShowRate(boolean value) {
-        Hawk.put(CAN_SHOW_DIALOG_RATE, value);
+        if (Hawk.isBuilt()) Hawk.put(CAN_SHOW_DIALOG_RATE, value);
     }
 }

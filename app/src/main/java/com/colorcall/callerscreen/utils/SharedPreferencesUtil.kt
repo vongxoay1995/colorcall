@@ -30,7 +30,9 @@ object SharedPreferencesUtil {
             return
         }
         putBoolean("DATA_MIGRATED", true)
-        isPurchase = Hawk.get("KEY_IS_BILLING", false)
+        if (Hawk.isBuilt()) {
+            isPurchase = Hawk.get("KEY_IS_BILLING", false)
+        }
     }
 
     fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {

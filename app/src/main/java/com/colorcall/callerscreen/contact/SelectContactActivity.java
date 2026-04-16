@@ -22,9 +22,13 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -96,11 +100,20 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
+                .setAppearanceLightStatusBars(false); // white icons on dark header
         binding = ActivitySelectContactBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         databaseViewModel = new ViewModelProvider(this).get(DatabaseViewModel.class);
-
-        AppUtils.changeStatusBarColor(this, R.color.color_1E1E1E);
+        // Set topView height = status bar height để header không bị che
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            int statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;
+            android.view.ViewGroup.LayoutParams lp = binding.topView.getLayoutParams();
+            lp.height = statusBarHeight;
+            binding.topView.setLayoutParams(lp);
+            return insets;
+        });
         init();
         //setTranslucent();
         analystic = Analystic.getInstance(this);
@@ -145,8 +158,8 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             onBackPressed();
         });
         binding.imgSearch.setOnClickListener(view -> {
-            binding.header1.setVisibility(View.VISIBLE);
-            binding.header2.setVisibility(View.GONE);
+            binding.header1.setVisibility(View.GONE);
+            binding.header2.setVisibility(View.VISIBLE);
             isSearchShow = true;
             showSearch();
             analystic.trackEvent(ManagerEvent.contactSearch());

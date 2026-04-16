@@ -15,6 +15,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewpager.widget.ViewPager
 import com.colorcall.callerscreen.BuildConfig
 import com.colorcall.callerscreen.R
@@ -96,6 +100,34 @@ class CallOwnerActivity : DialerActivity() {
         isMaterialActivity = true
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        // Edge-to-edge + fix header bị che bởi status bar
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            setAppearanceLightStatusBars(false) // white icons on colored header
+            hide(WindowInsetsCompat.Type.navigationBars()) // ẩn navigation bar
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val sbHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+
+            // top_view: set height + màu theo theme của activity (giống status bar)
+            val themeColor = getProperBackgroundColor()
+            binding.topView.layoutParams = binding.topView.layoutParams.also { it.height = sbHeight }
+            binding.topView.setBackgroundColor(themeColor)
+            binding.layoutHead.setBackgroundColor(themeColor)
+
+            // main_holder: margin top = statusBarHeight + actionBarSize để không bị header đè lên
+            val tv = android.util.TypedValue()
+            theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)
+            val actionBarH = android.util.TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+            val mainLp = binding.mainHolder.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+            mainLp.topMargin = sbHeight + actionBarH
+            binding.mainHolder.layoutParams = mainLp
+
+            insets
+        }
+
         bannerAdsUtils = BannerAdsUtils(this, binding.layoutAds)
 
         analystic.trackEvent(EventKey.CALL_OWNER_SHOW)
@@ -324,7 +356,10 @@ class CallOwnerActivity : DialerActivity() {
     }
 
     private fun updateMenuColors() {
-        updateStatusbarColor(getProperBackgroundColor())
+        val bgColor = getProperBackgroundColor()
+        updateStatusbarColor(bgColor)
+        binding.topView.setBackgroundColor(bgColor)
+        binding.layoutHead.setBackgroundColor(bgColor)
         binding.mainMenu.updateColors()
     }
 

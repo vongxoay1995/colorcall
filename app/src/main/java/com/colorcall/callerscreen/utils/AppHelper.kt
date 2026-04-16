@@ -8,18 +8,18 @@ object AppHelper {
 
     var isInitBilling: Boolean = false
         get() {
-            return Hawk.get(IS_INIT_BILLING, false)
+            return if (Hawk.isBuilt()) Hawk.get(IS_INIT_BILLING, false) else false
         }
         set(value) {
             field = value
-            Hawk.put(IS_INIT_BILLING, value)
+            if (Hawk.isBuilt()) Hawk.put(IS_INIT_BILLING, value)
         }
     var isPurchased: Boolean = false
         get() {
-            return Hawk.get(PURCHASED, false)
+            return if (Hawk.isBuilt()) Hawk.get(PURCHASED, false) else false
         }
         set(value) {
             field = value
-            Hawk.put(PURCHASED, value)
+            if (Hawk.isBuilt()) Hawk.put(PURCHASED, value)
         }
 }

@@ -25,9 +25,22 @@
         <RelativeLayout
             android:id="@+id/layout_head"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="@color/blackAlpha30"
             android:gravity="center">
+
+            <!-- Placeholder cho status bar - height set by code -->
+            <View
+                android:id="@+id/topView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/transparent" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:layout_below="@id/topView"
+                android:gravity="center">
 
             <ImageView
                 android:id="@+id/btnBack"
@@ -63,6 +76,7 @@
                     tools:ignore="VectorDrawableCompat"
                     android:visibility="gone"/>
             </LinearLayout>
+            </RelativeLayout>
         </RelativeLayout>
 
         <RelativeLayout
