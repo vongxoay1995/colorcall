@@ -5,9 +5,8 @@ import android.app.Application
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.colorcall.callerscreen.BuildConfig
 import com.colorcall.callerscreen.application.ColorCallApplication
@@ -21,7 +20,7 @@ import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
 import com.orhanobut.hawk.Hawk
 import java.util.Date
 
-class AppOpenManager(private val application: ColorCallApplication) : LifecycleObserver,
+class AppOpenManager(private val application: ColorCallApplication) : DefaultLifecycleObserver,
     Application.ActivityLifecycleCallbacks {
     private var appOpenAd: AppOpenAd? = null
     private var loadCallback: AppOpenAdLoadCallback? = null
@@ -31,14 +30,8 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
     private var appOpenManagerObserver: AppOpenManagerObserver? = null
     var isShowingAd = false
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
+    override fun onStart(owner: LifecycleOwner) {
         Log.e("TAN", "onStart: " + currentActivity)
-        //if (!PreferencesUtils.getBoolean(AppConstant.IS_PURCHASED, false)) {
-        /*  if (currentActivity !is SplashActivity && currentActivity !is AdActivity) {
-              showAdIfAvailable()
-          }*/
-        // }
     }
 
     fun showAdIfAvailable() {
@@ -118,7 +111,6 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
             application,
             idAds,
             request,
-            AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             loadCallback!!
         )
     }
@@ -158,7 +150,7 @@ class AppOpenManager(private val application: ColorCallApplication) : LifecycleO
         application.registerActivityLifecycleCallbacks(this)
         ProcessLifecycleOwner.get()
             .lifecycle
-            .addObserver(this);
+            .addObserver(this)
     }
 
 

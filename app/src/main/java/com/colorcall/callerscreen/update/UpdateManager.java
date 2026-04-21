@@ -8,9 +8,8 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.colorcall.callerscreen.constan.Constant;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,7 +26,7 @@ import com.google.android.play.core.install.model.UpdateAvailability;
 
 import java.lang.ref.WeakReference;
 
-public class UpdateManager implements LifecycleObserver {
+public class UpdateManager implements DefaultLifecycleObserver {
 
     private static final String TAG = "InAppUpdateManager";
 
@@ -266,13 +265,13 @@ public class UpdateManager implements LifecycleObserver {
 
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private void onResume() {
+    @Override
+    public void onResume(@androidx.annotation.NonNull LifecycleOwner owner) {
         continueUpdate();
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    private void onDestroy() {
+    @Override
+    public void onDestroy(@androidx.annotation.NonNull LifecycleOwner owner) {
         unregisterListener();
     }
 }

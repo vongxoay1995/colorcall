@@ -82,7 +82,7 @@ public class InterstitialUtil {
     }
 
     private void loadInterstitial(Context context, int index) {
-        if (!adsConfig.getInter_enable()) return;
+        if (adsConfig != null && !adsConfig.getInter_enable()) return;
         if (isAdAvailable()) {
             return;
         }

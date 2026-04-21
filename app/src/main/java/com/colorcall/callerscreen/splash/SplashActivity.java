@@ -378,7 +378,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                 } else {
                     AdsConfig adsConfig = Hawk.get(ConstantAds.ADS_CONFIG);
                     if (adsConfig == null || adsConfig.getOpen_ads_enable()) {
-                        AppOpenAd.load(this, id_ads, request, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+                        AppOpenAd.load(this, id_ads, request, loadCallback);
                     } else {
                         stopJobScreen();
                         hideLoading();

@@ -64,7 +64,7 @@ public class BannerAdsUtils {
         });
     }
     public void loadAds() {
-        if (!adsConfig.getBanner_enable()) {
+        if (adsConfig != null && !adsConfig.getBanner_enable()) {
             if(adListener!=null){
                 adListener.onAdFailed();
             }
@@ -127,7 +127,7 @@ public class BannerAdsUtils {
     private Boolean isLoading = false;
 
     public void loadCollapsibleBanner() {
-        if (!adsConfig.getBanner_enable()){
+        if (adsConfig != null && !adsConfig.getBanner_enable()){
             if(adListener!=null){
                 adListener.onAdFailed();
             }

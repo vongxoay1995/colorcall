@@ -10,14 +10,14 @@ plugins {
 android {
     namespace = "com.colorcall.callerscreen"
     compileSdk = 35
-    buildToolsVersion = "35.0.0"
+    buildToolsVersion = "36.0.0"
 
     defaultConfig {
         applicationId = "com.colorcall.callerscreen"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 35
-        versionCode = 75
-        versionName = "1.7.0"
+        versionCode = 77
+        versionName = "1.7.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -57,10 +57,6 @@ android {
         abortOnError = false
         disable.add("NonConstantResourceId")
     }
-
-    configurations.all {
-        resolutionStrategy.force("com.google.android.gms:play-services-ads:21.3.0")
-    }
 }
 
 dependencies {
@@ -98,14 +94,14 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.12.12")
-    implementation("com.google.android.ump:user-messaging-platform:2.1.0")
+    implementation("com.google.android.ump:user-messaging-platform:3.2.0")
     implementation("com.google.android.material:material:1.5.0-alpha01")
     implementation("com.google.firebase:firebase-analytics:21.3.0")
     implementation("com.google.firebase:firebase-config:21.4.1")
     implementation("com.google.firebase:firebase-core:21.1.1")
     implementation("com.google.firebase:firebase-crashlytics:18.4.3")
     // implementation("net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC2") // removed - has known crash bug
-    implementation("com.google.android.gms:play-services-ads:23.4.0")
+    implementation("com.google.android.gms:play-services-ads:25.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.room:room-runtime:2.6.0")
