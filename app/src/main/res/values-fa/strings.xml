@@ -145,4 +145,65 @@
     <string name="continues">ادامه</string>
     <string name="three_day_frees">3 روز رایگان</string>
     <string name="start_3_days">آغاز دوره آزمایشی رایگان 3 روزه</string>
+
+    <!-- PayWall V2 -->
+    <string name="pw_v2_close">بستن</string>
+    <string name="pw_v2_title">ارتقا به Premium</string>
+    <string name="pw_v2_subtitle">تجربه تماس‌های زیبا و حرفه‌ای</string>
+    <string name="pw_v2_plan_weekly">هفتگی</string>
+    <string name="pw_v2_per_week">/هفته</string>
+    <string name="pw_v2_plan_monthly">ماهانه</string>
+    <string name="pw_v2_badge_popular">محبوب‌ترین</string>
+    <string name="pw_v2_save_monthly">صرفه‌جویی 37%</string>
+    <string name="pw_v2_per_month">/ماه</string>
+    <string name="pw_v2_plan_lifetime">مادام‌العمر</string>
+    <string name="pw_v2_badge_best_value">بهترین ارزش</string>
+    <string name="pw_v2_save_lifetime">صرفه‌جویی 85%</string>
+    <string name="pw_v2_one_time">یک بار</string>
+    <string name="pw_v2_premium_features">ویژگی‌های Premium</string>
+    <string name="pw_v2_feat1">بیش از 1000+ صفحه تماس زیبا</string>
+    <string name="pw_v2_feat2">سفارشی‌سازی نامحدود رابط کاربری</string>
+    <string name="pw_v2_feat3">حذف تمام تبلیغات</string>
+    <string name="pw_v2_feat5">تم‌های انحصاری و لوکس</string>
+    <string name="pw_v2_feat6">به‌روزرسانی محتوای جدید هر هفته</string>
+    <string name="pw_v2_feat7">پشتیبانی اولویت‌دار 24/7</string>
+    <string name="pw_v2_cta">شروع دوره آزمایشی رایگان 3 روزه</string>
+    <string name="pw_v2_auto_renew_note">تمدید خودکار. می‌توانید هر زمان لغو کنید.</string>
+    <string name="pw_v2_terms">شرایط</string>
+    <string name="pw_v2_policy">سیاست حریم خصوصی</string>
+    <string name="pw_v2_restore">بازگردانی</string>
+    <string name="pw_v2_cta_trial">شروع دوره آزمایشی رایگان 3 روزه</string>
+    <string name="pw_v2_cta_weekly">اشتراک هفتگی</string>
+    <string name="pw_v2_cta_monthly">اشتراک ماهانه</string>
+    <string name="pw_v2_cta_lifetime">خرید مادام‌العمر همین الان</string>
+    <string name="pw_v2_cta_continue">ادامه</string>
+    <string name="pw_v2_purchase_success">خرید موفقیت‌آمیز بود! 🎉</string>
+    <string name="pw_v2_restoring">در حال بازگردانی…</string>
+
+    <!-- PayWall V3 -->
+    <string name="pw_v3_close">بستن</string>
+    <string name="pw_v3_title">COLOR FLASH CALL</string>
+    <string name="pw_v3_subtitle">تماس‌هایت را برجسته کن</string>
+    <string name="pw_v3_feat_no_ads">بدون تبلیغات</string>
+    <string name="pw_v3_feat_faster">مرور سریع‌تر</string>
+    <string name="pw_v3_feat_unlimited">محتوای ویژه نامحدود</string>
+    <string name="pw_v3_plan_weekly">هفتگی</string>
+    <string name="pw_v3_charged_weekly">هر هفته شارژ می‌شود</string>
+    <string name="pw_v3_popular">محبوب</string>
+    <string name="pw_v3_plan_monthly">ماهانه</string>
+    <string name="pw_v3_charged_monthly">هر ماه شارژ می‌شود</string>
+    <string name="pw_v3_plan_yearly">سالانه</string>
+    <string name="pw_v3_charged_yearly">هر سال شارژ می‌شود</string>
+    <string name="pw_v3_best_value">بهترین ارزش</string>
+    <string name="pw_v3_cta">ادامه</string>
+    <string name="pw_v3_cta_trial">شروع آزمایش رایگان</string>
+    <string name="pw_v3_cta_weekly">اشتراک هفتگی</string>
+    <string name="pw_v3_cta_monthly">اشتراک ماهانه</string>
+    <string name="pw_v3_cta_yearly">اشتراک سالانه</string>
+    <string name="pw_v3_terms_note">با خرید، با سیاست حریم خصوصی ما موافقت می‌کنید. طبق سیاست Google Play، اشتراک شما به‌طور خودکار تجدید می‌شود. می‌توانید ۲۴ ساعت قبل از تجدید خودکار لغو کنید.</string>
+    <string name="pw_v3_terms">شرایط</string>
+    <string name="pw_v3_policy">حریم خصوصی</string>
+    <string name="pw_v3_restore">بازگردانی</string>
+    <string name="pw_v3_purchase_success">خرید موفقیت‌آمیز بود! 🎉</string>
+    <string name="pw_v3_restoring">در حال بازگردانی…</string>
 </resources>

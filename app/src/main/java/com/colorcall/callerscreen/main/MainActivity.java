@@ -13,10 +13,12 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -43,7 +45,7 @@ import com.colorcall.callerscreen.model.SignApplyMain;
 import com.colorcall.callerscreen.model.SignMainImage;
 import com.colorcall.callerscreen.model.SignMainVideo;
 import com.colorcall.callerscreen.mytheme.MyThemeFragment;
-import com.colorcall.callerscreen.paywall.PayWallActivity;
+import com.colorcall.callerscreen.paywall.PayWallV3Activity;
 import com.colorcall.callerscreen.rate.DialogRate;
 import com.colorcall.callerscreen.response.AppClient;
 import com.colorcall.callerscreen.response.AppData;
@@ -66,9 +68,6 @@ import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.android.ump.FormError;
-
-import android.graphics.Rect;
-import android.view.ViewTreeObserver;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -109,8 +108,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
             }
     );
 
-    public void moveIapScreen() {
-        Intent intent = new Intent(this, PayWallActivity.class);
+    public void moveIapScreen(String fromScr) {
+        Intent intent = new Intent(this, PayWallV3Activity.class);
+        intent.putExtra("from_scr", fromScr);
         payWallLauncher.launch(intent);
     }
 
@@ -335,9 +335,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
         app.enqueue(new Callback<AppData>() {
             @Override
             public void onResponse(@NonNull Call<AppData> call, @NonNull Response<AppData> response) {
-                Log.e("TAN", "onResponse: res = "+response.body().getApp());
-                if (response.body() != null && response.body().getApp().size() > 0) {
-                    checkHasNewData(response.body().getApp());
+                AppData body = response.body();
+                Log.e("TAN", "onResponse: res = " + (body != null ? body.getApp() : "null body"));
+                if (body != null && body.getApp() != null && body.getApp().size() > 0) {
+                    checkHasNewData(body.getApp());
                 }
                 Intent intent = new Intent();
                 intent.setAction(Constant.ACTION_LOAD_COMPLETE_THEME);
@@ -655,7 +656,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
         getBinding().btnRemoveAds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                moveIapScreen();
+                moveIapScreen("Settings");
             }
         });
     }

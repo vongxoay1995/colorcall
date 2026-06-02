@@ -107,22 +107,10 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
     public void onItemClick(ArrayList<Background> backgrounds, int position,boolean isPro, boolean delete, int posRandom) {
         if (!AppUtils.allowViewClick())
             return;
-        if (isPro){
-            mainActivity.moveIapScreen();
-            return;
-        }
-     /*   if (!HawkHelper.isPayed()){
-            InterstitialUtil.getInstance().showInterstitialAds(getActivity(), () -> {
-                this.countAds = 1;
-                moveApplyTheme(backgrounds, position, delete,posRandom,false);
-            });
-        }else{
-            moveApplyTheme(backgrounds, position, delete,posRandom,false);
-        }*/
-        moveApplyTheme(backgrounds, position, delete,posRandom,false);
+        moveApplyTheme(backgrounds, position, delete,posRandom, isPro);
     }
 
-    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom, boolean isAllowShowAds) {
+    private void moveApplyTheme(ArrayList<Background> backgrounds, int position, boolean delete, int posRandom, boolean isPro) {
         Background background = backgrounds.get(position);
         Intent intent = new Intent(getActivity(), ApplyActivity.class);
         if (delete) {
@@ -130,6 +118,7 @@ public class ImagesFragment extends Fragment implements ImageAdapter.Listener, N
         }
         intent.putExtra(Constant.FROM_SCREEN, Constant.IMAGES_FRAG_MENT);
         intent.putExtra(Constant.POS_RANDOM,posRandom);
+        intent.putExtra("is_pro", isPro);
         Gson gson = new Gson();
         intent.putExtra(Constant.BACKGROUND, gson.toJson(background));
         getActivity().startActivity(intent);

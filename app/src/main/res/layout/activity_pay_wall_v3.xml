@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_paywall_v3"
+    tools:context=".paywall.PayWallV3Activity">
+
+    <!-- ══════════════════════════════════════
+         LOADING
+    ══════════════════════════════════════ -->
+    <FrameLayout
+        android:id="@+id/layout_loading_v3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="#06B6D4" />
+    </FrameLayout>
+
+    <!-- ══════════════════════════════════════
+         SCROLLABLE CONTENT (full page)
+    ══════════════════════════════════════ -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_iap_v3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ── TOP IMAGE (bg_top_pw3) ── -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_150sdp"
+                android:src="@drawable/bg_top_pw3"
+                android:scaleType="centerCrop"
+                android:contentDescription="@null" />
+
+            <!-- ── TITLE + SUBTITLE + FEATURES ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/_20sdp"
+                android:paddingTop="@dimen/_2sdp">
+
+                <!-- Title gradient — màu apply bằng LinearGradient trong code -->
+                <TextView
+                    android:id="@+id/tv_title_v3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/pw_v3_title"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="@dimen/_22ssp"
+                    android:letterSpacing="0.05"
+                    android:textStyle="bold" />
+
+                <!-- Subtitle -->
+                <TextView
+                    android:id="@+id/tv_subtitle_v3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:gravity="center"
+                    android:text="@string/pw_v3_subtitle"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="@dimen/_13ssp" />
+
+                <!-- ── FEATURES (marquee ticker) ── -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <LinearLayout
+                        android:id="@+id/layout_features_inner_v3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <!-- ── Set 1 (original) ── -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="@dimen/_24sdp">
+                            <ImageView
+                                android:layout_width="@dimen/_30sdp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/ic_ad"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@null"
+                                app:tint="#06B6D4" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_6sdp"
+                                android:text="@string/pw_v3_feat_no_ads"
+                                android:textColor="#EEFFFFFF"
+                                android:textSize="@dimen/_13ssp"
+                                android:singleLine="true" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="@dimen/_24sdp">
+                            <ImageView
+                                android:layout_width="@dimen/_30sdp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/ic_time"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@null"
+                                app:tint="#06B6D4" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_6sdp"
+                                android:text="@string/pw_v3_feat_faster"
+                                android:textColor="#EEFFFFFF"
+                                android:textSize="@dimen/_13ssp"
+                                android:singleLine="true" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="@dimen/_24sdp">
+                            <ImageView
+                                android:layout_width="@dimen/_30sdp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/ic_unlimited"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@null"
+                                app:tint="#06B6D4" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_6sdp"
+                                android:text="@string/pw_v3_feat_unlimited"
+                                android:textColor="#EEFFFFFF"
+                                android:textSize="@dimen/_13ssp"
+                                android:singleLine="true" />
+                        </LinearLayout>
+
+                        <!-- ── Set 2 (duplicate for seamless loop) ── -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="@dimen/_24sdp">
+                            <ImageView
+                                android:layout_width="@dimen/_30sdp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/ic_ad"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@null"
+                                app:tint="#06B6D4" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_6sdp"
+                                android:text="@string/pw_v3_feat_no_ads"
+                                android:textColor="#EEFFFFFF"
+                                android:textSize="@dimen/_13ssp"
+                                android:singleLine="true" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="@dimen/_24sdp">
+                            <ImageView
+                                android:layout_width="@dimen/_30sdp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/ic_time"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@null"
+                                app:tint="#06B6D4" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_6sdp"
+                                android:text="@string/pw_v3_feat_faster"
+                                android:textColor="#EEFFFFFF"
+                                android:textSize="@dimen/_13ssp"
+                                android:singleLine="true" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="@dimen/_24sdp">
+                            <ImageView
+                                android:layout_width="@dimen/_30sdp"
+                                android:layout_height="@dimen/_30sdp"
+                                android:padding="@dimen/_5sdp"
+                                android:src="@drawable/ic_unlimited"
+                                android:scaleType="fitCenter"
+                                android:contentDescription="@null"
+                                app:tint="#06B6D4" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_6sdp"
+                                android:text="@string/pw_v3_feat_unlimited"
+                                android:textColor="#EEFFFFFF"
+                                android:textSize="@dimen/_13ssp"
+                                android:singleLine="true" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </FrameLayout>
+
+                <!-- ══════════════════════════════════════
+                     PLAN WEEKLY ("Popular" badge floating above)
+                ══════════════════════════════════════ -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <LinearLayout
+                        android:id="@+id/layout_plan_weekly_v3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:background="@drawable/bg_plan_unselected_v3"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/_14sdp"
+                        android:paddingVertical="@dimen/_10sdp">
+
+                        <ImageView
+                            android:id="@+id/radio_weekly_v3"
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/bg_radio_unselected_v3"
+                            android:contentDescription="@null" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/pw_v3_plan_weekly"
+                                android:textColor="#FFFFFF"
+                                android:textSize="@dimen/_14ssp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:text="@string/pw_v3_charged_weekly"
+                                android:textColor="#88FFFFFF"
+                                android:textSize="@dimen/_11ssp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_price_weekly_v3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="--"
+                                android:textColor="#FFFFFF"
+                                android:textSize="@dimen/_16ssp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tv_original_weekly_v3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="--"
+                                android:textColor="#55FFFFFF"
+                                android:textSize="@dimen/_11ssp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- "Popular" badge floating trên card -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|center_horizontal"
+                        android:background="@drawable/bg_popular_badge_v3"
+                        android:paddingHorizontal="@dimen/_14sdp"
+                        android:paddingVertical="@dimen/_3sdp"
+                        android:text="@string/pw_v3_popular"
+                        android:textColor="#FFFFFF"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <!-- ══════════════════════════════════════
+                     PLAN MONTHLY
+                ══════════════════════════════════════ -->
+                <LinearLayout
+                    android:id="@+id/layout_plan_monthly_v3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@drawable/bg_plan_unselected_v3"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/_14sdp"
+                    android:paddingVertical="@dimen/_10sdp">
+
+                    <ImageView
+                        android:id="@+id/radio_monthly_v3"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/bg_radio_unselected_v3"
+                        android:contentDescription="@null" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/pw_v3_plan_monthly"
+                            android:textColor="#FFFFFF"
+                            android:textSize="@dimen/_14ssp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:text="@string/pw_v3_charged_monthly"
+                            android:textColor="#88FFFFFF"
+                            android:textSize="@dimen/_11ssp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/tv_price_monthly_v3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:text="--"
+                            android:textColor="#FFFFFF"
+                            android:textSize="@dimen/_16ssp"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tv_original_monthly_v3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:text="--"
+                            android:textColor="#55FFFFFF"
+                            android:textSize="@dimen/_11ssp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- ══════════════════════════════════════
+                     PLAN YEARLY ("Best Value" badge floating above)
+                ══════════════════════════════════════ -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:id="@+id/layout_plan_yearly_v3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:background="@drawable/bg_plan_selected_v3"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/_14sdp"
+                        android:paddingVertical="@dimen/_10sdp">
+
+                        <ImageView
+                            android:id="@+id/radio_yearly_v3"
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/bg_radio_selected_v3"
+                            android:contentDescription="@null" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/pw_v3_plan_yearly"
+                                android:textColor="#FFFFFF"
+                                android:textSize="@dimen/_14ssp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:text="@string/pw_v3_charged_yearly"
+                                android:textColor="#88FFFFFF"
+                                android:textSize="@dimen/_11ssp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_price_yearly_v3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="--"
+                                android:textColor="#FFFFFF"
+                                android:textSize="@dimen/_16ssp"
+                                android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tv_original_yearly_v3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="--"
+                                android:textColor="#55FFFFFF"
+                                android:textSize="@dimen/_11ssp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- "Best Value" badge floating trên card -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|center_horizontal"
+                        android:background="@drawable/bg_best_value_badge_v3"
+                        android:paddingHorizontal="@dimen/_14sdp"
+                        android:paddingVertical="@dimen/_3sdp"
+                        android:text="@string/pw_v3_best_value"
+                        android:textColor="#FFFFFF"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <!-- ══════════════════════════════════════
+                     CTA BUTTON (scrolls with content)
+                ══════════════════════════════════════ -->
+                <FrameLayout
+                    android:id="@+id/layout_continue_v3"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_52sdp"
+                    android:layout_marginTop="@dimen/_14sdp"
+                    android:background="@drawable/bg_cta_v3">
+                    <TextView
+                        android:id="@+id/txt_continue_v3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/pw_v3_cta"
+                        android:textColor="#FFFFFF"
+                        android:textSize="@dimen/_15ssp"
+                        android:letterSpacing="0.1"
+                        android:textStyle="bold" />
+                </FrameLayout>
+
+                <!-- Terms note -->
+                <TextView
+                    android:id="@+id/tv_terms_note_v3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:gravity="center"
+                    android:text="@string/pw_v3_terms_note"
+                    android:textColor="#66FFFFFF"
+                    android:textSize="@dimen/_10ssp"
+                    android:lineSpacingExtra="2dp" />
+
+                <!-- Footer links -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_terms_v3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pw_v3_terms"
+                        android:textColor="#06B6D4"
+                        android:textSize="@dimen/_11ssp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
+                        android:text="·"
+                        android:textColor="#66FFFFFF"
+                        android:textSize="@dimen/_11ssp" />
+                    <TextView
+                        android:id="@+id/tv_policy_v3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pw_v3_policy"
+                        android:textColor="#06B6D4"
+                        android:textSize="@dimen/_11ssp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Close button — luôn nổi trên cùng -->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_close_v3"
+        android:layout_width="@dimen/_38sdp"
+        android:layout_height="@dimen/_38sdp"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/_12sdp"
+        android:padding="@dimen/_8sdp"
+        android:background="@drawable/bg_close_v3"
+        android:src="@drawable/ic_close_iap"
+        android:tint="#CCFFFFFF"
+        android:contentDescription="@string/pw_v3_close" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

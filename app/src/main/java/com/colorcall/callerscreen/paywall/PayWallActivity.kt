@@ -48,11 +48,10 @@ class PayWallActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         analystic.trackEvent("PayWallShow")
         setupView()
-        listener()
     }
 
     override fun onDestroy() {
-        if (billingHelper != null) billingHelper.destroy()
+        if (::billingHelper.isInitialized) billingHelper.destroy()
         super.onDestroy()
     }
 }

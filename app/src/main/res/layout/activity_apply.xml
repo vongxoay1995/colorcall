@@ -185,25 +185,34 @@
                             android:textSize="@dimen/_14sdp" />
                     </RelativeLayout>
 
-                    <RelativeLayout
+                    <FrameLayout
                         android:id="@+id/layoutContact"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:paddingStart="@dimen/_5sdp"
-                        android:paddingEnd="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:layout_marginStart="@dimen/_15sdp"
-                        android:background="@drawable/bg_person_contact"
-                        android:visibility="visible"
-                        >
+                        android:visibility="visible">
+
                         <ImageView
+                            android:id="@+id/imgContactIcon"
                             android:layout_width="@dimen/_35sdp"
                             android:layout_height="@dimen/_35sdp"
                             android:padding="@dimen/_8sdp"
+                            android:background="@drawable/bg_person_contact"
                             app:srcCompat="@drawable/ic_person"
                             tools:ignore="VectorDrawableCompat" />
-                    </RelativeLayout>
+
+                        <ImageView
+                            android:id="@+id/imgCrownContact"
+                            android:layout_width="@dimen/_13sdp"
+                            android:layout_height="@dimen/_13sdp"
+                            android:layout_gravity="top|end"
+                            android:layout_marginTop="-2dp"
+                            android:layout_marginEnd="-2dp"
+                            app:srcCompat="@drawable/ic_crown"
+                            tools:ignore="VectorDrawableCompat" />
+                    </FrameLayout>
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>

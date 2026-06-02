@@ -119,7 +119,7 @@ class BillingHelper(private val context: Context) {
 
     private fun querySubscription() {
         val products = ArrayList<QueryProductDetailsParams.Product>()
-        val productId: List<String> = mutableListOf(Constant.WEEK_LY)
+        val productId: List<String> = mutableListOf(Constant.WEEK_LY, Constant.MONTH_LY, Constant.YEAR_LY)
         for (s in productId) {
             val product = QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(s)
@@ -193,7 +193,7 @@ class BillingHelper(private val context: Context) {
             )
 
             purchase[0] = true
-            isQueryPurchaseDone = purchase[1]
+            isQueryPurchaseDone = purchase[0] && purchase[1]
             countResult++
             if (countResult == 2) {
                 checkBuyIap()
@@ -209,7 +209,7 @@ class BillingHelper(private val context: Context) {
                 list!!
             )
             purchase[1] = true
-            isQueryPurchaseDone = purchase[0]
+            isQueryPurchaseDone = purchase[0] && purchase[1]
             //
             countResult++
             if (countResult == 2) {

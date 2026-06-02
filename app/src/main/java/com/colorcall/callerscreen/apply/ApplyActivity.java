@@ -185,6 +185,11 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         } else {
             binding.imgDelete.setVisibility(GONE);
         }
+        if (HawkHelper.isPayed()) {
+            binding.imgCrownContact.setVisibility(GONE);
+        } else {
+            binding.imgCrownContact.setVisibility(View.VISIBLE);
+        }
         Gson gson = new Gson();
         background = gson.fromJson(getIntent().getStringExtra(Constant.BACKGROUND), Background.class);
         Background backgroundCurrent = HawkHelper.getBackgroundSelect();
@@ -411,6 +416,12 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         });
         binding.layoutContact.setOnClickListener(view1 -> {
             analystic.trackEvent(ManagerEvent.applyContactClick());
+            if (!HawkHelper.isPayed()) {
+                Intent intent = new Intent(this, com.colorcall.callerscreen.paywall.PayWallV3Activity.class);
+                intent.putExtra("from_scr", "FeatureGate");
+                startActivity(intent);
+                return;
+            }
             PermistionUtils.requestContactPermission(this, this);
         });
     }
@@ -428,12 +439,25 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         countRate++;
         HawkHelper.setCountRate(countRate);
 
-       /* if (checkShowInter()) {
-            InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
-        } else {
-        }*/
+        boolean isPro = getIntent().getBooleanExtra("is_pro", false);
+
         if (!HawkHelper.isPayed()){
-            InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
+            if (isPro) {
+                Intent intent = new Intent(this, com.colorcall.callerscreen.paywall.PayWallV3Activity.class);
+                intent.putExtra("from_scr", "FeatureGate");
+                startActivity(intent);
+                return;
+            }
+
+            int freeApplyCount = HawkHelper.getFreeApplyCount();
+            if (freeApplyCount < 2) {
+                HawkHelper.setFreeApplyCount(freeApplyCount + 1);
+                InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
+            } else {
+                Intent intent = new Intent(this, com.colorcall.callerscreen.paywall.PayWallV3Activity.class);
+                intent.putExtra("from_scr", "FeatureGate");
+                startActivity(intent);
+            }
         }else{
             applyTheme();
         }

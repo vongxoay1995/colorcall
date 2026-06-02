@@ -144,4 +144,65 @@
     <string name="continues">Continuer</string>
     <string name="three_day_frees">3 jours gratuits</string>
     <string name="start_3_days">Démarrer l\'essai gratuit de 3 jours</string>
+
+    <!-- PayWall V2 -->
+    <string name="pw_v2_close">Fermer</string>
+    <string name="pw_v2_title">Passer à Premium</string>
+    <string name="pw_v2_subtitle">Profitez d\'appels beaux et professionnels</string>
+    <string name="pw_v2_plan_weekly">Hebdomadaire</string>
+    <string name="pw_v2_per_week">/semaine</string>
+    <string name="pw_v2_plan_monthly">Mensuel</string>
+    <string name="pw_v2_badge_popular">POPULAIRE</string>
+    <string name="pw_v2_save_monthly">Économisez 37%</string>
+    <string name="pw_v2_per_month">/mois</string>
+    <string name="pw_v2_plan_lifetime">À vie</string>
+    <string name="pw_v2_badge_best_value">MEILLEURE VALEUR</string>
+    <string name="pw_v2_save_lifetime">Économisez 85%</string>
+    <string name="pw_v2_one_time">paiement unique</string>
+    <string name="pw_v2_premium_features">Fonctionnalités Premium</string>
+    <string name="pw_v2_feat1">Plus de 1000+ beaux écrans d\'appel</string>
+    <string name="pw_v2_feat2">Personnalisation illimitée de l\'interface</string>
+    <string name="pw_v2_feat3">Supprimer toutes les publicités</string>
+    <string name="pw_v2_feat5">Thèmes exclusifs et haut de gamme</string>
+    <string name="pw_v2_feat6">Nouveau contenu mis à jour chaque semaine</string>
+    <string name="pw_v2_feat7">Support prioritaire 24/7</string>
+    <string name="pw_v2_cta">Commencer l\'essai gratuit de 3 jours</string>
+    <string name="pw_v2_auto_renew_note">Renouvellement automatique. Annulez à tout moment.</string>
+    <string name="pw_v2_terms">Conditions</string>
+    <string name="pw_v2_policy">Politique de confidentialité</string>
+    <string name="pw_v2_restore">Restaurer</string>
+    <string name="pw_v2_cta_trial">Commencer l\'essai gratuit de 3 jours</string>
+    <string name="pw_v2_cta_weekly">S\'abonner à la semaine</string>
+    <string name="pw_v2_cta_monthly">S\'abonner au mois</string>
+    <string name="pw_v2_cta_lifetime">Acheter à vie maintenant</string>
+    <string name="pw_v2_cta_continue">Continuer</string>
+    <string name="pw_v2_purchase_success">Achat réussi ! 🎉</string>
+    <string name="pw_v2_restoring">Restauration en cours…</string>
+
+    <!-- PayWall V3 -->
+    <string name="pw_v3_close">Fermer</string>
+    <string name="pw_v3_title">COLOR FLASH CALL</string>
+    <string name="pw_v3_subtitle">Rendez vos appels uniques</string>
+    <string name="pw_v3_feat_no_ads">Sans publicités</string>
+    <string name="pw_v3_feat_faster">Navigation plus rapide</string>
+    <string name="pw_v3_feat_unlimited">Contenu premium illimité</string>
+    <string name="pw_v3_plan_weekly">Hebdomadaire</string>
+    <string name="pw_v3_charged_weekly">Facturé chaque semaine</string>
+    <string name="pw_v3_popular">Populaire</string>
+    <string name="pw_v3_plan_monthly">Mensuel</string>
+    <string name="pw_v3_charged_monthly">Facturé chaque mois</string>
+    <string name="pw_v3_plan_yearly">Annuel</string>
+    <string name="pw_v3_charged_yearly">Facturé chaque année</string>
+    <string name="pw_v3_best_value">Meilleure valeur</string>
+    <string name="pw_v3_cta">CONTINUER</string>
+    <string name="pw_v3_cta_trial">COMMENCER L\'ESSAI</string>
+    <string name="pw_v3_cta_weekly">S\'ABONNER HEBDO</string>
+    <string name="pw_v3_cta_monthly">S\'ABONNER MENSUEL</string>
+    <string name="pw_v3_cta_yearly">S\'ABONNER ANNUEL</string>
+    <string name="pw_v3_terms_note">En achetant, vous acceptez notre Politique de confidentialité. Selon la politique Google Play, votre abonnement sera renouvelé automatiquement. Vous pouvez annuler dans les 24h avant le renouvellement automatique.</string>
+    <string name="pw_v3_terms">Conditions</string>
+    <string name="pw_v3_policy">Confidentialité</string>
+    <string name="pw_v3_restore">Restaurer</string>
+    <string name="pw_v3_purchase_success">Achat réussi ! 🎉</string>
+    <string name="pw_v3_restoring">Restauration en cours…</string>
 </resources>

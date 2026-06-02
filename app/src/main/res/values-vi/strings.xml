@@ -143,4 +143,65 @@
     <string name="continues">Tiếp tục</string>
     <string name="three_day_frees">3 ngày miễn phí</string>
     <string name="start_3_days">Bắt đầu dùng thử miễn phí 3 ngày</string>
+
+    <!-- PayWall V2 -->
+    <string name="pw_v2_close">Đóng</string>
+    <string name="pw_v2_title">Nâng cấp Premium</string>
+    <string name="pw_v2_subtitle">Trải nghiệm cuộc gọi đẹp mắt và chuyên nghiệp</string>
+    <string name="pw_v2_plan_weekly">Tuần</string>
+    <string name="pw_v2_per_week">/tuần</string>
+    <string name="pw_v2_plan_monthly">Tháng</string>
+    <string name="pw_v2_badge_popular">PHỔ BIẾN</string>
+    <string name="pw_v2_save_monthly">Tiết kiệm 37%</string>
+    <string name="pw_v2_per_month">/tháng</string>
+    <string name="pw_v2_plan_lifetime">Trọn đời</string>
+    <string name="pw_v2_badge_best_value">GIÁ TRỊ TỐT NHẤT</string>
+    <string name="pw_v2_save_lifetime">Tiết kiệm 85%</string>
+    <string name="pw_v2_one_time">một lần</string>
+    <string name="pw_v2_premium_features">Tính năng Premium</string>
+    <string name="pw_v2_feat1">Hơn 1000+ màn hình cuộc gọi đẹp</string>
+    <string name="pw_v2_feat2">Tùy chỉnh giao diện không giới hạn</string>
+    <string name="pw_v2_feat3">Loại bỏ toàn bộ quảng cáo</string>
+    <string name="pw_v2_feat5">Chủ đề độc quyền cao cấp</string>
+    <string name="pw_v2_feat6">Cập nhật nội dung mới hàng tuần</string>
+    <string name="pw_v2_feat7">Hỗ trợ ưu tiên 24/7</string>
+    <string name="pw_v2_cta">Bắt đầu dùng thử 3 ngày miễn phí</string>
+    <string name="pw_v2_auto_renew_note">Tự động gia hạn. Hủy bất cứ lúc nào.</string>
+    <string name="pw_v2_terms">Điều khoản</string>
+    <string name="pw_v2_policy">Chính sách</string>
+    <string name="pw_v2_restore">Khôi phục</string>
+    <string name="pw_v2_cta_trial">Bắt đầu dùng thử 3 ngày miễn phí</string>
+    <string name="pw_v2_cta_weekly">Đăng ký gói Tuần</string>
+    <string name="pw_v2_cta_monthly">Đăng ký gói Tháng</string>
+    <string name="pw_v2_cta_lifetime">Mua trọn đời ngay</string>
+    <string name="pw_v2_cta_continue">Tiếp tục</string>
+    <string name="pw_v2_purchase_success">Mua thành công! 🎉</string>
+    <string name="pw_v2_restoring">Đang khôi phục…</string>
+
+    <!-- PayWall V3 -->
+    <string name="pw_v3_close">Đóng</string>
+    <string name="pw_v3_title">COLOR FLASH CALL</string>
+    <string name="pw_v3_subtitle">Làm nổi bật cuộc gọi của bạn</string>
+    <string name="pw_v3_feat_no_ads">Không quảng cáo</string>
+    <string name="pw_v3_feat_faster">Duyệt web nhanh hơn</string>
+    <string name="pw_v3_feat_unlimited">Nội dung cao cấp không giới hạn</string>
+    <string name="pw_v3_plan_weekly">Hàng tuần</string>
+    <string name="pw_v3_charged_weekly">Tính phí mỗi tuần</string>
+    <string name="pw_v3_popular">Phổ biến</string>
+    <string name="pw_v3_plan_monthly">Hàng tháng</string>
+    <string name="pw_v3_charged_monthly">Tính phí mỗi tháng</string>
+    <string name="pw_v3_plan_yearly">Hàng năm</string>
+    <string name="pw_v3_charged_yearly">Tính phí mỗi năm</string>
+    <string name="pw_v3_best_value">Giá tốt nhất</string>
+    <string name="pw_v3_cta">TIẾP TỤC</string>
+    <string name="pw_v3_cta_trial">BẮT ĐẦU DÙNG THỬ</string>
+    <string name="pw_v3_cta_weekly">ĐĂNG KÝ TUẦN</string>
+    <string name="pw_v3_cta_monthly">ĐĂNG KÝ THÁNG</string>
+    <string name="pw_v3_cta_yearly">ĐĂNG KÝ NĂM</string>
+    <string name="pw_v3_terms_note">Bằng cách mua hàng, bạn đồng ý với Chính sách bảo mật của chúng tôi. Theo Chính sách Google Play, đăng ký của bạn sẽ tự động gia hạn. Bạn có thể quản lý hoặc hủy trong vòng 24 giờ trước khi tự động gia hạn.</string>
+    <string name="pw_v3_terms">Điều khoản</string>
+    <string name="pw_v3_policy">Chính sách</string>
+    <string name="pw_v3_restore">Khôi phục</string>
+    <string name="pw_v3_purchase_success">Mua thành công! 🎉</string>
+    <string name="pw_v3_restoring">Đang khôi phục…</string>
 </resources>

@@ -57,5 +57,7 @@ public interface Constant {
     String IMAGE_INPUT_NAME = "input_image.jpg";
     String TEMP_DIR = "temp";
     String WEEK_LY = "weekly_1";
+    String MONTH_LY = "monthly_1";
     String LIFE_TIME = "life_time";
+    String YEAR_LY = "yearly_1";
 }

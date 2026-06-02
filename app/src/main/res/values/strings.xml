@@ -188,4 +188,65 @@
     <string name="continues">Continue</string>
     <string name="three_day_frees">3 days free</string>
     <string name="start_3_days">START 3-DAY FREE TRIAL</string>
+
+    <!-- PayWall V2 -->
+    <string name="pw_v2_close">Close</string>
+    <string name="pw_v2_title">Upgrade to Premium</string>
+    <string name="pw_v2_subtitle">Experience beautiful and professional calls</string>
+    <string name="pw_v2_plan_weekly">Weekly</string>
+    <string name="pw_v2_per_week">/week</string>
+    <string name="pw_v2_plan_monthly">Monthly</string>
+    <string name="pw_v2_badge_popular">POPULAR</string>
+    <string name="pw_v2_save_monthly">Save 37%</string>
+    <string name="pw_v2_per_month">/month</string>
+    <string name="pw_v2_plan_lifetime">Lifetime</string>
+    <string name="pw_v2_badge_best_value">BEST VALUE</string>
+    <string name="pw_v2_save_lifetime">Save 85%</string>
+    <string name="pw_v2_one_time">one-time</string>
+    <string name="pw_v2_premium_features">Premium Features</string>
+    <string name="pw_v2_feat1">1000+ beautiful call screens</string>
+    <string name="pw_v2_feat2">Unlimited interface customization</string>
+    <string name="pw_v2_feat3">Remove all ads</string>
+    <string name="pw_v2_feat5">Exclusive premium themes</string>
+    <string name="pw_v2_feat6">New content updates every week</string>
+    <string name="pw_v2_feat7">Priority support 24/7</string>
+    <string name="pw_v2_cta">Start 3-day free trial</string>
+    <string name="pw_v2_auto_renew_note">Auto-renews. Cancel anytime.</string>
+    <string name="pw_v2_terms">Terms</string>
+    <string name="pw_v2_policy">Privacy Policy</string>
+    <string name="pw_v2_restore">Restore</string>
+    <string name="pw_v2_cta_trial">Start 3-day free trial</string>
+    <string name="pw_v2_cta_weekly">Subscribe Weekly</string>
+    <string name="pw_v2_cta_monthly">Subscribe Monthly</string>
+    <string name="pw_v2_cta_lifetime">Buy Lifetime Now</string>
+    <string name="pw_v2_cta_continue">Continue</string>
+    <string name="pw_v2_purchase_success">Purchase successful! 🎉</string>
+    <string name="pw_v2_restoring">Restoring…</string>
+
+    <!-- PayWall V3 -->
+    <string name="pw_v3_close">Close</string>
+    <string name="pw_v3_title">COLOR FLASH CALL</string>
+    <string name="pw_v3_subtitle">Make Your Call Outstanding</string>
+    <string name="pw_v3_feat_no_ads">No ads</string>
+    <string name="pw_v3_feat_faster">Faster Browsing</string>
+    <string name="pw_v3_feat_unlimited">Unlimited Premium Content</string>
+    <string name="pw_v3_plan_weekly">Weekly</string>
+    <string name="pw_v3_charged_weekly">Charged every week</string>
+    <string name="pw_v3_popular">Popular</string>
+    <string name="pw_v3_plan_monthly">Monthly</string>
+    <string name="pw_v3_charged_monthly">Charged every month</string>
+    <string name="pw_v3_plan_yearly">Yearly</string>
+    <string name="pw_v3_charged_yearly">Charged every year</string>
+    <string name="pw_v3_best_value">Best Value</string>
+    <string name="pw_v3_cta">CONTINUE</string>
+    <string name="pw_v3_cta_trial">START FREE TRIAL</string>
+    <string name="pw_v3_cta_weekly">SUBSCRIBE WEEKLY</string>
+    <string name="pw_v3_cta_monthly">SUBSCRIBE MONTHLY</string>
+    <string name="pw_v3_cta_yearly">SUBSCRIBE YEARLY</string>
+    <string name="pw_v3_terms_note">By purchasing, you agree to our Privacy policy. According to Google Play Policy, your subscription will be automatically renewed. You can manage or cancel your subscription within 24 hours before the new auto purchase in Google Play.</string>
+    <string name="pw_v3_terms">Terms</string>
+    <string name="pw_v3_policy">Privacy Policy</string>
+    <string name="pw_v3_restore">Restore</string>
+    <string name="pw_v3_purchase_success">Purchase successful! 🎉</string>
+    <string name="pw_v3_restoring">Restoring…</string>
 </resources>

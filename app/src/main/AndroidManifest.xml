@@ -56,6 +56,10 @@
             android:name=".paywall.PayWallActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
+        <activity
+            android:name=".paywall.PayWallV3Activity"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"

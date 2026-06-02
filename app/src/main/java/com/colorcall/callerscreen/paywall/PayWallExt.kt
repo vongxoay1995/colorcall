@@ -29,9 +29,34 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 fun PayWallActivity.setupView() {
-    if (intent.getStringExtra("from_scr") == "Splash" && !HawkHelper.isPayed()) {
+    val fromScr = intent.getStringExtra("from_scr") ?: ""
+    if (fromScr == "Splash" && !HawkHelper.isPayed()) {
         loadInterAds()
     }
+
+    when (fromScr) {
+        "FeatureGate" -> {
+            mBinding.icClose.visibility = View.INVISIBLE
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                if (isHasActive()) {
+                    mBinding.icClose.visibility = View.VISIBLE
+                    mBinding.icClose.alpha = 0.5f
+                }
+            }, 3000)
+        }
+        "Splash" -> {
+            mBinding.icClose.visibility = View.INVISIBLE
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                if (isHasActive()) {
+                    mBinding.icClose.visibility = View.VISIBLE
+                }
+            }, 3000)
+        }
+        else -> {
+            mBinding.icClose.visibility = View.VISIBLE
+        }
+    }
+
     setupWordSpannable()
     initBilling()
     listener()
@@ -101,6 +126,7 @@ fun PayWallActivity.listener() {
     }
     onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                analystic.trackEvent("PayWallScr_Back_Pressed")
                 if(intent.getStringExtra("from_scr")=="Splash"){
                     moveMain()
                 }else{
@@ -129,24 +155,22 @@ fun PayWallActivity.initBilling() {
         setListener(object : BillingListener {
             override fun onPurchaseUpdatedV5Below(list: List<SkuDetails?>?) {}
             override fun onPurchaseUpdatedV5(list: List<Purchase?>?) {
-                if (list != null) {
-                    if (!isGetTempValue) {
-                        countSizeList = list.size
-                        isGetTempValue = true
+                if (list != null && !is_just_bought) {
+                    val newPurchase = list.find { purchase ->
+                        purchase?.purchaseState == Purchase.PurchaseState.PURCHASED
                     }
-                    if (countSizeList < list.size) {
+                    if (newPurchase != null) {
                         is_just_bought = true
-                        analystic.trackEvent("PayWallScr_Buy_Success")
+                        analystic.trackEvent("Paywall_buy_success")
                         if (isHasActive()) {
                             runOnUiThread {
                                 Toast.makeText(this@initBilling, "Purchased success!", Toast.LENGTH_SHORT).show()
-                                if (intent.getStringExtra("from_scr") == "Splash"){
+                                if (intent.getStringExtra("from_scr") == "Splash") {
                                     moveMain()
-                                }else{
+                                } else {
                                     setResult(Activity.RESULT_OK)
                                     finish()
                                 }
-
                             }
                         }
                     }
@@ -195,13 +219,13 @@ private fun PayWallActivity.processProductDetails() {
 
 fun PayWallActivity.setPrice() {
     with(mBinding) {
+        layoutToggle.visibility = View.GONE
         if (hasFreeTrial) {
             switchProduct(0)
             content1.text = getString(R.string.free_trial_for_3_days_no_payment_now)
             txtBuyNow.text = getString(R.string.start_3_days)
             offerIdTemp = offerIdIap
         } else {
-            layoutToggle.visibility = View.GONE
             content1.text = getString(R.string.unleadsh_your_limit)
             txtBuyNow.text = getString(R.string.continues)
             offerIdTemp = ""
@@ -210,7 +234,7 @@ fun PayWallActivity.setPrice() {
 }
 
 fun PayWallActivity.buyNow() {
-    analystic.trackEvent("PayWallScr_Buy_Clicked")
+    analystic.trackEvent("paywall_buy_clicked")
     //billingHelper.fakeBoughtIap()
       billingHelper.launchPurchaseSubFlow(
           this,

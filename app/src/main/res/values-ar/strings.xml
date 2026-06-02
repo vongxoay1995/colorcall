@@ -145,4 +145,65 @@
     <string name="continues">استمرار</string>
     <string name="three_day_frees">3 أيام مجانية</string>
     <string name="start_3_days">ابدأ تجربة مجانية لمدة 3 أيام</string>
+
+    <!-- PayWall V2 -->
+    <string name="pw_v2_close">إغلاق</string>
+    <string name="pw_v2_title">الترقية إلى Premium</string>
+    <string name="pw_v2_subtitle">استمتع بمكالمات جميلة واحترافية</string>
+    <string name="pw_v2_plan_weekly">أسبوعي</string>
+    <string name="pw_v2_per_week">/أسبوع</string>
+    <string name="pw_v2_plan_monthly">شهري</string>
+    <string name="pw_v2_badge_popular">الأكثر شيوعًا</string>
+    <string name="pw_v2_save_monthly">وفّر 37%</string>
+    <string name="pw_v2_per_month">/شهر</string>
+    <string name="pw_v2_plan_lifetime">مدى الحياة</string>
+    <string name="pw_v2_badge_best_value">أفضل قيمة</string>
+    <string name="pw_v2_save_lifetime">وفّر 85%</string>
+    <string name="pw_v2_one_time">مرة واحدة</string>
+    <string name="pw_v2_premium_features">ميزات Premium</string>
+    <string name="pw_v2_feat1">أكثر من 1000+ شاشة مكالمة جميلة</string>
+    <string name="pw_v2_feat2">تخصيص الواجهة بلا حدود</string>
+    <string name="pw_v2_feat3">إزالة جميع الإعلانات</string>
+    <string name="pw_v2_feat5">ثيمات حصرية وراقية</string>
+    <string name="pw_v2_feat6">تحديثات محتوى جديدة كل أسبوع</string>
+    <string name="pw_v2_feat7">دعم أولوية 24/7</string>
+    <string name="pw_v2_cta">ابدأ تجربة مجانية لمدة 3 أيام</string>
+    <string name="pw_v2_auto_renew_note">يتجدد تلقائيًا. يمكنك الإلغاء في أي وقت.</string>
+    <string name="pw_v2_terms">الشروط</string>
+    <string name="pw_v2_policy">سياسة الخصوصية</string>
+    <string name="pw_v2_restore">استعادة</string>
+    <string name="pw_v2_cta_trial">ابدأ تجربة مجانية لمدة 3 أيام</string>
+    <string name="pw_v2_cta_weekly">اشترك أسبوعيًا</string>
+    <string name="pw_v2_cta_monthly">اشترك شهريًا</string>
+    <string name="pw_v2_cta_lifetime">اشتري مدى الحياة الآن</string>
+    <string name="pw_v2_cta_continue">متابعة</string>
+    <string name="pw_v2_purchase_success">تمت عملية الشراء بنجاح! 🎉</string>
+    <string name="pw_v2_restoring">جارٍ الاستعادة…</string>
+
+    <!-- PayWall V3 -->
+    <string name="pw_v3_close">إغلاق</string>
+    <string name="pw_v3_title">COLOR FLASH CALL</string>
+    <string name="pw_v3_subtitle">اجعل مكالمتك مميزة</string>
+    <string name="pw_v3_feat_no_ads">بلا إعلانات</string>
+    <string name="pw_v3_feat_faster">تصفح أسرع</string>
+    <string name="pw_v3_feat_unlimited">محتوى مميز غير محدود</string>
+    <string name="pw_v3_plan_weekly">أسبوعي</string>
+    <string name="pw_v3_charged_weekly">يُحتسب كل أسبوع</string>
+    <string name="pw_v3_popular">الأكثر شعبية</string>
+    <string name="pw_v3_plan_monthly">شهري</string>
+    <string name="pw_v3_charged_monthly">يُحتسب كل شهر</string>
+    <string name="pw_v3_plan_yearly">سنوي</string>
+    <string name="pw_v3_charged_yearly">يُحتسب كل عام</string>
+    <string name="pw_v3_best_value">الأفضل قيمة</string>
+    <string name="pw_v3_cta">متابعة</string>
+    <string name="pw_v3_cta_trial">ابدأ التجربة المجانية</string>
+    <string name="pw_v3_cta_weekly">اشترك أسبوعياً</string>
+    <string name="pw_v3_cta_monthly">اشترك شهرياً</string>
+    <string name="pw_v3_cta_yearly">اشترك سنوياً</string>
+    <string name="pw_v3_terms_note">بالشراء، أنت توافق على سياسة الخصوصية لدينا. وفقاً لسياسة Google Play، سيتم تجديد اشتراكك تلقائياً. يمكنك الإلغاء قبل 24 ساعة من التجديد التلقائي.</string>
+    <string name="pw_v3_terms">الشروط</string>
+    <string name="pw_v3_policy">سياسة الخصوصية</string>
+    <string name="pw_v3_restore">استعادة</string>
+    <string name="pw_v3_purchase_success">تمت عملية الشراء بنجاح! 🎉</string>
+    <string name="pw_v3_restoring">جارٍ الاستعادة…</string>
 </resources>

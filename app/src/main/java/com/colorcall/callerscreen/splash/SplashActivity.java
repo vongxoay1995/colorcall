@@ -24,7 +24,7 @@ import com.colorcall.callerscreen.databinding.ActivitySplashBinding;
 import com.colorcall.callerscreen.main.MainActivity;
 import com.colorcall.callerscreen.model.AdsConfig;
 import com.colorcall.callerscreen.onboarding.OnboardingActivity;
-import com.colorcall.callerscreen.paywall.PayWallActivity;
+import com.colorcall.callerscreen.paywall.PayWallV3Activity;
 import com.colorcall.callerscreen.update.UpdateManager;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.ConstantAds;
@@ -491,7 +491,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     }
 
     private void movePayWall() {
-        Intent intent = new Intent(this, PayWallActivity.class);
+        Intent intent = new Intent(this, PayWallV3Activity.class);
         intent.putExtra("from_scr", "Splash");
         startActivity(intent);
         finish();

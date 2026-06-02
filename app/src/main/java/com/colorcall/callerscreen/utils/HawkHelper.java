@@ -22,6 +22,7 @@ public class HawkHelper {
     private static String CAN_SHOW_DIALOG_RATE = "CAN_SHOW_DIALOG_RATE";
     private static String COUNT_FOR_DIALOG_UPDATE = "COUNT_FOR_DIALOG_UPDATE";
     private static String CAN_SHOW_DIALOG_UPDATE = "CAN_SHOW_DIALOG_UPDATE";
+    private static String FREE_APPLY_COUNT = "FREE_APPLY_COUNT";
     private static String IS_SCREEN_CALL = "IS_SCREEN_CALL";
     private static String PRIORITY_ADS = "PRIORITY_ADS";
     private static String IS_AB = "IS_AB";
@@ -129,5 +130,13 @@ public class HawkHelper {
 
     public static void setDialogShowRate(boolean value) {
         if (Hawk.isBuilt()) Hawk.put(CAN_SHOW_DIALOG_RATE, value);
+    }
+
+    public static int getFreeApplyCount() {
+        return Hawk.isBuilt() ? Hawk.get(FREE_APPLY_COUNT, 0) : 0;
+    }
+
+    public static void setFreeApplyCount(int count) {
+        if (Hawk.isBuilt()) Hawk.put(FREE_APPLY_COUNT, count);
     }
 }
