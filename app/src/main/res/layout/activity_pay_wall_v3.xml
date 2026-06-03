@@ -43,7 +43,7 @@
             <!-- ── TOP IMAGE (bg_top_pw3) ── -->
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_150sdp"
+                android:layout_height="@dimen/_170sdp"
                 android:src="@drawable/bg_top_pw3"
                 android:scaleType="centerCrop"
                 android:contentDescription="@null" />
@@ -79,167 +79,17 @@
                     android:textColor="#CCFFFFFF"
                     android:textSize="@dimen/_13ssp" />
 
-                <!-- ── FEATURES (marquee ticker) ── -->
-                <FrameLayout
+                <!-- ── FEATURES (auto-scroll ticker) ── -->
+                <com.colorcall.callerscreen.paywall.AutoScrollRecyclerView
+                    android:id="@+id/rcv_features_v3"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp">
-
-                    <LinearLayout
-                        android:id="@+id/layout_features_inner_v3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <!-- ── Set 1 (original) ── -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginEnd="@dimen/_24sdp">
-                            <ImageView
-                                android:layout_width="@dimen/_30sdp"
-                                android:layout_height="@dimen/_30sdp"
-                                android:padding="@dimen/_5sdp"
-                                android:src="@drawable/ic_ad"
-                                android:scaleType="fitCenter"
-                                android:contentDescription="@null"
-                                app:tint="#06B6D4" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_6sdp"
-                                android:text="@string/pw_v3_feat_no_ads"
-                                android:textColor="#EEFFFFFF"
-                                android:textSize="@dimen/_13ssp"
-                                android:singleLine="true" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginEnd="@dimen/_24sdp">
-                            <ImageView
-                                android:layout_width="@dimen/_30sdp"
-                                android:layout_height="@dimen/_30sdp"
-                                android:padding="@dimen/_5sdp"
-                                android:src="@drawable/ic_time"
-                                android:scaleType="fitCenter"
-                                android:contentDescription="@null"
-                                app:tint="#06B6D4" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_6sdp"
-                                android:text="@string/pw_v3_feat_faster"
-                                android:textColor="#EEFFFFFF"
-                                android:textSize="@dimen/_13ssp"
-                                android:singleLine="true" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginEnd="@dimen/_24sdp">
-                            <ImageView
-                                android:layout_width="@dimen/_30sdp"
-                                android:layout_height="@dimen/_30sdp"
-                                android:padding="@dimen/_5sdp"
-                                android:src="@drawable/ic_unlimited"
-                                android:scaleType="fitCenter"
-                                android:contentDescription="@null"
-                                app:tint="#06B6D4" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_6sdp"
-                                android:text="@string/pw_v3_feat_unlimited"
-                                android:textColor="#EEFFFFFF"
-                                android:textSize="@dimen/_13ssp"
-                                android:singleLine="true" />
-                        </LinearLayout>
-
-                        <!-- ── Set 2 (duplicate for seamless loop) ── -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginEnd="@dimen/_24sdp">
-                            <ImageView
-                                android:layout_width="@dimen/_30sdp"
-                                android:layout_height="@dimen/_30sdp"
-                                android:padding="@dimen/_5sdp"
-                                android:src="@drawable/ic_ad"
-                                android:scaleType="fitCenter"
-                                android:contentDescription="@null"
-                                app:tint="#06B6D4" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_6sdp"
-                                android:text="@string/pw_v3_feat_no_ads"
-                                android:textColor="#EEFFFFFF"
-                                android:textSize="@dimen/_13ssp"
-                                android:singleLine="true" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginEnd="@dimen/_24sdp">
-                            <ImageView
-                                android:layout_width="@dimen/_30sdp"
-                                android:layout_height="@dimen/_30sdp"
-                                android:padding="@dimen/_5sdp"
-                                android:src="@drawable/ic_time"
-                                android:scaleType="fitCenter"
-                                android:contentDescription="@null"
-                                app:tint="#06B6D4" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_6sdp"
-                                android:text="@string/pw_v3_feat_faster"
-                                android:textColor="#EEFFFFFF"
-                                android:textSize="@dimen/_13ssp"
-                                android:singleLine="true" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:layout_marginEnd="@dimen/_24sdp">
-                            <ImageView
-                                android:layout_width="@dimen/_30sdp"
-                                android:layout_height="@dimen/_30sdp"
-                                android:padding="@dimen/_5sdp"
-                                android:src="@drawable/ic_unlimited"
-                                android:scaleType="fitCenter"
-                                android:contentDescription="@null"
-                                app:tint="#06B6D4" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_6sdp"
-                                android:text="@string/pw_v3_feat_unlimited"
-                                android:textColor="#EEFFFFFF"
-                                android:textSize="@dimen/_13ssp"
-                                android:singleLine="true" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-                </FrameLayout>
+                    android:layout_height="@dimen/_44sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <!-- ══════════════════════════════════════
                      PLAN WEEKLY ("Popular" badge floating above)
@@ -256,9 +106,10 @@
                         android:layout_marginTop="@dimen/_12sdp"
                         android:background="@drawable/bg_plan_unselected_v3"
                         android:gravity="center_vertical"
+                        android:minHeight="@dimen/_62sdp"
                         android:orientation="horizontal"
                         android:paddingHorizontal="@dimen/_14sdp"
-                        android:paddingVertical="@dimen/_10sdp">
+                        android:paddingVertical="@dimen/_12sdp">
 
                         <ImageView
                             android:id="@+id/radio_weekly_v3"
@@ -339,9 +190,10 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:background="@drawable/bg_plan_unselected_v3"
                     android:gravity="center_vertical"
+                    android:minHeight="@dimen/_62sdp"
                     android:orientation="horizontal"
                     android:paddingHorizontal="@dimen/_14sdp"
-                    android:paddingVertical="@dimen/_10sdp">
+                    android:paddingVertical="@dimen/_12sdp">
 
                     <ImageView
                         android:id="@+id/radio_monthly_v3"
@@ -413,9 +265,10 @@
                         android:layout_marginTop="@dimen/_12sdp"
                         android:background="@drawable/bg_plan_selected_v3"
                         android:gravity="center_vertical"
+                        android:minHeight="@dimen/_62sdp"
                         android:orientation="horizontal"
                         android:paddingHorizontal="@dimen/_14sdp"
-                        android:paddingVertical="@dimen/_10sdp">
+                        android:paddingVertical="@dimen/_12sdp">
 
                         <ImageView
                             android:id="@+id/radio_yearly_v3"

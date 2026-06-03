@@ -1,13 +1,10 @@
 package com.colorcall.callerscreen.paywall
 
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Intent
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -43,6 +40,7 @@ fun PayWallV3Activity.setupViewV3() {
         }
         else -> mBinding.icCloseV3.visibility = View.VISIBLE
     }
+    setupFeatureAutoScrollV3()
     initBillingV3()
     setupListenersV3()
 }
@@ -103,7 +101,7 @@ fun PayWallV3Activity.initBillingV3() {
                         loadPricesV3()
                         selectPlanV3(PLAN_YEARLY_V3)
                         applyTitleGradientV3()
-                        startFeatureAutoScrollV3()
+                        mBinding.rcvFeaturesV3.startAutoScroll()
                     }
                 }
             }
@@ -115,7 +113,7 @@ fun PayWallV3Activity.initBillingV3() {
                     mBinding.scrollIapV3.visibility = View.VISIBLE
                     selectPlanV3(PLAN_YEARLY_V3)
                     applyTitleGradientV3()
-                    startFeatureAutoScrollV3()
+                    mBinding.rcvFeaturesV3.startAutoScroll()
                 }
             }
         })
@@ -304,40 +302,22 @@ private fun PayWallV3Activity.openUrlV3(url: String) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// Auto-scroll marquee features (infinite loop left → right)
+// Auto-scroll marquee features
 // ══════════════════════════════════════════════════════════════════════════════
-private var featureScrollAnimator: ValueAnimator? = null
+private fun PayWallV3Activity.setupFeatureAutoScrollV3() {
+    val features = listOf(
+        PaywallV3Feature(getString(R.string.pw_v3_feat_no_ads), R.drawable.ic_ad),
+        PaywallV3Feature(getString(R.string.pw_v3_feat_faster), R.drawable.ic_time),
+        PaywallV3Feature(getString(R.string.pw_v3_feat_unlimited), R.drawable.ic_unlimited)
+    )
 
-private fun PayWallV3Activity.startFeatureAutoScrollV3() {
-    val inner = mBinding.layoutFeaturesInnerV3
-
-    // Wait for layout to measure
-    inner.post {
-        // inner contains 6 children (3 original + 3 duplicate)
-        // halfWidth = width of the first 3 items = half of total
-        val totalWidth = inner.width
-        val halfWidth = totalWidth / 2
-
-        if (halfWidth <= 0) return@post
-
-        featureScrollAnimator?.cancel()
-        featureScrollAnimator = ValueAnimator.ofFloat(0f, -halfWidth.toFloat()).apply {
-            duration = 6000L  // 6s cho 1 cycle
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.RESTART
-            interpolator = android.view.animation.LinearInterpolator()
-            addUpdateListener { anim ->
-                inner.translationX = anim.animatedValue as Float
-            }
-            startDelay = 500L
-            start()
-        }
-    }
+    mBinding.rcvFeaturesV3.setAdapter(PaywallV3FeatureAdapter(features))
+    mBinding.rcvFeaturesV3.isLoopEnabled = true
+    mBinding.rcvFeaturesV3.startAutoScroll()
 }
 
 fun PayWallV3Activity.stopFeatureAutoScrollV3() {
-    featureScrollAnimator?.cancel()
-    featureScrollAnimator = null
+    mBinding.rcvFeaturesV3.pauseAutoScroll(true)
 }
 
 // ══════════════════════════════════════════════════════════════════════════════

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_black_radius10"
+    android:background="@drawable/bg_permission_xiaomi_dialog"
     android:paddingHorizontal="@dimen/_10sdp"
     android:layout_marginHorizontal="@dimen/_10sdp"
     android:paddingVertical="@dimen/_15sdp">
