@@ -134,7 +134,7 @@
             android:id="@+id/pageBgColor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/layout_ads"
+            android:layout_above="@id/layout_ads_stub"
             android:layout_below="@id/laypoutPermission"
             android:layout_marginTop="2dp">
 
@@ -144,38 +144,24 @@
             android:id="@+id/main_dialpad_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/layout_ads"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="@dimen/bigger_margin"
-            android:layout_marginBottom="@dimen/activity_margin"
+            android:layout_marginBottom="@dimen/_60sdp"
             android:contentDescription="@string/dialpad"
             android:elevation="@dimen/medium_margin"
             android:padding="@dimen/activity_margin"
             android:src="@drawable/ic_dialpad_vector"
             app:rippleColor="@color/pressed_item_foreground" />
 
-        <RelativeLayout
-            android:id="@+id/layout_ads"
+        <ViewStub
+            android:id="@+id/layout_ads_stub"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:layout_above="@id/bottomView"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:background="@drawable/border_ads"
-            android:gravity="center"
-            android:paddingStart="1dp"
-            android:paddingTop="@dimen/_3sdp"
-            android:paddingEnd="1dp"
-            android:paddingBottom="@dimen/_3sdp"
-            android:visibility="visible" />
+            android:layout="@layout/stub_ads_container" />
 
-        <View
-            android:id="@+id/bottomView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+
     </RelativeLayout>
 

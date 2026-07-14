@@ -20,7 +20,7 @@ import com.colorcall.callerscreen.utils.PhoneUtils;
 
 public class PhoneState extends PhoneStateListener implements PhoneUtils.PhoneListener {
     public Context context;
-    public Handler handler = new Handler();
+    public Handler handler = new Handler(Looper.getMainLooper());
     public AudioManager audio;
     public int ringerMode = -1;
     IncomingCallView incomingCallView;

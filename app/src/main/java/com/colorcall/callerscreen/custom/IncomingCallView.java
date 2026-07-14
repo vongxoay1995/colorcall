@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
@@ -102,12 +103,15 @@ public class IncomingCallView extends RelativeLayout {
             } else {
                 layoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
             }
-            layoutParams.format = -2;
-            layoutParams.flags = 524584;
-            layoutParams.width = -1;
-            layoutParams.height = -1;
-            layoutParams.screenOrientation = 1;
-            layoutParams.windowAnimations = 16973826;
+            layoutParams.format = android.graphics.PixelFormat.TRANSLUCENT;
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON;
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.screenOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            layoutParams.windowAnimations = android.R.style.Animation_Toast;
             WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
             this.windowManager = windowManager;
             windowManager.addView(this, this.windowParams);
@@ -137,19 +141,32 @@ public class IncomingCallView extends RelativeLayout {
 
     public void setInforContact() {
         if (numberPhone != null && !numberPhone.equals("")) {
-            try {
-                ContactRetrieve contactRetrieve = AppUtils.getContactName(context, String.valueOf(numberPhone));
-                name = contactRetrieve.getName();
-                contactId = contactRetrieve.getContact_id();
-                binding.txtName.setText(name);
-                if (name.equals("")) {
-                    binding.txtName.setText(context.getString(R.string.unknowContact));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             binding.txtPhone.setText(String.valueOf(numberPhone));
             binding.txtPhone.setVisibility(VISIBLE);
+            // Move contact lookup off main thread to avoid ANR
+            new Thread(() -> {
+                try {
+                    ContactRetrieve contactRetrieve = AppUtils.getContactName(context, String.valueOf(numberPhone));
+                    Bitmap avatar = AppUtils.getContactPhoto(context, String.valueOf(numberPhone));
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        if (contactRetrieve != null) {
+                            name = contactRetrieve.getName();
+                            contactId = contactRetrieve.getContact_id();
+                            if (name != null && !name.isEmpty()) {
+                                binding.txtName.setText(name);
+                            } else {
+                                binding.txtName.setText(context.getString(R.string.unknowContact));
+                            }
+                        } else {
+                            binding.txtName.setText(context.getString(R.string.unknowContact));
+                        }
+                        if (avatar != null) {
+                            bmpAvatar = avatar;
+                            binding.profileImage.setImageBitmap(avatar);
+                        }
+                    });
+                } catch (Exception ignored) {}
+            }).start();
         } else {
             binding.txtName.setText(context.getString(R.string.unknowContact));
             binding.txtPhone.setVisibility(INVISIBLE);
@@ -160,8 +177,7 @@ public class IncomingCallView extends RelativeLayout {
         backgroundSelect = HawkHelper.getBackgroundSelect();
         if (backgroundSelect != null) {
             typeBgCall = backgroundSelect.getType();
-            bmpAvatar = AppUtils.getContactPhoto(context, String.valueOf(numberPhone));
-            binding.profileImage.setImageBitmap(bmpAvatar);
+            // Avatar is now loaded asynchronously in setInforContact()
             binding.vdoBackgroundCall.setVisibility(View.VISIBLE);
             if (databaseViewModel != null) {
                 databaseViewModel.getContactsByContactId(contactId).observe((LifecycleOwner) context, new Observer<List<Contact>>() {
@@ -181,7 +197,7 @@ public class IncomingCallView extends RelativeLayout {
                     }
                 });
             }
-            new Handler().postDelayed(this::startAnimation, 400);
+            new Handler(Looper.getMainLooper()).postDelayed(this::startAnimation, 400);
             handlingCallState();
             listener();
         }
@@ -287,7 +303,7 @@ public class IncomingCallView extends RelativeLayout {
         if (backgroundSelect.getPathItem().contains("default") && backgroundSelect.getPathItem().contains("thumbDefault")) {
             sPathThumb = "file:///android_asset/" + backgroundSelect.getPathItem();
         } else {
-            sPathThumb = backgroundSelect.getPathItem();
+            sPathThumb = AppUtils.upgradeToHttps(backgroundSelect.getPathItem());
         }
         Glide.with(context.getApplicationContext())
                 .load(sPathThumb)

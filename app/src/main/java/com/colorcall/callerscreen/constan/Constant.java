@@ -32,7 +32,7 @@ public interface Constant {
     String IS_UPDATE_LIST = "updateList";
     String INTENT_APPLY_THEME = "applyTheme";
     String ACTION_LOAD_COMPLETE_THEME = "loadCompleteTheme";
-    String BASE_URL = "http://smartappvn.com";
+    String BASE_URL = "https://smartappvn.com";
     String LINK_VIDEO_CACHE = Environment.getDataDirectory().toString()+"/data/com.colorcall.callerscreen/background/" ;
     String INTENT_DELETE_THEME = "deleteTheme";
     String INTENT_DOWNLOAD_COMPLETE_THEME = "downloadTheme" ;

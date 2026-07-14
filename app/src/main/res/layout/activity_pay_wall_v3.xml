@@ -373,37 +373,6 @@
                     android:textSize="@dimen/_10ssp"
                     android:lineSpacingExtra="2dp" />
 
-                <!-- Footer links -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_6sdp"
-                    android:layout_marginBottom="@dimen/_20sdp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/tv_terms_v3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/pw_v3_terms"
-                        android:textColor="#06B6D4"
-                        android:textSize="@dimen/_11ssp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/_5sdp"
-                        android:text="·"
-                        android:textColor="#66FFFFFF"
-                        android:textSize="@dimen/_11ssp" />
-                    <TextView
-                        android:id="@+id/tv_policy_v3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/pw_v3_policy"
-                        android:textColor="#06B6D4"
-                        android:textSize="@dimen/_11ssp" />
-                </LinearLayout>
-
             </LinearLayout>
 
         </LinearLayout>
@@ -415,7 +384,8 @@
         android:layout_width="@dimen/_38sdp"
         android:layout_height="@dimen/_38sdp"
         android:layout_gravity="top|end"
-        android:layout_margin="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_18sdp"
+        android:layout_marginEnd="@dimen/_15sdp"
         android:padding="@dimen/_8sdp"
         android:background="@drawable/bg_close_v3"
         android:src="@drawable/ic_close_iap"

@@ -13,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
@@ -81,12 +79,9 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         int countOpenApp = HawkHelper.getCountOpenApp();
         countOpenApp++;
         HawkHelper.setCountOpenApp(countOpenApp);
+        // Mark onboarding as shown since it's disabled — ensures proper ads flow
+        if (!HawkHelper.isShowedOb()) HawkHelper.setShowedOb(true);
         new Thread(this::configFirebaseRemote).start();
-        Glide.with(getApplicationContext())
-                .load(R.drawable.ic_bg_splash)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .thumbnail(0.1f)
-                .into(binding.imgBgSplash);
         mUpdateManager = UpdateManager.Builder(this);
         analystic = Analystic.getInstance(this);
         analystic.trackEvent(ManagerEvent.splashOpen());
@@ -159,19 +154,8 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     }
 
     private void moveOnboarding() {
-        try {
-            if (isActive()) {
-                stopJobScreen();
-                startActivity(new Intent(this, OnboardingActivity.class));
-                HawkHelper.setShowedOb(true);
-                finish();
-            }
-
-        } catch (Exception e) {
-            skip();
-            e.printStackTrace();
-        }
-
+        // Onboarding disabled — go directly to Main
+        skip();
     }
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;

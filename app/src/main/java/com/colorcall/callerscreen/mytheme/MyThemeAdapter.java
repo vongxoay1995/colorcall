@@ -27,6 +27,7 @@ import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.databinding.AddNewBinding;
 import com.colorcall.callerscreen.databinding.ItemThemeBinding;
+import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             Background background = listBg.get(i);
             String pathFile;
             if (!background.getPathThumb().equals("")) {
-                pathFile = background.getPathThumb();
+                pathFile = AppUtils.upgradeToHttps(background.getPathThumb());
                 Log.e("TAN", "onBind: "+pathFile);
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)
@@ -182,7 +183,7 @@ public class MyThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             String sPathThumb;
             String uriPath = "android.resource://" + context.getPackageName() + background.getPathItem();
             if (!background.getPathThumb().equals("")) {
-                sPathThumb = background.getPathThumb();
+                sPathThumb = AppUtils.upgradeToHttps(background.getPathThumb());
                 Glide.with(context.getApplicationContext())
                         .load(sPathThumb)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)

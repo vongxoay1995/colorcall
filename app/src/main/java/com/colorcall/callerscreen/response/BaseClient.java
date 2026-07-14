@@ -1,5 +1,7 @@
 package com.colorcall.callerscreen.response;
 
+import com.colorcall.callerscreen.BuildConfig;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -8,7 +10,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BaseClient {
     private static HttpLoggingInterceptor sLogging =
             new HttpLoggingInterceptor()
-                    .setLevel(HttpLoggingInterceptor.Level.BODY);
+                    .setLevel(BuildConfig.DEBUG
+                            ? HttpLoggingInterceptor.Level.BODY
+                            : HttpLoggingInterceptor.Level.NONE);
 
     private static OkHttpClient.Builder sHttpClient =
             new OkHttpClient.Builder();
@@ -27,3 +31,4 @@ public class BaseClient {
         return retrofit.create(serviceClass);
     }
 }
+

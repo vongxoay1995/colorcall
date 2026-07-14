@@ -33,7 +33,12 @@ class CallNotificationManager(private val context: Context) {
     private val DECLINE_CALL_CODE = 1
     private val notificationManager = context.notificationManager
     private val callContactAvatarHelper = CallContactAvatarHelper(context)
-    val flashUtils = FlashUtils.getInstance(true, context)
+
+    // Lazy init to avoid using context before it's ready
+    private val flashUtils: FlashUtils by lazy {
+        FlashUtils.getInstance(true, context)
+    }
+
     @SuppressLint("NewApi")
     fun setupNotification(forceLowPriority: Boolean = false) {
         getCallContact(context.applicationContext, CallManager.getPrimaryCall()) { callContact ->
@@ -107,63 +112,31 @@ class CallNotificationManager(private val context: Context) {
             }
 
             val notification = builder.build()
-            // it's rare but possible for the call state to change by now
-            Log.e("TAN", "setupNotification getState: "+CallManager.getState()+"##"+callState )
 
-
-
-
+            // Verify call state hasn't changed during notification build
             if (CallManager.getState() == callState) {
-                val activityManager = context.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+                // Always post the notification first
+                notificationManager.notify(CALL_NOTIFICATION_ID, notification)
 
-              /*  val taskList = activityManager.getRunningTasks(10)
-                Log.e("TAN", "topActivity: "+ taskList.size )
-                if (taskList.isNotEmpty() &&
-                    taskList[0].numActivities == 1 &&
-                    taskList[0].topActivity?.className != "CallDialerActivity") {
-                    val activityIntent = Intent(context, CallActivity::class.java).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Phải có flag này
+                // Launch CallActivity only for ringing state
+                if (callState == Call.STATE_RINGING) {
+                    try {
+                        val activityIntent = Intent(context, CallActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            putExtra(Constant.PHONE_NUMBER, callContact.number)
+                            putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
+                        }
+                        context.startActivity(activityIntent)
+                    } catch (e: Exception) {
+                        Log.e("CallNotification", "Failed to launch CallActivity", e)
                     }
-                    Log.e("TAN", "setupNotification: "+callContact.number+"##"+callContact.numberLabel )
-                    activityIntent.putExtra(Constant.PHONE_NUMBER, callContact.number)
-                    activityIntent.putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
-                    context.startActivity(activityIntent)
-                }else{
-                    val activityIntent = Intent(context, CallActivity::class.java).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Phải có flag này
-                    }
-                    Log.e("TAN", "setupNotification: "+callContact.number+"##"+callContact.numberLabel )
-                    activityIntent.putExtra(Constant.PHONE_NUMBER, callContact.number)
-                    activityIntent.putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
-                    context.startActivity(activityIntent)
-                }*/
-                val taskList = activityManager.getRunningTasks(10)
 
-                Log.e("TAN", "topActivity: ${taskList.size}")
-
-                val isNotCallDialerActivity = taskList.isNotEmpty() &&
-                        taskList[0].numActivities == 1 &&
-                        taskList[0].topActivity?.className != "CallDialerActivity"
-
-                val activityIntent = Intent(context, CallActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    putExtra(Constant.PHONE_NUMBER, callContact.number)
-                    putExtra(Constant.CALL_CONTACT, Gson().toJson(callContact))
-                }
-
-                Log.e("TAN", "setupNotification: ${isNotCallDialerActivity}##${ taskList.isEmpty()}")
-
-                //if (isNotCallDialerActivity || taskList.isEmpty()) {
-                if (callState==2){
-                    context.startActivity(activityIntent)
-                    if (HawkHelper.isEnableFlash()) {
+                    // Start flash for ringing calls only
+                    if (HawkHelper.isEnableFlash() && !flashUtils.isRunning) {
                         Thread(flashUtils).start()
                     }
                 }
-               // }
-
             }
-
         }
     }
 
@@ -171,3 +144,4 @@ class CallNotificationManager(private val context: Context) {
         notificationManager.cancel(CALL_NOTIFICATION_ID)
     }
 }
+

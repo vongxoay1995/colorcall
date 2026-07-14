@@ -125,7 +125,7 @@
     <string name="title_paywall_no_ads">Chán những quảng cáo làm phiền?</string>
     <string name="content_1_paywall_no_ads">Trải nghiệm ứng dụng sạch sẽ, không quảng cáo.</string>
     <string name="buy_now">Mua ngay</string>
-    <string name="term_paywall">Bằng cách tiếp tục, bạn đồng ý với %s và %s.\n\t • Thanh toán sẽ được tính vào tài khoản Google Play của bạn khi xác nhận mua hàng hoặc vào cuối kỳ thử nghiệm (nếu có).\n \t • \t Trong kỳ thử nghiệm, bạn sẽ không bị tính phí. Sau khi kỳ thử nghiệm kết thúc, gói sẽ tự động gia hạn với mức giá gốc.\n \t • \t Đăng ký sẽ tự động gia hạn theo gói đăng ký mà bạn chọn, trừ khi hủy 24 giờ trước khi kết thúc kỳ hiện tại hoặc kỳ thử nghiệm (nếu có)\n \t • \t Người dùng không đăng ký vẫn có thể sử dụng ứng dụng, tuy nhiên một số tính năng trả phí có thể bị hạn chế.\n \t • \t Bạn có thể quản lý hoặc hủy đăng ký của mình bất kỳ lúc nào trong mục Đăng ký trên Google Play.</string>
+    <string name="term_paywall">Bằng cách tiếp tục, bạn đồng ý với %1$s và %2$s.\n• Thanh toán sẽ được tính vào tài khoản Google Play của bạn khi xác nhận mua hàng hoặc vào cuối kỳ thử nghiệm (nếu có).\n• Trong kỳ thử nghiệm, bạn sẽ không bị tính phí. Sau khi kỳ thử nghiệm kết thúc, gói sẽ tự động gia hạn với mức giá gốc.\n• Đăng ký sẽ tự động gia hạn theo gói đăng ký mà bạn chọn, trừ khi hủy 24 giờ trước khi kết thúc kỳ hiện tại hoặc kỳ thử nghiệm (nếu có).\n• Người dùng không đăng ký vẫn có thể sử dụng ứng dụng, tuy nhiên một số tính năng trả phí có thể bị hạn chế.\n• Bạn có thể quản lý hoặc hủy đăng ký của mình bất kỳ lúc nào trong mục Đăng ký trên Google Play.</string>
     <string name="content_weekly"><![CDATA[<b>%s mỗi tuần</b>. Tự động gia hạn, hủy bất cứ lúc nào.]]></string>
     <string name="terms">Điều khoản</string>
     <string name="ready_to_go_pro">Sẵn sàng nâng cấp lên PRO?</string>
@@ -183,7 +183,7 @@
     <string name="pw_v3_title">COLOR FLASH CALL</string>
     <string name="pw_v3_subtitle">Làm nổi bật cuộc gọi của bạn</string>
     <string name="pw_v3_feat_no_ads">Không quảng cáo</string>
-    <string name="pw_v3_feat_faster">Duyệt web nhanh hơn</string>
+    <string name="pw_v3_feat_faster">Cập nhật liên tục chủ đề cuộc gọi và nhiều ưu đãi hơn</string>
     <string name="pw_v3_feat_unlimited">Nội dung cao cấp không giới hạn</string>
     <string name="pw_v3_plan_weekly">Hàng tuần</string>
     <string name="pw_v3_charged_weekly">Tính phí mỗi tuần</string>

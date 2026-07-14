@@ -20,22 +20,25 @@ import com.colorcall.callerscreen.utils.FlashUtils
 
 class CallDialerService : InCallService() {
     private val callNotificationManager by lazy { CallNotificationManager(this) }
-    val flashUtils = FlashUtils.getInstance(true, this)
+
+    // Lazy init to avoid using 'this' before Service context is attached
+    private val flashUtils: FlashUtils by lazy {
+        FlashUtils.getInstance(true, this)
+    }
+
     private val callListener = object : Call.Callback() {
         override fun onStateChanged(call: Call, state: Int) {
             super.onStateChanged(call, state)
-            Log.e("TAN", "onStateChanged: "+CallManager.getState() )
              if (state == Call.STATE_DISCONNECTED || state == Call.STATE_DISCONNECTING) {
 
                  val localBroadcastManager = LocalBroadcastManager
                      .getInstance(this@CallDialerService)
                  localBroadcastManager.sendBroadcast(Intent("com.colorcall.endCall"))
                  callNotificationManager.cancelNotification()
-                 if (flashUtils != null && flashUtils.isRunning) {
+                 if (flashUtils.isRunning) {
                      flashUtils.stop()
                  }
              } else {
-                 Log.e("TAN", "onStateChanged: TAN 1" )
                  callNotificationManager.setupNotification()
              }
         }
@@ -49,20 +52,13 @@ class CallDialerService : InCallService() {
           val isScreenLocked = (getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager).isDeviceLocked
           if (!powerManager.isInteractive || call.isOutgoing() || isScreenLocked || config.alwaysShowFullscreen) {
               try {
-                  Log.e("TAN", "onStateChanged: TAN 2")
                   callNotificationManager.setupNotification(true)
                   startActivity(CallDialerActivity.getStartIntent(this))
               } catch (e: Exception) {
-                  Log.e("TAN", "onStateChanged: TAN 3")
-
                   // seems like startActivity can throw AndroidRuntimeException and ActivityNotFoundException, not yet sure when and why, lets show a notification
                   callNotificationManager.setupNotification()
               }
           } else {
-             // val fullScreenIntent = Intent(this, CallActivity::class.java)
-
-              Log.e("TAN", "onStateChanged: TAN 4")
-
               callNotificationManager.setupNotification()
           }
     }
@@ -76,8 +72,6 @@ class CallDialerService : InCallService() {
              CallManager.inCallService = null
              callNotificationManager.cancelNotification()
          } else {
-             Log.e("TAN", "onStateChanged: TAN 5")
-
              callNotificationManager.setupNotification()
              if (wasPrimaryCall) {
                  startActivity(CallDialerActivity.getStartIntent(this))
@@ -95,5 +89,10 @@ class CallDialerService : InCallService() {
     override fun onDestroy() {
         super.onDestroy()
         callNotificationManager.cancelNotification()
+        // Safety: ensure flash is stopped when service dies
+        if (flashUtils.isRunning) {
+            flashUtils.stop()
+        }
     }
 }
+

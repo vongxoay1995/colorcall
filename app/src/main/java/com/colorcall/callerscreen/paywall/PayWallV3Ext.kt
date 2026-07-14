@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.LinearGradient
 import android.graphics.Shader
-import android.net.Uri
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -32,10 +31,21 @@ private const val PLAN_YEARLY_V3  = 2
 fun PayWallV3Activity.setupViewV3() {
     val fromScr = intent.getStringExtra("from_scr") ?: ""
     when (fromScr) {
-        "FeatureGate", "Splash" -> {
+        "FeatureGate" -> {
             mBinding.icCloseV3.visibility = View.INVISIBLE
             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                if (isActiveV3()) mBinding.icCloseV3.visibility = View.VISIBLE
+                if (isActiveV3()) {
+                    mBinding.icCloseV3.visibility = View.VISIBLE
+                    mBinding.icCloseV3.alpha = 0.5f
+                }
+            }, 3000)
+        }
+        "Splash" -> {
+            mBinding.icCloseV3.visibility = View.INVISIBLE
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                if (isActiveV3()) {
+                    mBinding.icCloseV3.visibility = View.VISIBLE
+                }
             }, 3000)
         }
         else -> mBinding.icCloseV3.visibility = View.VISIBLE
@@ -205,7 +215,7 @@ fun PayWallV3Activity.selectPlanV3(plan: Int) {
 
 private fun PayWallV3Activity.updateCtaTextV3() {
     mBinding.txtContinueV3.text = when (selectedPlan) {
-        PLAN_WEEKLY_V3  -> if (hasFreeTrial) getString(R.string.pw_v3_cta_trial) else getString(R.string.pw_v3_cta_weekly)
+        PLAN_WEEKLY_V3  -> getString(R.string.pw_v3_cta)
         PLAN_MONTHLY_V3 -> getString(R.string.pw_v3_cta)
         PLAN_YEARLY_V3  -> getString(R.string.pw_v3_cta)
         else            -> getString(R.string.pw_v3_cta)
@@ -228,10 +238,6 @@ fun PayWallV3Activity.setupListenersV3() {
             closeOrNavigateV3()
         }
 
-        tvTermsV3.paintFlags = tvTermsV3.paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
-        tvPolicyV3.paintFlags = tvPolicyV3.paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
-        tvTermsV3.setOnClickListener   { openUrlV3(Constant.TERMS_URL)  }
-        tvPolicyV3.setOnClickListener  { openUrlV3(Constant.POLICY_URL) }
     }
 
     // Setup spannable Terms note giống Paywall V1
@@ -252,12 +258,11 @@ fun PayWallV3Activity.buyNowV3() {
     analystic.trackEvent("PayWallV3_buy_clicked_plan_$selectedPlan")
     when (selectedPlan) {
         PLAN_WEEKLY_V3 -> {
-            val offerId = if (hasFreeTrial) offerIdIap else null
             billingHelper.launchPurchaseSubFlow(
                 this,
                 BillingClient.ProductType.SUBS,
                 Constant.WEEK_LY,
-                offerId
+                null
             )
         }
         PLAN_MONTHLY_V3 -> {
@@ -290,14 +295,6 @@ private fun PayWallV3Activity.closeOrNavigateV3() {
         finish()
     } else {
         finish()
-    }
-}
-
-private fun PayWallV3Activity.openUrlV3(url: String) {
-    try {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
 }
 

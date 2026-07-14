@@ -25,6 +25,7 @@ import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.constan.Constant;
 import com.colorcall.callerscreen.database.Background;
 import com.colorcall.callerscreen.databinding.ItemThemeBinding;
+import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ public class VideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (background.getPathItem().contains("default")) {
                     pathFile = "file:///android_asset/" + background.getPathThumb();
                 } else {
-                    pathFile = background.getPathThumb();
+                    pathFile = AppUtils.upgradeToHttps(background.getPathThumb());
                 }
                 Glide.with(context.getApplicationContext())
                         .load(pathFile)

@@ -23,7 +23,7 @@ import com.colorcall.callerscreen.utils.PhoneUtils;
 @RequiresApi(api = Build.VERSION_CODES.S)
 public class CallState extends TelephonyCallback implements TelephonyCallback.CallStateListener, PhoneUtils.PhoneListener {
     public Context context;
-    public Handler handler = new Handler();
+    public Handler handler = new Handler(Looper.getMainLooper());
     public AudioManager audio;
     public int ringerMode = -1;
     IncomingCallView incomingCallView;

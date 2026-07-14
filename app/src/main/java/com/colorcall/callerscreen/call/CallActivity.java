@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.colorcall.callerscreen.dialer.CallContactAvatarHelper;
 import com.colorcall.callerscreen.dialer.CallManager;
 import com.colorcall.callerscreen.dialer.activity.CallDialerActivity;
 import com.colorcall.callerscreen.dialer.models.CallContact;
+import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.HawkHelper;
 import com.google.gson.Gson;
 
@@ -58,21 +60,16 @@ public class CallActivity extends AppCompatActivity {
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Thread t = new Thread(){
-                public void run(){
-                    if (intent.getAction().equals("com.colorcall.endCall")) {
-                        finish();
-                    }
-                }
-            };
-            t.start();
+            if ("com.colorcall.endCall".equals(intent.getAction())) {
+                finish();
+            }
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(1024, 1024);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -132,11 +129,16 @@ public class CallActivity extends AppCompatActivity {
                 }else {
                     binding.txtName.setText(getString(R.string.unknowContact));
                 }
-                    Bitmap bmpAvatar =callContactAvatarHelper.getCallContactAvatar(callContact);
-                if (bmpAvatar!=null){
-                    binding.profileImage.setImageBitmap(bmpAvatar);
-                }
-                databaseViewModel.getContactsByContactId(callContact.getContactId()+"").observe(this, new Observer<List<Contact>>() {
+                // Load avatar off main thread to avoid jank
+                new Thread(() -> {
+                    Bitmap bmpAvatar = callContactAvatarHelper.getCallContactAvatar(callContact);
+                    if (bmpAvatar != null) {
+                        runOnUiThread(() -> binding.profileImage.setImageBitmap(bmpAvatar));
+                    }
+                }).start();
+
+                String contactId = String.valueOf(callContact.getContactId());
+                databaseViewModel.getContactsByContactId(contactId).observe(this, new Observer<List<Contact>>() {
                     @Override
                     public void onChanged(List<Contact> contacts) {
                         Log.e("TAN", "showViewCall:22 ");
@@ -185,7 +187,7 @@ public class CallActivity extends AppCompatActivity {
             Log.e("TAN", "showViewCall:11 ");
 
            //
-            new Handler().postDelayed(this::startAnimation, 400);
+            new Handler(Looper.getMainLooper()).postDelayed(this::startAnimation, 400);
             handlingCallState();
             listener();
         }
@@ -271,7 +273,7 @@ public class CallActivity extends AppCompatActivity {
         if (backgroundSelect.getPathItem().contains("default") && backgroundSelect.getPathItem().contains("thumbDefault")) {
             sPathThumb = "file:///android_asset/" + backgroundSelect.getPathItem();
         } else {
-            sPathThumb = backgroundSelect.getPathItem();
+            sPathThumb = AppUtils.upgradeToHttps(backgroundSelect.getPathItem());
         }
         Glide.with(getApplicationContext())
                 .load(sPathThumb)

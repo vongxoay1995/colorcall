@@ -16,8 +16,8 @@ android {
         applicationId = "com.colorcall.callerscreen"
         minSdk = 24
         targetSdk = 35
-        versionCode = 77
-        versionName = "1.7.1"
+        versionCode = 79
+        versionName = "1.7.2-internal"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -53,7 +53,7 @@ android {
     }
 
     lint {
-        checkReleaseBuilds = false
+        checkReleaseBuilds = true
         abortOnError = false
         disable.add("NonConstantResourceId")
     }
@@ -69,47 +69,50 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.androidx.constraintlayout)
     testImplementation("junit:junit:4.13.2")
-    implementation ("com.google.firebase:firebase-messaging:24.0.1")
+    implementation ("com.google.firebase:firebase-messaging:24.1.0")
     implementation("com.intuit.ssp:ssp-android:1.0.6")
     implementation("org.greenrobot:eventbus:3.3.1")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    implementation("com.airbnb.android:lottie:3.6.1")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.airbnb.android:lottie:6.4.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
     implementation("com.intuit.sdp:sdp-android:1.0.6")
-    implementation("com.android.support:multidex:1.0.3")
+    // multidex not needed with minSdk=24
     implementation("com.makeramen:roundedimageview:2.3.0")
+    // Matisse 0.5.2 is abandoned & crashes on Android 10+
+    // TODO: Replace with PhotoPicker API or another maintained library
     implementation("com.zhihu.android:matisse:0.5.2")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.ybq:Android-SpinKit:1.4.0")
-    implementation("com.google.android.play:review:2.0.1")
+    implementation("com.google.android.play:review:2.0.2")
     implementation("com.google.android.play:app-update:2.1.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-    implementation("com.googlecode.libphonenumber:libphonenumber:8.12.8")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("com.googlecode.libphonenumber:libphonenumber:8.13.50")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
-    implementation("io.reactivex.rxjava2:rxjava:2.2.9")
-    implementation("com.google.android.exoplayer:exoplayer:2.15.1")
-    implementation("com.squareup.okhttp3:okhttp:3.12.12")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:3.12.12")
+    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    // ExoPlayer 2.x is deprecated — migrate to Media3 when ready
+    // TODO: Replace with androidx.media3:media3-exoplayer
+    implementation("com.google.android.exoplayer:exoplayer:2.19.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.google.android.ump:user-messaging-platform:3.2.0")
-    implementation("com.google.android.material:material:1.5.0-alpha01")
-    implementation("com.google.firebase:firebase-analytics:21.3.0")
-    implementation("com.google.firebase:firebase-config:21.4.1")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.google.firebase:firebase-analytics:22.4.0")
+    implementation("com.google.firebase:firebase-config:22.0.1")
     implementation("com.google.firebase:firebase-core:21.1.1")
-    implementation("com.google.firebase:firebase-crashlytics:18.4.3")
-    // implementation("net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC2") // removed - has known crash bug
+    implementation("com.google.firebase:firebase-crashlytics:19.4.1")
     implementation("com.google.android.gms:play-services-ads:25.2.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.room:room-runtime:2.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("androidx.lifecycle:lifecycle-process:2.8.7")
+    implementation("androidx.room:room-runtime:2.6.1")
     implementation(libs.indicator.fast.scroll)
     implementation(libs.autofit.text.view)
     implementation("com.tbuonomo:dotsindicator:5.1.0")
-    ksp("androidx.room:room-compiler:2.6.0")
-    implementation("androidx.room:room-ktx:2.6.0")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
    // api(libs.koin.core)
     //api(libs.koin.android)

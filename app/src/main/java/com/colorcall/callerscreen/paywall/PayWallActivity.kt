@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.analystic.Analystic
 import com.colorcall.callerscreen.databinding.ActivityPayWallBinding
+import com.colorcall.callerscreen.utils.AppUtils
 import com.colorcall.callerscreen.utils.billing.BillingHelper
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import java.text.SimpleDateFormat
@@ -46,8 +47,14 @@ class PayWallActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityPayWallBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        AppUtils.setFullNav(this)
         analystic.trackEvent("PayWallShow")
         setupView()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) AppUtils.setFullNav(this)
     }
 
     override fun onDestroy() {

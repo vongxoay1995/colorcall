@@ -72,6 +72,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class AppUtils {
+    /**
+     * Upgrades http:// URLs to https:// for domains served via Cloudflare Flexible SSL.
+     * API responses may still contain http:// URLs, but the app blocks cleartext traffic.
+     */
+    public static String upgradeToHttps(String url) {
+        if (url != null && url.startsWith("http://")) {
+            return "https://" + url.substring(7);
+        }
+        return url;
+    }
+
     public static boolean checkPermission(Context context, String[] permission) {
         for (String checkSelfPermission : permission) {
             if (ContextCompat.checkSelfPermission(context, checkSelfPermission) != 0) {

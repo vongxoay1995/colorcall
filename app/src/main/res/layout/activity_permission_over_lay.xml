@@ -45,6 +45,7 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/anim_hand"
-            app:lottie_scale="0.4" />
+            android:scaleX="0.4"
+            android:scaleY="0.4" />
     </FrameLayout>
 </LinearLayout>

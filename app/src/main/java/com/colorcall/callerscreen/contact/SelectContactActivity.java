@@ -8,6 +8,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Handler;
+import android.os.Looper;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -140,7 +142,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
             if (background.getPathItem().contains("default")) {
                 pathFile = "file:///android_asset/" + background.getPathThumb();
             } else {
-                pathFile = background.getPathThumb();
+                pathFile = AppUtils.upgradeToHttps(background.getPathThumb());
             }
             Glide.with(getApplicationContext())
                     .load(pathFile)
@@ -207,184 +209,100 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     }
 
     public final void getAllContact() {
-     /*   LinkedHashSet linkedHashSet = new LinkedHashSet();
-        try {
-            ContentResolver contentResolver = getContentResolver();
-            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-            String[] infors = {"contact_id", "display_name", "data1", "photo_uri"};
-            Cursor query = contentResolver.query(uri, infors, null, null, "sort_key");
-            if (query != null) {
-                while (query.moveToNext()) {
-                    @SuppressLint("Range") String contact_id = query.getString(query.getColumnIndex(infors[0]));
-                    @SuppressLint("Range") String display_name = query.getString(query.getColumnIndex(infors[1]));
-                    @SuppressLint("Range") String data1 = query.getString(query.getColumnIndex(infors[2]));
-                    @SuppressLint("Range") String photo_uri = query.getString(query.getColumnIndex(infors[3]));
-                    if (!linkedHashSet.contains(new ContactInfor(contact_id, display_name, data1, photo_uri))) {
-                        linkedHashSet.add(new ContactInfor(contact_id, display_name, data1, photo_uri));
+        // Run ContentResolver query off main thread
+        new Thread(() -> {
+            LinkedHashSet<ContactInfor> linkedHashSet = new LinkedHashSet<>();
+            try {
+                ContentResolver contentResolver = getContentResolver();
+                Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+                String[] infors = {"contact_id", "display_name", "data1", "photo_uri"};
+                Cursor query = contentResolver.query(uri, infors, null, null, "sort_key");
+
+                if (query != null) {
+                    try {
+                        while (query.moveToNext()) {
+                            @SuppressLint("Range")
+                            String contact_id = query.getString(query.getColumnIndex(infors[0]));
+                            @SuppressLint("Range")
+                            String display_name = query.getString(query.getColumnIndex(infors[1]));
+                            @SuppressLint("Range")
+                            String data1 = query.getString(query.getColumnIndex(infors[2]));
+                            @SuppressLint("Range")
+                            String photo_uri = query.getString(query.getColumnIndex(infors[3]));
+
+                            linkedHashSet.add(new ContactInfor(contact_id, display_name, data1, photo_uri));
+                        }
+                    } finally {
+                        query.close();
                     }
                 }
-                query.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            ArrayList<ContactInfor> arrListContact = new ArrayList<>(linkedHashSet);
 
-        ArrayList arrListContact = new ArrayList(linkedHashSet);*/
-        LinkedHashSet<ContactInfor> linkedHashSet = new LinkedHashSet<>();
-        try {
-            ContentResolver contentResolver = getContentResolver();
-            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-            String[] infors = {"contact_id", "display_name", "data1", "photo_uri"};
-            Cursor query = contentResolver.query(uri, infors, null, null, "sort_key");
-
-            if (query != null) {
-                while (query.moveToNext()) {
-                    @SuppressLint("Range")
-                    String contact_id = query.getString(query.getColumnIndex(infors[0]));
-                    @SuppressLint("Range")
-                    String display_name = query.getString(query.getColumnIndex(infors[1]));
-                    @SuppressLint("Range")
-                    String data1 = query.getString(query.getColumnIndex(infors[2]));
-                    @SuppressLint("Range")
-                    String photo_uri = query.getString(query.getColumnIndex(infors[3]));
-
-                    if (!linkedHashSet.contains(new ContactInfor(contact_id, display_name, data1, photo_uri))) {
-                        Log.e("TAN", "getAllContact: 111");
-                        linkedHashSet.add(new ContactInfor(contact_id, display_name, data1, photo_uri));
-                    }
-                }
-                query.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Log.e("TAN", "getAllContactaaaa: " + linkedHashSet.size());
-        ArrayList<ContactInfor> arrListContact = new ArrayList<>(linkedHashSet);
-        // Sử dụng ViewModel để lấy danh sách Contact từ Room
-        Log.e("TAN", "getAllContact: " + databaseViewModel + "##" + background);
-        databaseViewModel.getContactsByBackgroundPath(background.getPathItem()).observe(this, new Observer<List<Contact>>() {
-            @Override
-            public void onChanged(List<Contact> listContactDB) {
-                // Xử lý để đánh dấu các contact đã tồn tại trong DB
-                if (listContactDB != null) {
-                    for (Contact contact : listContactDB) {
-                        for (ContactInfor contactInfor : arrListContact) {
-                            if (contactInfor.getContactId().equals(contact.getContactId())) {
-                                contactInfor.setChecked(true);
-                                break;
+            // Switch back to main thread for UI + LiveData observation
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (isFinishing() || isDestroyed()) return;
+                databaseViewModel.getContactsByBackgroundPath(background.getPathItem()).observe(this, new Observer<List<Contact>>() {
+                    @Override
+                    public void onChanged(List<Contact> listContactDB) {
+                        if (listContactDB != null) {
+                            for (Contact contact : listContactDB) {
+                                for (ContactInfor contactInfor : arrListContact) {
+                                    if (contactInfor.getContactId().equals(contact.getContactId())) {
+                                        contactInfor.setChecked(true);
+                                        break;
+                                    }
+                                }
                             }
                         }
+                        adapter = new ContactAdapter(getApplicationContext(), arrListContact);
+                        binding.rcvContact.setAdapter(adapter);
                     }
-                }
-
-                // Khởi tạo Adapter và thiết lập cho RecyclerView
-                adapter = new ContactAdapter(getApplicationContext(), arrListContact);
-                binding.rcvContact.setAdapter(adapter);
-            }
-        });
-
-
-       /* List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
-                .where(ContactDao.Properties.Background_path.eq(background.getPathItem()))
-                .list();
-        Log.e("TAN", "getAllContactDatabase: " + DataManager.query().getContactDao().queryBuilder().list());
-        for (int i = 0; i < listContactDB.size(); i++) {
-            Iterator it = arrListContact.iterator();
-            while (true) {
-                if (!it.hasNext()) {
-                    break;
-                }
-                ContactInfor contactInfor = (ContactInfor) it.next();
-                if (contactInfor.getContactId().equals(listContactDB.get(i).getContact_id())) {
-                    contactInfor.setChecked(true);
-                    break;
-                }
-            }
-        }
-        adapter = new ContactAdapter(this, arrListContact);
-        rcvContact.setAdapter(adapter);*/
+                });
+            });
+        }).start();
     }
 
     public void setTheme() {
-        Log.e("TAN", "setTheme: ");
-        //PhoneService.startService(this);
         HawkHelper.setStateColorCall(true);
-      /*  if (adapter != null) {
-            List<String> listContactIdSelected = adapter.getContactSelected();
-            List<Contact> listContactDB = DataManager.query().getContactDao().queryBuilder()
-                    .where(ContactDao.Properties.Background_path.eq(background.getPathItem()))
-                    .list();
-            for (int i = 0; i < listContactDB.size(); i++) {
-                String contactSelect = listContactDB.get(i).getContact_id();
-                if (!listContactIdSelected.contains(contactSelect)) {
-                    final DeleteQuery<Contact> tableDeleteQuery = DataManager.query().getContactDao().queryBuilder().where(ContactDao.Properties.Contact_id.eq(contactSelect))
-                            .buildDelete();
-                    tableDeleteQuery.executeDeleteWithoutDetachingEntities();
-                    DataManager.query().getContactDao().detachAll();
-                }
-            }
-            Iterator<String> it = listContactIdSelected.iterator();
-            Contact contact;
-            while (it.hasNext()) {
-                String contactID = it.next();
-                List<Contact> listQueryContactID = DataManager.query().getContactDao().queryBuilder()
-                        .where(ContactDao.Properties.Contact_id.eq(contactID))
-                        .list();
-                if (listQueryContactID.size() > 0) {
-                    contact = listQueryContactID.get(0);
-                    contact.setBackground_path(background.getPathItem());
-                    contact.setBackground(new Gson().toJson(background));
-                    DataManager.query().getContactDao().update(contact);
-                } else {
-                    contact = new Contact(contactID, background.getPathItem(), new Gson().toJson(background));
-                    DataManager.query().getContactDao().insert(contact);
-                }
-            }
-            Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK);
-            finish();
-        }*/
         if (adapter != null) {
             List<String> listContactIdSelected = adapter.getContactSelected();
-            Log.e("TAN", "setTheme: 1");
-            // Lấy danh sách Contact từ Room
             List<Contact> listContactDB = databaseViewModel.getContactsByBackgroundPath(background.getPathItem()).getValue();
 
-            // Xóa các Contact không có trong danh sách đã chọn
-            if (listContactDB != null) {
-                for (Contact contact : listContactDB) {
-                    String contactSelect = contact.getContactId();
-                    if (!listContactIdSelected.contains(contactSelect)) {
-                        // Xóa contact khỏi Room
-                        databaseViewModel.deleteContact(contact);
+            // Run DB operations on background thread to avoid ANR
+            new Thread(() -> {
+                // Delete contacts not in selected list
+                if (listContactDB != null) {
+                    for (Contact contact : listContactDB) {
+                        String contactSelect = contact.getContactId();
+                        if (!listContactIdSelected.contains(contactSelect)) {
+                            databaseViewModel.deleteContact(contact);
+                        }
                     }
                 }
-            }
-            Log.e("TAN", "setTheme: 2");
-            // Cập nhật hoặc chèn Contact mới
-            for (String contactID : listContactIdSelected) {
-                Log.e("TAN", "setTheme: 2.5");
-                // Truy vấn Contact theo contactID
-                Contact existingContact = databaseViewModel.getContactById(contactID);
-                if (existingContact != null) {
-                    Log.e("TAN", "setTheme: 3");
-
-                    // Cập nhật thông tin của Contact
-                    existingContact.setBackgroundPath(background.getPathItem());
-                    existingContact.setBackground(new Gson().toJson(background));
-                    databaseViewModel.updateContact(existingContact);
-                } else {
-                    // Chèn Contact mới vào Room
-                    Log.e("TAN", "setTheme: 3.5");
-
-                    Contact newContact = new Contact(contactID, background.getPathItem(), new Gson().toJson(background));
-                    databaseViewModel.insertContact(newContact);
+                // Update or insert contacts
+                for (String contactID : listContactIdSelected) {
+                    Contact existingContact = databaseViewModel.getContactById(contactID);
+                    if (existingContact != null) {
+                        existingContact.setBackgroundPath(background.getPathItem());
+                        existingContact.setBackground(new Gson().toJson(background));
+                        databaseViewModel.updateContact(existingContact);
+                    } else {
+                        Contact newContact = new Contact(contactID, background.getPathItem(), new Gson().toJson(background));
+                        databaseViewModel.insertContact(newContact);
+                    }
                 }
-            }
-            Log.e("TAN", "setTheme: 4");
-            Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
-            setResult(RESULT_OK);
-            finish();
+                // Back to main thread for UI
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (!isFinishing() && !isDestroyed()) {
+                        Toast.makeText(this, getString(R.string.set_theme_success), Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                });
+            }).start();
         }
     }
 

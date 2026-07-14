@@ -215,7 +215,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
                     sPathThumb = "file:///android_asset/" + background.getPathItem();
                 } else {
-                    sPathThumb = background.getPathItem();
+                    sPathThumb = AppUtils.upgradeToHttps(background.getPathItem());
                 }
                 Log.e("TAN", "checkInforTheme: " + sPathThumb);
                 Glide.with(getApplicationContext())
@@ -235,7 +235,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
         if (background.getPathItem().contains("default") && background.getPathItem().contains("thumbDefault")) {
             sPathThumb = "file:///android_asset/" + background.getPathThumb();
         } else {
-            sPathThumb = background.getPathThumb();
+            sPathThumb = AppUtils.upgradeToHttps(background.getPathThumb());
         }
         Glide.with(getApplicationContext())
                 .load(sPathThumb)
@@ -268,17 +268,21 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     }
 
     public void deleteTheme(Background background) {
-        if (HawkHelper.getBackgroundSelect().getPathThumb().equals(background.getPathThumb())) {
+        Background currentBg = HawkHelper.getBackgroundSelect();
+        if (currentBg != null && currentBg.getPathThumb() != null
+                && currentBg.getPathThumb().equals(background.getPathThumb())) {
             Background bg = new Background(null, 0, "thumbDefault/default1.webp", "/raw/default1", false, "default1");
             HawkHelper.setBackgroundSelect(bg);
             SignApplyVideo signApplyVideo = new SignApplyVideo(Constant.APPLY_ITEM_DEFAULT);
             EventBus.getDefault().postSticky(signApplyVideo);
         }
-        if (background.getType() == 0) {
-            deleteInternalFile(this, background.getPathThumb());
-        }
-        deleteFileByPath(this, background.getPathItem());
-        Log.e("TAN", "deleteTheme: " + background.getPathItem() + "##" + background.getPathThumb());
+        // Run file I/O and MediaStore operations off main thread
+        new Thread(() -> {
+            if (background.getType() == 0) {
+                deleteInternalFile(this, background.getPathThumb());
+            }
+            deleteFileByPath(this, background.getPathItem());
+        }).start();
         databaseViewModel.deleteBackground(background);
     }
 
@@ -397,7 +401,7 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
                 return;
             analystic.trackEvent(ManagerEvent.applyApplyClick());
             if (isDownloaded) {
-                startDownloadBg(background.getPathItem(), background.getName());
+                startDownloadBg(AppUtils.upgradeToHttps(background.getPathItem()), background.getName());
             } else if (!isDefaultDialer(this)) {
                 AppUtils.launchSetDefaultDialerIntent(this);
             } else if (XiaomiUtilities.isMIUI() && !AppUtils.checkPermissionXiaomi(this)) {

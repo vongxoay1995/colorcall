@@ -95,8 +95,20 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
     boolean isPressGotoSetting;
     boolean isPressLaunchDialer;
     private ViewTreeObserver.OnGlobalLayoutListener keyboardLayoutListener;
+    private View adsContainer; // Lazily inflated from ViewStub
     public MainActivity() {
         super(ActivityMainBinding::inflate);
+    }
+
+    /** Inflate ads ViewStub on first call; returns the inflated container or null if already GONE */
+    private View getAdsContainer() {
+        if (adsContainer == null) {
+            android.view.ViewStub stub = getBinding().layoutAdsStub;
+            if (stub != null) {
+                adsContainer = stub.inflate();
+            }
+        }
+        return adsContainer;
     }
 
     private final ActivityResultLauncher<Intent> payWallLauncher = registerForActivityResult(
@@ -143,11 +155,16 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
 
             @Override
             public void onDialogDismissed() {
-                Log.e("TAN", "onDialogDismissed: dismis dialer");
+                // Show notification permission only after dialer dialog closes
+                // to avoid multiple dialogs stacking on top of each other
+                requestNotificationPermission();
             }
         });
         if (!isDefaultDialer(MainActivity.this)) {
             dialogPermissionCall.show();
+        } else {
+            // No dialer dialog needed — request notification permission directly
+            requestNotificationPermission();
         }
 
     }
@@ -178,7 +195,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
     }
 
     private void requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !dialogPermissionCall.isShowing()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
                 notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
@@ -315,12 +332,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
     @Override
     public void onAdloaded() {
         showLayoutAds = true;
-        getBinding().layoutAds.setVisibility(View.VISIBLE);
+        View ads = getAdsContainer();
+        if (ads != null) ads.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onAdFailed() {
-        getBinding().layoutAds.setVisibility(GONE);
+        if (adsContainer != null) adsContainer.setVisibility(GONE);
         updateButtonPosition();
     }
 
@@ -481,10 +499,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
             int keypadHeight = screenHeight - rect.bottom;
             boolean isKeyboardOpen = keypadHeight > screenHeight * 0.15;
             if (isKeyboardOpen) {
-                getBinding().layoutAds.setVisibility(GONE);
+                if (adsContainer != null) adsContainer.setVisibility(GONE);
             } else {
-                if (showLayoutAds) {
-                    getBinding().layoutAds.setVisibility(View.VISIBLE);
+                if (showLayoutAds && adsContainer != null) {
+                    adsContainer.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -582,12 +600,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
     protected void onCreate() {
         consumeSystemBars(false, (statusBarHeight, bottomBarHeight) -> {
             getBinding().topView.getLayoutParams().height = statusBarHeight;
-            getBinding().bottomView.getLayoutParams().height = bottomBarHeight;
 
             if (getBinding().topView.getLayoutParams().height == 0) {
                 getBinding().topView.getLayoutParams().height = statusBarHeight;
             }
-            getBinding().bottomView.requestLayout();
             getBinding().topView.requestLayout();
             return null;
         });
@@ -599,14 +615,16 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
         appOpenManager = ((ColorCallApplication) getApplication()).getAppOpenManager();
         loadDataApi(true);
         analystic = Analystic.getInstance(this);
-        bannerAdsUtils = new BannerAdsUtils(this, getBinding().layoutAds);
 
         if (AppUtils.isNetworkConnected(this) && !HawkHelper.isPayed()) {
+            // Inflate ads ViewStub only for non-premium users
+            View ads = getAdsContainer();
+            bannerAdsUtils = new BannerAdsUtils(this, (RelativeLayout) ads);
             createWindowManagerField();
             preLoadInter();
             loadAds();
         } else {
-            getBinding().layoutAds.setVisibility(GONE);
+            // Premium or offline — skip ViewStub inflation entirely (cold start savings)
             getBinding().btnRemoveAds.setVisibility(INVISIBLE);
             updateButtonPosition();
         }
@@ -616,7 +634,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
         setupKeyboardListener();
 
         initDialogPermissionXiaomi();
-        requestNotificationPermission();
+        // requestNotificationPermission() is now called from dialer dialog dismiss callback
+        // to prevent multiple dialogs stacking on top of each other
         //AppUtils.setFullNav(this);
     }
 
@@ -639,10 +658,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements A
                     getBinding().topView.getLayoutParams().height = sbHeight;
                     getBinding().topView.requestLayout();
                 }
-                if (nbHeight > 0) {
-                    getBinding().bottomView.getLayoutParams().height = nbHeight;
-                    getBinding().bottomView.requestLayout();
-                }
+
             }
         }
         initDataPage();

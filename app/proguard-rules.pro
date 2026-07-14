@@ -1,6 +1,24 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
 # in C:\Users\MinhVu\AppData\Local\Android\sdk1/tools/proguard/proguard-android.txt
+
+# ── Strip all Android Log calls in release builds ──
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+    public static int w(...);
+    public static int e(...);
+    public static int wtf(...);
+}
+-assumenosideeffects class java.io.PrintStream {
+    public void println(...);
+    public void print(...);
+}
+-assumenosideeffects class java.lang.Throwable {
+    public void printStackTrace();
+}
+
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.kts.
 #

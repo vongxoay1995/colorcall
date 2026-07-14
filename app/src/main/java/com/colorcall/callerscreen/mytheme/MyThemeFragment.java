@@ -284,7 +284,7 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         progressDialog.setCancelable(false);
         if (isShowDialog)
             progressDialog.show();
-        Handler handler = new Handler();
+        Handler handler = new Handler(android.os.Looper.getMainLooper());
         Thread thread = new Thread(() -> {
             File inputFile = new File(FileUtils.getInternalFileDir(context), Constant.VIDEO_INPUT_NAME);
             try {
@@ -347,42 +347,35 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         }
     }
     private void resetListDataVideo(String path) {
-
-        //ArrayList<Background> listBgDb = (ArrayList<Background>) DataManager.query().getBackgroundDao().queryBuilder().list();
         if (path != null) {
-            Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
-            File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    + Constant.PATH_THUMB_COLOR_CALL);
-            if (!folder.exists())
-                folder.mkdirs();
-            Background video;
-            String imageUrl = "";
-            if (listBg != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    File folderMovies = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-                            + Constant.PATH_THUMB_COLOR_CALL_VIDEOS);
-                    if (!folder.exists())
-                        folder.mkdirs();
-                    String fileName = "thumb_" + System.currentTimeMillis();
-                    imageUrl = getActivity().getFilesDir()
-                            + Constant.PATH_THUMB_COLOR_CALL +fileName;
-                   // video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
-                    FileUtils.saveBitmap(getActivity().getFilesDir()
-                            + Constant.PATH_THUMB_COLOR_CALL,fileName, bitmap);
-                    String filename =  "my_video_" + System.currentTimeMillis()+".mp4";
-                    saveVideoToDownloads(requireActivity(),imageUrl,path,filename);
-                    Log.e("TAN", "resetListDataVideo: vvvv"+path);
-                }else {
-                    imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                            + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBg.size();
-                    video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
-                    FileUtils.saveBitmap(imageUrl, bitmap);
-                    databaseViewModel.insertBackground(video);
-                    actionResetData = true;
+            // Run heavy IO off main thread to avoid ANR
+            new Thread(() -> {
+                Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Images.Thumbnails.MINI_KIND);
+                File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        + Constant.PATH_THUMB_COLOR_CALL);
+                if (!folder.exists())
+                    folder.mkdirs();
+                if (listBg != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        String fileName = "thumb_" + System.currentTimeMillis();
+                        String imageUrl = getActivity().getFilesDir()
+                                + Constant.PATH_THUMB_COLOR_CALL + fileName;
+                        FileUtils.saveBitmap(getActivity().getFilesDir()
+                                + Constant.PATH_THUMB_COLOR_CALL, fileName, bitmap);
+                        String filename = "my_video_" + System.currentTimeMillis() + ".mp4";
+                        saveVideoToDownloads(requireActivity(), imageUrl, path, filename);
+                    } else {
+                        String imageUrl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                                + Constant.PATH_THUMB_COLOR_CALL + "thumb_" + listBg.size();
+                        Background video = new Background(0, imageUrl, path, true, path.substring(path.lastIndexOf("/") + 1));
+                        FileUtils.saveBitmap(imageUrl, bitmap);
+                        databaseViewModel.insertBackground(video);
+                        new Handler(android.os.Looper.getMainLooper()).post(() -> {
+                            actionResetData = true;
+                        });
+                    }
                 }
-
-              //  DataManager.query().getBackgroundDao().save(video);
-            }
+            }).start();
         }
     }
 

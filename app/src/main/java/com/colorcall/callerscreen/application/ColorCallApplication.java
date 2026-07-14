@@ -25,15 +25,17 @@ public class ColorCallApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
-        MobileAds.initialize(ColorCallApplication.this, initializationStatus -> {
-        });
+        // Initialize Mobile Ads on background thread to avoid blocking cold start (~200-400ms)
+        new Thread(() -> {
+            MobileAds.initialize(ColorCallApplication.this, initializationStatus -> {});
+            if (BuildConfig.DEBUG) {
+                List<String> testDeviceIds = Arrays.asList("13C6FDCBDDECC41B0B5817912A40E9E6");
+                RequestConfiguration configuration =
+                        new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
+                MobileAds.setRequestConfiguration(configuration);
+            }
+        }).start();
         SharedPreferencesUtil.INSTANCE.init(this);
-        if (BuildConfig.DEBUG){
-            List<String> testDeviceIds = Arrays.asList("13C6FDCBDDECC41B0B5817912A40E9E6");
-            RequestConfiguration configuration =
-                    new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
-            MobileAds.setRequestConfiguration(configuration);
-        }
         Hawk.init(this).build();
         appOpenManager = new AppOpenManager(this);
         loadData();

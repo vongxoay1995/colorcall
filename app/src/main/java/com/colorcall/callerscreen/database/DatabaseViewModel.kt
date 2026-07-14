@@ -50,11 +50,18 @@ class DatabaseViewModel(application: Application) : AndroidViewModel(application
     fun getContactsByBackgroundPath(backgroundPath: String): LiveData<List<Contact>> {
         return contactDao.getContactsByBackgroundPath(backgroundPath)
     }
+    @androidx.annotation.WorkerThread
     fun getContactById(contactId: String): Contact? {
-        return runBlocking {
-            withContext(Dispatchers.IO) {
-                contactDao.getContactById(contactId)
-            }
+        // Use runBlocking only from background thread contexts
+        // For main thread usage, prefer getContactByIdAsync
+        return kotlinx.coroutines.runBlocking(Dispatchers.IO) {
+            contactDao.getContactById(contactId)
+        }
+    }
+
+    suspend fun getContactByIdAsync(contactId: String): Contact? {
+        return withContext(Dispatchers.IO) {
+            contactDao.getContactById(contactId)
         }
     }
     fun updateContact(contact: Contact) {

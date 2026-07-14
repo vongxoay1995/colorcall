@@ -1,30 +1,26 @@
 package com.colorcall.callerscreen.utils;
 
 import android.content.Context;
-import android.hardware.Camera;
-import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
-import android.os.Build;
 import android.os.SystemClock;
-import android.util.Log;
-
-import androidx.recyclerview.widget.ItemTouchHelper;
 
 public class FlashUtils implements Runnable {
-    public static FlashUtils instance;
-    private boolean b;
+    // Volatile for thread-safe singleton
+    private static volatile FlashUtils instance;
+
+    private boolean torchOn;
     private CameraManager camManager;
     private Context context;
     private int count;
     public volatile boolean done;
-    private boolean isStopping;
-    private Camera mCamera;
+    private volatile boolean isStopping;
     private boolean normalMode;
-    private Camera.Parameters parameters;
-    private Camera.Parameters parameters1;
     private int repeat;
     private int time_off;
     private int time_on;
+
+    // Safety timeout to prevent infinite flash loop (60 seconds)
+    private static final long MAX_FLASH_DURATION_MS = 60_000;
 
     public int getTime_on() {
         return this.time_on;
@@ -76,7 +72,11 @@ public class FlashUtils implements Runnable {
 
     public static FlashUtils getInstance(boolean z, Context context2) {
         if (instance == null) {
-            instance = new FlashUtils();
+            synchronized (FlashUtils.class) {
+                if (instance == null) {
+                    instance = new FlashUtils();
+                }
+            }
         }
         instance.setNormalMode(z);
         instance.setTime_on(500);
@@ -88,18 +88,19 @@ public class FlashUtils implements Runnable {
 
     public static FlashUtils getInstance() {
         if (instance == null) {
-            instance = new FlashUtils();
+            synchronized (FlashUtils.class) {
+                if (instance == null) {
+                    instance = new FlashUtils();
+                }
+            }
         }
         return instance;
     }
 
     private FlashUtils() {
-        this.b = false;
+        this.torchOn = false;
         this.isStopping = true;
         this.done = true;
-        this.time_on = ItemTouchHelper.Callback.DEFAULT_DRAG_ANIMATION_DURATION;
-        this.time_off = ItemTouchHelper.Callback.DEFAULT_DRAG_ANIMATION_DURATION;
-        this.repeat = 0;
         this.time_on = 500;
         this.time_off = 500;
         this.repeat = 0;
@@ -108,8 +109,14 @@ public class FlashUtils implements Runnable {
     public void run() {
         if (this.isStopping) {
             this.isStopping = false;
+            long startTime = SystemClock.elapsedRealtime();
+
             if (this.repeat == 0) {
                 while (!this.isStopping) {
+                    // Safety timeout check
+                    if (SystemClock.elapsedRealtime() - startTime > MAX_FLASH_DURATION_MS) {
+                        break;
+                    }
                     turnOnFlash();
                     SystemClock.sleep(this.time_on);
                     turnOffFlash();
@@ -117,6 +124,10 @@ public class FlashUtils implements Runnable {
                 }
             } else {
                 for (int i = 0; i < this.repeat && !this.isStopping; i++) {
+                    // Safety timeout check
+                    if (SystemClock.elapsedRealtime() - startTime > MAX_FLASH_DURATION_MS) {
+                        break;
+                    }
                     turnOnFlash();
                     SystemClock.sleep(this.time_on);
                     turnOffFlash();
@@ -129,65 +140,32 @@ public class FlashUtils implements Runnable {
     }
 
     private void turnOnFlash() {
-        if (this.b) {
+        if (this.torchOn) {
             return;
         }
-        if (Build.VERSION.SDK_INT >= 23) {
-            try {
-                this.b = true;
-                CameraManager cameraManager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
-                this.camManager = cameraManager;
-                if (cameraManager != null) {
-                    this.camManager.setTorchMode(cameraManager.getCameraIdList()[0], true);
-                }
-            } catch (Exception unused) {
+        try {
+            this.torchOn = true;
+            CameraManager cameraManager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+            this.camManager = cameraManager;
+            if (cameraManager != null) {
+                this.camManager.setTorchMode(cameraManager.getCameraIdList()[0], true);
             }
-        } else {
-            try {
-                this.b = true;
-                releaseCamera();
-                Camera open = Camera.open();
-                this.mCamera = open;
-                Camera.Parameters parameters2 = open.getParameters();
-                this.parameters1 = parameters2;
-                parameters2.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                this.mCamera.setParameters(this.parameters1);
-                this.mCamera.startPreview();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (Exception unused) {
+            // Silently handle camera access errors
         }
     }
 
     private void turnOffFlash() {
-        if (this.b) {
-            if (Build.VERSION.SDK_INT >= 23) {
-                try {
-                    this.b = false;
-                    CameraManager cameraManager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
-                    this.camManager = cameraManager;
-                    if (cameraManager != null) {
-                        this.camManager.setTorchMode(cameraManager.getCameraIdList()[0], false);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if (this.torchOn) {
+            try {
+                this.torchOn = false;
+                CameraManager cameraManager = (CameraManager) getContext().getSystemService(Context.CAMERA_SERVICE);
+                this.camManager = cameraManager;
+                if (cameraManager != null) {
+                    this.camManager.setTorchMode(cameraManager.getCameraIdList()[0], false);
                 }
-            } else {
-                try {
-                    releaseCamera();
-                    Camera open = Camera.open();
-                    this.mCamera = open;
-                    Camera.Parameters parameters2 = open.getParameters();
-                    this.parameters = parameters2;
-                    parameters2.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    this.mCamera.setParameters(this.parameters);
-                    this.mCamera.stopPreview();
-                    //them vao fix
-                    mCamera.release();
-                    this.b = false;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                // Silently handle camera access errors
             }
         }
     }
@@ -200,10 +178,5 @@ public class FlashUtils implements Runnable {
     public boolean isRunning() {
         return !this.isStopping;
     }
-    private void releaseCamera() {
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        }
-    }
 }
+

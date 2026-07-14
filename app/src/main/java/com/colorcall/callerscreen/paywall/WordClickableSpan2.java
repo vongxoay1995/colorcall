@@ -6,6 +6,7 @@ import static com.colorcall.callerscreen.constan.Constant.POLICY_URL;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
@@ -26,7 +27,7 @@ public class WordClickableSpan2 extends ClickableSpan {
 
     @Override
     public void updateDrawState(TextPaint ds) {
-        // Set the underline text style based on the value of isUnderline
+        ds.setColor(Color.parseColor("#2196F3"));
         ds.setUnderlineText(isUnderline);
         ds.bgColor = 0;
     }

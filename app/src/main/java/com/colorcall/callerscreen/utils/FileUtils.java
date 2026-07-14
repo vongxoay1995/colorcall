@@ -163,7 +163,7 @@ public class FileUtils {
         progressDialog.setMessage(context.getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
-        Handler handler = new Handler();
+        Handler handler = new Handler(android.os.Looper.getMainLooper());
         Thread thread = new Thread(() -> {
             File inputFile = new File(getInternalFileDir(context), name);
             try {

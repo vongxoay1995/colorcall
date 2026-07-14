@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.9.0" type="conditional_incidents">
+
+    <incident
+        id="NewApi"
+        severity="error"
+        message="">
+        <fix-data minSdk="21-∞" requiresApi="23-∞"/>
+        <location
+            file="${:hawk*release*MAIN*sourceProvider*0*javaDir*0}/com/orhanobut/hawk/JetpackEncryption.java"
+            line="12"
+            column="48"
+            startOffset="422"
+            endLine="12"
+            endColumn="59"
+            endOffset="433"/>
+        <map>
+            <entry
+                name="message"
+                string="Call requires API level 23 (current min is %1$s): `getOrCreate`"/>
+            <api-levels id="minSdk"
+                value="21-∞"/>
+            <api-levels id="requiresApi"
+                value="23-∞"/>
+        </map>
+    </incident>
+
+    <incident
+        id="NewApi"
+        severity="error"
+        message="">
+        <fix-data minSdk="21-∞" requiresApi="23-∞"/>
+        <location
+            file="${:hawk*release*MAIN*sourceProvider*0*javaDir*0}/com/orhanobut/hawk/JetpackEncryption.java"
+            line="12"
+            column="71"
+            startOffset="445"
+            endLine="12"
+            endColumn="86"
+            endOffset="460"/>
+        <map>
+            <entry
+                name="message"
+                string="Field requires API level 23 (current min is %1$s): `AES256_GCM_SPEC`"/>
+            <api-levels id="minSdk"
+                value="21-∞"/>
+            <api-levels id="requiresApi"
+                value="23-∞"/>
+        </map>
+    </incident>
+
+</incidents>

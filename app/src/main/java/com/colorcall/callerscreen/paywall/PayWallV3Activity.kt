@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.colorcall.callerscreen.analystic.Analystic
 import com.colorcall.callerscreen.databinding.ActivityPayWallV3Binding
+import com.colorcall.callerscreen.utils.AppUtils
 import com.colorcall.callerscreen.utils.billing.BillingHelper
 
 class PayWallV3Activity : AppCompatActivity() {
@@ -29,8 +30,14 @@ class PayWallV3Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityPayWallV3Binding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        AppUtils.setFullNav(this)
         analystic.trackEvent("PayWallV3_Show")
         setupViewV3()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) AppUtils.setFullNav(this)
     }
 
     override fun onDestroy() {
