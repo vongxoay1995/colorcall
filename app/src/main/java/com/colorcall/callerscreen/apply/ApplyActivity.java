@@ -447,21 +447,15 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
 
         if (!HawkHelper.isPayed()){
             if (isPro) {
+                // Only premium items go to paywall
                 Intent intent = new Intent(this, com.colorcall.callerscreen.paywall.PayWallV3Activity.class);
                 intent.putExtra("from_scr", "FeatureGate");
                 startActivity(intent);
                 return;
             }
 
-            int freeApplyCount = HawkHelper.getFreeApplyCount();
-            if (freeApplyCount < 2) {
-                HawkHelper.setFreeApplyCount(freeApplyCount + 1);
-                InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
-            } else {
-                Intent intent = new Intent(this, com.colorcall.callerscreen.paywall.PayWallV3Activity.class);
-                intent.putExtra("from_scr", "FeatureGate");
-                startActivity(intent);
-            }
+            // Free items: always show interstitial ads then apply
+            InterstitialApply.getInstance().showInterstitialAds(this, this::applyTheme);
         }else{
             applyTheme();
         }

@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.SkuDetails
 import com.colorcall.callerscreen.BuildConfig
 import com.colorcall.callerscreen.R
 import com.colorcall.callerscreen.constan.Constant
@@ -153,7 +152,6 @@ fun PayWallActivity.initBilling() {
     billingHelper = BillingHelper(this).apply {
         init()
         setListener(object : BillingListener {
-            override fun onPurchaseUpdatedV5Below(list: List<SkuDetails?>?) {}
             override fun onPurchaseUpdatedV5(list: List<Purchase?>?) {
                 if (list != null && !is_just_bought) {
                     val newPurchase = list.find { purchase ->

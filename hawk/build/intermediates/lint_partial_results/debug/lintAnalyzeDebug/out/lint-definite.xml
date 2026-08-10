@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.9.0" type="incidents">
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of `compileSdkVersion` than 34 is available: 35">
+        <fix-replace
+            description="Set compileSdkVersion to 35"
+            oldString="34"
+            replacement="35"
+            priority="0"/>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="5"
+            column="3"
+            startOffset="80"
+            endLine="5"
+            endColumn="23"
+            endOffset="100"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of org.jetbrains.kotlin:kotlin-stdlib-jdk7 than 1.9.21 is available: 2.1.0">
+        <fix-replace
+            description="Change to 2.1.0"
+            family="Update versions"
+            oldString="1.9.21"
+            replacement="2.1.0"
+            priority="0"/>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="29"
+            column="22"
+            startOffset="790"
+            endLine="29"
+            endColumn="70"
+            endOffset="838"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of org.jetbrains.kotlin:kotlin-stdlib-jdk7 than 1.9.21 is available: 2.1.0">
+        <fix-replace
+            description="Change to 2.1.0"
+            family="Update versions"
+            oldString="1.9.21"
+            replacement="2.1.0"
+            priority="0"/>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="35"
+            column="29"
+            startOffset="1111"
+            endLine="35"
+            endColumn="77"
+            endOffset="1159"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead (com.google.code.gson:gson is already available as `gson`, but using version 2.10.1 instead)">
+        <fix-alternatives>
+            <fix-composite
+                description="Replace with new library catalog declaration for gson-v2131"
+                robot="true"
+                independent="true">
+                <fix-replace
+                    description="Replace with gsonVersion = &quot;2.13.1&quot;..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="gsonVersion = &quot;2.13.1&quot;&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/colorcall/gradle/libs.versions.toml"
+                        startOffset="22"
+                        endOffset="22"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with gson-v2131 = { module = &quot;com.google.code.gson:gson&quot;, version.ref = &quot;gsonVersion&quot; }..."
+                    robot="true"
+                    independent="true"
+                    oldString="_lint_insert_begin_"
+                    replacement="gson-v2131 = { module = &quot;com.google.code.gson:gson&quot;, version.ref = &quot;gsonVersion&quot; }&#xA;"
+                    priority="0">
+                    <range
+                        file="$HOME/colorcall/gradle/libs.versions.toml"
+                        startOffset="1552"
+                        endOffset="1552"/>
+                </fix-replace>
+                <fix-replace
+                    description="Replace with libs.gson.v2131"
+                    robot="true"
+                    independent="true"
+                    replacement="libs.gson.v2131"
+                    priority="0">
+                    <range
+                        file="${:hawk*projectDir}/build.gradle"
+                        startOffset="406"
+                        endOffset="440"/>
+                </fix-replace>
+            </fix-composite>
+            <fix-replace
+                description="Replace with existing version catalog reference `gson` (version 2.10.1)"
+                replacement="libs.gson"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="406"
+                    endOffset="440"/>
+            </fix-replace>
+        </fix-alternatives>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="21"
+            column="18"
+            startOffset="406"
+            endLine="21"
+            endColumn="52"
+            endOffset="440"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for junit"
+            robot="true">
+            <fix-replace
+                description="Replace with junitVersion = &quot;4.13.2&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="junitVersion = &quot;4.13.2&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="22"
+                    endOffset="22"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with junit = { module = &quot;junit:junit&quot;, version.ref = &quot;junitVersion&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="junit = { module = &quot;junit:junit&quot;, version.ref = &quot;junitVersion&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.junit"
+                robot="true"
+                replacement="libs.junit"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="463"
+                    endOffset="483"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="23"
+            column="22"
+            startOffset="463"
+            endLine="23"
+            endColumn="42"
+            endOffset="483"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for truth"
+            robot="true">
+            <fix-replace
+                description="Replace with truthVersion = &quot;1.4.4&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="truthVersion = &quot;1.4.4&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1518"
+                    endOffset="1518"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with truth = { module = &quot;com.google.truth:truth&quot;, version.ref = &quot;truthVersion&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="truth = { module = &quot;com.google.truth:truth&quot;, version.ref = &quot;truthVersion&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="6573"
+                    endOffset="6573"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.truth"
+                robot="true"
+                replacement="libs.truth"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="505"
+                    endOffset="535"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="24"
+            column="22"
+            startOffset="505"
+            endLine="24"
+            endColumn="52"
+            endOffset="535"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for robolectric"
+            robot="true">
+            <fix-replace
+                description="Replace with robolectricVersion = &quot;4.15.1&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="robolectricVersion = &quot;4.15.1&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="155"
+                    endOffset="155"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with robolectric = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;robolectricVersion&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="robolectric = { module = &quot;org.robolectric:robolectric&quot;, version.ref = &quot;robolectricVersion&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.robolectric"
+                robot="true"
+                replacement="libs.robolectric"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="557"
+                    endOffset="593"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="25"
+            column="22"
+            startOffset="557"
+            endLine="25"
+            endColumn="58"
+            endOffset="593"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for mockito-core"
+            robot="true">
+            <fix-replace
+                description="Replace with mockitoCoreVersion = &quot;5.18.0&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="mockitoCoreVersion = &quot;5.18.0&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="155"
+                    endOffset="155"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with mockito-core = { module = &quot;org.mockito:mockito-core&quot;, version.ref = &quot;mockitoCoreVersion&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="mockito-core = { module = &quot;org.mockito:mockito-core&quot;, version.ref = &quot;mockitoCoreVersion&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.mockito.core"
+                robot="true"
+                replacement="libs.mockito.core"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="615"
+                    endOffset="648"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="26"
+            column="22"
+            startOffset="615"
+            endLine="26"
+            endColumn="55"
+            endOffset="648"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for androidx-security-crypto"
+            robot="true">
+            <fix-replace
+                description="Replace with securityCryptoVersion = &quot;1.1.0&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="securityCryptoVersion = &quot;1.1.0&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="347"
+                    endOffset="347"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with androidx-security-crypto = { module = &quot;androidx.security:security-crypto&quot;, version.ref = &quot;securityCryptoVersion&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="androidx-security-crypto = { module = &quot;androidx.security:security-crypto&quot;, version.ref = &quot;securityCryptoVersion&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.androidx.security.crypto"
+                robot="true"
+                replacement="libs.androidx.security.crypto"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="666"
+                    endOffset="707"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="27"
+            column="18"
+            startOffset="666"
+            endLine="27"
+            endColumn="59"
+            endOffset="707"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for kotlin-stdlib-jdk7"
+            robot="true">
+            <fix-replace
+                description="Replace with kotlinStdlibJdk7Version = &quot;1.9.21&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="kotlinStdlibJdk7Version = &quot;1.9.21&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="39"
+                    endOffset="39"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7&quot;, version.ref = &quot;kotlinStdlibJdk7Version&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7&quot;, version.ref = &quot;kotlinStdlibJdk7Version&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.kotlin.stdlib.jdk7"
+                robot="true"
+                replacement="libs.kotlin.stdlib.jdk7"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="790"
+                    endOffset="838"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="29"
+            column="22"
+            startOffset="790"
+            endLine="29"
+            endColumn="70"
+            endOffset="838"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for junit-junit"
+            robot="true">
+            <fix-replace
+                description="Replace with junit = &quot;4.13.2&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="junit = &quot;4.13.2&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="22"
+                    endOffset="22"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with junit-junit = { module = &quot;junit:junit&quot;, version.ref = &quot;junit&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="junit-junit = { module = &quot;junit:junit&quot;, version.ref = &quot;junit&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.junit.junit"
+                robot="true"
+                replacement="libs.junit.junit"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="868"
+                    endOffset="888"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="31"
+            column="29"
+            startOffset="868"
+            endLine="31"
+            endColumn="49"
+            endOffset="888"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for google-truth"
+            robot="true">
+            <fix-replace
+                description="Replace with truth = &quot;1.4.4&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="truth = &quot;1.4.4&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1518"
+                    endOffset="1518"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with google-truth = { module = &quot;com.google.truth:truth&quot;, version.ref = &quot;truth&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="google-truth = { module = &quot;com.google.truth:truth&quot;, version.ref = &quot;truth&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.google.truth"
+                robot="true"
+                replacement="libs.google.truth"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="917"
+                    endOffset="947"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="32"
+            column="29"
+            startOffset="917"
+            endLine="32"
+            endColumn="59"
+            endOffset="947"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for runner"
+            robot="true">
+            <fix-replace
+                description="Replace with runnerVersion = &quot;1.0.2&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="runnerVersion = &quot;1.0.2&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="347"
+                    endOffset="347"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with runner = { module = &quot;com.android.support.test:runner&quot;, version.ref = &quot;runnerVersion&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="runner = { module = &quot;com.android.support.test:runner&quot;, version.ref = &quot;runnerVersion&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.runner"
+                robot="true"
+                replacement="libs.runner"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="976"
+                    endOffset="1015"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="33"
+            column="29"
+            startOffset="976"
+            endLine="33"
+            endColumn="68"
+            endOffset="1015"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for rules"
+            robot="true">
+            <fix-replace
+                description="Replace with rulesVersion = &quot;1.0.2&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="rulesVersion = &quot;1.0.2&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="347"
+                    endOffset="347"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with rules = { module = &quot;com.android.support.test:rules&quot;, version.ref = &quot;rulesVersion&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="rules = { module = &quot;com.android.support.test:rules&quot;, version.ref = &quot;rulesVersion&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.rules"
+                robot="true"
+                replacement="libs.rules"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="1044"
+                    endOffset="1082"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="34"
+            column="29"
+            startOffset="1044"
+            endLine="34"
+            endColumn="67"
+            endOffset="1082"/>
+    </incident>
+
+    <incident
+        id="UseTomlInstead"
+        severity="warning"
+        message="Use version catalog instead">
+        <fix-composite
+            description="Replace with new library catalog declaration for jetbrains-kotlin-stdlib-jdk7"
+            robot="true">
+            <fix-replace
+                description="Replace with kotlinStdlibJdk7 = &quot;1.9.21&quot;..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="kotlinStdlibJdk7 = &quot;1.9.21&quot;&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="39"
+                    endOffset="39"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with jetbrains-kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7&quot;, version.ref = &quot;kotlinStdlibJdk7&quot; }..."
+                robot="true"
+                oldString="_lint_insert_begin_"
+                replacement="jetbrains-kotlin-stdlib-jdk7 = { module = &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk7&quot;, version.ref = &quot;kotlinStdlibJdk7&quot; }&#xA;"
+                priority="0">
+                <range
+                    file="$HOME/colorcall/gradle/libs.versions.toml"
+                    startOffset="1552"
+                    endOffset="1552"/>
+            </fix-replace>
+            <fix-replace
+                description="Replace with libs.jetbrains.kotlin.stdlib.jdk7"
+                robot="true"
+                replacement="libs.jetbrains.kotlin.stdlib.jdk7"
+                priority="0">
+                <range
+                    file="${:hawk*projectDir}/build.gradle"
+                    startOffset="1111"
+                    endOffset="1159"/>
+            </fix-replace>
+        </fix-composite>
+        <location
+            file="${:hawk*projectDir}/build.gradle"
+            line="35"
+            column="29"
+            startOffset="1111"
+            endLine="35"
+            endColumn="77"
+            endOffset="1159"/>
+    </incident>
+
+</incidents>

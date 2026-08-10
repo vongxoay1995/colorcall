@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matisse 0.5.2 only defines this plural in some locales. A default is required so
+         AGP can generate com.zhihu.matisse.R$plurals for its legacy bytecode. -->
+    <plurals name="error_over_count">
+        <item quantity="one">You can only select up to %1$d media file</item>
+        <item quantity="other">You can only select up to %1$d media files</item>
+    </plurals>
+</resources>

@@ -1,3 +1,12 @@
 package com.simplemobiletools.commons.models
 
-data class AlarmSound(val id: Int, var title: String, var uri: String)
+import com.google.gson.annotations.SerializedName
+
+data class AlarmSound(
+    @field:SerializedName(value = "id", alternate = ["a"])
+    val id: Int,
+    @field:SerializedName(value = "title", alternate = ["b"])
+    var title: String,
+    @field:SerializedName(value = "uri", alternate = ["c"])
+    var uri: String
+)

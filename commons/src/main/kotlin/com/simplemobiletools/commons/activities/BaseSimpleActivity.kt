@@ -124,7 +124,6 @@ import com.simplemobiletools.commons.helpers.OPEN_DOCUMENT_TREE_FOR_SDK_30
 import com.simplemobiletools.commons.helpers.OPEN_DOCUMENT_TREE_OTG
 import com.simplemobiletools.commons.helpers.OPEN_DOCUMENT_TREE_SD
 import com.simplemobiletools.commons.helpers.PERMISSION_POST_NOTIFICATIONS
-import com.simplemobiletools.commons.helpers.PERMISSION_READ_MEDIA_VISUAL_USER_SELECTED
 import com.simplemobiletools.commons.helpers.PERMISSION_WRITE_STORAGE
 import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_CALLER_ID
 import com.simplemobiletools.commons.helpers.REQUEST_CODE_SET_DEFAULT_DIALER
@@ -1121,26 +1120,7 @@ abstract class BaseSimpleActivity : AppCompatActivity() {
         }
     }
 
-    fun handlePartialMediaPermissions(permissionIds: Collection<Int>, force: Boolean = false, callback: (granted: Boolean) -> Unit) {
-        actionOnPermission = null
-        if (isUpsideDownCakePlus()) {
-            if (hasPermission(PERMISSION_READ_MEDIA_VISUAL_USER_SELECTED) && !force) {
-                callback(true)
-            } else {
-                isAskingPermissions = true
-                actionOnPermission = callback
-                ActivityCompat.requestPermissions(this, permissionIds.map { getPermissionString(it) }.toTypedArray(), GENERIC_PERM_HANDLER)
-            }
-        } else {
-            if (hasAllPermissions(permissionIds)) {
-                callback(true)
-            } else {
-                isAskingPermissions = true
-                actionOnPermission = callback
-                ActivityCompat.requestPermissions(this, permissionIds.map { getPermissionString(it) }.toTypedArray(), GENERIC_PERM_HANDLER)
-            }
-        }
-    }
+
 
     fun handleNotificationPermission(callback: (granted: Boolean) -> Unit) {
         if (!isTiramisuPlus()) {

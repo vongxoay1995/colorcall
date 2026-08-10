@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class HawkHelper {
     private static String LOAD_DATA_FIRST_FIRST = "LOAD_DATA_FIRST_FIRST";
     private static String ENABLE_COLOR = "ENABLE_COLOR";
-    private static String BACKGROUND_SELECT = "BACKGROUND_SELECT";
     private static String ENABLE_FLASH = "ENABLE_FLASH";
 
     private static String LIST_BACKGROUND = "LIST_BACKGROUND";
@@ -99,12 +98,12 @@ public class HawkHelper {
     }
 
     public static void setBackgroundSelect(Background backgroundSelect) {
-        if (Hawk.isBuilt()) Hawk.put(BACKGROUND_SELECT, backgroundSelect);
+        BackgroundSelectionStorage.put(backgroundSelect);
     }
 
     public static Background getBackgroundSelect() {
         Background background = new Background(null, 0, "thumbDefault/default1.webp", "/raw/default1", false, "default1");
-        return Hawk.isBuilt() ? Hawk.get(BACKGROUND_SELECT, background) : background;
+        return BackgroundSelectionStorage.get(background);
     }
 
 

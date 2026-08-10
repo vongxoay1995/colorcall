@@ -16,7 +16,6 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.android.billingclient.api.SkuDetails
 import com.colorcall.callerscreen.constan.Constant
 import com.colorcall.callerscreen.utils.AppHelper
 import com.colorcall.callerscreen.utils.HawkHelper
@@ -31,14 +30,16 @@ class BillingHelper(private val context: Context) {
     private var isQueryInAppDone = false
     private var isQueryPurchaseDone = false
     private var listener: BillingListener? = null
-    private var oldVersionBilling: OldVersionBilling? = null
     private var billingStatus: BillingStatus = BillingStatus.NOT_YET_CONNECTED
-    var isSupportNewFeature: Boolean = true
-        private set
 
     fun init() {
         billingClient = BillingClient.newBuilder(context)
-            .enablePendingPurchases()
+            .enablePendingPurchases(
+                com.android.billingclient.api.PendingPurchasesParams.newBuilder()
+                    .enableOneTimeProducts()
+                    .build()
+            )
+            .enableAutoServiceReconnection()
             .setListener { billingResult: BillingResult, list: List<Purchase>? ->
                 Log.e("TAN", "init: "+billingResult.responseCode )
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -80,32 +81,10 @@ class BillingHelper(private val context: Context) {
                     if (!AppHelper.isInitBilling) AppHelper.isInitBilling = true
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                         productDetails.clear()
-                        if (billingClient!!.isFeatureSupported(BillingClient.FeatureType.PRODUCT_DETAILS).responseCode != BillingClient.BillingResponseCode.OK) {
-                            this@BillingHelper.isSupportNewFeature = false
-                            oldVersionBilling = OldVersionBilling.getInstance(billingClient!!)
-                            oldVersionBilling?.queryProduct(context, object : BillingListener {
-                                override fun setupBillingDone() {
-                                    checkSetupDone()
-                                }
-
-                                override fun onUserCanceled() {
-                                }
-
-                                override fun setupBillingFailed(s:String) {
-                                }
-
-                                override fun onPurchaseUpdatedV5(list: List<Purchase?>?) {
-
-                                }
-
-                                override fun onPurchaseUpdatedV5Below(list: List<SkuDetails?>?) {
-
-                                }
-                            })
-                        } else {
-                            this@BillingHelper.isSupportNewFeature = true
-                            queryIap()
-                        }
+                        isQuerySubDone = false
+                        isQueryInAppDone = false
+                        isQueryPurchaseDone = false
+                        queryIap()
                         queryPurchase()
                     } else {
                         listener?.setupBillingFailed("Ma loi la "+billingResult.responseCode)
@@ -133,13 +112,15 @@ class BillingHelper(private val context: Context) {
             .build()
         billingClient!!.queryProductDetailsAsync(
             params
-        ) { billingResult: BillingResult, list: List<ProductDetails>? ->
+        ) { billingResult, result ->
             // Process the result
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 Log.e("TAN", "querySubscription: 111")
                 isQuerySubDone = true
-                productDetails.addAll(list!!)
+                productDetails.addAll(result.productDetailsList)
                 checkSetupDone()
+            } else {
+                listener?.setupBillingFailed("Subscription products: ${billingResult.debugMessage}")
             }
         }
     }
@@ -165,13 +146,15 @@ class BillingHelper(private val context: Context) {
             .build()
         billingClient?.queryProductDetailsAsync(
             params
-        ) { billingResult: BillingResult, list: List<ProductDetails> ->
+        ) { billingResult, result ->
             // Process the result
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 isQueryInAppDone = true
-                productDetails.addAll(list)
+                productDetails.addAll(result.productDetailsList)
                 Log.e("TAN", "queryInApp: 2222", )
                 checkSetupDone()
+            } else {
+                listener?.setupBillingFailed("One-time products: ${billingResult.debugMessage}")
             }
         }
     }
@@ -226,18 +209,10 @@ class BillingHelper(private val context: Context) {
 
     @Synchronized
     private fun checkSetupDone() {
-        if (isSupportNewFeature) {
-            if (isQuerySubDone && isQueryInAppDone && isQueryPurchaseDone) {
-                billingStatus = BillingStatus.CONNECTED
-                listener?.setupBillingDone()
-                HawkHelper.setPay(purchases.isNotEmpty())
-            }
-        } else {
-            if (isQueryPurchaseDone) {
-                billingStatus = BillingStatus.CONNECTED
-                listener?.setupBillingDone()
-                HawkHelper.setPay(purchases.isNotEmpty())
-            }
+        if (isQuerySubDone && isQueryInAppDone && isQueryPurchaseDone) {
+            billingStatus = BillingStatus.CONNECTED
+            listener?.setupBillingDone()
+            HawkHelper.setPay(purchases.isNotEmpty())
         }
     }
 
@@ -293,37 +268,30 @@ class BillingHelper(private val context: Context) {
     ) {
         Log.e(
             "TAN",
-            "launchPurchaseSubFlow: 000" + isSupportNewFeature + "##" + dynamicProductId
+            "launchPurchaseSubFlow: 000##" + dynamicProductId
         )
        // fakeBoughtIap()
-        if (isSupportNewFeature) {
-            val product = QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(productDetailsId)
-                .setProductType(type)
-                .build()
-            val productListInApp = ArrayList<QueryProductDetailsParams.Product>()
-            productListInApp.add(product)
-            val params = QueryProductDetailsParams.newBuilder()
-                .setProductList(productListInApp)
-                .build()
-            billingClient!!.queryProductDetailsAsync(
-                params
-            ) { billingResult, list ->
-                // Process the result
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    if (type == BillingClient.ProductType.SUBS) {
-                        launchPurchaseSubFlow(activity, list[0], dynamicProductId)
-                    } else if (type == BillingClient.ProductType.INAPP) {
-                        launchPurchaseInAppFlow(activity, list[0])
-                    }
+        val product = QueryProductDetailsParams.Product.newBuilder()
+            .setProductId(productDetailsId)
+            .setProductType(type)
+            .build()
+        val productListInApp = arrayListOf(product)
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(productListInApp)
+            .build()
+        billingClient!!.queryProductDetailsAsync(
+            params
+        ) { billingResult, result ->
+            // Process the result
+            val details = result.productDetailsList.firstOrNull()
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && details != null) {
+                if (type == BillingClient.ProductType.SUBS) {
+                    launchPurchaseSubFlow(activity, details, dynamicProductId)
+                } else if (type == BillingClient.ProductType.INAPP) {
+                    launchPurchaseInAppFlow(activity, details)
                 }
-            }
-        } else {
-            for (details in skuDetails) {
-                if (productDetailsId == details.sku) {
-                    val params = BillingFlowParams.newBuilder().setSkuDetails(details).build()
-                    billingClient!!.launchBillingFlow(activity, params)
-                }
+            } else {
+                listener?.setupBillingFailed("Purchase product: ${billingResult.debugMessage}")
             }
         }
     }
@@ -347,9 +315,6 @@ class BillingHelper(private val context: Context) {
     fun getProductDetails(): List<ProductDetails> {
         return productDetails
     }
-
-    val skuDetails: List<SkuDetails>
-        get() = oldVersionBilling!!.skuList
 
     fun getBillingStatus(): BillingStatus {
         return billingStatus

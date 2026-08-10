@@ -41,17 +41,12 @@
 -verbose
 -dontskipnonpubliclibraryclassmembers
 -dontwarn **CompatHoneycomb
--ignorewarnings
 
 #-libraryjars /libs/StartAppInApp-2.4.11.jar
 
 #-dontwarn com.slidingmenu.*
 
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*,!code/allocation/variable,!class/unboxing/enum
-
-#class like a, b, c...
--repackageclasses ''
--allowaccessmodification
 
 # The support library contains references to newer platform versions.
 # Don't warn about those in case this app is linking against an older
@@ -177,6 +172,10 @@
 -keep class com.colorcall.callerscreen.response.AppData { *; }
 -keep class com.colorcall.callerscreen.response.ChangeLog { *; }
 -keep class com.colorcall.callerscreen.database.Background { *; }
+
+# AdsConfig used to be persisted directly by Hawk, which stores the runtime class name.
+# Keep it stable as defense in depth; new code persists the config as JSON String instead.
+-keep class com.colorcall.callerscreen.model.AdsConfig { *; }
 
 # Giữ nguyên các annotation của Gson
 -keepattributes *Annotation*

@@ -12,7 +12,6 @@ class Converters {
     private val longType = object : TypeToken<List<Long>>() {}.type
     private val stringType = object : TypeToken<List<String>>() {}.type
     private val numberType = object : TypeToken<List<PhoneNumber>>() {}.type
-    private val numberConverterType = object : TypeToken<List<PhoneNumberConverter>>() {}.type
     private val emailType = object : TypeToken<List<Email>>() {}.type
     private val addressType = object : TypeToken<List<Address>>() {}.type
     private val eventType = object : TypeToken<List<Event>>() {}.type
@@ -30,23 +29,8 @@ class Converters {
     @TypeConverter
     fun longListToJson(list: ArrayList<Long>): String = gson.toJson(list)
 
-    // some hacky converting is needed since PhoneNumber model has been added to proguard rules, but obfuscated json was stored in database
-    // convert [{"a":"678910","b":2,"c":"","d":"678910","e":false}] to PhoneNumber(value=678910, type=2, label=, normalizedNumber=678910, isPrimary=false)
     @TypeConverter
-    fun jsonToPhoneNumberList(value: String): ArrayList<PhoneNumber> {
-        val numbers = gson.fromJson<ArrayList<PhoneNumber>>(value, numberType)
-        return if (numbers.any { it.value == null }) {
-            val phoneNumbers = ArrayList<PhoneNumber>()
-            val numberConverters = gson.fromJson<ArrayList<PhoneNumberConverter>>(value, numberConverterType)
-            numberConverters.forEach { converter ->
-                val phoneNumber = PhoneNumber(converter.a, converter.b, converter.c, converter.d, converter.e)
-                phoneNumbers.add(phoneNumber)
-            }
-            phoneNumbers
-        } else {
-            numbers
-        }
-    }
+    fun jsonToPhoneNumberList(value: String): ArrayList<PhoneNumber> = gson.fromJson(value, numberType)
 
     @TypeConverter
     fun phoneNumberListToJson(list: ArrayList<PhoneNumber>): String = gson.toJson(list)

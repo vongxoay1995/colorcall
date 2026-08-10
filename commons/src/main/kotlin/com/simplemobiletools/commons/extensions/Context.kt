@@ -233,8 +233,6 @@ fun Context.getPermissionString(id: Int) = when (id) {
     PERMISSION_CALL_PHONE -> Manifest.permission.CALL_PHONE
     PERMISSION_READ_PHONE_STATE -> Manifest.permission.READ_PHONE_STATE
     PERMISSION_POST_NOTIFICATIONS -> Manifest.permission.POST_NOTIFICATIONS
-    PERMISSION_READ_MEDIA_IMAGES -> Manifest.permission.READ_MEDIA_IMAGES
-    PERMISSION_READ_MEDIA_VIDEO -> Manifest.permission.READ_MEDIA_VIDEO
     else -> ""
 }
 

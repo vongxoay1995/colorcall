@@ -17,7 +17,12 @@ class Config(context: Context) : BaseConfig(context) {
 
     fun getSpeedDialValues(): ArrayList<SpeedDial> {
         val speedDialType = object : TypeToken<List<SpeedDial>>() {}.type
-        val speedDialValues = Gson().fromJson<ArrayList<SpeedDial>>(speedDial, speedDialType) ?: ArrayList(1)
+        val gson = Gson()
+        val speedDialValues = try {
+            gson.fromJson<ArrayList<SpeedDial>>(speedDial, speedDialType) ?: ArrayList(1)
+        } catch (_: RuntimeException) {
+            ArrayList(1)
+        }
 
         for (i in 1..9) {
             val speedDial = SpeedDial(i, "", "")
@@ -26,6 +31,8 @@ class Config(context: Context) : BaseConfig(context) {
             }
         }
 
+        // Rewrite legacy a/b/c keys with the stable canonical schema.
+        speedDial = gson.toJson(speedDialValues)
         return speedDialValues
     }
 
@@ -36,10 +43,10 @@ class Config(context: Context) : BaseConfig(context) {
     fun getCustomSIM(number: String): PhoneAccountHandle? {
         val myPhoneAccountHandle = prefs.getPhoneAccountHandleModel(REMEMBER_SIM_PREFIX + number, null)
         return if (myPhoneAccountHandle != null) {
-            val packageName = myPhoneAccountHandle.packageName
-            val className = myPhoneAccountHandle.className
+            val packageName = myPhoneAccountHandle.packageName ?: return null
+            val className = myPhoneAccountHandle.className ?: return null
             val componentName = ComponentName(packageName, className)
-            val id = myPhoneAccountHandle.id
+            val id = myPhoneAccountHandle.id ?: return null
             PhoneAccountHandle(componentName, id)
         } else {
             null

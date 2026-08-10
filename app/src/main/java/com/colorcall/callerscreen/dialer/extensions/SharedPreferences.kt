@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.telecom.PhoneAccountHandle
 import com.colorcall.callerscreen.dialer.models.PhoneAccountHandleModel
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 
 fun SharedPreferences.Editor.putPhoneAccountHandle(
     key: String,
@@ -18,18 +17,21 @@ fun SharedPreferences.Editor.putPhoneAccountHandle(
     return putString(key, json)
 }
 
-inline fun <reified T : PhoneAccountHandleModel?> SharedPreferences.getPhoneAccountHandleModel(
+fun SharedPreferences.getPhoneAccountHandleModel(
     key: String,
-    default: T
-): T {
-    val json = getString(key, null)
+    default: PhoneAccountHandleModel?
+): PhoneAccountHandleModel? {
+    val json = getString(key, null) ?: return default
     return try {
-        if (json != null) {
-            Gson().fromJson(json, T::class.java)
+        val model = Gson().fromJson(json, PhoneAccountHandleModel::class.java)
+        if (model?.isValid() == true) {
+            model
         } else {
+            edit().remove(key).apply()
             default
         }
-    } catch (_: JsonSyntaxException) {
+    } catch (_: RuntimeException) {
+        edit().remove(key).apply()
         default
     }
 }

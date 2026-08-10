@@ -58,6 +58,7 @@ materialVersion = "1.12.0"
 activityVersion = "1.8.0"
 constraintlayoutVersion = "2.1.4"
 androidx-lifecycle = "2.7.0-alpha02"
+billing = "8.0.0"
 
 [libraries]
 #Simple Mobile Tools
@@ -82,6 +83,7 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activityVersion" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayoutVersion" }
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 
 #Compose
 compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "composeCompiler" }

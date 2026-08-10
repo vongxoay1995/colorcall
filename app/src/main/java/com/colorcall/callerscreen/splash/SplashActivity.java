@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.SkuDetails;
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
 import com.colorcall.callerscreen.analystic.Analystic;
@@ -24,6 +23,7 @@ import com.colorcall.callerscreen.model.AdsConfig;
 import com.colorcall.callerscreen.onboarding.OnboardingActivity;
 import com.colorcall.callerscreen.paywall.PayWallV3Activity;
 import com.colorcall.callerscreen.update.UpdateManager;
+import com.colorcall.callerscreen.utils.AdsConfigStorage;
 import com.colorcall.callerscreen.utils.AppUtils;
 import com.colorcall.callerscreen.utils.ConstantAds;
 import com.colorcall.callerscreen.utils.GoogleMobileAdsConsentManager;
@@ -113,11 +113,6 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         billingHelper = new BillingHelper(this);
         billingHelper.init();
         billingHelper.setListener(new BillingListener() {
-            @Override
-            public void onPurchaseUpdatedV5Below(@Nullable List<? extends SkuDetails> list) {
-
-            }
-
             @Override
             public void onPurchaseUpdatedV5(@Nullable List<? extends Purchase> list) {
 
@@ -211,7 +206,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
         if (!jsonString.isEmpty()) {
             try {
                 AdsConfig adsConfig = gson.fromJson(jsonString, AdsConfig.class);
-                Hawk.put(ConstantAds.ADS_CONFIG, adsConfig);
+                AdsConfigStorage.put(adsConfig);
                 // Sử dụng để bật/tắt quảng cáo...
 
             } catch (Exception e) {
@@ -360,7 +355,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
                     Log.e("TAN", "checkIAP:actionMovePayWall ");
                     actionMovePayWall = true;
                 } else {
-                    AdsConfig adsConfig = Hawk.get(ConstantAds.ADS_CONFIG);
+                    AdsConfig adsConfig = AdsConfigStorage.get();
                     if (adsConfig == null || adsConfig.getOpen_ads_enable()) {
                         AppOpenAd.load(this, id_ads, request, loadCallback);
                     } else {

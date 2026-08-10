@@ -17,7 +17,6 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
-import com.orhanobut.hawk.Hawk
 import java.util.Date
 
 class AppOpenManager(private val application: ColorCallApplication) : DefaultLifecycleObserver,
@@ -82,7 +81,7 @@ class AppOpenManager(private val application: ColorCallApplication) : DefaultLif
 
     fun fetchAd() {
         // Have unused ad, no need to fetch another.
-        val adsConfig: AdsConfig? = Hawk.get(ConstantAds.ADS_CONFIG)
+        val adsConfig: AdsConfig? = AdsConfigStorage.get()
         if (adsConfig?.open_ads_enable == false || isAdAvailable) {
             return
         }

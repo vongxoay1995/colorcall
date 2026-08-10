@@ -17,7 +17,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
-import com.orhanobut.hawk.Hawk;
 
 public class BannerAdsUtils {
     private Context context;
@@ -29,7 +28,7 @@ public class BannerAdsUtils {
     public BannerAdsUtils(Context context, RelativeLayout viewContainer) {
         this.context = context;
         this.layoutBannerAds = viewContainer;
-        adsConfig= Hawk.get(ConstantAds.ADS_CONFIG);
+        adsConfig = AdsConfigStorage.get();
     }
     public void setIdAds(String idGG) {
         if (BuildConfig.DEBUG) {

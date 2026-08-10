@@ -16,38 +16,29 @@ class MyTextInputLayout : TextInputLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
-    // we need to use reflection to make some colors work well
     fun setColors(textColor: Int, accentColor: Int, backgroundColor: Int) {
-        try {
-            editText!!.setTextColor(textColor)
-            editText!!.backgroundTintList = ColorStateList.valueOf(accentColor)
+        val input = editText ?: return
+        input.setTextColor(textColor)
+        input.backgroundTintList = ColorStateList.valueOf(accentColor)
 
-            val hintColor = if (editText!!.value.isEmpty()) textColor.adjustAlpha(HIGHER_ALPHA) else textColor
-            val defaultTextColor = TextInputLayout::class.java.getDeclaredField("defaultHintTextColor")
-            defaultTextColor.isAccessible = true
-            defaultTextColor.set(this, ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(hintColor)))
+        val hintColor = if (input.value.isEmpty()) textColor.adjustAlpha(HIGHER_ALPHA) else textColor
+        setHintTextColor(ColorStateList.valueOf(accentColor))
 
-            val focusedTextColor = TextInputLayout::class.java.getDeclaredField("focusedTextColor")
-            focusedTextColor.isAccessible = true
-            focusedTextColor.set(this, ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(accentColor)))
-
-            val defaultHintTextColor = textColor.adjustAlpha(MEDIUM_ALPHA)
-            val boxColorState = ColorStateList(
-                arrayOf(
-                    intArrayOf(android.R.attr.state_active),
-                    intArrayOf(android.R.attr.state_focused)
-                ),
-                intArrayOf(
-                    defaultHintTextColor,
-                    accentColor
-                )
+        val defaultHintTextColor = textColor.adjustAlpha(MEDIUM_ALPHA)
+        val boxColorState = ColorStateList(
+            arrayOf(
+                intArrayOf(android.R.attr.state_active),
+                intArrayOf(android.R.attr.state_focused)
+            ),
+            intArrayOf(
+                defaultHintTextColor,
+                accentColor
             )
+        )
 
-            setEndIconTintList(ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(hintColor)))
-            setBoxStrokeColorStateList(boxColorState)
-            defaultTextColor.set(this, ColorStateList(arrayOf(intArrayOf(0)), intArrayOf(defaultHintTextColor)))
-            setHelperTextColor(ColorStateList.valueOf(textColor))
-        } catch (e: Exception) {
-        }
+        setEndIconTintList(ColorStateList.valueOf(hintColor))
+        setBoxStrokeColorStateList(boxColorState)
+        setDefaultHintTextColor(ColorStateList.valueOf(defaultHintTextColor))
+        setHelperTextColor(ColorStateList.valueOf(textColor))
     }
 }

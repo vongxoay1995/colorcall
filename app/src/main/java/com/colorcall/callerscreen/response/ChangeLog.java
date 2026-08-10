@@ -1,7 +1,11 @@
 package com.colorcall.callerscreen.response;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ChangeLog {
+    @SerializedName("version")
     private int version;
+    @SerializedName("description")
     private String description;
 
     public int getVersion() {

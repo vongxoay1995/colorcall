@@ -9,15 +9,15 @@ plugins {
 }
 android {
     namespace = "com.colorcall.callerscreen"
-    compileSdk = 35
+    compileSdk = 36
     buildToolsVersion = "36.0.0"
 
     defaultConfig {
         applicationId = "com.colorcall.callerscreen"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 79
-        versionName = "1.7.2-internal"
+        targetSdk = 36
+        versionCode = 82
+        versionName = "1.7.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -117,6 +117,6 @@ dependencies {
    // api(libs.koin.core)
     //api(libs.koin.android)
     implementation(libs.kotlinx.serialization.json)
-    implementation ("com.android.billingclient:billing:7.1.1")
+    implementation(libs.billing)
 }
 

@@ -46,6 +46,8 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -531,32 +533,33 @@ public class AppUtils {
     }
 
     public static String openCameraIntent(Fragment fragment, Activity activity, int requestCode) {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*"});
+        PickVisualMediaRequest request = new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build();
+        Intent photoPickerIntent = new ActivityResultContracts.PickVisualMedia()
+                .createIntent(activity, request);
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         String pickTitle = activity.getResources().getString(R.string.select_picture);
         Intent chooserIntent = Intent.createChooser(photoPickerIntent, pickTitle);
-        chooserIntent.putExtra
-                (Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
+        String capturePath = null;
         if (takePhotoIntent.resolveActivity(activity.getPackageManager()) != null) {
-            File photoFile = null;
+            File photoFile;
             try {
                 photoFile = createImageFile(activity);
             } catch (IOException ex) {
-                // Error occurred while creating the File
+                photoFile = null;
             }
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(activity, activity.getPackageName() + Constant.PROVIDER, photoFile);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            photoURI);
-                }
-                fragment.startActivityForResult(chooserIntent, requestCode);
-                return photoFile.getAbsolutePath();
-            } else return null;
-        } else return null;
+                takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                takePhotoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
+                capturePath = photoFile.getAbsolutePath();
+            }
+        }
+        fragment.startActivityForResult(chooserIntent, requestCode);
+        return capturePath;
     }
 
     public static ArrayList<Background> loadDataDefault(Context context, String path) {

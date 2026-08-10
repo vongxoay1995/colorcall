@@ -2,8 +2,6 @@ package com.colorcall.callerscreen.mytheme;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VIDEO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.colorcall.callerscreen.constan.Constant.SHOW_IMG_DELETE;
 
@@ -29,6 +27,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -165,15 +165,8 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
                     WRITE_EXTERNAL_STORAGE,
                     CAMERA
             };
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permistion = new String[]{
-                    READ_MEDIA_VIDEO,
-                    READ_MEDIA_IMAGES,
-                    CAMERA
-            };
         } else {
             permistion = new String[]{
-                    READ_EXTERNAL_STORAGE,
                     CAMERA
             };
         }
@@ -200,13 +193,16 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
     @Override
     public void onVideoClicked() {
         isRequestImageVideo = true;
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        photoPickerIntent.setType("video/*");
-        photoPickerIntent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
-        Intent takePhotoIntent = new Intent("android.media.action.VIDEO_CAPTURE");
+        PickVisualMediaRequest request = new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.VideoOnly.INSTANCE)
+                .build();
+        Intent photoPickerIntent = new ActivityResultContracts.PickVisualMedia()
+                .createIntent(requireContext(), request);
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         Intent chooserIntent = Intent.createChooser(photoPickerIntent, getResources().getString(R.string.your_video));
-        chooserIntent.putExtra("android.intent.extra.INITIAL_INTENTS", new Intent[]{takePhotoIntent});
+        if (takePhotoIntent.resolveActivity(requireContext().getPackageManager()) != null) {
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
+        }
         startActivityForResult(chooserIntent, Constant.REQUEST_VIDEO);
     }
 
@@ -222,57 +218,31 @@ public class MyThemeFragment extends Fragment implements MyThemeAdapter.Listener
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constant.REQUEST_VIDEO) {
                 Log.e("TAN", "onActivityResult: video");
-                Uri uriData = data.getData();
-                final String[] mPath = new String[1];
+                Uri uriData = new ActivityResultContracts.PickVisualMedia().parseResult(resultCode, data);
                 if (uriData != null) {
-                    mPath[0] = FileUtils.getRealPathFromUri(getContext(), uriData);
-                    Log.e("TAN", "mPath[0]: " + mPath[0]);
-                    if (mPath[0].equals("")) {
-                        createVideoInputPath(requireActivity(), uriData, false, videoInputPath -> {
-                            Log.e("TAN", "createVideoInputPath: " + videoInputPath);
-                            mPath[0] = videoInputPath;
-                            resetListDataVideo(mPath[0]);
-                            //adapter.setNewListBg();
-                            //adapter.notifyDataSetChanged();
-                        });
-                    } else {
-                        resetListDataVideo(mPath[0]);
-                        //adapter.setNewListBg();
-                        //adapter.notifyDataSetChanged();
-                    }
+                    createVideoInputPath(requireActivity(), uriData, false, videoInputPath -> {
+                        Log.e("TAN", "createVideoInputPath: " + videoInputPath);
+                        resetListDataVideo(videoInputPath);
+                    });
                 } else {
                     Toast.makeText(requireActivity(), "Error! Please try input other video!", Toast.LENGTH_LONG).show();
                 }
             } else if (requestCode == Constant.REQUEST_CODE_IMAGES) {
-                final String[] path = new String[1];
-                if (data != null && data.getData() != null) {
-                    path[0] = FileUtils.getRealPathFromUri(getContext(), data.getData());
-                    if (path[0].equals("")) {
-                        FileUtils.createImagefromPath(requireActivity(), data.getData(), Constant.IMAGE_INPUT_NAME, new FileUtils.CreateImageInputInterface() {
+                Uri uriData = new ActivityResultContracts.PickVisualMedia().parseResult(resultCode, data);
+                if (uriData != null) {
+                    FileUtils.createImagefromPath(requireActivity(), uriData, Constant.IMAGE_INPUT_NAME, new FileUtils.CreateImageInputInterface() {
+                        @Override
+                        public void onImageCreateSuccess(String imagePath) {
+                            resetListDataImage(imagePath);
+                        }
 
-                            @Override
-                            public void onImageCreateSuccess(String imagePath) {
-                                path[0] = imagePath;
-                                resetListDataImage(path[0]);
-                               // adapter.setNewListBg();
-                               // adapter.notifyDataSetChanged();
-                            }
-
-                            @Override
-                            public void onImageCreateFailed() {
-
-                            }
-                        });
-                    } else {
-                        resetListDataImage(path[0]);
-                        //adapter.setNewListBg();
-                        //adapter.notifyDataSetChanged();
-                    }
+                        @Override
+                        public void onImageCreateFailed() {
+                            Toast.makeText(requireActivity(), R.string.file_not_found, Toast.LENGTH_LONG).show();
+                        }
+                    });
                 } else {
-                    path[0] = pathUriImage;
-                    resetListDataImage(path[0]);
-                    //adapter.setNewListBg();
-                    //adapter.notifyDataSetChanged();
+                    resetListDataImage(pathUriImage);
                 }
             }
         }

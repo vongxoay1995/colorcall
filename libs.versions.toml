@@ -1,6 +1,6 @@
 [versions]
 # Plugin
-agp = "8.13.0"
+agp = "9.0.0"
 kotlin = "2.2.20"
 media3Exoplayer = "1.8.0"
 play-service = "4.4.4"

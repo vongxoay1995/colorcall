@@ -43,7 +43,7 @@ public class InterstitialApply {
     }
 
     public void init(Context context) {
-        adsConfig = Hawk.get(ConstantAds.ADS_CONFIG);
+        adsConfig = AdsConfigStorage.get();
         mContext = context;
         if (BuildConfig.DEBUG) {
             idInter = Constant.ID_INTER_TEST;
