@@ -63,7 +63,7 @@ fun PayWallActivity.setupView() {
 }
 
 fun PayWallActivity.loadInterAds() {
-    val idInter = if (BuildConfig.DEBUG) {
+    val idInter = if (BuildConfig.USE_TEST_ADS) {
         Constant.ID_INTER_TEST
     } else {
         ConstantAds.interPaywall

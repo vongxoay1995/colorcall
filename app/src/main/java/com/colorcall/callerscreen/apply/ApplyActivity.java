@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -36,7 +37,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -94,9 +94,9 @@ public class ApplyActivity extends AppCompatActivity implements com.colorcall.ca
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setTranslucent();
-        EdgeToEdge.enable(this);
-        new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
-                .setAppearanceLightStatusBars(false); // white icons on dark/translucent header
+        // Configure white status-bar icons in the same edge-to-edge call. Calling
+        // getDecorView() again here can force another eager window/decor access.
+        EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT));
         binding = ActivityApplyBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         // Set topView height = status bar height để nút back không bị che

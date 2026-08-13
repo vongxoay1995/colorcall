@@ -6,6 +6,7 @@ import static com.colorcall.callerscreen.utils.ConstantAds.setting_banner_admob_
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,13 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.colorcall.callerscreen.BuildConfig;
 import com.colorcall.callerscreen.R;
@@ -57,10 +58,8 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     private ActivitySettingBinding binding;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // handles edge-to-edge, transparent status/nav bar on all devices
-        // White icons on blue/dark header
-        new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
-                .setAppearanceLightStatusBars(false);
+        // Keep edge-to-edge and configure white icons without a second decorView access.
+        EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT));
         binding = ActivitySettingBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         // Set topView height = status bar height để header không bị che
@@ -95,7 +94,7 @@ public class SettingActivity extends AppCompatActivity implements PermistionFlas
     public void loadAds() {
         String idGG;
         String ID_ADS_GG = "ca-app-pub-3222539657172474/5477219704";
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.USE_TEST_ADS) {
             idGG = Constant.ID_NATIVE_TEST;
         } else {
             idGG = setting_banner_admob_tk_cu;

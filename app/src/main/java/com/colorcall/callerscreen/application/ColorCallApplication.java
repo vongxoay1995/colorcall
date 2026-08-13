@@ -1,6 +1,5 @@
 package com.colorcall.callerscreen.application;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
 
@@ -28,15 +27,15 @@ public class ColorCallApplication extends Application {
         // Initialize Mobile Ads on background thread to avoid blocking cold start (~200-400ms)
         new Thread(() -> {
             MobileAds.initialize(ColorCallApplication.this, initializationStatus -> {});
-            if (BuildConfig.DEBUG) {
+            if (BuildConfig.USE_TEST_ADS) {
                 List<String> testDeviceIds = Arrays.asList("13C6FDCBDDECC41B0B5817912A40E9E6");
                 RequestConfiguration configuration =
                         new RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build();
                 MobileAds.setRequestConfiguration(configuration);
             }
         }).start();
-        SharedPreferencesUtil.INSTANCE.init(this);
         Hawk.init(this).build();
+        SharedPreferencesUtil.INSTANCE.init(this);
         appOpenManager = new AppOpenManager(this);
         loadData();
     }

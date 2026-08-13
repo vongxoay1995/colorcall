@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.net.Uri;
@@ -25,12 +26,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -102,9 +103,7 @@ public class SelectContactActivity extends AppCompatActivity implements Permisti
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView())
-                .setAppearanceLightStatusBars(false); // white icons on dark header
+        EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT));
         binding = ActivitySelectContactBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         databaseViewModel = new ViewModelProvider(this).get(DatabaseViewModel.class);

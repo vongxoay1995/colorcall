@@ -101,7 +101,7 @@ class AppOpenManager(private val application: ColorCallApplication) : DefaultLif
             }
         }
         val request = adRequest
-        val idAds = if (BuildConfig.DEBUG) {
+        val idAds = if (BuildConfig.USE_TEST_ADS) {
             ConstantAds.id_ads_open_test
         } else {
             ConstantAds.id_back_app_ads_open

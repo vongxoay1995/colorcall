@@ -48,7 +48,7 @@ public class InterstitialUtil {
     public void init(Context context) {
         adsConfig = AdsConfigStorage.get();
         mContext = context;
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.USE_TEST_ADS) {
             idInter = Constant.ID_INTER_TEST;
         } else {
             idInter = ConstantAds.id_ads_inter_item_admob_tk_cu;

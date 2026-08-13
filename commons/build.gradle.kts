@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.kotlinAndroid)
@@ -13,19 +15,9 @@ android {
     defaultConfig {
         minSdk = libs.versions.app.build.minimumSDK.get().toInt()
         vectorDrawables.useSupportLibrary = true
+        consumerProguardFiles("consumer-rules.pro")
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
-        }
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            consumerProguardFiles("proguard-rules.pro")
         }
     }
 
@@ -41,22 +33,22 @@ android {
         targetCompatibility = currentJavaVersionFromLibs
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = project.libs.versions.app.build.kotlinJVMTarget.get()
-        kotlinOptions.freeCompilerArgs = listOf(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-            "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
-            "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
-            "-opt-in=com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi",
-            "-Xcontext-receivers"
-        )
-    }
-
     sourceSets {
         getByName("main").java.srcDirs("src/main/kotlin")
     }
     namespace = libs.versions.app.version.groupId.get()
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+            "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+            "-Xcontext-receivers"
+        )
+    }
 }
 
 
@@ -85,9 +77,7 @@ dependencies {
     api(libs.material)
     api(libs.gson)
 
-    implementation(libs.glide.compose)
     api(libs.glide)
-    ksp(libs.glide.compiler)
 
     api(libs.bundles.room)
     ksp(libs.androidx.room.compiler)

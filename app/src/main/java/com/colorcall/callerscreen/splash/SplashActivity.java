@@ -344,7 +344,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
             } else {
                 AdRequest request = new AdRequest.Builder().build();
                 String id_ads = "";
-                if (BuildConfig.DEBUG) {
+                if (BuildConfig.USE_TEST_ADS) {
                     id_ads = ConstantAds.id_ads_open_test;
                 } else {
                     id_ads = ConstantAds.open_splash_moi;
@@ -376,7 +376,7 @@ public class SplashActivity extends AppCompatActivity implements JobScreen.JobPr
     public void loadInterAds() {
         isShowingInter = true;
         String idInter;
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.USE_TEST_ADS) {
             idInter = Constant.ID_INTER_TEST;
         } else {
             idInter = "ca-app-pub-3222539657172474/2797404365";

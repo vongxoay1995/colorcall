@@ -6,6 +6,7 @@ import android.text.Spanned
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -26,9 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.bumptech.glide.Glide
-import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.simplemobiletools.commons.R
 import com.simplemobiletools.commons.activities.BaseSimpleActivity
 import com.simplemobiletools.commons.compose.alert_dialog.AlertDialogState
@@ -149,10 +149,6 @@ fun WritePermissionAlertDialog(
             dialogTitle = R.string.confirm_storage_access_title
         )
     }
-    val crossFadeTransition = remember {
-        DrawableTransitionOptions().crossFade(DrawableCrossFadeFactory.Builder(350).setCrossFadeEnabled(true).build())
-    }
-
     AlertDialog(
         onDismissRequest = alertDialogState::hide andThen onCancelCallback,
         modifier = modifier
@@ -178,18 +174,16 @@ fun WritePermissionAlertDialog(
 
                     when (writePermissionDialogMode) {
                         WritePermissionDialog.WritePermissionDialogMode.CreateDocumentSDK30 -> CreateDocumentSDK30(
-                            crossFadeTransition = crossFadeTransition,
                             onImageClick = alertDialogState::hide andThen callback
                         )
 
                         is WritePermissionDialog.WritePermissionDialogMode.OpenDocumentTreeSDK30 -> OpenDocumentTreeSDK30(
-                            crossFadeTransition = crossFadeTransition,
                             onImageClick = alertDialogState::hide andThen callback,
                             path = writePermissionDialogMode.path
                         )
 
-                        WritePermissionDialog.WritePermissionDialogMode.Otg -> OTG(crossFadeTransition)
-                        WritePermissionDialog.WritePermissionDialogMode.SdCard -> SDCard(crossFadeTransition)
+                        WritePermissionDialog.WritePermissionDialogMode.Otg -> OTG()
+                        WritePermissionDialog.WritePermissionDialogMode.SdCard -> SDCard()
                     }
                     Spacer(Modifier.padding(vertical = SimpleTheme.dimens.padding.extraLarge))
                 }
@@ -212,59 +206,52 @@ fun WritePermissionAlertDialog(
 }
 
 @Composable
-private fun CreateDocumentSDK30(crossFadeTransition: DrawableTransitionOptions, onImageClick: () -> Unit) {
+private fun CreateDocumentSDK30(onImageClick: () -> Unit) {
     WritePermissionText(stringResource(R.string.confirm_create_doc_for_new_folder_text).fromHtml())
     WritePermissionImage(
-        crossFadeTransition = crossFadeTransition,
         drawable = R.drawable.img_write_storage_create_doc_sdk_30,
         modifier = Modifier.clickable(onClick = onImageClick)
     )
 }
 
 @Composable
-private fun OpenDocumentTreeSDK30(crossFadeTransition: DrawableTransitionOptions, onImageClick: () -> Unit, path: String) {
+private fun OpenDocumentTreeSDK30(onImageClick: () -> Unit, path: String) {
     val context = LocalContext.current
     val view = LocalView.current
 
     val humanizedPath = remember { if (!view.isInEditMode) context.humanizePath(path) else "" }
     WritePermissionText(stringResource(R.string.confirm_storage_access_android_text_specific, humanizedPath).fromHtml())
     WritePermissionImage(
-        crossFadeTransition = crossFadeTransition,
         drawable = R.drawable.img_write_storage_sdk_30,
         modifier = Modifier.clickable(onClick = onImageClick)
     )
 }
 
 @Composable
-private fun SDCard(crossFadeTransition: DrawableTransitionOptions) {
+private fun SDCard() {
     WritePermissionText(R.string.confirm_storage_access_text)
-    WritePermissionImage(crossFadeTransition = crossFadeTransition, drawable = R.drawable.img_write_storage)
+    WritePermissionImage(drawable = R.drawable.img_write_storage)
     WritePermissionText(R.string.confirm_storage_access_text_sd)
-    WritePermissionImage(crossFadeTransition = crossFadeTransition, drawable = R.drawable.img_write_storage_sd)
+    WritePermissionImage(drawable = R.drawable.img_write_storage_sd)
 }
 
 @Composable
-private fun OTG(
-    crossFadeTransition: DrawableTransitionOptions
-) {
+private fun OTG() {
     WritePermissionText(R.string.confirm_usb_storage_access_text)
-    WritePermissionImage(crossFadeTransition = crossFadeTransition, drawable = R.drawable.img_write_storage_otg)
+    WritePermissionImage(drawable = R.drawable.img_write_storage_otg)
 }
 
 @Composable
 private fun WritePermissionImage(
     modifier: Modifier = Modifier,
-    crossFadeTransition: DrawableTransitionOptions,
     @DrawableRes drawable: Int
 ) {
-    GlideImage(
+    Image(
+        painter = painterResource(drawable),
         modifier = modifier
             .padding(horizontal = SimpleTheme.dimens.padding.extraLarge.plus(SimpleTheme.dimens.padding.large)),
-        model = drawable,
         contentDescription = null,
-    ) { requestBuilder ->
-        requestBuilder.transition(crossFadeTransition)
-    }
+    )
 }
 
 @Composable

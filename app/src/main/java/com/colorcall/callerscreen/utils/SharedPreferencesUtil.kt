@@ -26,12 +26,14 @@ object SharedPreferencesUtil {
     }
 
     private fun migrateDataFromHawk() {
-        if (getBoolean("DATA_MIGRATED", false)) {
+        if (getBoolean("DATA_MIGRATED", false) || !Hawk.isBuilt()) {
             return
         }
-        putBoolean("DATA_MIGRATED", true)
-        if (Hawk.isBuilt()) {
+
+        runCatching {
             isPurchase = Hawk.get("KEY_IS_BILLING", false)
+        }.onSuccess {
+            putBoolean("DATA_MIGRATED", true)
         }
     }
 

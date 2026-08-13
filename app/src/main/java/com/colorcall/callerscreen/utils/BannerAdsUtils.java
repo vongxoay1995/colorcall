@@ -31,7 +31,7 @@ public class BannerAdsUtils {
         adsConfig = AdsConfigStorage.get();
     }
     public void setIdAds(String idGG) {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.USE_TEST_ADS) {
             this.idGG = Constant.ID_TEST_BANNER_ADMOD;
         } else {
             this.idGG = idGG;
@@ -146,7 +146,7 @@ public class BannerAdsUtils {
         AdSize adSize = getAdSize();  // Assuming adSize is a method or property
         adviewGoogle.setAdSize(adSize);
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.USE_TEST_ADS) {
             adviewGoogle.setAdUnitId(Constant.ID_TEST_BANNER_ADMOD);
         } else {
             adviewGoogle.setAdUnitId(idGG);

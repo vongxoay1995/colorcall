@@ -45,7 +45,7 @@ public class InterstitialApply {
     public void init(Context context) {
         adsConfig = AdsConfigStorage.get();
         mContext = context;
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.USE_TEST_ADS) {
             idInter = Constant.ID_INTER_TEST;
         } else {
             idInter = ConstantAds.id_ads_inter_apply_admob_moi;

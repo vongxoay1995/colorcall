@@ -6,7 +6,7 @@ ksp = "2.1.0-1.0.29"
 kotlin-immutable-collections = "0.3.6"
 androidx-constraintlayout = "2.1.4"
 ezVcard = "0.11.3"
-room = "2.6.0-rc01"
+room = "2.6.1"
 recyclerviewFastscroller = "5a95285b1f"
 reprint = "2cb206415d"
 rtlViewpager = "940f12724f"
@@ -16,11 +16,10 @@ kotlinxSerializationJson = "1.5.1"
 #Simple tools
 simple-commons = "eceb48949e"
 #Gradle
-gradlePlugins-agp = "8.9.0"
+gradlePlugins-agp = "8.11.1"
 compose = "1.6.0-alpha07"
-composeActivity = "1.8.0"
+composeActivity = "1.8.2"
 
-composeCompiler = "1.5.11"
 composeMaterial3 = "1.2.0-alpha09"
 app-version-groupId = "com.simplemobiletools.commons"
 androidx-documentfile = "1.0.1"
@@ -36,7 +35,6 @@ jodaTime = "2.12.5"
 koinCore = "3.4.3"
 #Glide
 glide = "4.16.0"
-glideCompose = "1.0.0-beta01"
 #Androidx
 androidx-customView = "1.2.0-alpha02"
 androidx-customViewPooling = "1.0.0"
@@ -48,14 +46,13 @@ app-build-compileSDKVersion = "34"
 app-build-targetSDK = "34"
 app-build-minimumSDK = "23"
 app-build-javaVersion = "VERSION_17"
-app-build-kotlinJVMTarget = "17"
 #versioning
 app-version-appId = "com.simplemobiletools.dialer"
 app-version-versionCode = "57"
 app-version-versionName = "5.18.1"
 appcompatVersion = "1.7.0"
 materialVersion = "1.12.0"
-activityVersion = "1.8.0"
+activityVersion = "1.8.2"
 constraintlayoutVersion = "2.1.4"
 androidx-lifecycle = "2.7.0-alpha02"
 billing = "8.0.0"
@@ -86,7 +83,6 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 
 #Compose
-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "composeCompiler" }
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "composeMaterial3" }
 compose-material2 = { module = "androidx.compose.material:material", version.ref = "compose" }
@@ -114,8 +110,6 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 #Glide
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glideCompose" }
-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinCore" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
@@ -124,7 +118,6 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 compose = [
     "compose-activity",
     "compose-animation",
-    "compose-compiler",
     "compose-foundation",
     "compose-material-icons",
     "compose-material3",
